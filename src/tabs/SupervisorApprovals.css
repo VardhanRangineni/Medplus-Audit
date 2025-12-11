@@ -1,0 +1,48 @@
+.supervisor-approvals-tab {
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 200px);
+}
+
+.supervisor-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.supervisor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.allocation-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.allocation-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.allocation-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.allocation-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.contra-table tbody tr {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.contra-table tbody tr:hover {
+  background-color: rgba(13, 110, 253, 0.05);
+  transform: scale(1.01);
+}
+
+.contra-row td {
+  vertical-align: middle;
+  padding: 1rem;
+}

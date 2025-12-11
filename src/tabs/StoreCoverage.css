@@ -1,0 +1,44 @@
+.store-coverage-tab {
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 200px);
+}
+
+.deviation-item {
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+}
+
+.deviation-item:hover {
+  border-color: #0d6efd;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  transform: translateX(5px);
+  cursor: pointer;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.deviation-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.deviation-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.deviation-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.deviation-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.deviation-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

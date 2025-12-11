@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { Container, Row, Col, Card, Table, ProgressBar, Badge } from 'react-bootstrap';
+import { Container, Row, Col, Card, Table, ProgressBar, Badge, Alert } from 'react-bootstrap';
 import KPICard from '../components/KPICard';
 import DrillDownModal from '../components/DrillDownModal';
 import './AuditorPerformance.css';
 
-const AuditorPerformance = () => {
+const AuditorPerformance = ({ filters = {} }) => {
   const [modalConfig, setModalConfig] = useState({ show: false, title: '', data: [], columns: [] });
+  
+  // Check if any filters are active
+  const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
 
   // Performance Cards Data
   const performanceMetrics = {
@@ -140,8 +143,18 @@ const AuditorPerformance = () => {
   };
 
   return (
-    <Container fluid className="auditor-performance-tab py-4">
-      {/* Performance Summary Cards */}
+    <Container fluid className="auditor-performance-tab py-4">      {/* Filter Status Alert */}
+      {hasActiveFilters && (
+        <Alert variant="info" className="mb-3">
+          <i className="fas fa-filter me-2"></i>
+          <strong>Active Filters:</strong>
+          {filters.state && <Badge bg="primary" className="ms-2">State: {filters.state}</Badge>}
+          {filters.store && <Badge bg="primary" className="ms-2">Store: {filters.store}</Badge>}
+          {filters.auditJobType && <Badge bg="primary" className="ms-2">Job Type: {filters.auditJobType}</Badge>}
+          {filters.auditProcessType && <Badge bg="primary" className="ms-2">Process: {filters.auditProcessType}</Badge>}
+          {filters.auditStatus && <Badge bg="primary" className="ms-2">Status: {filters.auditStatus}</Badge>}
+        </Alert>
+      )}      {/* Performance Summary Cards */}
       <Row className="g-3 mb-4">
         <Col md={4}>
           <KPICard

@@ -1,11 +1,13 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Card, Badge, Table, ProgressBar } from 'react-bootstrap';
+import { Container, Row, Col, Card, Badge, Table, ProgressBar, Alert } from 'react-bootstrap';
 import KPICard from '../components/KPICard';
 import './LiveAuditSchedule.css';
 
-const LiveAuditSchedule = () => {
+const LiveAuditSchedule = ({ filters = {} }) => {
   const navigate = useNavigate();
+  
+  // Check if any filters are active
+  const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
 
   // Mock Data
   const workflowStats = {
@@ -84,6 +86,18 @@ const LiveAuditSchedule = () => {
 
   return (
     <Container fluid className="live-audit-tab py-4">
+      {/* Filter Status Alert */}
+      {hasActiveFilters && (
+        <Alert variant="info" className="mb-3">
+          <i className="fas fa-filter me-2"></i>
+          <strong>Active Filters:</strong>
+          {filters.state && <Badge bg="primary" className="ms-2">State: {filters.state}</Badge>}
+          {filters.store && <Badge bg="primary" className="ms-2">Store: {filters.store}</Badge>}
+          {filters.auditJobType && <Badge bg="primary" className="ms-2">Job Type: {filters.auditJobType}</Badge>}
+          {filters.auditProcessType && <Badge bg="primary" className="ms-2">Process: {filters.auditProcessType}</Badge>}
+          {filters.auditStatus && <Badge bg="primary" className="ms-2">Status: {filters.auditStatus}</Badge>}
+        </Alert>
+      )}
       {/* Audit Workflow Tiles */}
       <Row className="g-3 mb-4">
         <Col md={3}>

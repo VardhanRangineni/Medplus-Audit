@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Container, Row, Col, Card, Form, InputGroup, Table, Button, Badge } from 'react-bootstrap';
+import StoreDetailModal from '../components/StoreDetailModal';
+import { mockDataService } from '../services/mockDataService';
 
 const DetailsPage = () => {
   const navigate = useNavigate();
@@ -13,6 +15,8 @@ const DetailsPage = () => {
   const [filterState, setFilterState] = useState('');
   const [filterAuditJobType, setFilterAuditJobType] = useState('');
   const [filterProcessType, setFilterProcessType] = useState('');
+  const [showStoreDetail, setShowStoreDetail] = useState(false);
+  const [selectedStoreData, setSelectedStoreData] = useState(null);
 
   // Mock data based on type
   const getData = () => {
@@ -34,6 +38,32 @@ const DetailsPage = () => {
       return [
         { storeId: 'MP015', storeName: 'Jaipur Pink City', state: 'RJ', lastAudit: 'Never', auditAge: 0, reason: 'New Store', planDate: '2024-12-20' },
         { storeId: 'MP022', storeName: 'Lucknow Central', state: 'UP', lastAudit: 'Never', auditAge: 0, reason: 'New Store', planDate: '2024-12-25' }
+      ];
+    } else if (type === 'stores-recency-oct-dec') {
+      return [
+        { storeId: 'MP001', storeName: 'Chennai Central', state: 'TN', lastAudit: '2024-11-15', auditAge: 26, auditor: 'Amit Singh', deviationCount: 12, supervisor: 'Rajesh Kumar' },
+        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'KA', lastAudit: '2024-11-20', auditAge: 21, auditor: 'Priya Reddy', deviationCount: 8, supervisor: 'Lakshmi Iyer' },
+        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'MH', lastAudit: '2024-10-15', auditAge: 57, auditor: 'Deepak Sharma', deviationCount: 15, supervisor: 'Pradeep Singh' },
+        { storeId: 'MP005', storeName: 'Pune West', state: 'MH', lastAudit: '2024-11-05', auditAge: 36, auditor: 'Anitha Rao', deviationCount: 10, supervisor: 'Anjali Deshmukh' },
+        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'DL', lastAudit: '2024-11-28', auditAge: 13, auditor: 'Ravi Teja', deviationCount: 6, supervisor: 'Amit Verma' }
+      ];
+    } else if (type === 'stores-recency-jul-sep') {
+      return [
+        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'TS', lastAudit: '2024-09-15', auditAge: 87, auditor: 'Suresh Kumar', deviationCount: 18, supervisor: 'Mohammed Ali' },
+        { storeId: 'MP007', storeName: 'Ahmedabad Main', state: 'GJ', lastAudit: '2024-08-20', auditAge: 113, auditor: 'Vijay Patil', deviationCount: 22, supervisor: 'Kiran Patel' },
+        { storeId: 'MP008', storeName: 'Kolkata East', state: 'WB', lastAudit: '2024-09-10', auditAge: 92, auditor: 'Pooja Deshmukh', deviationCount: 14, supervisor: 'Sourav Das' },
+        { storeId: 'MP009', storeName: 'Nagpur Central', state: 'MH', lastAudit: '2024-07-25', auditAge: 139, auditor: 'Arun Mehta', deviationCount: 20, supervisor: 'Pooja Deshmukh' }
+      ];
+    } else if (type === 'stores-recency-apr-jun') {
+      return [
+        { storeId: 'MP010', storeName: 'Bhopal Main', state: 'MP', lastAudit: '2024-06-18', auditAge: 176, auditor: 'Divya Shah', deviationCount: 28, supervisor: 'Anil Shukla' },
+        { storeId: 'MP012', storeName: 'Surat Hub', state: 'GJ', lastAudit: '2024-05-22', auditAge: 203, auditor: 'Ramesh Gupta', deviationCount: 32, supervisor: 'Dipak Shah' },
+        { storeId: 'MP018', storeName: 'Coimbatore Main', state: 'TN', lastAudit: '2024-04-10', auditAge: 245, auditor: 'Sneha Reddy', deviationCount: 35, supervisor: 'Ramesh Babu' }
+      ];
+    } else if (type === 'stores-recency-jan-mar') {
+      return [
+        { storeId: 'MP033', storeName: 'Chandigarh Hub', state: 'PB', lastAudit: '2024-03-05', auditAge: 281, auditor: 'Karthik Kumar', deviationCount: 42, supervisor: 'Meera Kapoor' },
+        { storeId: 'MP041', storeName: 'Indore Main', state: 'MP', lastAudit: '2024-01-20', auditAge: 326, auditor: 'Meena Iyer', deviationCount: 48, supervisor: 'Rahul Joshi' }
       ];
     } else if (type === 'audit-created') {
       return [
@@ -171,6 +201,71 @@ const DetailsPage = () => {
     setFilterProcessType('');
   };
 
+  // Add units to column headers based on field names
+  const formatColumnHeader = (key) => {
+    // First, handle the splitting while preserving common acronyms
+    let label = key
+      // Replace camelCase with spaces, but preserve consecutive capitals (acronyms)
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      // Don't split consecutive uppercase letters that are acronyms
+      .replace(/([A-Z])([A-Z][a-z])/g, '$1$2')
+      .toUpperCase()
+      .trim();
+    
+    // Add units based on field names
+    if (key.includes('value') || key.includes('Value')) return label + ' (₹)';
+    if (key.includes('quantity') || key.includes('Quantity') || key.includes('Qty')) return label + ' (units)';
+    if (key.includes('progress') || key.includes('Progress')) return label + ' (%)';
+    if (key.includes('completionRate') || key.includes('matchRate') || key.includes('editRate')) return label + ' (%)';
+    if (key.includes('time') || key.includes('Time') || key.includes('duration') || key.includes('Duration')) return label + ' (hrs)';
+    if (key.includes('age') || key.includes('Age') || key.includes('days') || key.includes('Days')) return label + ' (days)';
+    if (key.includes('count') || key.includes('Count')) return label + ' (items)';
+    if (key.includes('sku') || key.includes('SKU')) return label + ' (count)';
+    
+    return label;
+  };
+
+  // Determine if store click is enabled for this view
+  const isStoreClickable = [
+    'total-active-stores',
+    'covered-stores',
+    'uncovered-stores',
+    'stores-recency-oct-dec',
+    'stores-recency-jul-sep',
+    'stores-recency-apr-jun',
+    'stores-recency-jan-mar',
+    'audit-created',
+    'audit-in-progress',
+    'audit-pending',
+    'audit-completed'
+  ].includes(type);
+
+  const handleRowClick = async (row) => {
+    console.log('Row clicked:', row);
+    console.log('Is clickable:', isStoreClickable);
+    console.log('Store ID:', row.storeId);
+    
+    if (!isStoreClickable || !row.storeId) {
+      console.log('Click ignored - not clickable or no storeId');
+      return;
+    }
+    
+    try {
+      console.log('Fetching store data for:', row.storeId);
+      const storeData = await mockDataService.getStoreDetailedInfo(row.storeId);
+      console.log('Store data received:', storeData);
+      if (storeData) {
+        setSelectedStoreData(storeData);
+        setShowStoreDetail(true);
+      } else {
+        console.log('No store data returned');
+      }
+    } catch (error) {
+      console.error('Error fetching store details:', error);
+      alert('Error loading store details: ' + error.message);
+    }
+  };
+
   return (
     <Container fluid className="py-4">
       <Row className="mb-4">
@@ -181,7 +276,15 @@ const DetailsPage = () => {
                 <i className="fas fa-arrow-left me-2"></i>Back
               </Button>
               <h2 className="mb-0">{title}</h2>
-              <p className="text-muted">Showing {filteredData.length} of {data.length} records</p>
+              <p className="text-muted">
+                Showing {filteredData.length} of {data.length} records
+                {isStoreClickable && (
+                  <span className="ms-2 text-primary">
+                    <i className="fas fa-info-circle me-1"></i>
+                    Click on any store row to view detailed information
+                  </span>
+                )}
+              </p>
             </div>
             <Button variant="success" onClick={exportToExcel}>
               <i className="fas fa-file-excel me-2"></i>Export to Excel
@@ -256,14 +359,29 @@ const DetailsPage = () => {
               <thead style={{ position: 'sticky', top: 0, background: 'white', zIndex: 1 }}>
                 <tr>
                   {Object.keys(filteredData[0] || {}).map(key => (
-                    <th key={key}>{key.replace(/([A-Z])/g, ' $1').toUpperCase()}</th>
+                    <th key={key}>{formatColumnHeader(key)}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {filteredData.length > 0 ? (
                   filteredData.map((row, idx) => (
-                    <tr key={idx}>
+                    <tr 
+                      key={idx}
+                      onClick={() => handleRowClick(row)}
+                      style={{ 
+                        cursor: isStoreClickable && row.storeId ? 'pointer' : 'default',
+                        transition: 'background-color 0.2s'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (isStoreClickable && row.storeId) {
+                          e.currentTarget.style.backgroundColor = '#e7f3ff';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '';
+                      }}
+                    >
                       {Object.entries(row).map(([key, value], i) => (
                         <td key={i}>
                           {key === 'status' ? (
@@ -290,6 +408,13 @@ const DetailsPage = () => {
           </div>
         </Card.Body>
       </Card>
+
+      {/* Store Detail Modal */}
+      <StoreDetailModal 
+        show={showStoreDetail}
+        onHide={() => setShowStoreDetail(false)}
+        storeData={selectedStoreData}
+      />
     </Container>
   );
 };

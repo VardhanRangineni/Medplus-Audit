@@ -1,10 +1,14 @@
 import { Modal, Button, Table, Form, InputGroup, Badge } from 'react-bootstrap';
 import { useState } from 'react';
+import StoreDetailModal from './StoreDetailModal';
+import { mockDataService } from '../services/mockDataService';
 import './DrillDownModal.css';
 
-const DrillDownModal = ({ show, onHide, title, data, columns }) => {
+const DrillDownModal = ({ show, onHide, title, data, columns, enableStoreClick = false }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [showStoreDetail, setShowStoreDetail] = useState(false);
+  const [selectedStoreData, setSelectedStoreData] = useState(null);
 
   const handleSort = (key) => {
     setSortConfig({
@@ -44,6 +48,21 @@ const DrillDownModal = ({ show, onHide, title, data, columns }) => {
     a.href = url;
     a.download = `${title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
+  };
+
+  const handleRowClick = async (row) => {
+    if (!enableStoreClick || !row.storeId) return;
+    
+    try {
+      const storeData = await mockDataService.getStoreDetailedInfo(row.storeId);
+      if (storeData) {
+        setSelectedStoreData(storeData);
+        setShowStoreDetail(true);
+      }
+    } catch (error) {
+      console.error('Error fetching store details:', error);
+      alert('Failed to load store details. Please try again.');
+    }
   };
 
   return (
@@ -104,7 +123,12 @@ const DrillDownModal = ({ show, onHide, title, data, columns }) => {
             <tbody>
               {filteredData.length > 0 ? (
                 filteredData.map((row, idx) => (
-                  <tr key={idx}>
+                  <tr 
+                    key={idx}
+                    onClick={() => handleRowClick(row)}
+                    className={enableStoreClick && row.storeId ? 'clickable-row' : ''}
+                    style={{ cursor: enableStoreClick && row.storeId ? 'pointer' : 'default' }}
+                  >
                     {columns.map((col) => (
                       <td key={col.key}>
                         {col.render ? col.render(row[col.key], row) : (row[col.key] || 'N/A')}
@@ -127,6 +151,15 @@ const DrillDownModal = ({ show, onHide, title, data, columns }) => {
       <Modal.Footer className="bg-light">
         <Button variant="secondary" onClick={onHide}>Close</Button>
       </Modal.Footer>
+
+      {/* Nested Store Detail Modal */}
+      {selectedStoreData && (
+        <StoreDetailModal 
+          show={showStoreDetail}
+          onHide={() => setShowStoreDetail(false)}
+          storeData={selectedStoreData}
+        />
+      )}
     </Modal>
   );
 };

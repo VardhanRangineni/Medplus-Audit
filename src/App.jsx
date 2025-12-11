@@ -10,17 +10,24 @@ import DetailsPage from './pages/DetailsPage';
 import './App.css';
 
 function App() {
-  const [filters, setFilters] = useState({});
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
-
-  const handleFilterChange = (newFilters) => {
-    setFilters(newFilters);
-    console.log('Filters applied:', newFilters);
-  };
+  const [filters, setFilters] = useState({
+    financialYear: '2024-25',
+    state: '',
+    store: '',
+    auditJobType: '',
+    auditProcessType: '',
+    auditStatus: ''
+  });
 
   const handleRefresh = () => {
     setLastRefreshed(new Date());
     console.log('Dashboard refreshed at:', new Date());
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    console.log('Filters updated:', newFilters);
   };
 
   return (
@@ -29,17 +36,17 @@ function App() {
         <Sidebar />
         <div className="main-container">
           <GlobalHeader 
-            onFilterChange={handleFilterChange}
             lastRefreshed={lastRefreshed}
             onRefresh={handleRefresh}
+            onFilterChange={handleFilterChange}
           />
           <main className="content-area">
             <Routes>
-              <Route path="/" element={<StoreCoverage />} />
-              <Route path="/live-audit" element={<LiveAuditSchedule />} />
-              <Route path="/auditor-performance" element={<AuditorPerformance />} />
-              <Route path="/supervisor-approvals" element={<SupervisorApprovals />} />
-              <Route path="/details" element={<DetailsPage />} />
+              <Route path="/" element={<StoreCoverage filters={filters} />} />
+              <Route path="/live-audit" element={<LiveAuditSchedule filters={filters} />} />
+              <Route path="/auditor-performance" element={<AuditorPerformance filters={filters} />} />
+              <Route path="/supervisor-approvals" element={<SupervisorApprovals filters={filters} />} />
+              <Route path="/details" element={<DetailsPage filters={filters} />} />
             </Routes>
           </main>
         </div>

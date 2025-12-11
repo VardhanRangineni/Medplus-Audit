@@ -1,0 +1,39 @@
+.store-detail-modal .modal-dialog {
+  max-width: 1200px;
+}
+
+.store-detail-modal .modal-body {
+  background-color: #f8f9fa;
+}
+
+.store-detail-modal .sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.store-detail-modal .table-responsive {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.store-detail-modal .card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.store-detail-modal .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.store-detail-modal .progress {
+  background-color: #e9ecef;
+}
+
+.store-detail-modal .table thead {
+  background-color: #f8f9fa;
+}
+
+.store-detail-modal .table tbody tr:hover {
+  background-color: #f1f3f5;
+}

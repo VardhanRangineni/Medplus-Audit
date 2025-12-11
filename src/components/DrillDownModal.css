@@ -31,3 +31,18 @@
 .table-responsive::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.clickable-row {
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.clickable-row:hover {
+  background-color: #e7f3ff !important;
+  transform: translateX(2px);
+}
+
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}

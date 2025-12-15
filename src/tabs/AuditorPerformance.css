@@ -21,3 +21,21 @@
 .performance-list {
   min-height: 150px;
 }
+
+/* Ensure modal backdrop is visible and "off color" (darkened) */
+.modal-backdrop.show {
+  opacity: 0.75;
+  background-color: #000;
+}
+
+/* Force the specific audit detail modal and its backdrop to be on top of the first modal */
+/* Standard BS modal z-index is 1055, backdrop is 1050 */
+.audit-specific-modal {
+  z-index: 1070 !important;
+}
+
+.audit-specific-backdrop {
+  z-index: 1065 !important;
+  opacity: 0.75 !important;
+  /* Ensure it's dark enough */
+}

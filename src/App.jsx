@@ -12,7 +12,7 @@ import './App.css';
 function App() {
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
   const [filters, setFilters] = useState({
-    financialYear: '2024-25',
+    financialYear: 'All-time',
     state: '',
     store: '',
     auditJobType: '',
@@ -35,7 +35,7 @@ function App() {
       <div className="app-layout">
         <Sidebar />
         <div className="main-container">
-          <GlobalHeader 
+          <GlobalHeader
             lastRefreshed={lastRefreshed}
             onRefresh={handleRefresh}
             onFilterChange={handleFilterChange}

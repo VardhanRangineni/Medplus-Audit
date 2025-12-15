@@ -15,7 +15,6 @@ const SupervisorTable = ({ data, onRowClick }) => (
         <th>Stores Managed</th>
         <th style={{ minWidth: '200px' }}>Audit Completion</th>
         <th className="text-center">Pending Approvals</th>
-        <th className="text-center">Unallocated PIDs</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -48,13 +47,6 @@ const SupervisorTable = ({ data, onRowClick }) => (
                 {supervisor.pendingApprovals}
               </Badge>
             ) : <span className="text-muted">-</span>}
-          </td>
-          <td className="text-center">
-            {supervisor.unallocatedPIDs > 0 ? (
-              <Badge bg="danger" pill className="px-3 py-2">
-                {supervisor.unallocatedPIDs}
-              </Badge>
-            ) : <span className="text-success"><i className="fas fa-check"></i></span>}
           </td>
           <td>
             <Button variant="light" size="sm" className="rounded-circle">
@@ -216,7 +208,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
 
       {/* Overview KPIs */}
       <Row className="g-3 mb-4">
-        <Col md={3}>
+        <Col md={4}>
           <KPICard
             title="Total Stores Managed"
             value={overallMetrics.totalStores}
@@ -224,7 +216,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
             color="primary"
           />
         </Col>
-        <Col md={3}>
+        <Col md={4}>
           <KPICard
             title="Avg Completion"
             value={`${overallMetrics.avgCompletion}%`}
@@ -232,20 +224,12 @@ const SupervisorApprovals = ({ filters = {} }) => {
             color="success"
           />
         </Col>
-        <Col md={3}>
+        <Col md={4}>
           <KPICard
             title="Pending Approvals"
             value={overallMetrics.totalPending}
             icon="fas fa-clock"
             color="warning"
-          />
-        </Col>
-        <Col md={3}>
-          <KPICard
-            title="Unallocated PIDs"
-            value={overallMetrics.totalUnallocated}
-            icon="fas fa-exclamation-circle"
-            color="danger"
           />
         </Col>
       </Row>

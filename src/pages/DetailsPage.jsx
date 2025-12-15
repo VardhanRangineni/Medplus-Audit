@@ -1,14 +1,17 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Container, Row, Col, Card, Form, InputGroup, Table, Button, Badge } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, InputGroup, Table, Button, Badge, Alert } from 'react-bootstrap';
 import StoreDetailModal from '../components/StoreDetailModal';
 import { mockDataService } from '../services/mockDataService';
 
-const DetailsPage = () => {
+const DetailsPage = ({ filters = {} }) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const title = searchParams.get('title') || 'Details';
   const type = searchParams.get('type') || '';
+  
+  // Check if any filters are active
+  const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
   
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStore, setFilterStore] = useState('');
@@ -17,27 +20,43 @@ const DetailsPage = () => {
   const [filterProcessType, setFilterProcessType] = useState('');
   const [showStoreDetail, setShowStoreDetail] = useState(false);
   const [selectedStoreData, setSelectedStoreData] = useState(null);
+  const [expandedRows, setExpandedRows] = useState({});
+  const [mismatchFilters, setMismatchFilters] = useState({});
+  const [mismatchSearchTerms, setMismatchSearchTerms] = useState({});
 
   // Mock data based on type
   const getData = () => {
     if (type === 'total-active-stores') {
       return [
-        { storeId: 'MP001', storeName: 'Chennai Central', state: 'TN', storeType: 'Hub', status: 'Active', manager: 'Rajesh Kumar', inventoryValue: 125000 },
-        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'KA', storeType: 'Hub', status: 'Active', manager: 'Lakshmi Iyer', inventoryValue: 198000 },
-        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'TS', storeType: 'Retail', status: 'Active', manager: 'Mohammed Ali', inventoryValue: 167000 },
-        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'MH', storeType: 'Hub', status: 'Active', manager: 'Pradeep Singh', inventoryValue: 215000 },
-        { storeId: 'MP005', storeName: 'Pune West', state: 'MH', storeType: 'Retail', status: 'Active', manager: 'Anjali Deshmukh', inventoryValue: 89000 }
+        { storeId: 'MP001', storeName: 'Chennai Central', state: 'Tamil Nadu', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2020-01-15', lastAuditedDate: '2024-11-15', status: 'Active', inventoryValueMRP: 125000 },
+        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'Karnataka', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2019-08-20', lastAuditedDate: '2024-11-20', status: 'Active', inventoryValueMRP: 198000 },
+        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'Telangana', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2020-03-12', lastAuditedDate: '2024-10-28', status: 'Active', inventoryValueMRP: 167000 },
+        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'Maharashtra', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2019-05-10', lastAuditedDate: '2024-10-15', status: 'Active', inventoryValueMRP: 215000 },
+        { storeId: 'MP005', storeName: 'Pune West', state: 'Maharashtra', storeType: 'Retail', boxType: 'Type C', storeCreatedDate: '2021-02-05', lastAuditedDate: '2024-11-05', status: 'Active', inventoryValueMRP: 89000 },
+        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'Delhi', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2020-06-18', lastAuditedDate: '2024-11-28', status: 'Active', inventoryValueMRP: 245000 },
+        { storeId: 'MP007', storeName: 'Ahmedabad Main', state: 'Gujarat', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2020-09-22', lastAuditedDate: '2024-08-20', status: 'Active', inventoryValueMRP: 178000 },
+        { storeId: 'MP008', storeName: 'Kolkata East', state: 'West Bengal', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2019-11-30', lastAuditedDate: '2024-09-10', status: 'Active', inventoryValueMRP: 198000 },
+        { storeId: 'MP009', storeName: 'Nagpur Central', state: 'Maharashtra', storeType: 'Retail', boxType: 'Type C', storeCreatedDate: '2021-04-08', lastAuditedDate: '2024-07-25', status: 'Active', inventoryValueMRP: 156000 },
+        { storeId: 'MP010', storeName: 'Bhopal Main', state: 'Madhya Pradesh', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2020-12-15', lastAuditedDate: '2024-06-18', status: 'Active', inventoryValueMRP: 134000 }
       ];
     } else if (type === 'covered-stores') {
       return [
-        { storeId: 'MP001', storeName: 'Chennai Central', state: 'TN', lastAudit: '2024-11-15', auditAge: 25, auditor: 'Amit Singh', deviationCount: 12 },
-        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'KA', lastAudit: '2024-11-20', auditAge: 20, auditor: 'Priya Reddy', deviationCount: 8 },
-        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'TS', lastAudit: '2024-10-28', auditAge: 43, auditor: 'Suresh Kumar', deviationCount: 15 }
+        { storeId: 'MP001', storeName: 'Chennai Central', state: 'Tamil Nadu', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2020-01-15', lastAuditedDate: '2024-11-15', mismatch: 12, deviation: 4, status: 'Active', inventoryValueMRP: 125000 },
+        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'Karnataka', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2019-08-20', lastAuditedDate: '2024-11-20', mismatch: 8, deviation: 3, status: 'Active', inventoryValueMRP: 198000 },
+        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'Telangana', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2020-03-12', lastAuditedDate: '2024-10-28', mismatch: 15, deviation: 5, status: 'Active', inventoryValueMRP: 167000 },
+        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'Maharashtra', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2019-05-10', lastAuditedDate: '2024-10-15', mismatch: 10, deviation: 4, status: 'Active', inventoryValueMRP: 215000 },
+        { storeId: 'MP005', storeName: 'Pune West', state: 'Maharashtra', storeType: 'Retail', boxType: 'Type C', storeCreatedDate: '2021-02-05', lastAuditedDate: '2024-11-05', mismatch: 6, deviation: 2, status: 'Active', inventoryValueMRP: 89000 },
+        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'Delhi', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2020-06-18', lastAuditedDate: '2024-11-28', mismatch: 14, deviation: 6, status: 'Active', inventoryValueMRP: 245000 },
+        { storeId: 'MP007', storeName: 'Ahmedabad Main', state: 'Gujarat', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2020-09-22', lastAuditedDate: '2024-08-20', mismatch: 18, deviation: 7, status: 'Active', inventoryValueMRP: 178000 },
+        { storeId: 'MP008', storeName: 'Kolkata East', state: 'West Bengal', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2019-11-30', lastAuditedDate: '2024-09-10', mismatch: 11, deviation: 4, status: 'Active', inventoryValueMRP: 198000 }
       ];
     } else if (type === 'uncovered-stores') {
       return [
-        { storeId: 'MP015', storeName: 'Jaipur Pink City', state: 'RJ', lastAudit: 'Never', auditAge: 0, reason: 'New Store', planDate: '2024-12-20' },
-        { storeId: 'MP022', storeName: 'Lucknow Central', state: 'UP', lastAudit: 'Never', auditAge: 0, reason: 'New Store', planDate: '2024-12-25' }
+        { storeId: 'MP015', storeName: 'Jaipur Pink City', state: 'Rajasthan', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2024-10-15', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 95000 },
+        { storeId: 'MP022', storeName: 'Lucknow Central', state: 'Uttar Pradesh', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2024-11-01', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 145000 },
+        { storeId: 'MP033', storeName: 'Chandigarh Hub', state: 'Punjab', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2024-09-20', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 189000 },
+        { storeId: 'MP041', storeName: 'Indore Main', state: 'Madhya Pradesh', storeType: 'Retail', boxType: 'Type C', storeCreatedDate: '2024-11-10', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 112000 },
+        { storeId: 'MP045', storeName: 'Patna Central', state: 'Bihar', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2024-10-28', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 87000 }
       ];
     } else if (type === 'stores-recency-oct-dec') {
       return [
@@ -88,10 +107,90 @@ const DetailsPage = () => {
       ];
     } else if (type === 'audit-completed') {
       return [
-        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'DL', supervisor: 'Amit Verma', startDate: '2024-11-20', endDate: '2024-11-28', totalSKUs: 4500, duration: 8, deviations: 12, auditJobType: 'Full Audit', processType: 'Product Audit' },
-        { storeId: 'MP008', storeName: 'Kolkata East', state: 'WB', supervisor: 'Sourav Das', startDate: '2024-11-22', endDate: '2024-11-30', totalSKUs: 3800, duration: 8, deviations: 18, auditJobType: 'Partial/Random Audit', processType: 'Batch Audit' },
-        { storeId: 'MP009', storeName: 'Nagpur Central', state: 'MH', supervisor: 'Pooja Deshmukh', startDate: '2024-11-25', endDate: '2024-12-02', totalSKUs: 3200, duration: 7, deviations: 8, auditJobType: 'Full Audit', processType: 'Product Audit' },
-        { storeId: 'MP010', storeName: 'Bhopal Main', state: 'MP', supervisor: 'Anil Shukla', startDate: '2024-11-26', endDate: '2024-12-03', totalSKUs: 2900, duration: 7, deviations: 15, auditJobType: 'Select SKUs', processType: 'Batch Audit' }
+        { 
+          storeId: 'MP006', 
+          storeName: 'Delhi NCR', 
+          state: 'DL', 
+          supervisor: 'Amit Verma', 
+          noOfAuditors: 3, 
+          startDate: '2024-11-20', 
+          endDate: '2024-11-28', 
+          totalPIDs: 1850, 
+          totalSKUs: 4500, 
+          duration: 192, 
+          mismatch: 12,
+          mismatchDetails: [
+            { productId: 'PID001', sku: 'SKU12345', productName: 'Paracetamol 500mg', type: 'Short', systemQty: 100, physicalQty: 95, difference: -5 },
+            { productId: 'PID002', sku: 'SKU12346', productName: 'Ibuprofen 400mg', type: 'Excess', systemQty: 50, physicalQty: 53, difference: 3 },
+            { productId: 'PID003', sku: 'SKU12347', productName: 'Aspirin 75mg', type: 'Contra Short', systemQty: 80, physicalQty: 78, difference: -2 },
+            { productId: 'PID004', sku: 'SKU12348', productName: 'Vitamin C Tablets', type: 'Contra Excess', systemQty: 120, physicalQty: 122, difference: 2 },
+            { productId: 'PID005', sku: 'SKU12349', productName: 'Calcium Supplements', type: 'Short', systemQty: 60, physicalQty: 57, difference: -3 }
+          ],
+          auditJobType: 'Full Audit', 
+          processType: 'Product Audit' 
+        },
+        { 
+          storeId: 'MP008', 
+          storeName: 'Kolkata East', 
+          state: 'WB', 
+          supervisor: 'Sourav Das', 
+          noOfAuditors: 2, 
+          startDate: '2024-11-22', 
+          endDate: '2024-11-30', 
+          totalPIDs: 1650, 
+          totalSKUs: 3800, 
+          duration: 192, 
+          mismatch: 18,
+          mismatchDetails: [
+            { productId: 'PID006', sku: 'SKU22345', productName: 'Metformin 500mg', type: 'Short', systemQty: 200, physicalQty: 192, difference: -8 },
+            { productId: 'PID007', sku: 'SKU22346', productName: 'Amlodipine 5mg', type: 'Excess', systemQty: 75, physicalQty: 79, difference: 4 },
+            { productId: 'PID008', sku: 'SKU22347', productName: 'Atorvastatin 10mg', type: 'Contra Short', systemQty: 90, physicalQty: 87, difference: -3 },
+            { productId: 'PID009', sku: 'SKU22348', productName: 'Losartan 50mg', type: 'Contra Excess', systemQty: 110, physicalQty: 113, difference: 3 }
+          ],
+          auditJobType: 'Partial/Random Audit', 
+          processType: 'Batch Audit' 
+        },
+        { 
+          storeId: 'MP009', 
+          storeName: 'Nagpur Central', 
+          state: 'MH', 
+          supervisor: 'Pooja Deshmukh', 
+          noOfAuditors: 2, 
+          startDate: '2024-11-25', 
+          endDate: '2024-12-02', 
+          totalPIDs: 1420, 
+          totalSKUs: 3200, 
+          duration: 168, 
+          mismatch: 8,
+          mismatchDetails: [
+            { productId: 'PID010', sku: 'SKU32345', productName: 'Omeprazole 20mg', type: 'Short', systemQty: 150, physicalQty: 147, difference: -3 },
+            { productId: 'PID011', sku: 'SKU32346', productName: 'Pantoprazole 40mg', type: 'Excess', systemQty: 85, physicalQty: 87, difference: 2 },
+            { productId: 'PID012', sku: 'SKU32347', productName: 'Ranitidine 150mg', type: 'Contra Short', systemQty: 70, physicalQty: 68, difference: -2 }
+          ],
+          auditJobType: 'Full Audit', 
+          processType: 'Product Audit' 
+        },
+        { 
+          storeId: 'MP010', 
+          storeName: 'Bhopal Main', 
+          state: 'MP', 
+          supervisor: 'Anil Shukla', 
+          noOfAuditors: 3, 
+          startDate: '2024-11-26', 
+          endDate: '2024-12-03', 
+          totalPIDs: 1280, 
+          totalSKUs: 2900, 
+          duration: 168, 
+          mismatch: 15,
+          mismatchDetails: [
+            { productId: 'PID013', sku: 'SKU42345', productName: 'Azithromycin 500mg', type: 'Short', systemQty: 130, physicalQty: 124, difference: -6 },
+            { productId: 'PID014', sku: 'SKU42346', productName: 'Amoxicillin 250mg', type: 'Excess', systemQty: 95, physicalQty: 100, difference: 5 },
+            { productId: 'PID015', sku: 'SKU42347', productName: 'Ciprofloxacin 500mg', type: 'Contra Short', systemQty: 80, physicalQty: 78, difference: -2 },
+            { productId: 'PID016', sku: 'SKU42348', productName: 'Doxycycline 100mg', type: 'Contra Excess', systemQty: 60, physicalQty: 62, difference: 2 }
+          ],
+          auditJobType: 'Select SKUs', 
+          processType: 'Batch Audit' 
+        }
       ];
     } else if (type === 'audit-progress') {
       const storeName = searchParams.get('store') || '';
@@ -201,8 +300,58 @@ const DetailsPage = () => {
     setFilterProcessType('');
   };
 
+  const toggleMismatchDetails = (storeId) => {
+    setExpandedRows(prev => ({
+      ...prev,
+      [storeId]: !prev[storeId]
+    }));
+  };
+
+  const handleMismatchFilterChange = (storeId, filterValue) => {
+    setMismatchFilters(prev => ({
+      ...prev,
+      [storeId]: filterValue
+    }));
+  };
+
+  const handleMismatchSearchChange = (storeId, searchValue) => {
+    setMismatchSearchTerms(prev => ({
+      ...prev,
+      [storeId]: searchValue
+    }));
+  };
+
+  const filterMismatchDetails = (details, storeId) => {
+    const filter = mismatchFilters[storeId] || '';
+    const search = mismatchSearchTerms[storeId]?.toLowerCase() || '';
+
+    return details.filter(detail => {
+      const matchesFilter = !filter || detail.type === filter;
+      const matchesSearch = !search || 
+        detail.productId.toLowerCase().includes(search) ||
+        detail.sku.toLowerCase().includes(search) ||
+        detail.productName.toLowerCase().includes(search) ||
+        detail.type.toLowerCase().includes(search);
+      
+      return matchesFilter && matchesSearch;
+    });
+  };
+
   // Add units to column headers based on field names
   const formatColumnHeader = (key) => {
+    // Handle specific column name mappings
+    if (key === 'storeId') return 'STORE ID';
+    if (key === 'storeName') return 'STORE NAME';
+    if (key === 'state') return 'STATE';
+    if (key === 'storeType') return 'STORE TYPE';
+    if (key === 'boxType') return 'BOX TYPE';
+    if (key === 'storeCreatedDate') return 'STORE CREATED DATE';
+    if (key === 'lastAuditedDate') return 'LAST AUDITED DATE';
+    if (key === 'status') return 'STATUS';
+    if (key === 'inventoryValueMRP') return 'INVENTORY VALUE MRP (₹)';
+    if (key === 'mismatch') return 'MISMATCH';
+    if (key === 'deviation') return 'DEVIATION';
+    
     // First, handle the splitting while preserving common acronyms
     let label = key
       // Replace camelCase with spaces, but preserve consecutive capitals (acronyms)
@@ -220,20 +369,13 @@ const DetailsPage = () => {
     if (key.includes('time') || key.includes('Time') || key.includes('duration') || key.includes('Duration')) return label + ' (hrs)';
     if (key.includes('age') || key.includes('Age') || key.includes('days') || key.includes('Days')) return label + ' (days)';
     if (key.includes('count') || key.includes('Count')) return label + ' (items)';
-    if (key.includes('sku') || key.includes('SKU')) return label + ' (count)';
+    if (key.includes('sku') || key.includes('SKU') || key.includes('PID')) return label + ' (count)';
     
     return label;
   };
 
   // Determine if store click is enabled for this view
   const isStoreClickable = [
-    'total-active-stores',
-    'covered-stores',
-    'uncovered-stores',
-    'stores-recency-oct-dec',
-    'stores-recency-jul-sep',
-    'stores-recency-apr-jun',
-    'stores-recency-jan-mar',
     'audit-created',
     'audit-in-progress',
     'audit-pending',
@@ -268,6 +410,18 @@ const DetailsPage = () => {
 
   return (
     <Container fluid className="py-4">
+      {/* Filter Status Alert */}
+      {hasActiveFilters && (
+        <Alert variant="info" className="mb-3">
+          <i className="fas fa-filter me-2"></i>
+          <strong>Active Filters:</strong>
+          {filters.state && <Badge bg="primary" className="ms-2">State: {filters.state}</Badge>}
+          {filters.store && <Badge bg="primary" className="ms-2">Store: {filters.store}</Badge>}
+          {filters.auditJobType && <Badge bg="primary" className="ms-2">Job Type: {filters.auditJobType}</Badge>}
+          {filters.auditProcessType && <Badge bg="primary" className="ms-2">Process: {filters.auditProcessType}</Badge>}
+          {filters.auditStatus && <Badge bg="primary" className="ms-2">Status: {filters.auditStatus}</Badge>}
+        </Alert>
+      )}
       <Row className="mb-4">
         <Col>
           <div className="d-flex justify-content-between align-items-center">
@@ -358,7 +512,7 @@ const DetailsPage = () => {
             <Table striped hover responsive className="mb-0">
               <thead style={{ position: 'sticky', top: 0, background: 'white', zIndex: 1 }}>
                 <tr>
-                  {Object.keys(filteredData[0] || {}).map(key => (
+                  {Object.keys(filteredData[0] || {}).filter(key => key !== 'mismatchDetails').map(key => (
                     <th key={key}>{formatColumnHeader(key)}</th>
                   ))}
                 </tr>
@@ -366,34 +520,143 @@ const DetailsPage = () => {
               <tbody>
                 {filteredData.length > 0 ? (
                   filteredData.map((row, idx) => (
-                    <tr 
-                      key={idx}
-                      onClick={() => handleRowClick(row)}
-                      style={{ 
-                        cursor: isStoreClickable && row.storeId ? 'pointer' : 'default',
-                        transition: 'background-color 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (isStoreClickable && row.storeId) {
-                          e.currentTarget.style.backgroundColor = '#e7f3ff';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '';
-                      }}
-                    >
-                      {Object.entries(row).map(([key, value], i) => (
-                        <td key={i}>
-                          {key === 'status' ? (
-                            <Badge bg="success">{value}</Badge>
-                          ) : key === 'inventoryValue' || key === 'value' ? (
-                            `₹${Number(value).toLocaleString()}`
-                          ) : (
-                            value
-                          )}
-                        </td>
-                      ))}
-                    </tr>
+                    <>
+                      <tr 
+                        key={idx}
+                        style={{ 
+                          cursor: isStoreClickable && row.storeId ? 'pointer' : 'default',
+                          transition: 'background-color 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (isStoreClickable && row.storeId) {
+                            e.currentTarget.style.backgroundColor = '#e7f3ff';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '';
+                        }}
+                      >
+                        {Object.entries(row).filter(([key]) => key !== 'mismatchDetails').map(([key, value], i) => (
+                          <td 
+                            key={i}
+                            onClick={(e) => {
+                              if (key === 'mismatch' && row.mismatchDetails) {
+                                e.stopPropagation();
+                                toggleMismatchDetails(row.storeId);
+                              } else if (isStoreClickable && row.storeId) {
+                                handleRowClick(row);
+                              }
+                            }}
+                            style={{
+                              cursor: key === 'mismatch' && row.mismatchDetails ? 'pointer' : 'inherit',
+                              color: key === 'mismatch' && row.mismatchDetails ? '#0d6efd' : 'inherit',
+                              fontWeight: key === 'mismatch' && row.mismatchDetails ? '600' : 'inherit'
+                            }}
+                          >
+                            {key === 'status' ? (
+                              <Badge bg="success">{value}</Badge>
+                            ) : key === 'inventoryValue' || key === 'inventoryValueMRP' || key === 'value' ? (
+                              `₹${Number(value).toLocaleString()}`
+                            ) : key === 'mismatch' && row.mismatchDetails ? (
+                              <span>
+                                {value} <i className={`fas fa-chevron-${expandedRows[row.storeId] ? 'up' : 'down'} ms-2`}></i>
+                              </span>
+                            ) : (
+                              value
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                      {expandedRows[row.storeId] && row.mismatchDetails && (
+                        <tr key={`${idx}-details`}>
+                          <td colSpan="100" style={{ backgroundColor: '#f8f9fa', padding: 0 }}>
+                            <div style={{ padding: '15px', borderLeft: '4px solid #0d6efd' }}>
+                              <div className="d-flex justify-content-between align-items-center mb-3">
+                                <h6 className="mb-0 text-primary">
+                                  <i className="fas fa-list-alt me-2"></i>
+                                  Product Level Mismatch Details
+                                </h6>
+                                <div className="d-flex gap-2">
+                                  <Form.Select 
+                                    size="sm" 
+                                    style={{ width: '200px' }}
+                                    value={mismatchFilters[row.storeId] || ''}
+                                    onChange={(e) => handleMismatchFilterChange(row.storeId, e.target.value)}
+                                  >
+                                    <option value="">All Mismatch Types</option>
+                                    <option value="Short">Short</option>
+                                    <option value="Excess">Excess</option>
+                                    <option value="Contra Short">Contra Short</option>
+                                    <option value="Contra Excess">Contra Excess</option>
+                                  </Form.Select>
+                                  <InputGroup size="sm" style={{ width: '250px' }}>
+                                    <InputGroup.Text>
+                                      <i className="fas fa-search"></i>
+                                    </InputGroup.Text>
+                                    <Form.Control
+                                      type="text"
+                                      placeholder="Search products..."
+                                      value={mismatchSearchTerms[row.storeId] || ''}
+                                      onChange={(e) => handleMismatchSearchChange(row.storeId, e.target.value)}
+                                    />
+                                  </InputGroup>
+                                </div>
+                              </div>
+                              <Table bordered size="sm" style={{ marginBottom: 0 }}>
+                                <thead className="table-light">
+                                  <tr>
+                                    <th>Product ID</th>
+                                    <th>SKU</th>
+                                    <th>Product Name</th>
+                                    <th>Mismatch Type</th>
+                                    <th>System Qty</th>
+                                    <th>Physical Qty</th>
+                                    <th>Difference</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {filterMismatchDetails(row.mismatchDetails, row.storeId).length > 0 ? (
+                                    filterMismatchDetails(row.mismatchDetails, row.storeId).map((detail, detailIdx) => (
+                                      <tr key={detailIdx}>
+                                        <td>{detail.productId}</td>
+                                        <td>{detail.sku}</td>
+                                        <td>{detail.productName}</td>
+                                        <td>
+                                          <Badge 
+                                            bg={
+                                              detail.type === 'Short' || detail.type === 'Contra Short' 
+                                                ? 'danger' 
+                                                : 'warning'
+                                            }
+                                          >
+                                            {detail.type}
+                                          </Badge>
+                                        </td>
+                                        <td>{detail.systemQty}</td>
+                                        <td>{detail.physicalQty}</td>
+                                        <td style={{ 
+                                          color: detail.difference < 0 ? '#dc3545' : '#198754',
+                                          fontWeight: '600'
+                                        }}>
+                                          {detail.difference > 0 ? '+' : ''}{detail.difference}
+                                        </td>
+                                      </tr>
+                                    ))
+                                  ) : (
+                                    <tr>
+                                      <td colSpan="7" className="text-center py-3 text-muted">
+                                        <i className="fas fa-filter me-2"></i>
+                                        No products match the current filter
+                                      </td>
+                                    </tr>
+                                  )}
+                                </tbody>
+                              </Table>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </>
                   ))
                 ) : (
                   <tr>

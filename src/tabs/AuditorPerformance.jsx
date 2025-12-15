@@ -82,51 +82,46 @@ const AuditorPerformance = ({ filters = {} }) => {
   ];
 
   const showAuditorPIDDetails = (auditor) => {
-    const auditorPIDMap = {
+    const auditorStoreMap = {
       'Amit Singh': [
-        { pid: 'PID12345', productName: 'Dolo 650mg Tablet', assignedQty: 250, completedQty: 250, timeSpent: '18 min', status: 'Completed', deviations: 2, matchStatus: 'Matched' },
-        { pid: 'PID12346', productName: 'Paracetamol 500mg', assignedQty: 180, completedQty: 180, timeSpent: '14 min', status: 'Completed', deviations: 0, matchStatus: 'Matched' },
-        { pid: 'PID12347', productName: 'Amoxicillin 250mg', assignedQty: 320, completedQty: 280, timeSpent: '22 min', status: 'In Progress', deviations: 5, matchStatus: 'Partial' },
-        { pid: 'PID12348', productName: 'Metformin 500mg', assignedQty: 150, completedQty: 0, timeSpent: '0 min', status: 'Pending', deviations: 0, matchStatus: 'Not Started' }
+        { storeId: 'MP001', storeName: 'Chennai Central', state: 'TN', assignedSKUs: 1400, completedSKUs: 1100, completionRate: 78.6, matchRate: 95.2, startDate: '2024-12-01', status: 'In Progress' },
+        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'DL', assignedSKUs: 1000, completedSKUs: 1000, completionRate: 100, matchRate: 96.2, startDate: '2024-11-20', status: 'Completed' }
       ],
       'Priya Reddy': [
-        { pid: 'PID22345', productName: 'Crocin Advance', assignedQty: 280, completedQty: 280, timeSpent: '16 min', status: 'Completed', deviations: 1, matchStatus: 'Matched' },
-        { pid: 'PID22346', productName: 'Cetrizine 10mg', assignedQty: 195, completedQty: 195, timeSpent: '12 min', status: 'Completed', deviations: 0, matchStatus: 'Matched' },
-        { pid: 'PID22347', productName: 'Azithromycin 500mg', assignedQty: 145, completedQty: 145, timeSpent: '15 min', status: 'Completed', deviations: 2, matchStatus: 'Matched' },
-        { pid: 'PID22348', productName: 'Omeprazole 20mg', assignedQty: 210, completedQty: 210, timeSpent: '13 min', status: 'Completed', deviations: 0, matchStatus: 'Matched' }
+        { storeId: 'MP001', storeName: 'Chennai Central', state: 'TN', assignedSKUs: 1400, completedSKUs: 1100, completionRate: 78.6, matchRate: 96.8, startDate: '2024-12-01', status: 'In Progress' },
+        { storeId: 'MP010', storeName: 'Bhopal Main', state: 'MP', assignedSKUs: 1400, completedSKUs: 1400, completionRate: 100, matchRate: 94.3, startDate: '2024-11-15', status: 'Completed' }
       ],
       'Suresh Kumar': [
-        { pid: 'PID32345', productName: 'Disprin Tablet', assignedQty: 165, completedQty: 165, timeSpent: '25 min', status: 'Completed', deviations: 8, matchStatus: 'Partial' },
-        { pid: 'PID32346', productName: 'Vicks Vaporub', assignedQty: 220, completedQty: 180, timeSpent: '28 min', status: 'In Progress', deviations: 12, matchStatus: 'Partial' },
-        { pid: 'PID32347', productName: 'Digene Tablet', assignedQty: 190, completedQty: 0, timeSpent: '0 min', status: 'Pending', deviations: 0, matchStatus: 'Not Started' }
+        { storeId: 'MP001', storeName: 'Chennai Central', state: 'TN', assignedSKUs: 1400, completedSKUs: 1050, completionRate: 75.0, matchRate: 91.5, startDate: '2024-12-01', status: 'In Progress' }
       ],
       'Deepak Sharma': [
-        { pid: 'PID42345', productName: 'Combiflam Tablet', assignedQty: 310, completedQty: 310, timeSpent: '19 min', status: 'Completed', deviations: 3, matchStatus: 'Matched' },
-        { pid: 'PID42346', productName: 'Moov Pain Relief', assignedQty: 185, completedQty: 185, timeSpent: '17 min', status: 'Completed', deviations: 1, matchStatus: 'Matched' },
-        { pid: 'PID42347', productName: 'Volini Gel', assignedQty: 245, completedQty: 245, timeSpent: '16 min', status: 'Completed', deviations: 0, matchStatus: 'Matched' }
+        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'KA', assignedSKUs: 1950, completedSKUs: 1400, completionRate: 71.8, matchRate: 94.8, startDate: '2024-12-03', status: 'In Progress' },
+        { storeId: 'MP008', storeName: 'Kolkata East', state: 'WB', assignedSKUs: 650, completedSKUs: 650, completionRate: 100, matchRate: 95.3, startDate: '2024-11-22', status: 'Completed' }
+      ],
+      'Anitha Rao': [
+        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'KA', assignedSKUs: 1950, completedSKUs: 1400, completionRate: 71.8, matchRate: 93.5, startDate: '2024-12-03', status: 'In Progress' }
       ],
       'Ravi Verma': [
-        { pid: 'PID52345', productName: 'Iodex Balm', assignedQty: 175, completedQty: 175, timeSpent: '21 min', status: 'Completed', deviations: 4, matchStatus: 'Matched' },
-        { pid: 'PID52346', productName: 'Betadine Solution', assignedQty: 135, completedQty: 135, timeSpent: '18 min', status: 'Completed', deviations: 2, matchStatus: 'Matched' },
-        { pid: 'PID52347', productName: 'Burnol Cream', assignedQty: 205, completedQty: 150, timeSpent: '24 min', status: 'In Progress', deviations: 6, matchStatus: 'Partial' }
+        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'TS', assignedSKUs: 1300, completedSKUs: 1025, completionRate: 78.8, matchRate: 92.3, startDate: '2024-12-05', status: 'In Progress' },
+        { storeId: 'MP009', storeName: 'Nagpur Central', state: 'MH', assignedSKUs: 800, completedSKUs: 725, completionRate: 90.6, matchRate: 87.1, startDate: '2024-11-25', status: 'In Progress' }
       ]
     };
 
-    const mockPIDData = auditorPIDMap[auditor.auditorName] || [];
+    const mockStoreData = auditorStoreMap[auditor.auditorName] || [];
 
     setModalConfig({
       show: true,
-      title: `${auditor.auditorName} (${auditor.auditorId}) - PID Workload View`,
-      data: mockPIDData,
+      title: `${auditor.auditorName} (${auditor.auditorId}) - Stores Audited`,
+      data: mockStoreData,
       columns: [
-        { key: 'pid', label: 'PID' },
-        { key: 'productName', label: 'Product Name' },
-        { key: 'assignedQty', label: 'Assigned Qty' },
-        { key: 'completedQty', label: 'Completed Qty' },
-        { key: 'timeSpent', label: 'Time Spent' },
-        { key: 'status', label: 'Status' },
-        { key: 'deviations', label: 'Deviations' },
-        { key: 'matchStatus', label: 'Match Status' }
+        { key: 'storeId', label: 'Store ID' },
+        { key: 'storeName', label: 'Store Name' },
+        { key: 'state', label: 'State' },
+        { key: 'assignedSKUs', label: 'Assigned SKUs' },
+        { key: 'completedSKUs', label: 'Completed SKUs' },
+        { key: 'completionRate', label: 'Completion Rate (%)' },
+        { key: 'matchRate', label: 'Match Rate (%)' },
+        { key: 'startDate', label: 'Start Date' }
       ]
     });
   };
@@ -194,7 +189,7 @@ const AuditorPerformance = ({ filters = {} }) => {
                 <i className="fas fa-users me-2 text-primary"></i>
                 Auditor Productivity Summary
               </h5>
-              <small className="text-muted">Click on any auditor to view PID-level workload and bottlenecks</small>
+              <small className="text-muted">Click on any auditor to view stores they have audited</small>
             </Card.Header>
             <Card.Body className="p-0">
               <div className="table-responsive">

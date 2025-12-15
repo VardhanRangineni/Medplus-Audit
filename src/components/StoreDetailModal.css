@@ -37,3 +37,11 @@
 .store-detail-modal .table tbody tr:hover {
   background-color: #f1f3f5;
 }
+
+.store-detail-modal .deviation-row {
+  transition: background-color 0.2s ease;
+}
+
+.store-detail-modal .deviation-row:hover {
+  background-color: rgba(13, 110, 253, 0.05) !important;
+}

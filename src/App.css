@@ -12,8 +12,11 @@ body {
 
 .app-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  /* Changed from min-height */
   background: #f1f5f9;
+  overflow: hidden;
+  /* Prevent window scroll */
 }
 
 .main-container {
@@ -22,14 +25,20 @@ body {
   transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  /* Changed from min-height */
+  overflow: hidden;
 }
 
 .content-area {
   flex: 1;
   padding: 1.5rem;
   overflow-y: auto;
+  /* Becomes the main scroll area for normal pages */
   background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 /* Scrollbar Styling */
@@ -168,12 +177,13 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.content-area > * {
+.content-area>* {
   animation: fadeIn 0.3s ease;
 }

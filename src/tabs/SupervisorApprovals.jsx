@@ -7,6 +7,10 @@ import './SupervisorApprovals.css';
 
 const SupervisorApprovals = ({ filters = {} }) => {
   const [modalConfig, setModalConfig] = useState({ show: false, title: '', data: [], columns: [] });
+  const [selectedSupervisor, setSelectedSupervisor] = useState(null);
+  const [selectedSupervisorData, setSelectedSupervisorData] = useState(null);
+  const [selectedAuditor, setSelectedAuditor] = useState(null);
+  const [selectedAuditorStores, setSelectedAuditorStores] = useState(null);
   
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
@@ -110,44 +114,93 @@ const SupervisorApprovals = ({ filters = {} }) => {
 
   const showSupervisorDetails = (supervisor) => {
     const supervisorStoresMap = {
-      'Rajesh Kumar': [
-        { storeId: 'MP001', storeName: 'Chennai Central', auditStatus: 'In Progress', completion: 85.5, lastUpdate: '2024-12-09', pendingApprovals: 8, totalPIDs: 2400 },
-        { storeId: 'MP014', storeName: 'T. Nagar Branch', auditStatus: 'Completed', completion: 100, lastUpdate: '2024-12-08', pendingApprovals: 0, totalPIDs: 1850 },
-        { storeId: 'MP021', storeName: 'Anna Nagar Hub', auditStatus: 'Pending', completion: 45.2, lastUpdate: '2024-12-07', pendingApprovals: 15, totalPIDs: 2200 }
+      'Rajesh Kumar': {
+        stores: [
+          { storeId: 'MP001', storeName: 'Chennai Central', auditStatus: 'In Progress', completion: 85.5, lastUpdate: '2024-12-09', pendingApprovals: 8, totalPIDs: 2400 },
+          { storeId: 'MP014', storeName: 'T. Nagar Branch', auditStatus: 'Completed', completion: 100, lastUpdate: '2024-12-08', pendingApprovals: 0, totalPIDs: 1850 },
+          { storeId: 'MP021', storeName: 'Anna Nagar Hub', auditStatus: 'Pending', completion: 45.2, lastUpdate: '2024-12-07', pendingApprovals: 15, totalPIDs: 2200 }
+        ],
+        auditors: [
+          { auditorId: 'AUD001', auditorName: 'Amit Singh', assignedSKUs: 2400, completedSKUs: 2150, completionRate: 89.6, matchRate: 95.2 },
+          { auditorId: 'AUD003', auditorName: 'Suresh Kumar', assignedSKUs: 2200, completedSKUs: 1850, completionRate: 84.1, matchRate: 91.5 }
+        ]
+      },
+      'Lakshmi Iyer': {
+        stores: [
+          { storeId: 'MP002', storeName: 'Bangalore Hub', auditStatus: 'In Progress', completion: 92.3, lastUpdate: '2024-12-10', pendingApprovals: 5, totalPIDs: 2100 },
+          { storeId: 'MP016', storeName: 'Koramangala Store', auditStatus: 'Completed', completion: 100, lastUpdate: '2024-12-06', pendingApprovals: 0, totalPIDs: 1650 },
+          { storeId: 'MP023', storeName: 'Indiranagar Branch', auditStatus: 'In Progress', completion: 78.5, lastUpdate: '2024-12-08', pendingApprovals: 10, totalPIDs: 1980 }
+        ],
+        auditors: [
+          { auditorId: 'AUD002', auditorName: 'Priya Reddy', assignedSKUs: 2800, completedSKUs: 2650, completionRate: 94.6, matchRate: 96.8 },
+          { auditorId: 'AUD004', auditorName: 'Deepak Sharma', assignedSKUs: 2600, completedSKUs: 2450, completionRate: 94.2, matchRate: 94.8 }
+        ]
+      },
+      'Mohammed Ali': {
+        stores: [
+          { storeId: 'MP003', storeName: 'Hyderabad Main', auditStatus: 'In Progress', completion: 78.9, lastUpdate: '2024-12-09', pendingApprovals: 12, totalPIDs: 3200 },
+          { storeId: 'MP017', storeName: 'Madhapur Hub', auditStatus: 'Pending', completion: 35.8, lastUpdate: '2024-12-05', pendingApprovals: 18, totalPIDs: 2850 },
+          { storeId: 'MP025', storeName: 'Secunderabad Store', auditStatus: 'In Progress', completion: 65.4, lastUpdate: '2024-12-07', pendingApprovals: 12, totalPIDs: 2450 }
+        ],
+        auditors: [
+          { auditorId: 'AUD005', auditorName: 'Anitha Rao', assignedSKUs: 2350, completedSKUs: 2200, completionRate: 93.6, matchRate: 93.2 },
+          { auditorId: 'AUD006', auditorName: 'Ravi Verma', assignedSKUs: 2100, completedSKUs: 1750, completionRate: 83.3, matchRate: 89.7 }
+        ]
+      },
+      'Pradeep Singh': {
+        stores: [
+          { storeId: 'MP004', storeName: 'Pune West', auditStatus: 'Completed', completion: 100, lastUpdate: '2024-12-08', pendingApprovals: 0, totalPIDs: 1800 },
+          { storeId: 'MP019', storeName: 'Shivaji Nagar Branch', auditStatus: 'In Progress', completion: 88.2, lastUpdate: '2024-12-09', pendingApprovals: 6, totalPIDs: 1650 },
+          { storeId: 'MP026', storeName: 'Kothrud Store', auditStatus: 'In Progress', completion: 94.5, lastUpdate: '2024-12-10', pendingApprovals: 5, totalPIDs: 1550 }
+        ],
+        auditors: [
+          { auditorId: 'AUD007', auditorName: 'Karthik Kumar', assignedSKUs: 2150, completedSKUs: 2000, completionRate: 93.0, matchRate: 92.8 },
+          { auditorId: 'AUD008', auditorName: 'Meena Iyer', assignedSKUs: 1950, completedSKUs: 1850, completionRate: 94.9, matchRate: 95.5 }
+        ]
+      }
+    };
+
+    const data = supervisorStoresMap[supervisor.supervisorName] || { stores: [], auditors: [] };
+    setSelectedSupervisor(supervisor);
+    setSelectedSupervisorData(data);
+  };
+
+  const handleAuditorClick = (auditor) => {
+    // Map auditors to their stores
+    const auditorStoresMap = {
+      'Amit Singh': [
+        { storeId: 'MP001', storeName: 'Chennai Central', state: 'Tamil Nadu', assignedSKUs: 1200, completedSKUs: 1150, completionRate: 95.8, matchRate: 95.2, startDate: '2024-12-01', endDate: '2024-12-08' },
+        { storeId: 'MP014', storeName: 'T. Nagar Branch', state: 'Tamil Nadu', assignedSKUs: 1200, completedSKUs: 1000, completionRate: 83.3, matchRate: 95.2, startDate: '2024-11-25', endDate: '2024-12-02' }
       ],
-      'Lakshmi Iyer': [
-        { storeId: 'MP002', storeName: 'Bangalore Hub', auditStatus: 'In Progress', completion: 92.3, lastUpdate: '2024-12-10', pendingApprovals: 5, totalPIDs: 2100 },
-        { storeId: 'MP016', storeName: 'Koramangala Store', auditStatus: 'Completed', completion: 100, lastUpdate: '2024-12-06', pendingApprovals: 0, totalPIDs: 1650 },
-        { storeId: 'MP023', storeName: 'Indiranagar Branch', auditStatus: 'In Progress', completion: 78.5, lastUpdate: '2024-12-08', pendingApprovals: 10, totalPIDs: 1980 }
+      'Suresh Kumar': [
+        { storeId: 'MP021', storeName: 'Anna Nagar Hub', state: 'Tamil Nadu', assignedSKUs: 2200, completedSKUs: 1850, completionRate: 84.1, matchRate: 91.5, startDate: '2024-12-03', endDate: '2024-12-10' }
       ],
-      'Mohammed Ali': [
-        { storeId: 'MP003', storeName: 'Hyderabad Main', auditStatus: 'In Progress', completion: 78.9, lastUpdate: '2024-12-09', pendingApprovals: 12, totalPIDs: 3200 },
-        { storeId: 'MP017', storeName: 'Madhapur Hub', auditStatus: 'Pending', completion: 35.8, lastUpdate: '2024-12-05', pendingApprovals: 18, totalPIDs: 2850 },
-        { storeId: 'MP025', storeName: 'Secunderabad Store', auditStatus: 'In Progress', completion: 65.4, lastUpdate: '2024-12-07', pendingApprovals: 12, totalPIDs: 2450 }
+      'Priya Reddy': [
+        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'Karnataka', assignedSKUs: 1500, completedSKUs: 1450, completionRate: 96.7, matchRate: 96.8, startDate: '2024-12-01', endDate: '2024-12-09' },
+        { storeId: 'MP016', storeName: 'Koramangala Store', state: 'Karnataka', assignedSKUs: 1300, completedSKUs: 1200, completionRate: 92.3, matchRate: 96.8, startDate: '2024-11-28', endDate: '2024-12-05' }
       ],
-      'Pradeep Singh': [
-        { storeId: 'MP004', storeName: 'Pune West', auditStatus: 'Completed', completion: 100, lastUpdate: '2024-12-08', pendingApprovals: 0, totalPIDs: 1800 },
-        { storeId: 'MP019', storeName: 'Shivaji Nagar Branch', auditStatus: 'In Progress', completion: 88.2, lastUpdate: '2024-12-09', pendingApprovals: 6, totalPIDs: 1650 },
-        { storeId: 'MP026', storeName: 'Kothrud Store', auditStatus: 'In Progress', completion: 94.5, lastUpdate: '2024-12-10', pendingApprovals: 5, totalPIDs: 1550 }
+      'Deepak Sharma': [
+        { storeId: 'MP023', storeName: 'Indiranagar Branch', state: 'Karnataka', assignedSKUs: 2600, completedSKUs: 2450, completionRate: 94.2, matchRate: 94.8, startDate: '2024-12-02', endDate: '2024-12-09' }
+      ],
+      'Anitha Rao': [
+        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'Telangana', assignedSKUs: 1350, completedSKUs: 1300, completionRate: 96.3, matchRate: 93.2, startDate: '2024-12-01', endDate: '2024-12-08' },
+        { storeId: 'MP025', storeName: 'Secunderabad Store', state: 'Telangana', assignedSKUs: 1000, completedSKUs: 900, completionRate: 90.0, matchRate: 93.2, startDate: '2024-12-04', endDate: '2024-12-11' }
+      ],
+      'Ravi Verma': [
+        { storeId: 'MP017', storeName: 'Madhapur Hub', state: 'Telangana', assignedSKUs: 2100, completedSKUs: 1750, completionRate: 83.3, matchRate: 89.7, startDate: '2024-11-29', endDate: '2024-12-06' }
+      ],
+      'Karthik Kumar': [
+        { storeId: 'MP004', storeName: 'Pune West', state: 'Maharashtra', assignedSKUs: 1200, completedSKUs: 1150, completionRate: 95.8, matchRate: 92.8, startDate: '2024-11-27', endDate: '2024-12-04' },
+        { storeId: 'MP019', storeName: 'Shivaji Nagar Branch', state: 'Maharashtra', assignedSKUs: 950, completedSKUs: 850, completionRate: 89.5, matchRate: 92.8, startDate: '2024-12-02', endDate: '2024-12-09' }
+      ],
+      'Meena Iyer': [
+        { storeId: 'MP026', storeName: 'Kothrud Store', state: 'Maharashtra', assignedSKUs: 1950, completedSKUs: 1850, completionRate: 94.9, matchRate: 95.5, startDate: '2024-12-01', endDate: '2024-12-08' }
       ]
     };
 
-    const mockStoreData = supervisorStoresMap[supervisor.supervisorName] || [];
-
-    setModalConfig({
-      show: true,
-      title: `${supervisor.supervisorName} - Managed Stores`,
-      data: mockStoreData,
-      columns: [
-        { key: 'storeId', label: 'Store ID' },
-        { key: 'storeName', label: 'Store Name' },
-        { key: 'auditStatus', label: 'Audit Status' },
-        { key: 'completion', label: 'Completion %', render: (val) => `${val}%` },
-        { key: 'lastUpdate', label: 'Last Update' },
-        { key: 'pendingApprovals', label: 'Pending Approvals' },
-        { key: 'totalPIDs', label: 'Total PIDs' }
-      ]
-    });
+    const stores = auditorStoresMap[auditor.auditorName] || [];
+    setSelectedAuditor(auditor);
+    setSelectedAuditorStores(stores);
   };
 
   const showContraDetails = (contra) => {
@@ -221,53 +274,336 @@ const SupervisorApprovals = ({ filters = {} }) => {
           {filters.auditStatus && <Badge bg="primary" className="ms-2">Status: {filters.auditStatus}</Badge>}
         </Alert>
       )}
-      {/* Supervisor Summary Cards */}
-      <Row className="g-3 mb-4">
-        {supervisorData.map((supervisor, idx) => (
-          <Col md={6} lg={3} key={idx}>
-            <Card
-              className="border-0 shadow-sm h-100 supervisor-card"
-              onClick={() => showSupervisorDetails(supervisor)}
+      {/* Supervisor Summary Cards or Details View */}
+      {selectedAuditor ? (
+        <>
+          {/* Back Button to Supervisor Details */}
+          <div className="mb-3">
+            <Badge 
+              bg="secondary" 
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedAuditor(null);
+                setSelectedAuditorStores(null);
+              }}
             >
-              <Card.Body>
-                <div className="d-flex justify-content-between align-items-start mb-3">
-                  <div>
-                    <Badge bg="primary" className="mb-2">{supervisor.supervisorId}</Badge>
-                    <h6 className="mb-0 fw-bold">{supervisor.supervisorName}</h6>
-                  </div>
-                  <i className="fas fa-user-shield fa-2x text-primary opacity-25"></i>
-                </div>
+              <i className="fas fa-arrow-left me-2"></i>
+              Back to {selectedSupervisor.supervisorName}
+            </Badge>
+          </div>
 
-                <div className="mb-2">
-                  <small className="text-muted">Stores Managed</small>
-                  <h5 className="mb-0">{supervisor.storesManaged}</h5>
-                </div>
+          {/* Auditor Details Header */}
+          <Card className="border-0 shadow-sm mb-4">
+            <Card.Body>
+              <Row>
+                <Col md={3}>
+                  <div className="text-muted small">Auditor ID</div>
+                  <Badge bg="info" className="mt-1">{selectedAuditor.auditorId}</Badge>
+                </Col>
+                <Col md={3}>
+                  <div className="text-muted small">Auditor Name</div>
+                  <h5 className="mb-0 mt-1">{selectedAuditor.auditorName}</h5>
+                </Col>
+                <Col md={2}>
+                  <div className="text-muted small">Assigned SKUs</div>
+                  <h5 className="mb-0 mt-1">{selectedAuditor.assignedSKUs.toLocaleString()}</h5>
+                </Col>
+                <Col md={2}>
+                  <div className="text-muted small">Completion Rate</div>
+                  <h5 className="mb-0 mt-1 text-success">{selectedAuditor.completionRate}%</h5>
+                </Col>
+                <Col md={2}>
+                  <div className="text-muted small">Match Rate</div>
+                  <h5 className="mb-0 mt-1 text-primary">{selectedAuditor.matchRate}%</h5>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
 
-                <div className="mb-2">
-                  <small className="text-muted d-block mb-1">Audit Completion</small>
-                  <ProgressBar
-                    now={supervisor.auditCompletion}
-                    variant={supervisor.auditCompletion >= 90 ? 'success' : 'warning'}
-                    label={`${supervisor.auditCompletion}%`}
-                    style={{ height: '20px' }}
-                  />
-                </div>
+          {/* Stores Audited by Auditor */}
+          <Card className="border-0 shadow-sm mb-4">
+            <Card.Header className="bg-white border-0 py-3">
+              <h5 className="mb-0 fw-bold">
+                <i className="fas fa-store-alt me-2 text-primary"></i>
+                Stores Audited by {selectedAuditor.auditorName}
+              </h5>
+              <small className="text-muted">
+                Total Stores: {selectedAuditorStores?.length || 0}
+              </small>
+            </Card.Header>
+            <Card.Body className="p-0">
+              <div className="table-responsive">
+                <Table hover className="mb-0">
+                  <thead className="bg-light">
+                    <tr>
+                      <th>Store ID</th>
+                      <th>Store Name</th>
+                      <th>State</th>
+                      <th>Assigned SKUs</th>
+                      <th>Completed SKUs</th>
+                      <th>Completion Rate</th>
+                      <th>Match Rate</th>
+                      <th>Start Date</th>
+                      <th>End Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedAuditorStores?.map((store, idx) => (
+                      <tr key={idx}>
+                        <td>
+                          <Badge bg="light" text="dark" className="font-monospace">
+                            {store.storeId}
+                          </Badge>
+                        </td>
+                        <td className="fw-semibold">{store.storeName}</td>
+                        <td>{store.state}</td>
+                        <td>{store.assignedSKUs.toLocaleString()}</td>
+                        <td>{store.completedSKUs.toLocaleString()}</td>
+                        <td>
+                          <ProgressBar 
+                            now={store.completionRate} 
+                            variant={store.completionRate >= 90 ? 'success' : store.completionRate >= 70 ? 'warning' : 'danger'}
+                            label={`${store.completionRate}%`}
+                            style={{ width: '120px', height: '20px' }}
+                          />
+                        </td>
+                        <td>
+                          <Badge bg={store.matchRate >= 95 ? 'success' : store.matchRate >= 90 ? 'warning' : 'danger'}>
+                            {store.matchRate}%
+                          </Badge>
+                        </td>
+                        <td>{store.startDate}</td>
+                        <td>{store.endDate}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            </Card.Body>
+          </Card>
+        </>
+      ) : !selectedSupervisor ? (
+        <Row className="g-3 mb-4">
+          {supervisorData.map((supervisor, idx) => (
+            <Col md={6} lg={3} key={idx}>
+              <Card
+                className="border-0 shadow-sm h-100 supervisor-card"
+                onClick={() => showSupervisorDetails(supervisor)}
+                style={{ cursor: 'pointer' }}
+              >
+                <Card.Body>
+                  <div className="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                      <Badge bg="primary" className="mb-2">{supervisor.supervisorId}</Badge>
+                      <h6 className="mb-0 fw-bold">{supervisor.supervisorName}</h6>
+                    </div>
+                    <i className="fas fa-user-shield fa-2x text-primary opacity-25"></i>
+                  </div>
 
-                <div className="d-flex justify-content-between mt-3 pt-3 border-top">
-                  <div>
-                    <small className="text-muted d-block">Pending Approvals</small>
-                    <Badge bg="warning">{supervisor.pendingApprovals}</Badge>
+                  <div className="mb-2">
+                    <small className="text-muted">Stores Managed</small>
+                    <h5 className="mb-0">{supervisor.storesManaged}</h5>
                   </div>
-                  <div className="text-end">
-                    <small className="text-muted d-block">Unallocated PIDs</small>
-                    <Badge bg="danger">{supervisor.unallocatedPIDs}</Badge>
+
+                  <div className="mb-2">
+                    <small className="text-muted d-block mb-1">Audit Completion</small>
+                    <ProgressBar
+                      now={supervisor.auditCompletion}
+                      variant={supervisor.auditCompletion >= 90 ? 'success' : 'warning'}
+                      label={`${supervisor.auditCompletion}%`}
+                      style={{ height: '20px' }}
+                    />
                   </div>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+
+                  <div className="d-flex justify-content-between mt-3 pt-3 border-top">
+                    <div>
+                      <small className="text-muted d-block">Pending Approvals</small>
+                      <Badge bg="warning">{supervisor.pendingApprovals}</Badge>
+                    </div>
+                    <div className="text-end">
+                      <small className="text-muted d-block">Unallocated PIDs</small>
+                      <Badge bg="danger">{supervisor.unallocatedPIDs}</Badge>
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      ) : (
+        <>
+          {/* Back Button */}
+          <div className="mb-3">
+            <Badge 
+              bg="secondary" 
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedSupervisor(null);
+                setSelectedSupervisorData(null);
+                setSelectedAuditor(null);
+                setSelectedAuditorStores(null);
+              }}
+            >
+              <i className="fas fa-arrow-left me-2"></i>
+              Back to Supervisors
+            </Badge>
+          </div>
+
+          {/* Supervisor Details Header */}
+          <Card className="border-0 shadow-sm mb-4">
+            <Card.Body>
+              <Row>
+                <Col md={3}>
+                  <div className="text-muted small">Supervisor ID</div>
+                  <Badge bg="primary" className="mt-1">{selectedSupervisor.supervisorId}</Badge>
+                </Col>
+                <Col md={3}>
+                  <div className="text-muted small">Supervisor Name</div>
+                  <h5 className="mb-0 mt-1">{selectedSupervisor.supervisorName}</h5>
+                </Col>
+                <Col md={2}>
+                  <div className="text-muted small">Stores Managed</div>
+                  <h5 className="mb-0 mt-1">{selectedSupervisor.storesManaged}</h5>
+                </Col>
+                <Col md={2}>
+                  <div className="text-muted small">Audit Completion</div>
+                  <h5 className="mb-0 mt-1 text-success">{selectedSupervisor.auditCompletion}%</h5>
+                </Col>
+                <Col md={2}>
+                  <div className="text-muted small">Pending Approvals</div>
+                  <h5 className="mb-0 mt-1 text-warning">{selectedSupervisor.pendingApprovals}</h5>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+
+          {/* Stores Managed Table */}
+          <Card className="border-0 shadow-sm mb-4">
+            <Card.Header className="bg-white border-0 py-3">
+              <h5 className="mb-0 fw-bold">
+                <i className="fas fa-store me-2 text-primary"></i>
+                Stores Managed
+              </h5>
+            </Card.Header>
+            <Card.Body className="p-0">
+              <div className="table-responsive">
+                <Table hover className="mb-0">
+                  <thead className="bg-light">
+                    <tr>
+                      <th>Store ID</th>
+                      <th>Store Name</th>
+                      <th>Audit Status</th>
+                      <th>Completion</th>
+                      <th>Last Update</th>
+                      <th>Pending Approvals</th>
+                      <th>Total PIDs</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedSupervisorData?.stores.map((store, idx) => (
+                      <tr key={idx}>
+                        <td>
+                          <Badge bg="light" text="dark" className="font-monospace">
+                            {store.storeId}
+                          </Badge>
+                        </td>
+                        <td className="fw-semibold">{store.storeName}</td>
+                        <td>
+                          <Badge bg={
+                            store.auditStatus === 'Completed' ? 'success' :
+                            store.auditStatus === 'In Progress' ? 'primary' :
+                            'warning'
+                          }>
+                            {store.auditStatus}
+                          </Badge>
+                        </td>
+                        <td>
+                          <ProgressBar 
+                            now={store.completion} 
+                            variant={store.completion >= 90 ? 'success' : store.completion >= 70 ? 'warning' : 'danger'}
+                            label={`${store.completion}%`}
+                            style={{ width: '120px', height: '20px' }}
+                          />
+                        </td>
+                        <td>{store.lastUpdate}</td>
+                        <td>
+                          <Badge bg={store.pendingApprovals > 0 ? 'warning' : 'success'}>
+                            {store.pendingApprovals}
+                          </Badge>
+                        </td>
+                        <td>{store.totalPIDs.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            </Card.Body>
+          </Card>
+
+          {/* Auditors Under Supervisor */}
+          <Card className="border-0 shadow-sm mb-4">
+            <Card.Header className="bg-white border-0 py-3">
+              <h5 className="mb-0 fw-bold">
+                <i className="fas fa-users me-2 text-primary"></i>
+                Auditors Under {selectedSupervisor.supervisorName}
+              </h5>
+              <small className="text-muted">Click on any auditor to view their detailed performance</small>
+            </Card.Header>
+            <Card.Body className="p-0">
+              <div className="table-responsive">
+                <Table hover className="mb-0">
+                  <thead className="bg-light">
+                    <tr>
+                      <th>Auditor ID</th>
+                      <th>Auditor Name</th>
+                      <th>Assigned SKUs</th>
+                      <th>Completed SKUs</th>
+                      <th>Completion Rate</th>
+                      <th>Match Rate</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedSupervisorData?.auditors.map((auditor, idx) => (
+                      <tr 
+                        key={idx}
+                        onClick={() => handleAuditorClick(auditor)}
+                        style={{ cursor: 'pointer' }}
+                        className="auditor-row"
+                      >
+                        <td>
+                          <Badge bg="light" text="dark" className="font-monospace">
+                            {auditor.auditorId}
+                          </Badge>
+                        </td>
+                        <td className="fw-semibold">{auditor.auditorName}</td>
+                        <td>{auditor.assignedSKUs.toLocaleString()}</td>
+                        <td>{auditor.completedSKUs.toLocaleString()}</td>
+                        <td>
+                          <ProgressBar 
+                            now={auditor.completionRate} 
+                            variant={auditor.completionRate >= 90 ? 'success' : 'warning'}
+                            label={`${auditor.completionRate}%`}
+                            style={{ width: '120px', height: '20px' }}
+                          />
+                        </td>
+                        <td>
+                          <Badge bg={auditor.matchRate >= 95 ? 'success' : auditor.matchRate >= 90 ? 'warning' : 'danger'}>
+                            {auditor.matchRate}%
+                          </Badge>
+                        </td>
+                        <td>
+                          <i className="fas fa-chevron-right text-primary"></i>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            </Card.Body>
+          </Card>
+        </>
+      )}
 
       {/* Re-audit Waterfall Visualization */}
       <Row className="mb-4">

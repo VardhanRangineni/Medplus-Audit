@@ -5,16 +5,16 @@ import './StoreDetailModal.css';
 
 const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
   const [selectedDeviationType, setSelectedDeviationType] = useState(null);
-  
+
   // Reset filter when modal closes or data changes
   useEffect(() => {
     if (!show) {
       setSelectedDeviationType(null);
     }
   }, [show, storeData]);
-  
+
   console.log('StoreDetailModal render - show:', show, 'storeData:', storeData, 'auditStatus:', auditStatus);
-  
+
   if (!storeData) {
     return (
       <Modal show={show} onHide={onHide} size="xl" className="store-detail-modal">
@@ -37,12 +37,12 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     );
   }
 
-  const { 
-    storeId, 
-    storeName, 
+  const {
+    storeId,
+    storeName,
     state,
-    supervisor, 
-    deviations = [], 
+    supervisor,
+    deviations = [],
     contra = [],
     auditProgress = {},
     inventorySummary = {},
@@ -221,11 +221,11 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
   const exportProductDetailsToExcel = () => {
     let dataToExport = [];
     let fileName = `${storeId}_Product_Form_Details.xlsx`;
-    
+
     if (selectedDeviationType) {
       // Export specific deviation and form breakdown
       const formData = detailedProductData[selectedDeviationType];
-      
+
       if (formData) {
         // If formData is an object with forms, export all forms for this deviation
         if (typeof formData === 'object' && !Array.isArray(formData)) {
@@ -275,7 +275,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
       // Export all products across all deviations
       Object.keys(detailedProductData).forEach(deviationType => {
         const formData = detailedProductData[deviationType];
-        
+
         if (typeof formData === 'object' && !Array.isArray(formData)) {
           Object.keys(formData).forEach(formType => {
             formData[formType].forEach(product => {
@@ -322,7 +322,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
     // Create worksheet
     const ws = window.XLSX.utils.json_to_sheet(dataToExport);
-    
+
     // Set column widths
     ws['!cols'] = [
       { wch: 10 },  // Store ID
@@ -340,11 +340,11 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
       { wch: 15 },  // Total Value
       { wch: 12 }   // Expiry Date
     ];
-    
+
     // Create workbook
     const wb = window.XLSX.utils.book_new();
     window.XLSX.utils.book_append_sheet(wb, ws, 'Product Details');
-    
+
     // Download file
     window.XLSX.writeFile(wb, fileName);
   };
@@ -356,9 +356,9 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
   // Filter contra items based on selected deviation type
   const getFilteredContraItems = () => {
     console.log('Filtering contra items:', { selectedDeviationType, totalContraItems: contra.length });
-    
+
     if (!selectedDeviationType) return contra;
-    
+
     // Map deviation type to contra type
     if (selectedDeviationType === 'Contra Short') {
       const filtered = contra.filter(c => c.type === 'Short');
@@ -413,8 +413,8 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
               <Col md={3}>
                 <div className="text-muted small">Audit Progress</div>
                 <div className="fw-bold fs-5">{auditProgress.percentage || 0}%</div>
-                <ProgressBar 
-                  now={auditProgress.percentage || 0} 
+                <ProgressBar
+                  now={auditProgress.percentage || 0}
                   variant={auditProgress.percentage >= 80 ? 'success' : auditProgress.percentage >= 60 ? 'warning' : 'danger'}
                   style={{ height: '8px' }}
                 />
@@ -500,8 +500,8 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                           <td>{auditor.assignedSKUs?.toLocaleString()}</td>
                           <td>{auditor.completedSKUs?.toLocaleString()}</td>
                           <td style={{ minWidth: '150px' }}>
-                            <ProgressBar 
-                              now={auditor.completionRate || 0} 
+                            <ProgressBar
+                              now={auditor.completionRate || 0}
                               label={`${(auditor.completionRate || 0).toFixed(1)}%`}
                               variant={auditor.completionRate >= 80 ? 'success' : 'warning'}
                               style={{ height: '20px' }}
@@ -524,274 +524,280 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
         {/* Deviations and Contra Side by Side - Show only for completed */}
         {auditStatus === 'completed' && (
-        <Row className="g-3">
-          {/* Deviations Section */}
-          <Col lg={6}>
-            <Card className="border-0 shadow-sm h-100">
-              <Card.Header className="bg-light">
-                <h6 className="mb-0 fw-bold">
-                  <i className="fas fa-exclamation-triangle me-2 text-danger"></i>
-                  Deviations Breakdown
-                </h6>
-              </Card.Header>
-              <Card.Body>
-                {deviations.length > 0 ? (
-                  <>
-                    {/* Deviation Chart */}
-                    <ResponsiveContainer width="100%" height={200}>
-                      <PieChart>
-                        <Pie
-                          data={deviationChartData}
-                          cx="50%"
-                          cy="50%"
-                          labelLine={false}
-                          label={(entry) => `${entry.count}`}
-                          outerRadius={70}
-                          fill="#8884d8"
-                          dataKey="value"
-                          onClick={(data) => handleDeviationClick(data.name)}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          {deviationChartData.map((entry, index) => (
-                            <Cell 
-                              key={`cell-${index}`} 
-                              fill={COLORS[index % COLORS.length]}
-                              style={{ cursor: 'pointer' }}
-                            />
-                          ))}
-                        </Pie>
-                        <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                        <Legend />
-                      </PieChart>
-                    </ResponsiveContainer>
-
-                    {/* Deviation Table */}
-                    <div className="mt-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
-                      <Table hover size="sm" className="mb-0">
-                        <thead className="bg-light sticky-top">
-                          <tr>
-                            <th>Type</th>
-                            <th className="text-end">Count (items)</th>
-                            <th className="text-end">Value (₹)</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {deviations.map((dev, idx) => (
-                            <tr 
-                              key={idx}
-                              onClick={() => handleDeviationClick(dev.type)}
-                              style={{ 
-                                cursor: 'pointer',
-                                backgroundColor: selectedDeviationType === dev.type ? 'rgba(13, 110, 253, 0.1)' : 'transparent'
-                              }}
-                              className="deviation-row"
-                            >
-                              <td className="small">{dev.type}</td>
-                              <td className="text-end">
-                                <Badge bg="secondary" pill>{dev.count}</Badge>
-                              </td>
-                              <td className="text-end fw-semibold text-danger">
-                                ₹{(dev.value || 0).toLocaleString()}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </Table>
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center text-muted py-4">
-                    <i className="fas fa-check-circle fa-3x mb-2 d-block text-success"></i>
-                    <p className="mb-0">No deviations found</p>
-                  </div>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
-
-          {/* Right Panel - Product Form Breakdown or Contra Section */}
-          <Col lg={6}>
-            <Card className="border-0 shadow-sm h-100">
-              <Card.Header className="bg-light">
-                <div className="d-flex justify-content-between align-items-center">
+          <Row className="g-3">
+            {/* Deviations Section */}
+            <Col lg={6}>
+              <Card className="border-0 shadow-sm h-100">
+                <Card.Header className="bg-light">
                   <h6 className="mb-0 fw-bold">
-                    {selectedDeviationType ? (
-                      <>
-                        <i className="fas fa-pills me-2 text-info"></i>
-                        <Badge bg="primary" className="me-2">{selectedDeviationType}</Badge>
-                        Product Form Breakdown
-                      </>
-                    ) : (
-                      <>
-                        <i className="fas fa-chart-pie me-2 text-info"></i>
-                        Product Form Analysis
-                      </>
-                    )}
+                    <i className="fas fa-exclamation-triangle me-2 text-danger"></i>
+                    Deviations Breakdown
                   </h6>
-                  <div className="d-flex gap-2">
-                    <Button 
-                      size="sm" 
-                      variant="success"
-                      onClick={exportProductDetailsToExcel}
-                    >
-                      <i className="fas fa-file-excel me-1"></i>
-                      Export Products
-                    </Button>
-                    {selectedDeviationType && (
-                      <Button 
-                        size="sm" 
-                        variant="outline-secondary"
-                        onClick={() => setSelectedDeviationType(null)}
+                </Card.Header>
+                <Card.Body>
+                  {deviations.length > 0 ? (
+                    <>
+                      {/* Deviation Chart */}
+                      <ResponsiveContainer width="100%" height={200}>
+                        <PieChart>
+                          <Pie
+                            data={deviationChartData}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            label={(entry) => `${entry.count}`}
+                            outerRadius={70}
+                            fill="#8884d8"
+                            dataKey="value"
+                            onClick={(data) => handleDeviationClick(data.name)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            {deviationChartData.map((entry, index) => (
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={COLORS[index % COLORS.length]}
+                                style={{ cursor: 'pointer' }}
+                              />
+                            ))}
+                          </Pie>
+                          <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+
+                      {/* Deviation Table */}
+                      <div className="mt-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
+                        <Table hover size="sm" className="mb-0">
+                          <thead className="bg-light sticky-top">
+                            <tr>
+                              <th>Type</th>
+                              <th className="text-end">Count (items)</th>
+                              <th className="text-end">Value (₹)</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {deviations.map((dev, idx) => (
+                              <tr
+                                key={idx}
+                                onClick={() => handleDeviationClick(dev.type)}
+                                style={{
+                                  cursor: 'pointer',
+                                  backgroundColor: selectedDeviationType === dev.type ? 'rgba(13, 110, 253, 0.1)' : 'transparent'
+                                }}
+                                className="deviation-row"
+                              >
+                                <td className="small">{dev.type}</td>
+                                <td className="text-end">
+                                  <Badge bg="secondary" pill>{dev.count}</Badge>
+                                </td>
+                                <td className="text-end fw-semibold text-danger">
+                                  ₹{(dev.value || 0).toLocaleString()}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center text-muted py-4">
+                      <i className="fas fa-check-circle fa-3x mb-2 d-block text-success"></i>
+                      <p className="mb-0">No deviations found</p>
+                    </div>
+                  )}
+                </Card.Body>
+              </Card>
+            </Col>
+
+            {/* Right Panel - Product Form Breakdown or Contra Section */}
+            <Col lg={6}>
+              <Card className="border-0 shadow-sm h-100">
+                <Card.Header className="bg-light">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h6 className="mb-0 fw-bold">
+                      {selectedDeviationType ? (
+                        <>
+                          <i className="fas fa-pills me-2 text-info"></i>
+                          <Badge bg="primary" className="me-2">{selectedDeviationType}</Badge>
+                          Product Form Breakdown
+                        </>
+                      ) : (
+                        <>
+                          <i className="fas fa-chart-pie me-2 text-info"></i>
+                          Product Form Analysis
+                        </>
+                      )}
+                    </h6>
+                    <div className="d-flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="success"
+                        onClick={exportProductDetailsToExcel}
                       >
-                        Clear Filter
+                        <i className="fas fa-file-excel me-1"></i>
+                        Export Products
                       </Button>
-                    )}
-                  </div>
-                </div>
-              </Card.Header>
-              <Card.Body>
-                {selectedDeviationType && productFormData[selectedDeviationType] ? (
-                  /* Product Form Breakdown for Selected Deviation */
-                  <div>
-                    <div className="text-muted small mb-3">
-                      {(() => {
-                        const selectedDev = deviations.find(d => d.type === selectedDeviationType);
-                        return selectedDev ? `Total: ₹${selectedDev.value.toLocaleString()} | ${selectedDev.count} items` : '';
-                      })()}
-                    </div>
-                    <ResponsiveContainer width="100%" height={240}>
-                      <PieChart>
-                        <Pie
-                          data={productFormData[selectedDeviationType]}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={60}
-                          outerRadius={100}
-                          labelLine={false}
-                          label={(entry) => `${entry.form}: ₹${(entry.value / 1000).toFixed(0)}K`}
-                          fill="#8884d8"
-                          dataKey="value"
+                      {selectedDeviationType && (
+                        <Button
+                          size="sm"
+                          variant="outline-secondary"
+                          onClick={() => setSelectedDeviationType(null)}
                         >
-                          {productFormData[selectedDeviationType].map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                    <div className="mt-3">
-                      {productFormData[selectedDeviationType].map((form, idx) => (
-                        <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
-                          <div className="d-flex align-items-center">
-                            <div 
-                              style={{
-                                width: '12px',
-                                height: '12px',
-                                backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
-                                borderRadius: '2px',
-                                marginRight: '8px'
-                              }}
-                            />
-                            <span className="fw-semibold">{form.form}</span>
-                          </div>
-                          <div className="text-end">
-                            <div className="fw-bold text-success">₹{form.value.toLocaleString()}</div>
-                            <div className="text-muted small">{form.count} items</div>
-                          </div>
-                        </div>
-                      ))}
+                          Clear Filter
+                        </Button>
+                      )}
                     </div>
                   </div>
-                ) : (
-                  /* Show Overall Product Form Distribution by default */
-                  <div>
-                    <div className="mb-3">
-                      <h6 className="text-primary mb-2">
-                        Overall Product Form Distribution
-                      </h6>
-                      <div className="text-muted small">
-                        Across all deviation types
+                </Card.Header>
+                <Card.Body>
+                  {selectedDeviationType && productFormData[selectedDeviationType] ? (
+                    /* Product Form Breakdown for Selected Deviation */
+                    <div>
+                      <div className="text-muted small mb-3">
+                        {(() => {
+                          const selectedDev = deviations.find(d => d.type === selectedDeviationType);
+                          return selectedDev ? `Total: ₹${selectedDev.value.toLocaleString()} | ${selectedDev.count} items` : '';
+                        })()}
+                      </div>
+                      <ResponsiveContainer width="100%" height={240}>
+                        <PieChart>
+                          <Pie
+                            data={productFormData[selectedDeviationType]}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={100}
+                            labelLine={false}
+                            fill="#8884d8"
+                            dataKey="value"
+                            nameKey="form"
+                          >
+                            {productFormData[selectedDeviationType].map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                      <div className="mt-3">
+                        {productFormData[selectedDeviationType].map((form, idx) => (
+                          <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+                            <div className="d-flex align-items-center">
+                              <div
+                                style={{
+                                  width: '12px',
+                                  height: '12px',
+                                  backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
+                                  borderRadius: '2px',
+                                  marginRight: '8px'
+                                }}
+                              />
+                              <span className="fw-semibold">{form.form}</span>
+                            </div>
+                            <div className="text-end">
+                              <div className="fw-bold text-success">₹{form.value.toLocaleString()}</div>
+                              <div className="text-muted small">{form.count} items</div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                    <ResponsiveContainer width="100%" height={240}>
-                      <PieChart>
-                        <Pie
-                          data={[
-                            { form: 'Tablets', value: 94000, count: 533 },
-                            { form: 'Liquids', value: 70000, count: 377 },
-                            { form: 'Injection', value: 57500, count: 237 },
-                            { form: 'Ointments', value: 38500, count: 197 },
-                            { form: 'Powders', value: 31200, count: 160 },
-                            { form: 'Drops', value: 23200, count: 123 },
-                            { form: 'Inhalers', value: 21100, count: 105 },
-                            { form: 'Containers', value: 46000, count: 256 },
-                            { form: 'General', value: 35000, count: 142 },
-                            { form: 'Surgicals', value: 28800, count: 131 }
-                          ]}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={60}
-                          outerRadius={100}
-                          labelLine={false}
-                          label={(entry) => `${entry.form}: ₹${(entry.value / 1000).toFixed(0)}K`}
-                          fill="#8884d8"
-                          dataKey="value"
-                        >
-                          {[
-                            { form: 'Tablets', value: 94000, count: 533 },
-                            { form: 'Liquids', value: 70000, count: 377 },
-                            { form: 'Capsules', value: 34000, count: 191 },
-                            { form: 'Refrigerated', value: 21000, count: 103 }
-                          ].map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                    <div className="mt-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
-                      {[
-                        { form: 'Tablets', value: 94000, count: 533 },
-                        { form: 'Liquids', value: 70000, count: 377 },
-                        { form: 'Injection', value: 57500, count: 237 },
-                        { form: 'Ointments', value: 38500, count: 197 },
-                        { form: 'Powders', value: 31200, count: 160 },
-                        { form: 'Drops', value: 23200, count: 123 },
-                        { form: 'Inhalers', value: 21100, count: 105 },
-                        { form: 'Containers', value: 46000, count: 256 },
-                        { form: 'General', value: 35000, count: 142 },
-                        { form: 'Surgicals', value: 28800, count: 131 }
-                      ].map((form, idx) => (
-                        <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
-                          <div className="d-flex align-items-center">
-                            <div 
-                              style={{
-                                width: '12px',
-                                height: '12px',
-                                backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
-                                borderRadius: '2px',
-                                marginRight: '8px'
-                              }}
-                            />
-                            <span className="fw-semibold">{form.form}</span>
-                          </div>
-                          <div className="text-end">
-                            <div className="fw-bold text-success">₹{form.value.toLocaleString()}</div>
-                            <div className="text-muted small">{form.count} items</div>
-                          </div>
+                  ) : (
+                    /* Show Overall Product Form Distribution by default */
+                    <div>
+                      <div className="mb-3">
+                        <h6 className="text-primary mb-2">
+                          Overall Product Form Distribution
+                        </h6>
+                        <div className="text-muted small">
+                          Across all deviation types
                         </div>
-                      ))}
+                      </div>
+                      <ResponsiveContainer width="100%" height={240}>
+                        <PieChart>
+                          <Pie
+                            data={[
+                              { form: 'Tablets', value: 94000, count: 533 },
+                              { form: 'Liquids', value: 70000, count: 377 },
+                              { form: 'Injection', value: 57500, count: 237 },
+                              { form: 'Ointments', value: 38500, count: 197 },
+                              { form: 'Powders', value: 31200, count: 160 },
+                              { form: 'Drops', value: 23200, count: 123 },
+                              { form: 'Inhalers', value: 21100, count: 105 },
+                              { form: 'Containers', value: 46000, count: 256 },
+                              { form: 'General', value: 35000, count: 142 },
+                              { form: 'Surgicals', value: 28800, count: 131 }
+                            ]}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={100}
+                            labelLine={false}
+                            fill="#8884d8"
+                            dataKey="value"
+                            nameKey="form"
+                          >
+                            {[
+                              { form: 'Tablets', value: 94000, count: 533 },
+                              { form: 'Liquids', value: 70000, count: 377 },
+                              { form: 'Injection', value: 57500, count: 237 },
+                              { form: 'Ointments', value: 38500, count: 197 },
+                              { form: 'Powders', value: 31200, count: 160 },
+                              { form: 'Drops', value: 23200, count: 123 },
+                              { form: 'Inhalers', value: 21100, count: 105 },
+                              { form: 'Containers', value: 46000, count: 256 },
+                              { form: 'General', value: 35000, count: 142 },
+                              { form: 'Surgicals', value: 28800, count: 131 }
+                            ].map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                      <div className="mt-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
+                        {[
+                          { form: 'Tablets', value: 94000, count: 533 },
+                          { form: 'Liquids', value: 70000, count: 377 },
+                          { form: 'Injection', value: 57500, count: 237 },
+                          { form: 'Ointments', value: 38500, count: 197 },
+                          { form: 'Powders', value: 31200, count: 160 },
+                          { form: 'Drops', value: 23200, count: 123 },
+                          { form: 'Inhalers', value: 21100, count: 105 },
+                          { form: 'Containers', value: 46000, count: 256 },
+                          { form: 'General', value: 35000, count: 142 },
+                          { form: 'Surgicals', value: 28800, count: 131 }
+                        ].map((form, idx) => (
+                          <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+                            <div className="d-flex align-items-center">
+                              <div
+                                style={{
+                                  width: '12px',
+                                  height: '12px',
+                                  backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
+                                  borderRadius: '2px',
+                                  marginRight: '8px'
+                                }}
+                              />
+                              <span className="fw-semibold">{form.form}</span>
+                            </div>
+                            <div className="text-end">
+                              <div className="fw-bold text-success">₹{form.value.toLocaleString()}</div>
+                              <div className="text-muted small">{form.count} items</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="text-center mt-3 text-muted small">
+                        <i className="fas fa-info-circle me-1"></i>
+                        Click on any deviation segment to see specific breakdown
+                      </div>
                     </div>
-                    <div className="text-center mt-3 text-muted small">
-                      <i className="fas fa-info-circle me-1"></i>
-                      Click on any deviation segment to see specific breakdown
-                    </div>
-                  </div>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+                  )}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
         )}
       </Modal.Body>
       <Modal.Footer className="bg-light">

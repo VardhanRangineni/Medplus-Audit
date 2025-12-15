@@ -1,14 +1,27 @@
 import React, { useMemo, useState } from 'react';
-import { Modal, Container, Row, Col, Card, Table, Badge, Form, Button, Dropdown } from 'react-bootstrap';
-import { utils, writeFile } from 'xlsx';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import { Modal, Container, Row, Col, Card, Table, Badge, Form, Button } from 'react-bootstrap';
 import AuditSpecificDetailModal from './AuditSpecificDetailModal';
 
 const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
     const [timeRange, setTimeRange] = useState('All-time');
     const [selectedAudit, setSelectedAudit] = useState(null);
     const [showAuditDetail, setShowAuditDetail] = useState(false);
+    const [sortConfig, setSortConfig] = useState({ key: 'AUDIT_ID', direction: 'ascending' });
+
+    const requestSort = (key) => {
+        let direction = 'ascending';
+        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+            direction = 'descending';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const getSortIcon = (key) => {
+        if (sortConfig.key !== key) return <i className="fas fa-sort text-muted ms-1 small"></i>;
+        return sortConfig.direction === 'ascending'
+            ? <i className="fas fa-sort-up text-primary ms-1 small"></i>
+            : <i className="fas fa-sort-down text-primary ms-1 small"></i>;
+    };
 
     // Filter data for this supervisor
     const supervisorRecords = useMemo(() => {
@@ -37,8 +50,24 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                 }
             });
         }
-        return filtered.sort((a, b) => b.AuditDate - a.AuditDate);
+        return filtered;
     }, [supervisorId, allData, timeRange]);
+
+    const sortedRecords = useMemo(() => {
+        const sorted = [...supervisorRecords];
+        if (sortConfig.key) {
+            sorted.sort((a, b) => {
+                if (a[sortConfig.key] < b[sortConfig.key]) {
+                    return sortConfig.direction === 'ascending' ? -1 : 1;
+                }
+                if (a[sortConfig.key] > b[sortConfig.key]) {
+                    return sortConfig.direction === 'ascending' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        return sorted;
+    }, [supervisorRecords, sortConfig]);
 
     // Specific Supervisor Details (Name from first record)
     const supervisorName = supervisorRecords.length > 0 ? supervisorRecords[0].SupervisorName : 'Unknown';
@@ -87,136 +116,6 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         return { totalAudits, totalSKUs, totalPIDs, statusBreakdown, deviations };
     }, [supervisorRecords]);
 
-    const handleDownloadExcel = () => {
-        const wb = utils.book_new();
-
-        // 1. Summary Sheet
-        const summaryData = [
-            ["Supervisor Name", supervisorName],
-            ["Supervisor ID", supervisorId],
-            ["Generated On", new Date().toLocaleString()],
-            [],
-            ["Metric", "Value"],
-            ["Total Audits", metrics.totalAudits],
-            ["Total SKUs", metrics.totalSKUs],
-            ["Total PIDs", metrics.totalPIDs],
-            [],
-            ["Status Breakdown", "Count"],
-            ["Completed", metrics.statusBreakdown.Completed],
-            ["In-Progress", metrics.statusBreakdown.InProgress],
-            ["Pending", metrics.statusBreakdown.Pending],
-            ["Created", metrics.statusBreakdown.Created],
-            [],
-            ["Deviation Summary", "Count", "Qty", "Value"],
-            ["Appeared", metrics.deviations.appeared.count, metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
-            ["Matched", metrics.deviations.matched.count, metrics.deviations.matched.qty, metrics.deviations.matched.value],
-            ["Revised", metrics.deviations.revised.count, metrics.deviations.revised.qty, metrics.deviations.revised.value],
-            ["In-Progress", metrics.deviations.pending.count, metrics.deviations.pending.qty, metrics.deviations.pending.value],
-        ];
-        const wsSummary = utils.aoa_to_sheet(summaryData);
-
-        // Set column widths for Summary
-        wsSummary['!cols'] = [
-            { wch: 25 }, // Metric
-            { wch: 20 }, // Value / Count
-            { wch: 15 }, // Qty
-            { wch: 15 }  // Value
-        ];
-
-        utils.book_append_sheet(wb, wsSummary, "Summary");
-
-        // 2. Detailed Data Sheet
-        const detailedData = supervisorRecords.map(r => ({
-            "Audit ID": r.AUDIT_ID,
-            "Store Name": r.StoreName,
-            "Date": new Date(r.AuditDate).toLocaleDateString('en-GB'),
-            "Job Type": r.AuditJobType,
-            "Status": r.Status,
-            "Allocated SKUs": r.AuditorAllottedSKUs,
-            "Allocated PIDs": r.AuditorAllottedPIDs,
-            "Audit Completion %": r.CompletionPercent,
-            "Pending Approvals": r.PendingCount
-        }));
-        const wsDetails = utils.json_to_sheet(detailedData);
-
-        // Set column widths for Details
-        wsDetails['!cols'] = [
-            { wch: 15 }, // Audit ID
-            { wch: 30 }, // Store Name
-            { wch: 15 }, // Date
-            { wch: 25 }, // Job Type
-            { wch: 15 }, // Status
-            { wch: 15 }, // SKUs
-            { wch: 15 }, // PIDs
-            { wch: 20 }, // Completion
-            { wch: 20 }  // Pending
-        ];
-
-        utils.book_append_sheet(wb, wsDetails, "Audit Details");
-
-        writeFile(wb, `Supervisor_${supervisorName.replace(/\s+/g, '_')}_metrics.xlsx`);
-    };
-
-    const handleDownloadPDF = () => {
-        const doc = new jsPDF();
-
-        // Title
-        doc.setFontSize(16);
-        doc.text("Supervisor Performance Report", 14, 20);
-
-        doc.setFontSize(10);
-        doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
-        doc.text(`Supervisor: ${supervisorName} (${supervisorId})`, 14, 34);
-
-        // Metrics Table
-        autoTable(doc, {
-            startY: 40,
-            head: [['Category', 'Details']],
-            body: [
-                ['Total Audits', metrics.totalAudits],
-                ['Total SKUs', metrics.totalSKUs.toLocaleString()],
-                ['Total PIDs', metrics.totalPIDs.toLocaleString()],
-                ['Completed Audits', metrics.statusBreakdown.Completed],
-                ['In-Progress Audits', metrics.statusBreakdown.InProgress],
-            ],
-            theme: 'striped',
-            headStyles: { fillColor: [41, 128, 185] }
-        });
-
-        // Deviation Summary Table
-        autoTable(doc, {
-            startY: doc.lastAutoTable.finalY + 10,
-            head: [['Deviation Stage', 'Count', 'Qty', 'Value (INR)']],
-            body: [
-                ['Appeared', metrics.deviations.appeared.count, metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
-                ['Matched', metrics.deviations.matched.count, metrics.deviations.matched.qty, metrics.deviations.matched.value],
-                ['Revised', metrics.deviations.revised.count, metrics.deviations.revised.qty, metrics.deviations.revised.value],
-                ['In-Progress', metrics.deviations.pending.count, metrics.deviations.pending.qty, metrics.deviations.pending.value],
-            ],
-            theme: 'grid',
-            headStyles: { fillColor: [243, 156, 18] }
-        });
-
-        // Audit History Table
-        autoTable(doc, {
-            startY: doc.lastAutoTable.finalY + 10,
-            head: [['Audit ID', 'Store', 'Date', 'Status', 'SKUs', 'Pending']],
-            body: supervisorRecords.map(r => [
-                r.AUDIT_ID,
-                r.StoreName,
-                new Date(r.AuditDate).toLocaleDateString('en-GB'),
-                r.Status,
-                r.AuditorAllottedSKUs,
-                r.PendingCount
-            ]),
-            theme: 'plain',
-            styles: { fontSize: 8 },
-            headStyles: { fillColor: [52, 73, 94], textColor: 255 }
-        });
-
-        doc.save(`Supervisor_${supervisorName.replace(/\s+/g, '_')}_Report.pdf`);
-    };
-
     // Format Date
     const formatDate = (timestamp) => {
         if (!timestamp) return '-';
@@ -242,28 +141,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                             <Modal.Title className="fw-bold mb-0 h5">{supervisorName}</Modal.Title>
                             <small className="text-muted">ID: {supervisorId}</small>
                         </div>
-                        <div className="d-flex gap-2">
-                            <Dropdown>
-                                <Dropdown.Toggle
-                                    size="sm"
-                                    className="d-flex align-items-center gap-2 fw-bold shadow-sm"
-                                    style={{ backgroundColor: '#0dcaf0', color: 'white', border: 'none' }}
-                                    id="download-dropdown"
-                                >
-                                    <i className="fas fa-download"></i> Download Report
-                                </Dropdown.Toggle>
-
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={handleDownloadExcel}>
-                                        <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={handleDownloadPDF}>
-                                        <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-
-                            <Form.Select size="sm" value={timeRange} onChange={(e) => setTimeRange(e.target.value)} style={{ width: '200px' }}>
+                        <div>
+                            <Form.Select size="sm" value={timeRange} onChange={(e) => setTimeRange(e.target.value)} style={{ width: '150px' }}>
                                 <option>All-time</option>
                                 <option>Oct 2025 - Dec 2025</option>
                                 <option>Jul 2025 - Sep 2025</option>
@@ -409,19 +288,37 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     <Card className="border-0 shadow-sm mb-4">
                         <Card.Body className="p-0">
                             <Table hover responsive className="mb-0 hover-scale-row">
-                                <thead className="bg-light text-muted small text-uppercase">
+                                <thead
+                                    className="bg-light text-muted small text-uppercase sticky-top"
+                                    style={{ top: 0, zIndex: 1 }}
+                                >
+
                                     <tr>
-                                        <th className="border-0 py-3 ps-4">Audit ID</th>
-                                        <th className="border-0 py-3">Store</th>
-                                        <th className="border-0 py-3">Date</th>
-                                        <th className="border-0 py-3">Job Type</th>
-                                        <th className="border-0 py-3">Status</th>
-                                        <th className="border-0 py-3 text-end">SKUs</th>
-                                        <th className="border-0 py-3 text-end pe-4">PIDs</th>
+                                        <th className="border-0 py-3 ps-4" onClick={() => requestSort('AUDIT_ID')} style={{ cursor: 'pointer' }}>
+                                            Audit ID {getSortIcon('AUDIT_ID')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('StoreName')} style={{ cursor: 'pointer' }}>
+                                            Store {getSortIcon('StoreName')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('AuditDate')} style={{ cursor: 'pointer' }}>
+                                            Date {getSortIcon('AuditDate')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('AuditJobType')} style={{ cursor: 'pointer' }}>
+                                            Job Type {getSortIcon('AuditJobType')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('Status')} style={{ cursor: 'pointer' }}>
+                                            Status {getSortIcon('Status')}
+                                        </th>
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedSKUs')} style={{ cursor: 'pointer' }}>
+                                            SKUs {getSortIcon('AuditorAllottedSKUs')}
+                                        </th>
+                                        <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AuditorAllottedPIDs')} style={{ cursor: 'pointer' }}>
+                                            PIDs {getSortIcon('AuditorAllottedPIDs')}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {supervisorRecords.map((audit, idx) => (
+                                    {sortedRecords.map((audit, idx) => (
                                         <tr
                                             key={idx}
                                             className="align-middle"

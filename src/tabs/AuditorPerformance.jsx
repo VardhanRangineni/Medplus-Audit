@@ -7,7 +7,23 @@ import './AuditorPerformance.css';
 
 const AuditorPerformance = ({ filters = {} }) => {
   const [modalConfig, setModalConfig] = useState({ show: false, title: '', data: [], columns: [] });
-  const [showAllModal, setShowAllModal] = useState(false);
+
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) return <i className="fas fa-sort text-muted ms-1 small"></i>;
+    return sortConfig.direction === 'ascending'
+      ? <i className="fas fa-sort-up text-primary ms-1 small"></i>
+      : <i className="fas fa-sort-down text-primary ms-1 small"></i>;
+  };
 
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
@@ -82,12 +98,25 @@ const AuditorPerformance = ({ filters = {} }) => {
       };
     });
 
-    // 3. Sort by Allotted SKUs Descending
-    processedList.sort((a, b) => b.allottedSKUs - a.allottedSKUs);
+    // 3. Sort
+    if (sortConfig.key) {
+      processedList.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    } else {
+      // Default Sort by Allotted SKUs Descending
+      processedList.sort((a, b) => b.allottedSKUs - a.allottedSKUs);
+    }
 
     // 4. Return Full List
     return processedList;
-  }, []); // Dependency array empty as we are using static imported data
+  }, [sortConfig]); // Re-sort when config changes
 
   // Calculate overall performance metrics for cards
   const performanceMetrics = useMemo(() => {
@@ -146,17 +175,49 @@ const AuditorPerformance = ({ filters = {} }) => {
   };
 
   const renderTableRows = (data) => (
-    <Table hover className="mb-0 auditor-table">
-      <thead className="bg-light sticky-top" style={{ top: 0, zIndex: 1, position: 'sticky' }}>
-        <tr>
-          <th>Auditor ID</th>
-          <th>Auditor Name</th>
-          <th>Allotted SKUs</th>
-          <th>Completed SKUs</th>
-          <th>Completion %</th>
-          <th>Avg Time/SKU</th>
-          <th>Match Rate %</th>
-          <th>Edit Rate %</th>
+    <Table hover className="mb-0 auditor-table align-middle">
+      <thead className="bg-light sticky-top" style={{ top: 0, zIndex: 20, position: 'sticky' }}>
+        <tr className="align-middle">
+          <th onClick={() => requestSort('auditorId')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Auditor ID {getSortIcon('auditorId')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('auditorName')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Auditor Name {getSortIcon('auditorName')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('allottedSKUs')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Allotted SKUs {getSortIcon('allottedSKUs')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('completedSKUs')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Completed SKUs {getSortIcon('completedSKUs')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('completionRate')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Completion % {getSortIcon('completionRate')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('avgTime')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Avg Time/SKU {getSortIcon('avgTime')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('matchRate')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Match Rate % {getSortIcon('matchRate')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('editRate')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Edit Rate % {getSortIcon('editRate')}
+            </div>
+          </th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -265,62 +326,8 @@ const AuditorPerformance = ({ filters = {} }) => {
         </Col>
       </Row>
 
-      {/* Productivity Summary Table */}
-      <Row>
-        <Col>
-          <Card className="border-0 shadow-sm">
-            <Card.Header className="bg-white border-0 py-3">
-              <h5 className="mb-0 fw-bold">
-                <i className="fas fa-users me-2 text-primary"></i>
-                Auditor Productivity Summary
-              </h5>
-              <small className="text-muted">Click on any auditor to view detailed performance metrics</small>
-            </Card.Header>
-            <Card.Body className="p-0">
-              <div className="table-responsive">
-                {renderTableRows(auditorData.slice(0, 5))}
-              </div>
-            </Card.Body>
-            <Card.Footer className="bg-white border-0 text-center py-3">
-              <Button
-                variant="link"
-                className="text-decoration-none fw-bold"
-                onClick={() => setShowAllModal(true)}
-              >
-                VIEW MORE <i className="fas fa-arrow-right ms-2"></i>
-              </Button>
-            </Card.Footer>
-          </Card>
-        </Col>
-      </Row>
-
-      {/* All Auditors Modal */}
-      <Modal
-        show={showAllModal}
-        onHide={() => setShowAllModal(false)}
-        size="xl"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <i className="fas fa-users me-2 text-primary"></i>
-            All Auditors Performance
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="p-0" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
-          <div className="table-responsive">
-            {renderTableRows(auditorData)}
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowAllModal(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
       {/* Performance Insights */}
-      <Row className="mt-4">
+      <Row className="mb-4">
         <Col md={6}>
           <Card className="border-0 shadow-sm">
             <Card.Header className="bg-white border-0 py-3">
@@ -331,7 +338,7 @@ const AuditorPerformance = ({ filters = {} }) => {
             </Card.Header>
             <Card.Body>
               <div className="performance-list">
-                {auditorData
+                {[...auditorData]
                   .sort((a, b) => b.completionRate - a.completionRate)
                   .slice(0, 3)
                   .map((auditor, idx) => (
@@ -358,7 +365,7 @@ const AuditorPerformance = ({ filters = {} }) => {
             </Card.Header>
             <Card.Body>
               <div className="performance-list">
-                {auditorData
+                {[...auditorData]
                   .sort((a, b) => a.completionRate - b.completionRate)
                   .slice(0, 3)
                   .map((auditor, idx) => (
@@ -376,6 +383,30 @@ const AuditorPerformance = ({ filters = {} }) => {
         </Col>
       </Row>
 
+      {/* Productivity Summary Table */}
+      <Row>
+        <Col>
+          <Card className="border-0 shadow-sm">
+            <Card.Header className="bg-white border-0 py-3">
+              <h5 className="mb-0 fw-bold">
+                <i className="fas fa-users me-2 text-primary"></i>
+                Auditor Productivity Summary
+              </h5>
+              <small className="text-muted">Click on any auditor to view detailed performance metrics</small>
+            </Card.Header>
+            <Card.Body className="p-0">
+              <div className="table-responsive" style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                {renderTableRows(auditorData)}
+              </div>
+            </Card.Body>
+            {/* View More Removed - Showing All Records */}
+          </Card>
+
+        </Col>
+      </Row>
+
+
+
       {/* Detailed Auditor Modal */}
       <AuditorDetailModal
         show={showAuditorDetail}
@@ -383,7 +414,7 @@ const AuditorPerformance = ({ filters = {} }) => {
         auditorId={selectedAuditorId}
         allData={rawAuditData}
       />
-    </Container>
+    </Container >
   );
 };
 

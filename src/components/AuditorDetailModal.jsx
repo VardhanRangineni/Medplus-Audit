@@ -6,10 +6,72 @@ import autoTable from 'jspdf-autotable';
 import AuditSpecificDetailModal from './AuditSpecificDetailModal';
 
 const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
-    const [fromDate, setFromDate] = useState('2024-12-15');
-    const [toDate, setToDate] = useState('2025-12-15');
+    // State for Date Selection
+    // Initialize defaults: 1 year ago to today
+    const startDefault = new Date();
+    startDefault.setFullYear(startDefault.getFullYear() - 1);
+    const startStr = startDefault.toISOString().split('T')[0];
+    const endStr = new Date().toISOString().split('T')[0];
+
+    const [fromDate, setFromDate] = useState(startStr);
+    const [toDate, setToDate] = useState(endStr);
+    // Store last valid range to revert on invalid selection
+    const [lastValidRange, setLastValidRange] = useState({ start: startStr, end: endStr });
+    const [dateWarning, setDateWarning] = useState('');
+
     const [selectedAudit, setSelectedAudit] = useState(null);
     const [showAuditDetail, setShowAuditDetail] = useState(false);
+
+    // Handle Date Changes with Validation
+    const handleDateChange = (type, value) => {
+        setDateWarning(''); // Clear previous warnings
+        let newStart = fromDate;
+        let newEnd = toDate;
+
+        if (type === 'start') newStart = value;
+        else newEnd = value;
+
+        // 1. Basic Update
+        if (type === 'start') setFromDate(value);
+        else setToDate(value);
+
+        // 2. Validation triggers only when BOTH dates are present
+        if (newStart && newEnd) {
+            const startD = new Date(newStart);
+            const endD = new Date(newEnd);
+
+            // Check if Start is after End
+            if (startD > endD) {
+                setDateWarning('From Date cannot be after To Date');
+                setTimeout(() => {
+                    setFromDate(lastValidRange.start);
+                    setToDate(lastValidRange.end);
+                    setDateWarning('');
+                }, 2000);
+                return;
+            }
+
+            // Check Interval > 1 Year (365 days)
+            const oneYearms = 365 * 24 * 60 * 60 * 1000;
+            const diff = endD - startD;
+
+            if (diff > oneYearms) {
+                setDateWarning("Interval can't be more than 1 year");
+                setTimeout(() => {
+                    setFromDate(lastValidRange.start);
+                    setToDate(lastValidRange.end);
+                    setDateWarning('');
+                }, 2000);
+                return;
+            }
+
+            // If Valid, update the "Last Valid" state
+            setLastValidRange({ start: newStart, end: newEnd });
+        } else {
+            // Intermediate state is valid (clearing filter)
+            setLastValidRange({ start: newStart, end: newEnd });
+        }
+    };
 
     // Filter data for this auditor
     const auditorRecords = useMemo(() => {
@@ -20,11 +82,17 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             const startStr = fromDate;
             const endStr = toDate;
 
-            filtered = filtered.filter(d => {
-                // Ensure d.AuditDate is handled correctly (it might be a timestamp or string)
-                const recordDateStr = new Date(d.AuditDate).toISOString().split('T')[0];
-                return recordDateStr >= startStr && recordDateStr <= endStr;
-            });
+            // Basic validity check
+            const startD = new Date(startStr);
+            const endD = new Date(endStr);
+
+            if (!isNaN(startD) && !isNaN(endD)) {
+                filtered = filtered.filter(d => {
+                    // Ensure d.AuditDate is handled correctly
+                    const recordDateStr = new Date(d.AuditDate).toISOString().split('T')[0];
+                    return recordDateStr >= startStr && recordDateStr <= endStr;
+                });
+            }
         }
         return filtered.sort((a, b) => b.AuditDate - a.AuditDate);
     }, [auditorId, allData, fromDate, toDate]);
@@ -253,25 +321,46 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                 </Dropdown.Menu>
                             </Dropdown>
 
-                            <div className="d-flex align-items-center gap-1">
-                                <span className="fw-bold text-nowrap" style={{ fontSize: '0.9rem' }}>From:</span>
-                                <Form.Control
-                                    type="date"
-                                    size="sm"
-                                    value={fromDate}
-                                    onChange={(e) => setFromDate(e.target.value)}
-                                    style={{ width: '130px' }}
-                                />
-                            </div>
-                            <div className="d-flex align-items-center gap-1">
-                                <span className="fw-bold text-nowrap" style={{ fontSize: '0.9rem' }}>To:</span>
-                                <Form.Control
-                                    type="date"
-                                    size="sm"
-                                    value={toDate}
-                                    onChange={(e) => setToDate(e.target.value)}
-                                    style={{ width: '130px' }}
-                                />
+                            <div className="d-flex align-items-center gap-2 position-relative">
+                                {/* Warning Message Overlay */}
+                                {dateWarning && (
+                                    <div className="position-absolute px-2 py-1 bg-danger text-white rounded small shadow"
+                                        style={{ top: '100%', right: 0, zIndex: 10, whiteSpace: 'nowrap', marginTop: '4px', fontSize: '0.75rem' }}>
+                                        <i className="fas fa-exclamation-circle me-1"></i> {dateWarning}
+                                    </div>
+                                )}
+
+                                <div className="d-flex align-items-center">
+                                    <div className="input-group input-group-sm">
+                                        <span className="input-group-text bg-white border-end-0 text-muted ps-2 pe-1">
+                                            <i className="fas fa-calendar-alt"></i>
+                                        </span>
+                                        <Form.Control
+                                            type="date"
+                                            placeholder="From date"
+                                            className="border-start-0 ps-1"
+                                            value={fromDate}
+                                            onChange={(e) => handleDateChange('start', e.target.value)}
+                                            style={{ width: '135px', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                                        />
+                                    </div>
+                                </div>
+                                <span className="text-muted small fw-bold">-</span>
+                                <div className="d-flex align-items-center">
+                                    <div className="input-group input-group-sm">
+                                        <span className="input-group-text bg-white border-end-0 text-muted ps-2 pe-1">
+                                            <i className="fas fa-calendar-alt"></i>
+                                        </span>
+                                        <Form.Control
+                                            type="date"
+                                            placeholder="To date"
+                                            className="border-start-0 ps-1"
+                                            value={toDate}
+                                            onChange={(e) => handleDateChange('end', e.target.value)}
+                                            style={{ width: '135px', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

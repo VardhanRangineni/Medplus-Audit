@@ -7,17 +7,82 @@ import AuditSpecificDetailModal from './AuditSpecificDetailModal';
 
 const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
 
+    // State for Date Selection
     // Initialize defaults: 1 year ago to today
-    const today = new Date().toISOString().split('T')[0];
-    const lastYear = new Date();
-    lastYear.setFullYear(lastYear.getFullYear() - 1);
-    const oneYearAgo = lastYear.toISOString().split('T')[0];
+    const startDefault = new Date();
+    startDefault.setFullYear(startDefault.getFullYear() - 1);
+    const startStr = startDefault.toISOString().split('T')[0];
+    const endStr = new Date().toISOString().split('T')[0];
 
-    const [startDate, setStartDate] = useState(oneYearAgo);
-    const [endDate, setEndDate] = useState(today);
+    const [startDate, setStartDate] = useState(startStr);
+    const [endDate, setEndDate] = useState(endStr);
+    // Store last valid range to revert on invalid selection
+    const [lastValidRange, setLastValidRange] = useState({ start: startStr, end: endStr });
+    const [dateWarning, setDateWarning] = useState('');
+
     const [selectedAudit, setSelectedAudit] = useState(null);
     const [showAuditDetail, setShowAuditDetail] = useState(false);
     const [sortConfig, setSortConfig] = useState({ key: 'AUDIT_ID', direction: 'ascending' });
+
+    // Handle Date Changes with Validation
+    const handleDateChange = (type, value) => {
+        setDateWarning(''); // Clear previous warnings
+        let newStart = startDate;
+        let newEnd = endDate;
+
+        if (type === 'start') newStart = value;
+        else newEnd = value;
+
+        // 1. Basic Update (allow single inputs to be typed)
+        if (type === 'start') setStartDate(value);
+        else setEndDate(value);
+
+        // 2. Validation triggers only when BOTH dates are present (or being set)
+        if (newStart && newEnd) {
+            const startD = new Date(newStart);
+            const endD = new Date(newEnd);
+
+            // Check if Start is after End
+            if (startD > endD) {
+                // If user is editing Start and it becomes > End, just let them (or maybe reset End?)
+                // Requirement says: "Revert... on invalid selection".
+                // Usually for Start > End, we might swap or error.
+                // Text says "From Date must always be earlier than or equal to To Date".
+                // Let's treat this strictly.
+                setDateWarning('From Date cannot be after To Date');
+                // Revert to known last valid
+                setTimeout(() => {
+                    setStartDate(lastValidRange.start);
+                    setEndDate(lastValidRange.end);
+                    setDateWarning('');
+                }, 2000);
+                return;
+            }
+
+            // Check Interval > 1 Year (365 days)
+            const oneYearms = 365 * 24 * 60 * 60 * 1000;
+            const diff = endD - startD;
+
+            if (diff > oneYearms) {
+                setDateWarning("Interval can't be more than 1 year");
+                // Revert
+                setTimeout(() => {
+                    setStartDate(lastValidRange.start);
+                    setEndDate(lastValidRange.end);
+                    setDateWarning('');
+                }, 2000);
+                return;
+            }
+
+            // If Valid, update the "Last Valid" state
+            setLastValidRange({ start: newStart, end: newEnd });
+        } else {
+            // If one is empty, it's technically valid intermediate state, but not a "range" yet.
+            // We can accept it effectively clearing the filter.
+            setLastValidRange({ start: newStart, end: newEnd });
+        }
+    };
+
 
     const requestSort = (key) => {
         let direction = 'ascending';
@@ -43,13 +108,17 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         if (startDate && endDate) {
             const start = new Date(startDate);
             const end = new Date(endDate);
-            // Set end date to end of day to include records on that day
-            end.setHours(23, 59, 59, 999);
+            // Validation ensures start <= end and diff <= 1 year
+            // Double check validity before filtering to be safe
+            if (!isNaN(start) && !isNaN(end)) {
+                // Set end date to end of day to include records on that day
+                end.setHours(23, 59, 59, 999);
 
-            filtered = filtered.filter(d => {
-                const date = new Date(d.AuditDate);
-                return date >= start && date <= end;
-            });
+                filtered = filtered.filter(d => {
+                    const date = new Date(d.AuditDate);
+                    return date >= start && date <= end;
+                });
+            }
         }
         return filtered;
     }, [supervisorId, allData, startDate, endDate]);
@@ -270,25 +339,46 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                     </Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
-                            <div className="d-flex align-items-center gap-1">
-                                <span className="small fw-bold text-muted">From:</span>
-                                <Form.Control
-                                    type="date"
-                                    size="sm"
-                                    value={startDate}
-                                    onChange={(e) => setStartDate(e.target.value)}
-                                    style={{ width: '130px' }}
-                                />
-                            </div>
-                            <div className="d-flex align-items-center gap-1">
-                                <span className="small fw-bold text-muted">To:</span>
-                                <Form.Control
-                                    type="date"
-                                    size="sm"
-                                    value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                    style={{ width: '130px' }}
-                                />
+                            <div className="d-flex align-items-center gap-2 position-relative">
+                                {/* Warning Message Overlay */}
+                                {dateWarning && (
+                                    <div className="position-absolute px-2 py-1 bg-danger text-white rounded small shadow"
+                                        style={{ top: '100%', right: 0, zIndex: 10, whiteSpace: 'nowrap', marginTop: '4px', fontSize: '0.75rem' }}>
+                                        <i className="fas fa-exclamation-circle me-1"></i> {dateWarning}
+                                    </div>
+                                )}
+
+                                <div className="d-flex align-items-center">
+                                    <div className="input-group input-group-sm">
+                                        <span className="input-group-text bg-white border-end-0 text-muted ps-2 pe-1">
+                                            <i className="fas fa-calendar-alt"></i>
+                                        </span>
+                                        <Form.Control
+                                            type="date"
+                                            placeholder="From date"
+                                            className="border-start-0 ps-1"
+                                            value={startDate}
+                                            onChange={(e) => handleDateChange('start', e.target.value)}
+                                            style={{ width: '135px', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                                        />
+                                    </div>
+                                </div>
+                                <span className="text-muted small fw-bold">-</span>
+                                <div className="d-flex align-items-center">
+                                    <div className="input-group input-group-sm">
+                                        <span className="input-group-text bg-white border-end-0 text-muted ps-2 pe-1">
+                                            <i className="fas fa-calendar-alt"></i>
+                                        </span>
+                                        <Form.Control
+                                            type="date"
+                                            placeholder="To date"
+                                            className="border-start-0 ps-1"
+                                            value={endDate}
+                                            onChange={(e) => handleDateChange('end', e.target.value)}
+                                            style={{ width: '135px', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

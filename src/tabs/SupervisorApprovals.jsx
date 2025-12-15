@@ -8,7 +8,7 @@ import './SupervisorApprovals.css';
 
 // Reusable Table Component for Supervisors
 const SupervisorTable = ({ data, onRowClick }) => (
-  <Table hover className="mb-0">
+  <Table hover className="mb-0 hover-scale-row">
     <thead className="bg-light">
       <tr>
         <th>Supervisor</th>

@@ -6,7 +6,8 @@ import autoTable from 'jspdf-autotable';
 import AuditSpecificDetailModal from './AuditSpecificDetailModal';
 
 const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
-    const [timeRange, setTimeRange] = useState('All-time');
+    const [fromDate, setFromDate] = useState('2024-12-15');
+    const [toDate, setToDate] = useState('2025-12-15');
     const [selectedAudit, setSelectedAudit] = useState(null);
     const [showAuditDetail, setShowAuditDetail] = useState(false);
 
@@ -15,30 +16,18 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
         if (!auditorId || !allData) return [];
         let filtered = allData.filter(d => d.AuditorID === auditorId);
 
-        if (timeRange !== 'All-time') {
+        if (fromDate && toDate) {
+            const startStr = fromDate;
+            const endStr = toDate;
+
             filtered = filtered.filter(d => {
-                const date = new Date(d.AuditDate);
-                const month = date.getMonth(); // 0-11
-                const year = date.getFullYear();
-
-                if (year !== 2025) return false;
-
-                switch (timeRange) {
-                    case 'Oct 2025 - Dec 2025':
-                        return month >= 9 && month <= 11;
-                    case 'Jul 2025 - Sep 2025':
-                        return month >= 6 && month <= 8;
-                    case 'Apr 2025 - Jun 2025':
-                        return month >= 3 && month <= 5;
-                    case 'Jan 2025 - Mar 2025':
-                        return month >= 0 && month <= 2;
-                    default:
-                        return true;
-                }
+                // Ensure d.AuditDate is handled correctly (it might be a timestamp or string)
+                const recordDateStr = new Date(d.AuditDate).toISOString().split('T')[0];
+                return recordDateStr >= startStr && recordDateStr <= endStr;
             });
         }
         return filtered.sort((a, b) => b.AuditDate - a.AuditDate);
-    }, [auditorId, allData, timeRange]);
+    }, [auditorId, allData, fromDate, toDate]);
 
     // Specific Auditor Details (Name from first record)
     const auditorName = auditorRecords.length > 0 ? auditorRecords[0].AuditorName : 'Unknown';
@@ -96,6 +85,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             ["Auditor Name", auditorName],
             ["Auditor ID", auditorId],
             ["Generated On", new Date().toLocaleString()],
+            ["Period", `${fromDate} to ${toDate}`],
             [],
             ["Metric", "Value"],
             ["Total Audits", metrics.totalAudits],
@@ -166,10 +156,11 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
         doc.setFontSize(10);
         doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
         doc.text(`Auditor: ${auditorName} (${auditorId})`, 14, 34);
+        doc.text(`Period: ${fromDate} to ${toDate}`, 14, 40);
 
         // Metrics Table
         autoTable(doc, {
-            startY: 40,
+            startY: 46,
             head: [['Category', 'Details']],
             body: [
                 ['Total Audits', metrics.totalAudits],
@@ -241,7 +232,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Modal.Title className="fw-bold mb-0 h5">{auditorName}</Modal.Title>
                             <small className="text-muted">ID: {auditorId}</small>
                         </div>
-                        <div className="d-flex gap-2">
+                        <div className="d-flex gap-2 align-items-center">
                             <Dropdown>
                                 <Dropdown.Toggle
                                     size="sm"
@@ -261,13 +252,27 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                     </Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
-                            <Form.Select size="sm" value={timeRange} onChange={(e) => setTimeRange(e.target.value)} style={{ width: '200px' }}>
-                                <option>All-time</option>
-                                <option>Oct 2025 - Dec 2025</option>
-                                <option>Jul 2025 - Sep 2025</option>
-                                <option>Apr 2025 - Jun 2025</option>
-                                <option>Jan 2025 - Mar 2025</option>
-                            </Form.Select>
+
+                            <div className="d-flex align-items-center gap-1">
+                                <span className="fw-bold text-nowrap" style={{ fontSize: '0.9rem' }}>From:</span>
+                                <Form.Control
+                                    type="date"
+                                    size="sm"
+                                    value={fromDate}
+                                    onChange={(e) => setFromDate(e.target.value)}
+                                    style={{ width: '130px' }}
+                                />
+                            </div>
+                            <div className="d-flex align-items-center gap-1">
+                                <span className="fw-bold text-nowrap" style={{ fontSize: '0.9rem' }}>To:</span>
+                                <Form.Control
+                                    type="date"
+                                    size="sm"
+                                    value={toDate}
+                                    onChange={(e) => setToDate(e.target.value)}
+                                    style={{ width: '130px' }}
+                                />
+                            </div>
                         </div>
                     </div>
                 </Modal.Header>

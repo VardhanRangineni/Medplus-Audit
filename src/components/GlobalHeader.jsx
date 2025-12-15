@@ -4,7 +4,7 @@ import './GlobalHeader.css';
 
 const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
   const [filters, setFilters] = useState({
-    financialYear: 'All-time',
+    financialYear: '2025-26',
     state: '',
     store: '',
     auditJobType: '',
@@ -64,19 +64,19 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
           <Col md={2}>
             <Form.Group>
               <Form.Label className="small fw-semibold mb-1">
-                Time Period <span className="text-danger">*</span>
+                Financial year <span className="text-danger">*</span>
               </Form.Label>
               <Form.Select
                 size="sm"
                 value={filters.financialYear}
                 onChange={(e) => handleFilterChange('financialYear', e.target.value)}
-                className="filter-select"
+                className="filter-select text-center fw-bold"
+                style={{ cursor: 'pointer' }}
               >
-                <option value="All-time">All-time</option>
-                <option value="Oct 2025 - Dec 2025">Oct 2025 - Dec 2025</option>
-                <option value="Jul 2025 - Sep 2025">Jul 2025 - Sep 2025</option>
-                <option value="Apr 2025 - Jun 2025">Apr 2025 - Jun 2025</option>
-                <option value="Jan 2025 - Mar 2025">Jan 2025 - Mar 2025</option>
+                <option value="2025-26">2025–26</option>
+                <option value="2024-25">2024–25</option>
+                <option value="2023-24">2023–24</option>
+                <option value="2022-23">2022–23</option>
               </Form.Select>
             </Form.Group>
           </Col>

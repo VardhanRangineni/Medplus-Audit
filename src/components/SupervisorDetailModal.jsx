@@ -1,9 +1,20 @@
 import React, { useMemo, useState } from 'react';
-import { Modal, Container, Row, Col, Card, Table, Badge, Form, Button } from 'react-bootstrap';
+import { Modal, Container, Row, Col, Card, Table, Badge, Form, Button, Dropdown } from 'react-bootstrap';
+import { utils, writeFile } from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import AuditSpecificDetailModal from './AuditSpecificDetailModal';
 
 const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
-    const [timeRange, setTimeRange] = useState('All-time');
+
+    // Initialize defaults: 1 year ago to today
+    const today = new Date().toISOString().split('T')[0];
+    const lastYear = new Date();
+    lastYear.setFullYear(lastYear.getFullYear() - 1);
+    const oneYearAgo = lastYear.toISOString().split('T')[0];
+
+    const [startDate, setStartDate] = useState(oneYearAgo);
+    const [endDate, setEndDate] = useState(today);
     const [selectedAudit, setSelectedAudit] = useState(null);
     const [showAuditDetail, setShowAuditDetail] = useState(false);
     const [sortConfig, setSortConfig] = useState({ key: 'AUDIT_ID', direction: 'ascending' });
@@ -28,30 +39,20 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         if (!supervisorId || !allData) return [];
         let filtered = allData.filter(d => d.SupervisorID === supervisorId);
 
-        if (timeRange !== 'All-time') {
+
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            // Set end date to end of day to include records on that day
+            end.setHours(23, 59, 59, 999);
+
             filtered = filtered.filter(d => {
                 const date = new Date(d.AuditDate);
-                const month = date.getMonth(); // 0-11
-                const year = date.getFullYear();
-
-                if (year !== 2025) return false;
-
-                switch (timeRange) {
-                    case 'Oct 2025 - Dec 2025':
-                        return month >= 9 && month <= 11;
-                    case 'Jul 2025 - Sep 2025':
-                        return month >= 6 && month <= 8;
-                    case 'Apr 2025 - Jun 2025':
-                        return month >= 3 && month <= 5;
-                    case 'Jan 2025 - Mar 2025':
-                        return month >= 0 && month <= 2;
-                    default:
-                        return true;
-                }
+                return date >= start && date <= end;
             });
         }
         return filtered;
-    }, [supervisorId, allData, timeRange]);
+    }, [supervisorId, allData, startDate, endDate]);
 
     const sortedRecords = useMemo(() => {
         const sorted = [...supervisorRecords];
@@ -132,6 +133,114 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         }
     };
 
+    const handleDownloadExcel = () => {
+        const wb = utils.book_new();
+
+        // 1. Supervisor Summary Sheet
+        const summaryData = [
+            ["Supervisor Name", supervisorName],
+            ["Supervisor ID", supervisorId],
+            ["Date Range", `${formatDate(startDate)} - ${formatDate(endDate)}`],
+            [],
+            ["Metrics Summary"],
+            ["Total Audits", metrics.totalAudits],
+            ["Total SKUs", metrics.totalSKUs],
+            ["Total PIDs", metrics.totalPIDs],
+            [],
+            ["Status Breakdown"],
+            ["Completed", metrics.statusBreakdown.Completed],
+            ["In-Progress", metrics.statusBreakdown.InProgress],
+            ["Pending/Created", metrics.statusBreakdown.Pending + metrics.statusBreakdown.Created],
+            [],
+            ["Deviation Summary", "Count", "Qty", "Value"],
+            ["Appeared", metrics.deviations.appeared.count, metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
+            ["Matched", metrics.deviations.matched.count, metrics.deviations.matched.qty, metrics.deviations.matched.value],
+            ["Revised", metrics.deviations.revised.count, metrics.deviations.revised.qty, metrics.deviations.revised.value],
+            ["In-Progress/Pending", metrics.deviations.pending.count, metrics.deviations.pending.qty, metrics.deviations.pending.value],
+        ];
+        const wsSummary = utils.aoa_to_sheet(summaryData);
+        wsSummary['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 20 }];
+        utils.book_append_sheet(wb, wsSummary, "Supervisor Summary");
+
+        // 2. Audit History Sheet
+        const historyData = sortedRecords.map(r => ({
+            "Audit ID": r.AUDIT_ID,
+            "Store Name": r.StoreName,
+            "Date": formatDate(r.AuditDate),
+            "Job Type": r.AuditJobType,
+            "Status": r.Status,
+            "SKUs": r.AuditorAllottedSKUs,
+            "PIDs": r.AuditorAllottedPIDs
+        }));
+        const wsHistory = utils.json_to_sheet(historyData);
+        wsHistory['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }];
+        utils.book_append_sheet(wb, wsHistory, "Audit History");
+
+        writeFile(wb, `Supervisor_${supervisorId}_Report.xlsx`);
+    };
+
+    const handleDownloadPDF = () => {
+        const doc = new jsPDF();
+
+        // Title
+        doc.setFontSize(16);
+        doc.text(`Supervisor Report: ${supervisorName}`, 14, 20);
+
+        doc.setFontSize(10);
+        doc.text(`ID: ${supervisorId}`, 14, 28);
+        doc.text(`Date Range: ${formatDate(startDate)} - ${formatDate(endDate)}`, 14, 34);
+
+        // Metrics Summary Table
+        autoTable(doc, {
+            startY: 40,
+            head: [['Metric', 'Value']],
+            body: [
+                ['Total Audits', metrics.totalAudits],
+                ['Total SKUs', metrics.totalSKUs.toLocaleString()],
+                ['Total PIDs', metrics.totalPIDs.toLocaleString()],
+                ['Completed', metrics.statusBreakdown.Completed],
+                ['In-Progress', metrics.statusBreakdown.InProgress]
+            ],
+            theme: 'grid',
+            headStyles: { fillColor: [78, 84, 200] } // Matches the primary card gradient roughly
+        });
+
+        // Deviation Summary Table
+        autoTable(doc, {
+            startY: doc.lastAutoTable.finalY + 10,
+            head: [['Deviation Category', 'Count', 'Qty', 'Value (INR)']],
+            body: [
+                ['Appeared', metrics.deviations.appeared.count, metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
+                ['Matched', metrics.deviations.matched.count, metrics.deviations.matched.qty, metrics.deviations.matched.value],
+                ['Revised', metrics.deviations.revised.count, metrics.deviations.revised.qty, metrics.deviations.revised.value],
+                ['In-Progress', metrics.deviations.pending.count, metrics.deviations.pending.qty, metrics.deviations.pending.value],
+            ],
+            theme: 'striped',
+            headStyles: { fillColor: [41, 128, 185] }
+        });
+
+        // Audit History Table
+        if (sortedRecords.length > 0) {
+            autoTable(doc, {
+                startY: doc.lastAutoTable.finalY + 15,
+                head: [['Audit ID', 'Store', 'Date', 'Type', 'Status', 'SKUs', 'PIDs']],
+                body: sortedRecords.map(r => [
+                    r.AUDIT_ID,
+                    r.StoreName,
+                    formatDate(r.AuditDate),
+                    r.AuditJobType,
+                    r.Status,
+                    r.AuditorAllottedSKUs,
+                    r.AuditorAllottedPIDs
+                ]),
+                theme: 'striped',
+                headStyles: { fillColor: [52, 73, 94] }
+            });
+        }
+
+        doc.save(`Supervisor_${supervisorId}_Report.pdf`);
+    };
+
     return (
         <>
             <Modal show={show} onHide={onHide} size="xl" centered backdrop="static" className="supervisor-detail-modal">
@@ -141,14 +250,46 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                             <Modal.Title className="fw-bold mb-0 h5">{supervisorName}</Modal.Title>
                             <small className="text-muted">ID: {supervisorId}</small>
                         </div>
-                        <div>
-                            <Form.Select size="sm" value={timeRange} onChange={(e) => setTimeRange(e.target.value)} style={{ width: '150px' }}>
-                                <option>All-time</option>
-                                <option>Oct 2025 - Dec 2025</option>
-                                <option>Jul 2025 - Sep 2025</option>
-                                <option>Apr 2025 - Jun 2025</option>
-                                <option>Jan 2025 - Mar 2025</option>
-                            </Form.Select>
+                        <div className="d-flex align-items-center gap-2">
+                            <Dropdown>
+                                <Dropdown.Toggle
+                                    size="sm"
+                                    className="d-flex align-items-center gap-2 fw-bold shadow-sm"
+                                    style={{ backgroundColor: '#0dcaf0', color: 'white', border: 'none' }}
+                                    id="supervisor-download-dropdown"
+                                >
+                                    <i className="fas fa-download"></i> Download Report
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={handleDownloadExcel}>
+                                        <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={handleDownloadPDF}>
+                                        <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <div className="d-flex align-items-center gap-1">
+                                <span className="small fw-bold text-muted">From:</span>
+                                <Form.Control
+                                    type="date"
+                                    size="sm"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    style={{ width: '130px' }}
+                                />
+                            </div>
+                            <div className="d-flex align-items-center gap-1">
+                                <span className="small fw-bold text-muted">To:</span>
+                                <Form.Control
+                                    type="date"
+                                    size="sm"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    style={{ width: '130px' }}
+                                />
+                            </div>
                         </div>
                     </div>
                 </Modal.Header>

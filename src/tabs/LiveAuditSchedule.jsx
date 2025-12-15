@@ -175,21 +175,6 @@ const LiveAuditSchedule = ({ filters = {} }) => {
         </Col>
         <Col md={3}>
           <KPICard
-            title="In Progress"
-            value={workflowStats.inProgress}
-            subtitle="Actively running"
-            icon="fas fa-spinner"
-            color={selectedStatus === 'in-progress' ? 'primary' : 'primary'}
-            onClick={() => showWorkflowDetails('In Progress')}
-            style={{
-              border: selectedStatus === 'in-progress' ? '2px solid #0d6efd' : '1px solid #dee2e6',
-              boxShadow: selectedStatus === 'in-progress' ? '0 0 10px rgba(13, 110, 253, 0.3)' : 'none',
-              opacity: selectedStatus === 'in-progress' ? 1 : 0.6
-            }}
-          />
-        </Col>
-        <Col md={3}>
-          <KPICard
             title="Pending"
             value={workflowStats.pending}
             subtitle="Awaiting action"
@@ -200,6 +185,21 @@ const LiveAuditSchedule = ({ filters = {} }) => {
               border: selectedStatus === 'pending' ? '2px solid #ffc107' : '1px solid #dee2e6',
               boxShadow: selectedStatus === 'pending' ? '0 0 10px rgba(255, 193, 7, 0.3)' : 'none',
               opacity: selectedStatus === 'pending' ? 1 : 0.6
+            }}
+          />
+        </Col>
+        <Col md={3}>
+          <KPICard
+            title="In Progress"
+            value={workflowStats.inProgress}
+            subtitle="Actively running"
+            icon="fas fa-spinner"
+            color={selectedStatus === 'in-progress' ? 'primary' : 'primary'}
+            onClick={() => showWorkflowDetails('In Progress')}
+            style={{
+              border: selectedStatus === 'in-progress' ? '2px solid #0d6efd' : '1px solid #dee2e6',
+              boxShadow: selectedStatus === 'in-progress' ? '0 0 10px rgba(13, 110, 253, 0.3)' : 'none',
+              opacity: selectedStatus === 'in-progress' ? 1 : 0.6
             }}
           />
         </Col>

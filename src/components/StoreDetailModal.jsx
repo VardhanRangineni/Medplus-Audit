@@ -383,7 +383,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
               </Card.Header>
               <Card.Body>
                 {selectedDeviationType && productFormData[selectedDeviationType] ? (
-                  /* Product Form Breakdown */
+                  /* Product Form Breakdown for Selected Deviation */
                   <div>
                     <div className="text-muted small mb-3">
                       {(() => {
@@ -434,17 +434,78 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                       ))}
                     </div>
                   </div>
-                ) : deviations.length > 0 ? (
-                  /* Prompt to click on deviation chart */
-                  <div className="text-center py-5">
-                    <i className="fas fa-hand-pointer fa-3x text-muted mb-3"></i>
-                    <p className="text-muted mb-0">Click on any segment in the pie chart</p>
-                    <p className="text-muted">to view product form breakdown</p>
-                  </div>
                 ) : (
-                  <div className="text-center text-muted py-4">
-                    <i className="fas fa-info-circle fa-3x mb-2 d-block text-muted"></i>
-                    <p className="mb-0">No data available</p>
+                  /* Show Overall Product Form Distribution by default */
+                  <div>
+                    <div className="mb-3">
+                      <h6 className="text-primary mb-2">
+                        Overall Product Form Distribution
+                      </h6>
+                      <div className="text-muted small">
+                        Across all deviation types
+                      </div>
+                    </div>
+                    <ResponsiveContainer width="100%" height={240}>
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { form: 'Tablets', value: 94000, count: 533 },
+                            { form: 'Liquids', value: 70000, count: 377 },
+                            { form: 'Capsules', value: 34000, count: 191 },
+                            { form: 'Refrigerated', value: 21000, count: 103 }
+                          ]}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={100}
+                          labelLine={false}
+                          label={(entry) => `${entry.form}: ₹${(entry.value / 1000).toFixed(0)}K`}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {[
+                            { form: 'Tablets', value: 94000, count: 533 },
+                            { form: 'Liquids', value: 70000, count: 377 },
+                            { form: 'Capsules', value: 34000, count: 191 },
+                            { form: 'Refrigerated', value: 21000, count: 103 }
+                          ].map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <div className="mt-3">
+                      {[
+                        { form: 'Tablets', value: 94000, count: 533 },
+                        { form: 'Liquids', value: 70000, count: 377 },
+                        { form: 'Capsules', value: 34000, count: 191 },
+                        { form: 'Refrigerated', value: 21000, count: 103 }
+                      ].map((form, idx) => (
+                        <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+                          <div className="d-flex align-items-center">
+                            <div 
+                              style={{
+                                width: '12px',
+                                height: '12px',
+                                backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
+                                borderRadius: '2px',
+                                marginRight: '8px'
+                              }}
+                            />
+                            <span className="fw-semibold">{form.form}</span>
+                          </div>
+                          <div className="text-end">
+                            <div className="fw-bold text-success">₹{form.value.toLocaleString()}</div>
+                            <div className="text-muted small">{form.count} items</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="text-center mt-3 text-muted small">
+                      <i className="fas fa-info-circle me-1"></i>
+                      Click on any deviation segment to see specific breakdown
+                    </div>
                   </div>
                 )}
               </Card.Body>

@@ -387,6 +387,17 @@ export const mockDataService = {
           { skuCode: 'MED044', productName: 'Cough Drops', type: 'Short', quantity: 19, value: 2300, status: 'Approved' }
         ]
       },
+      'MP007': {
+        storeId: 'MP007',
+        storeName: 'Ahmedabad Main',
+        state: 'GJ',
+        supervisor: 'Kiran Patel',
+        auditProgress: { percentage: 0, completedSKUs: 0, totalSKUs: 3600 },
+        inventorySummary: { totalSKUs: 3600, auditedSKUs: 0, totalValue: 485000, totalQuantity: 42000 },
+        auditors: [],
+        deviations: [],
+        contra: []
+      },
       'MP006': {
         storeId: 'MP006',
         storeName: 'Delhi NCR',
@@ -415,22 +426,11 @@ export const mockDataService = {
         storeName: 'Ahmedabad Main',
         state: 'GJ',
         supervisor: 'Kiran Patel',
-        auditProgress: { percentage: 33.3, completedSKUs: 1200, totalSKUs: 3600 },
-        inventorySummary: { totalSKUs: 3600, auditedSKUs: 1200, totalValue: 485000, totalQuantity: 42100 },
-        auditors: [
-          { name: 'Jayesh Shah', assignedSKUs: 1800, completedSKUs: 600, completionRate: 33.3, matchRate: 89.5 },
-          { name: 'Priti Desai', assignedSKUs: 1800, completedSKUs: 600, completionRate: 33.3, matchRate: 91.2 }
-        ],
-        deviations: [
-          { type: 'Invoiced', count: 9, value: 7800 },
-          { type: 'Contra Short', count: 7, value: 6200 },
-          { type: 'Contra Excess', count: 3, value: 2800 }
-        ],
-        contra: [
-          { skuCode: 'MED060', productName: 'Insulin 100IU/ml', type: 'Short', quantity: 24, value: 3600, status: 'Pending' },
-          { skuCode: 'MED061', productName: 'Test Strips 50ct', type: 'Short', quantity: 31, value: 4700, status: 'Pending' },
-          { skuCode: 'MED062', productName: 'Lancets 100ct', type: 'Excess', quantity: 19, value: 2300, status: 'Approved' }
-        ]
+        auditProgress: { percentage: 0, completedSKUs: 0, totalSKUs: 3600 },
+        inventorySummary: { totalSKUs: 3600, auditedSKUs: 0, totalValue: 485000, totalQuantity: 42000 },
+        auditors: [],
+        deviations: [],
+        contra: []
       },
       'MP008': {
         storeId: 'MP008',
@@ -507,22 +507,14 @@ export const mockDataService = {
         storeName: 'Surat Hub',
         state: 'GJ',
         supervisor: 'Dipak Shah',
-        auditProgress: { percentage: 34.0, completedSKUs: 950, totalSKUs: 2800 },
-        inventorySummary: { totalSKUs: 2800, auditedSKUs: 950, totalValue: 425000, totalQuantity: 35800 },
+        auditProgress: { percentage: 0, completedSKUs: 0, totalSKUs: 2800 },
+        inventorySummary: { totalSKUs: 2800, auditedSKUs: 0, totalValue: 425000, totalQuantity: 35800 },
         auditors: [
-          { name: 'Hitesh Patel', assignedSKUs: 1400, completedSKUs: 475, completionRate: 34.0, matchRate: 88.9 },
-          { name: 'Nisha Modi', assignedSKUs: 1400, completedSKUs: 475, completionRate: 34.0, matchRate: 90.5 }
+          { name: 'Hitesh Patel', assignedSKUs: 1400, completedSKUs: 0, completionRate: 0, matchRate: 0 },
+          { name: 'Nisha Modi', assignedSKUs: 1400, completedSKUs: 0, completionRate: 0, matchRate: 0 }
         ],
-        deviations: [
-          { type: 'Invoiced', count: 13, value: 11200 },
-          { type: 'Contra Short', count: 8, value: 6900 },
-          { type: 'Contra Excess', count: 4, value: 3400 }
-        ],
-        contra: [
-          { skuCode: 'MED100', productName: 'Injectable Antibiotics', type: 'Short', quantity: 15, value: 2200, status: 'Pending' },
-          { skuCode: 'MED101', productName: 'Topical Ointments', type: 'Short', quantity: 19, value: 2900, status: 'Pending' },
-          { skuCode: 'MED102', productName: 'Antifungal Cream', type: 'Excess', quantity: 11, value: 1600, status: 'Approved' }
-        ]
+        deviations: [],
+        contra: []
       },
       'MP015': {
         storeId: 'MP015',
@@ -591,6 +583,70 @@ export const mockDataService = {
         auditors: [],
         deviations: [],
         contra: []
+      },
+      'MP006': {
+        storeId: 'MP006',
+        storeName: 'Delhi NCR',
+        state: 'DL',
+        supervisor: 'Amit Verma',
+        auditProgress: { percentage: 100, completedSKUs: 4500, totalSKUs: 4500 },
+        inventorySummary: { totalSKUs: 4500, auditedSKUs: 4500, totalValue: 685000, totalQuantity: 58900 },
+        auditors: [
+          { name: 'Rohit', assignedSKUs: 1500, completedSKUs: 1500, completionRate: 100, matchRate: 97.3 },
+          { name: 'Sneha', assignedSKUs: 1500, completedSKUs: 1500, completionRate: 100, matchRate: 98.1 },
+          { name: 'Karan', assignedSKUs: 1500, completedSKUs: 1500, completionRate: 100, matchRate: 96.8 }
+        ],
+        deviations: [
+          { type: 'Invoiced', count: 8, value: 6800 },
+          { type: 'Contra Short', count: 3, value: 2400 },
+          { type: 'Contra Excess', count: 1, value: 800 }
+        ],
+        contra: [
+          { skuCode: 'SKU12345', productName: 'Paracetamol 500mg', type: 'Short', quantity: 5, value: 600, status: 'Approved' },
+          { skuCode: 'SKU12347', productName: 'Aspirin 75mg', type: 'Short', quantity: 2, value: 240, status: 'Pending' },
+          { skuCode: 'SKU12348', productName: 'Vitamin C Tablets', type: 'Excess', quantity: 2, value: 180, status: 'Approved' }
+        ]
+      },
+      'MP008': {
+        storeId: 'MP008',
+        storeName: 'Kolkata East',
+        state: 'WB',
+        supervisor: 'Sourav Das',
+        auditProgress: { percentage: 100, completedSKUs: 3800, totalSKUs: 3800 },
+        inventorySummary: { totalSKUs: 3800, auditedSKUs: 3800, totalValue: 542000, totalQuantity: 48600 },
+        auditors: [
+          { name: 'Ankit', assignedSKUs: 1900, completedSKUs: 1900, completionRate: 100, matchRate: 95.3 },
+          { name: 'Rina', assignedSKUs: 1900, completedSKUs: 1900, completionRate: 100, matchRate: 95.8 }
+        ],
+        deviations: [
+          { type: 'Invoiced', count: 12, value: 9800 },
+          { type: 'Contra Short', count: 4, value: 3200 },
+          { type: 'Contra Excess', count: 2, value: 1600 }
+        ],
+        contra: [
+          { skuCode: 'SKU22345', productName: 'Metformin 500mg', type: 'Short', quantity: 8, value: 960, status: 'Pending' },
+          { skuCode: 'SKU22346', productName: 'Amlodipine 5mg', type: 'Excess', quantity: 4, value: 480, status: 'Approved' }
+        ]
+      },
+      'MP009': {
+        storeId: 'MP009',
+        storeName: 'Nagpur Central',
+        state: 'MH',
+        supervisor: 'Pooja Deshmukh',
+        auditProgress: { percentage: 100, completedSKUs: 3200, totalSKUs: 3200 },
+        inventorySummary: { totalSKUs: 3200, auditedSKUs: 3200, totalValue: 468000, totalQuantity: 41200 },
+        auditors: [
+          { name: 'Manoj', assignedSKUs: 1600, completedSKUs: 1600, completionRate: 100, matchRate: 97.8 },
+          { name: 'Kavita', assignedSKUs: 1600, completedSKUs: 1600, completionRate: 100, matchRate: 97.5 }
+        ],
+        deviations: [
+          { type: 'Invoiced', count: 5, value: 4200 },
+          { type: 'Contra Short', count: 2, value: 1600 },
+          { type: 'Contra Excess', count: 1, value: 800 }
+        ],
+        contra: [
+          { skuCode: 'SKU32345', productName: 'Omeprazole 20mg', type: 'Short', quantity: 3, value: 360, status: 'Approved' }
+        ]
       }
     };
 

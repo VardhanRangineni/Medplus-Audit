@@ -1,210 +1,202 @@
-import { useState } from 'react';
-import { Container, Row, Col, Card, Table, Badge, ProgressBar, Alert } from 'react-bootstrap';
+import { useState, useMemo } from 'react';
+import { Container, Row, Col, Card, Table, Badge, ProgressBar, Alert, Button, Modal } from 'react-bootstrap';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import KPICard from '../components/KPICard';
-import DrillDownModal from '../components/DrillDownModal';
+import SupervisorDetailModal from '../components/SupervisorDetailModal';
+import rawAuditData from '../data/audit_dataset_200_records.json';
 import './SupervisorApprovals.css';
 
+// Reusable Table Component for Supervisors
+const SupervisorTable = ({ data, onRowClick }) => (
+  <Table hover className="mb-0">
+    <thead className="bg-light">
+      <tr>
+        <th>Supervisor</th>
+        <th>Stores Managed</th>
+        <th style={{ minWidth: '200px' }}>Audit Completion</th>
+        <th className="text-center">Pending Approvals</th>
+        <th className="text-center">Unallocated PIDs</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {data.map((supervisor, idx) => (
+        <tr key={idx} onClick={() => onRowClick(supervisor)} style={{ cursor: 'pointer' }}>
+          <td>
+            <div className="d-flex align-items-center">
+              <div className="rounded-circle bg-light d-flex align-items-center justify-content-center me-3" style={{ width: '40px', height: '40px' }}>
+                <i className="fas fa-user text-secondary"></i>
+              </div>
+              <div>
+                <div className="fw-bold">{supervisor.supervisorName}</div>
+                <small className="text-muted">{supervisor.supervisorId}</small>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div className="fs-5 fw-semibold">{supervisor.storesManaged}</div>
+          </td>
+          <td>
+            <div className="d-flex align-items-center gap-2">
+              <ProgressBar now={supervisor.auditCompletion} variant={supervisor.auditCompletion >= 90 ? 'success' : 'primary'} style={{ height: '8px', flex: 1 }} />
+              <span className="small fw-bold">{supervisor.auditCompletion}%</span>
+            </div>
+          </td>
+          <td className="text-center">
+            {supervisor.pendingApprovals > 0 ? (
+              <Badge bg="warning" text="dark" pill className="px-3 py-2">
+                {supervisor.pendingApprovals}
+              </Badge>
+            ) : <span className="text-muted">-</span>}
+          </td>
+          <td className="text-center">
+            {supervisor.unallocatedPIDs > 0 ? (
+              <Badge bg="danger" pill className="px-3 py-2">
+                {supervisor.unallocatedPIDs}
+              </Badge>
+            ) : <span className="text-success"><i className="fas fa-check"></i></span>}
+          </td>
+          <td>
+            <Button variant="light" size="sm" className="rounded-circle">
+              <i className="fas fa-chevron-right text-primary"></i>
+            </Button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </Table>
+);
+
 const SupervisorApprovals = ({ filters = {} }) => {
-  const [modalConfig, setModalConfig] = useState({ show: false, title: '', data: [], columns: [] });
-  
+  const [showAllModal, setShowAllModal] = useState(false);
+  const [selectedSupervisor, setSelectedSupervisor] = useState(null);
+
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
 
-  // Supervisor Summary Data
-  const supervisorData = [
-    {
-      supervisorId: 'SUP001',
-      supervisorName: 'Rajesh Kumar',
-      storesManaged: 12,
-      auditCompletion: 87.5,
-      pendingApprovals: 23,
-      totalPIDs: 2400,
-      unallocatedPIDs: 145
-    },
-    {
-      supervisorId: 'SUP002',
-      supervisorName: 'Lakshmi Iyer',
-      storesManaged: 10,
-      auditCompletion: 92.3,
-      pendingApprovals: 15,
-      totalPIDs: 2100,
-      unallocatedPIDs: 98
-    },
-    {
-      supervisorId: 'SUP003',
-      supervisorName: 'Mohammed Ali',
-      storesManaged: 15,
-      auditCompletion: 78.9,
-      pendingApprovals: 42,
-      totalPIDs: 3200,
-      unallocatedPIDs: 287
-    },
-    {
-      supervisorId: 'SUP004',
-      supervisorName: 'Pradeep Singh',
-      storesManaged: 8,
-      auditCompletion: 94.1,
-      pendingApprovals: 11,
-      totalPIDs: 1800,
-      unallocatedPIDs: 76
-    }
-  ];
+  // Process data to get supervisor metrics and global aggregated stats
+  const { supervisorData, reauditData, overallMetrics } = useMemo(() => {
+    const supervisorMap = {};
+    const reauditStats = {
+      appeared: 0,
+      matched: 0,
+      revised: 0,
+      pending: 0
+    };
 
-  // Re-audit Waterfall Data
-  const reauditData = [
-    { stage: 'Initially Appeared', count: 1250, color: '#dc3545' },
-    { stage: 'Matched (Verified)', count: 875, color: '#198754' },
-    { stage: 'Edited (Modified)', count: 245, color: '#ffc107' },
-    { stage: 'Pending (Awaiting)', count: 130, color: '#0d6efd' }
-  ];
+    // Helper to track unique audits per supervisor to avoid double counting TotalPIDs
+    const supervisorAuditMap = {};
+    const auditTotalPIDsMap = {};
 
-  // Contra Approval Data
-  const contraData = [
-    {
-      storeId: 'MP001',
-      storeName: 'Chennai Central',
-      contraType: 'Short',
-      itemCount: 45,
-      quantity: 1250,
-      value: 125000,
-      priority: 'High'
-    },
-    {
-      storeId: 'MP002',
-      storeName: 'Bangalore Hub',
-      contraType: 'Excess',
-      itemCount: 32,
-      quantity: 890,
-      value: 78500,
-      priority: 'High'
-    },
-    {
-      storeId: 'MP003',
-      storeName: 'Hyderabad Main',
-      contraType: 'Short',
-      itemCount: 28,
-      quantity: 650,
-      value: 45000,
-      priority: 'Medium'
-    },
-    {
-      storeId: 'MP004',
-      storeName: 'Pune West',
-      contraType: 'Excess',
-      itemCount: 18,
-      quantity: 420,
-      value: 32000,
-      priority: 'Medium'
-    },
-    {
-      storeId: 'MP005',
-      storeName: 'Mumbai Central',
-      contraType: 'Short',
-      itemCount: 52,
-      quantity: 1480,
-      value: 156000,
-      priority: 'High'
-    }
-  ];
+    rawAuditData.forEach(record => {
+      // Collect Global Audit Info
+      if (!auditTotalPIDsMap[record.AUDIT_ID]) {
+        auditTotalPIDsMap[record.AUDIT_ID] = record.TotalPIDs || 0;
+      }
+
+      // Filter Logic
+      if (filters.financialYear && filters.financialYear !== 'All-time') {
+        const date = new Date(record.AuditDate);
+        const month = date.getMonth();
+        const year = date.getFullYear();
+        if (year !== 2025) return;
+        let inRange = false;
+        switch (filters.financialYear) {
+          case 'Oct 2025 - Dec 2025': inRange = month >= 9 && month <= 11; break;
+          case 'Jul 2025 - Sep 2025': inRange = month >= 6 && month <= 8; break;
+          case 'Apr 2025 - Jun 2025': inRange = month >= 3 && month <= 5; break;
+          case 'Jan 2025 - Mar 2025': inRange = month >= 0 && month <= 2; break;
+          default: inRange = true;
+        }
+        if (!inRange) return;
+      }
+
+      const sId = record.SupervisorID;
+      if (!sId) return;
+
+      if (!supervisorMap[sId]) {
+        supervisorMap[sId] = {
+          supervisorId: sId,
+          supervisorName: record.SupervisorName,
+          stores: new Set(),
+          pendingApprovals: 0,
+          allocatedPIDs: 0,
+          auditCompletionList: []
+        };
+        supervisorAuditMap[sId] = new Set();
+      }
+
+      const sup = supervisorMap[sId];
+      sup.stores.add(record.StoreName);
+      sup.pendingApprovals += (record.PendingCount || 0);
+      sup.auditCompletionList.push(record.CompletionPercent || 0);
+      sup.allocatedPIDs += (record.AuditorAllottedPIDs || 0);
+
+      supervisorAuditMap[sId].add(record.AUDIT_ID);
+
+      // Re-audit waterfall
+      reauditStats.appeared += (record.AppearedCount || 0);
+      reauditStats.matched += (record.MatchedCount || 0);
+      reauditStats.revised += (record.RevisedCount || 0);
+      reauditStats.pending += (record.PendingCount || 0);
+    });
+
+    const processedSupervisors = Object.values(supervisorMap).map(sup => {
+      let totalPIDs = 0;
+      supervisorAuditMap[sup.supervisorId].forEach(auditId => {
+        totalPIDs += (auditTotalPIDsMap[auditId] || 0);
+      });
+
+      const avgCompletion = sup.auditCompletionList.length > 0
+        ? sup.auditCompletionList.reduce((a, b) => a + b, 0) / sup.auditCompletionList.length
+        : 0;
+
+      return {
+        supervisorId: sup.supervisorId,
+        supervisorName: sup.supervisorName,
+        storesManaged: sup.stores.size,
+        auditCompletion: parseFloat(avgCompletion.toFixed(1)),
+        pendingApprovals: sup.pendingApprovals,
+        totalPIDs: totalPIDs,
+        unallocatedPIDs: Math.max(0, totalPIDs - sup.allocatedPIDs)
+      };
+    });
+
+    // Sort by Stores Managed Descending (Default)
+    const sortedSupervisors = processedSupervisors.sort((a, b) => b.storesManaged - a.storesManaged);
+
+    // Calculate aggregations
+    const metrics = sortedSupervisors.reduce((acc, curr) => ({
+      totalSupervisors: acc.totalSupervisors + 1,
+      totalStores: acc.totalStores + curr.storesManaged,
+      totalPending: acc.totalPending + curr.pendingApprovals,
+      totalUnallocated: acc.totalUnallocated + curr.unallocatedPIDs,
+      sumCompletion: acc.sumCompletion + curr.auditCompletion
+    }), { totalSupervisors: 0, totalStores: 0, totalPending: 0, totalUnallocated: 0, sumCompletion: 0 });
+
+    const avgGlobalCompletion = metrics.totalSupervisors > 0 ? (metrics.sumCompletion / metrics.totalSupervisors).toFixed(1) : 0;
+
+    const processedReaudit = [
+      { stage: 'Initially Appeared', count: reauditStats.appeared, color: '#dc3545' },
+      { stage: 'Matched (Verified)', count: reauditStats.matched, color: '#198754' },
+      { stage: 'Edited (Modified)', count: reauditStats.revised, color: '#ffc107' },
+      { stage: 'Pending (Awaiting)', count: reauditStats.pending, color: '#0d6efd' }
+    ];
+
+    return {
+      supervisorData: sortedSupervisors,
+      reauditData: processedReaudit,
+      overallMetrics: {
+        ...metrics,
+        avgCompletion: avgGlobalCompletion
+      }
+    };
+  }, [filters]);
+
+  const displayedSupervisors = supervisorData.slice(0, 5);
 
   const showSupervisorDetails = (supervisor) => {
-    const supervisorStoresMap = {
-      'Rajesh Kumar': [
-        { storeId: 'MP001', storeName: 'Chennai Central', auditStatus: 'In Progress', completion: 85.5, lastUpdate: '2024-12-09', pendingApprovals: 8, totalPIDs: 2400 },
-        { storeId: 'MP014', storeName: 'T. Nagar Branch', auditStatus: 'Completed', completion: 100, lastUpdate: '2024-12-08', pendingApprovals: 0, totalPIDs: 1850 },
-        { storeId: 'MP021', storeName: 'Anna Nagar Hub', auditStatus: 'Pending', completion: 45.2, lastUpdate: '2024-12-07', pendingApprovals: 15, totalPIDs: 2200 }
-      ],
-      'Lakshmi Iyer': [
-        { storeId: 'MP002', storeName: 'Bangalore Hub', auditStatus: 'In Progress', completion: 92.3, lastUpdate: '2024-12-10', pendingApprovals: 5, totalPIDs: 2100 },
-        { storeId: 'MP016', storeName: 'Koramangala Store', auditStatus: 'Completed', completion: 100, lastUpdate: '2024-12-06', pendingApprovals: 0, totalPIDs: 1650 },
-        { storeId: 'MP023', storeName: 'Indiranagar Branch', auditStatus: 'In Progress', completion: 78.5, lastUpdate: '2024-12-08', pendingApprovals: 10, totalPIDs: 1980 }
-      ],
-      'Mohammed Ali': [
-        { storeId: 'MP003', storeName: 'Hyderabad Main', auditStatus: 'In Progress', completion: 78.9, lastUpdate: '2024-12-09', pendingApprovals: 12, totalPIDs: 3200 },
-        { storeId: 'MP017', storeName: 'Madhapur Hub', auditStatus: 'Pending', completion: 35.8, lastUpdate: '2024-12-05', pendingApprovals: 18, totalPIDs: 2850 },
-        { storeId: 'MP025', storeName: 'Secunderabad Store', auditStatus: 'In Progress', completion: 65.4, lastUpdate: '2024-12-07', pendingApprovals: 12, totalPIDs: 2450 }
-      ],
-      'Pradeep Singh': [
-        { storeId: 'MP004', storeName: 'Pune West', auditStatus: 'Completed', completion: 100, lastUpdate: '2024-12-08', pendingApprovals: 0, totalPIDs: 1800 },
-        { storeId: 'MP019', storeName: 'Shivaji Nagar Branch', auditStatus: 'In Progress', completion: 88.2, lastUpdate: '2024-12-09', pendingApprovals: 6, totalPIDs: 1650 },
-        { storeId: 'MP026', storeName: 'Kothrud Store', auditStatus: 'In Progress', completion: 94.5, lastUpdate: '2024-12-10', pendingApprovals: 5, totalPIDs: 1550 }
-      ]
-    };
-
-    const mockStoreData = supervisorStoresMap[supervisor.supervisorName] || [];
-
-    setModalConfig({
-      show: true,
-      title: `${supervisor.supervisorName} - Managed Stores`,
-      data: mockStoreData,
-      columns: [
-        { key: 'storeId', label: 'Store ID' },
-        { key: 'storeName', label: 'Store Name' },
-        { key: 'auditStatus', label: 'Audit Status' },
-        { key: 'completion', label: 'Completion %', render: (val) => `${val}%` },
-        { key: 'lastUpdate', label: 'Last Update' },
-        { key: 'pendingApprovals', label: 'Pending Approvals' },
-        { key: 'totalPIDs', label: 'Total PIDs' }
-      ]
-    });
-  };
-
-  const showContraDetails = (contra) => {
-    const contraSKUMap = {
-      'Chennai Central-Short': [
-        { skuCode: 'PVT12345', productName: 'Medplus Paracetamol 500mg', quantity: -145, value: -12800, batch: 'B2401', reason: 'Damaged', approvalStatus: 'Pending' },
-        { skuCode: 'PVT12346', productName: 'Medplus Vitamin C Tabs', quantity: -98, value: -8500, batch: 'B2402', reason: 'Expired', approvalStatus: 'Pending' },
-        { skuCode: 'NPV22345', productName: 'Dolo 650mg Tablet', quantity: -125, value: -9800, batch: 'DL2401', reason: 'Theft', approvalStatus: 'Pending' }
-      ],
-      'Bangalore Hub-Excess': [
-        { skuCode: 'PVT32345', productName: 'Medplus Multivitamin', quantity: 185, value: 16500, batch: 'B2408', reason: 'Billing Error', approvalStatus: 'Pending' },
-        { skuCode: 'NPV32346', productName: 'Combiflam Tablet', quantity: 142, value: 11200, batch: 'CB2401', reason: 'Return Not Updated', approvalStatus: 'Pending' },
-        { skuCode: 'PVT32347', productName: 'Medplus Baby Wipes', quantity: 98, value: 6800, batch: 'B2410', reason: 'Double Entry', approvalStatus: 'Pending' }
-      ],
-      'Hyderabad Main-Short': [
-        { skuCode: 'NPV22347', productName: 'Cetrizine 10mg', quantity: -85, value: -5200, batch: 'CT2403', reason: 'Breakage', approvalStatus: 'Pending' },
-        { skuCode: 'PVT22348', productName: 'Medplus Glucose-D', quantity: -72, value: -4800, batch: 'B2407', reason: 'Pilferage', approvalStatus: 'Pending' },
-        { skuCode: 'NPV22349', productName: 'Disprin Tablet', quantity: -95, value: -6200, batch: 'DS2401', reason: 'Stock Adjustment', approvalStatus: 'Pending' }
-      ],
-      'Pune West-Excess': [
-        { skuCode: 'NPV32348', productName: 'Moov Pain Relief', quantity: 128, value: -8500, batch: 'MV2402', reason: 'Transfer Pending', approvalStatus: 'Pending' },
-        { skuCode: 'PVT32349', productName: 'Medplus Pain Relief Gel', quantity: 95, value: 7200, batch: 'B2409', reason: 'Invoice Mismatch', approvalStatus: 'Pending' },
-        { skuCode: 'NPV32350', productName: 'Volini Gel', quantity: 68, value: 5400, batch: 'VL2401', reason: 'System Error', approvalStatus: 'Pending' }
-      ],
-      'Mumbai Central-Short': [
-        { skuCode: 'PVT22350', productName: 'Medplus Sanitizer 500ml', quantity: -245, value: -22800, batch: 'B2405', reason: 'Damaged in Transit', approvalStatus: 'Pending' },
-        { skuCode: 'NPV22351', productName: 'Vicks Vaporub', quantity: -185, value: -15200, batch: 'VK2402', reason: 'Quality Issue', approvalStatus: 'Pending' },
-        { skuCode: 'PVT22352', productName: 'Medplus Face Mask Pack', quantity: -128, value: -9800, batch: 'B2406', reason: 'Recall', approvalStatus: 'Pending' }
-      ]
-    };
-
-    const contraKey = `${contra.storeName}-${contra.contraType}`;
-    const mockSKUData = contraSKUMap[contraKey] || [];
-
-    setModalConfig({
-      show: true,
-      title: `${contra.storeName} - ${contra.contraType} Contra Details`,
-      data: mockSKUData,
-      columns: [
-        { key: 'skuCode', label: 'SKU Code' },
-        { key: 'productName', label: 'Product Name' },
-        { key: 'quantity', label: 'Quantity' },
-        { key: 'value', label: 'Value', render: (val) => `₹${val.toLocaleString()}` },
-        { key: 'batch', label: 'Batch' },
-        { key: 'reason', label: 'Reason' },
-        { key: 'approvalStatus', label: 'Status' }
-      ]
-    });
-  };
-
-  const getPriorityBadge = (priority) => {
-    const colors = {
-      'High': 'danger',
-      'Medium': 'warning',
-      'Low': 'success'
-    };
-    return colors[priority] || 'secondary';
+    setSelectedSupervisor(supervisor);
   };
 
   return (
@@ -221,57 +213,81 @@ const SupervisorApprovals = ({ filters = {} }) => {
           {filters.auditStatus && <Badge bg="primary" className="ms-2">Status: {filters.auditStatus}</Badge>}
         </Alert>
       )}
-      {/* Supervisor Summary Cards */}
+
+      {/* Overview KPIs */}
       <Row className="g-3 mb-4">
-        {supervisorData.map((supervisor, idx) => (
-          <Col md={6} lg={3} key={idx}>
-            <Card
-              className="border-0 shadow-sm h-100 supervisor-card"
-              onClick={() => showSupervisorDetails(supervisor)}
-            >
-              <Card.Body>
-                <div className="d-flex justify-content-between align-items-start mb-3">
-                  <div>
-                    <Badge bg="primary" className="mb-2">{supervisor.supervisorId}</Badge>
-                    <h6 className="mb-0 fw-bold">{supervisor.supervisorName}</h6>
-                  </div>
-                  <i className="fas fa-user-shield fa-2x text-primary opacity-25"></i>
-                </div>
+        <Col md={3}>
+          <KPICard
+            title="Total Stores Managed"
+            value={overallMetrics.totalStores}
+            icon="fas fa-store"
+            color="primary"
+          />
+        </Col>
+        <Col md={3}>
+          <KPICard
+            title="Avg Completion"
+            value={`${overallMetrics.avgCompletion}%`}
+            icon="fas fa-chart-pie"
+            color="success"
+          />
+        </Col>
+        <Col md={3}>
+          <KPICard
+            title="Pending Approvals"
+            value={overallMetrics.totalPending}
+            icon="fas fa-clock"
+            color="warning"
+          />
+        </Col>
+        <Col md={3}>
+          <KPICard
+            title="Unallocated PIDs"
+            value={overallMetrics.totalUnallocated}
+            icon="fas fa-exclamation-circle"
+            color="danger"
+          />
+        </Col>
+      </Row>
 
-                <div className="mb-2">
-                  <small className="text-muted">Stores Managed</small>
-                  <h5 className="mb-0">{supervisor.storesManaged}</h5>
-                </div>
-
-                <div className="mb-2">
-                  <small className="text-muted d-block mb-1">Audit Completion</small>
-                  <ProgressBar
-                    now={supervisor.auditCompletion}
-                    variant={supervisor.auditCompletion >= 90 ? 'success' : 'warning'}
-                    label={`${supervisor.auditCompletion}%`}
-                    style={{ height: '20px' }}
-                  />
-                </div>
-
-                <div className="d-flex justify-content-between mt-3 pt-3 border-top">
-                  <div>
-                    <small className="text-muted d-block">Pending Approvals</small>
-                    <Badge bg="warning">{supervisor.pendingApprovals}</Badge>
-                  </div>
-                  <div className="text-end">
-                    <small className="text-muted d-block">Unallocated PIDs</small>
-                    <Badge bg="danger">{supervisor.unallocatedPIDs}</Badge>
-                  </div>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
+      {/* Supervisor List - Modern Table View */}
+      <Row className="mb-4">
+        <Col>
+          <Card className="border-0 shadow-sm">
+            <Card.Header className="bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+              <div>
+                <h5 className="mb-0 fw-bold">
+                  <i className="fas fa-users-cog me-2 text-primary"></i>
+                  Supervisor Performance Summary
+                </h5>
+                <small className="text-muted">Overview of supervisor metrics and workloads</small>
+              </div>
+              <div>
+                <small className="text-muted me-2">
+                  Showing {displayedSupervisors.length} of {supervisorData.length} Supervisors
+                </small>
+              </div>
+            </Card.Header>
+            <Card.Body className="p-0">
+              <SupervisorTable data={displayedSupervisors} onRowClick={showSupervisorDetails} />
+            </Card.Body>
+            <Card.Footer className="bg-white text-center py-3 border-0">
+              <Button
+                variant="outline-primary"
+                size="sm"
+                onClick={() => setShowAllModal(true)}
+                className="rounded-pill px-4 fw-bold"
+              >
+                View All Supervisors <i className="fas fa-external-link-alt ms-2"></i>
+              </Button>
+            </Card.Footer>
+          </Card>
+        </Col>
       </Row>
 
       {/* Re-audit Waterfall Visualization */}
       <Row className="mb-4">
-        <Col lg={6}>
+        <Col lg={12}>
           <Card className="border-0 shadow-sm h-100">
             <Card.Header className="bg-white border-0 py-3">
               <h5 className="mb-0 fw-bold">
@@ -298,127 +314,31 @@ const SupervisorApprovals = ({ filters = {} }) => {
             </Card.Body>
           </Card>
         </Col>
-
-        {/* PID Allocation Overview */}
-        <Col lg={6}>
-          <Card className="border-0 shadow-sm h-100">
-            <Card.Header className="bg-white border-0 py-3">
-              <h5 className="mb-0 fw-bold">
-                <i className="fas fa-tasks me-2 text-primary"></i>
-                PID Allocation Overview
-              </h5>
-              <small className="text-muted">Load distribution across supervisors</small>
-            </Card.Header>
-            <Card.Body>
-              <div className="allocation-list">
-                {supervisorData.map((supervisor, idx) => {
-                  const allocatedPIDs = supervisor.totalPIDs - supervisor.unallocatedPIDs;
-                  const allocationRate = (allocatedPIDs / supervisor.totalPIDs * 100).toFixed(1);
-
-                  return (
-                    <div key={idx} className="mb-3 p-3 bg-light rounded">
-                      <div className="d-flex justify-content-between mb-2">
-                        <strong>{supervisor.supervisorName}</strong>
-                        <Badge bg="info">{allocationRate}% Allocated</Badge>
-                      </div>
-                      <div className="d-flex gap-3 text-muted small mb-2">
-                        <span>Total: <strong>{supervisor.totalPIDs}</strong></span>
-                        <span>Allocated: <strong className="text-success">{allocatedPIDs}</strong></span>
-                        <span>Unallocated: <strong className="text-danger">{supervisor.unallocatedPIDs}</strong></span>
-                      </div>
-                      <ProgressBar>
-                        <ProgressBar variant="success" now={(allocatedPIDs / supervisor.totalPIDs) * 100} key={1} />
-                        <ProgressBar variant="danger" now={(supervisor.unallocatedPIDs / supervisor.totalPIDs) * 100} key={2} />
-                      </ProgressBar>
-                    </div>
-                  );
-                })}
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
       </Row>
 
-      {/* Contra Approval Dashboard */}
-      <Row>
-        <Col>
-          <Card className="border-0 shadow-sm">
-            <Card.Header className="bg-white border-0 py-3">
-              <h5 className="mb-0 fw-bold">
-                <i className="fas fa-clipboard-check me-2 text-primary"></i>
-                Contra Approval Dashboard
-              </h5>
-              <small className="text-muted">
-                Contra Short & Contra Excess approvals - prioritize by value
-              </small>
-            </Card.Header>
-            <Card.Body className="p-0">
-              <div className="table-responsive">
-                <Table hover className="mb-0 contra-table">
-                  <thead className="bg-light">
-                    <tr>
-                      <th>Priority</th>
-                      <th>Store ID</th>
-                      <th>Store Name</th>
-                      <th>Contra Type</th>
-                      <th>Item Count</th>
-                      <th>Quantity</th>
-                      <th>Value (₹)</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {contraData
-                      .sort((a, b) => b.value - a.value)
-                      .map((contra, idx) => (
-                        <tr
-                          key={idx}
-                          className="contra-row"
-                          onClick={() => showContraDetails(contra)}
-                        >
-                          <td>
-                            <Badge bg={getPriorityBadge(contra.priority)} pill>
-                              {contra.priority}
-                            </Badge>
-                          </td>
-                          <td>
-                            <Badge bg="light" text="dark" className="font-monospace">
-                              {contra.storeId}
-                            </Badge>
-                          </td>
-                          <td className="fw-semibold">{contra.storeName}</td>
-                          <td>
-                            <Badge bg={contra.contraType === 'Short' ? 'danger' : 'warning'}>
-                              {contra.contraType}
-                            </Badge>
-                          </td>
-                          <td>{contra.itemCount}</td>
-                          <td>{contra.quantity.toLocaleString()}</td>
-                          <td>
-                            <strong className="text-success">
-                              ₹{contra.value.toLocaleString()}
-                            </strong>
-                          </td>
-                          <td>
-                            <i className="fas fa-chevron-right text-primary"></i>
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </Table>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
 
-      {/* Drill-Down Modal */}
-      <DrillDownModal
-        show={modalConfig.show}
-        onHide={() => setModalConfig({ ...modalConfig, show: false })}
-        title={modalConfig.title}
-        data={modalConfig.data}
-        columns={modalConfig.columns}
+      {/* All Supervisors Modal */}
+      <Modal show={showAllModal} onHide={() => setShowAllModal(false)} size="xl">
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <i className="fas fa-users me-2 text-primary"></i>
+            All Supervisors
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="p-0">
+          <SupervisorTable data={supervisorData} onRowClick={showSupervisorDetails} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowAllModal(false)}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Detail Modal */}
+      <SupervisorDetailModal
+        show={!!selectedSupervisor}
+        onHide={() => setSelectedSupervisor(null)}
+        supervisorId={selectedSupervisor?.supervisorId}
+        allData={rawAuditData}
       />
     </Container>
   );

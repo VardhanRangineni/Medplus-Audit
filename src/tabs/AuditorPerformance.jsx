@@ -1,123 +1,116 @@
-import { useState } from 'react';
-import { Container, Row, Col, Card, Table, ProgressBar, Badge, Alert } from 'react-bootstrap';
+import { useState, useMemo } from 'react';
+import { Container, Row, Col, Card, Table, ProgressBar, Badge, Alert, Modal, Button } from 'react-bootstrap';
 import KPICard from '../components/KPICard';
-import DrillDownModal from '../components/DrillDownModal';
+import AuditorDetailModal from '../components/AuditorDetailModal';
+import rawAuditData from '../data/audit_dataset_200_records.json';
 import './AuditorPerformance.css';
 
 const AuditorPerformance = ({ filters = {} }) => {
   const [modalConfig, setModalConfig] = useState({ show: false, title: '', data: [], columns: [] });
-  
+  const [showAllModal, setShowAllModal] = useState(false);
+
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
 
-  // Performance Cards Data
-  const performanceMetrics = {
-    avgTimePerSKU: '4.2 min',
-    matchRate: 94.5,
-    editRate: 8.3
-  };
+  // Process data to get auditor metrics
+  const auditorData = useMemo(() => {
+    // 1. Group by Auditor
+    const auditorMap = {};
 
-  // Productivity Table Data
-  const auditorData = [
-    {
-      auditorId: 'AUD001',
-      auditorName: 'Amit Singh',
-      allottedSKUs: 2400,
-      completedSKUs: 2150,
-      completionRate: 89.6,
-      avgTime: 4.1,
-      matchRate: 95.2,
-      editRate: 7.5
-    },
-    {
-      auditorId: 'AUD002',
-      auditorName: 'Priya Reddy',
-      allottedSKUs: 2800,
-      completedSKUs: 2650,
-      completionRate: 94.6,
-      avgTime: 3.8,
-      matchRate: 96.8,
-      editRate: 6.2
-    },
-    {
-      auditorId: 'AUD003',
-      auditorName: 'Suresh Kumar',
-      allottedSKUs: 2200,
-      completedSKUs: 1850,
-      completionRate: 84.1,
-      avgTime: 5.2,
-      matchRate: 91.5,
-      editRate: 11.8
-    },
-    {
-      auditorId: 'AUD004',
-      auditorName: 'Deepak Sharma',
-      allottedSKUs: 2600,
-      completedSKUs: 2450,
-      completionRate: 94.2,
-      avgTime: 4.0,
-      matchRate: 94.8,
-      editRate: 8.1
-    },
-    {
-      auditorId: 'AUD005',
-      auditorName: 'Anitha Rao',
-      allottedSKUs: 2350,
-      completedSKUs: 2200,
-      completionRate: 93.6,
-      avgTime: 4.3,
-      matchRate: 93.2,
-      editRate: 9.5
-    },
-    {
-      auditorId: 'AUD006',
-      auditorName: 'Ravi Verma',
-      allottedSKUs: 2100,
-      completedSKUs: 1750,
-      completionRate: 83.3,
-      avgTime: 5.5,
-      matchRate: 89.7,
-      editRate: 13.2
-    }
-  ];
+    rawAuditData.forEach(record => {
+      const id = record.AuditorID;
+      if (!id) return;
+
+      // Filter by Time Period (financialYear prop)
+      if (filters.financialYear && filters.financialYear !== 'All-time') {
+        const date = new Date(record.AuditDate);
+        const month = date.getMonth(); // 0-11
+        const year = date.getFullYear();
+
+        if (year !== 2025) return; // Only 2025 supported for now as per requirements
+
+        let inRange = false;
+        switch (filters.financialYear) {
+          case 'Oct 2025 - Dec 2025': inRange = month >= 9 && month <= 11; break;
+          case 'Jul 2025 - Sep 2025': inRange = month >= 6 && month <= 8; break;
+          case 'Apr 2025 - Jun 2025': inRange = month >= 3 && month <= 5; break;
+          case 'Jan 2025 - Mar 2025': inRange = month >= 0 && month <= 2; break;
+          default: inRange = true;
+        }
+        if (!inRange) return;
+      }
+
+      if (!auditorMap[id]) {
+        auditorMap[id] = {
+          auditorId: id,
+          auditorName: record.AuditorName,
+          allottedSKUs: 0,
+          completedSKUs: 0,
+          totalAvgTime: 0,
+          totalMatchRate: 0,
+          totalEditRate: 0,
+          count: 0
+        };
+      }
+
+      const auditor = auditorMap[id];
+      // Use "AuditorAllottedSKUs" and "CompletedSKUs" from JSON
+      auditor.allottedSKUs += (record.AuditorAllottedSKUs || 0);
+      auditor.completedSKUs += (record.CompletedSKUs || 0);
+      auditor.totalAvgTime += (record.AvgTimePerSKU || 0);
+      auditor.totalMatchRate += (record.MatchRatePercent || 0);
+      auditor.totalEditRate += (record.EditRatePercent || 0);
+      auditor.count += 1;
+    });
+
+    // 2. Calculate Averages and Rates
+    const processedList = Object.values(auditorMap).map(auditor => {
+      // Avoid division by zero
+      const completionRate = auditor.allottedSKUs > 0
+        ? (auditor.completedSKUs / auditor.allottedSKUs) * 100
+        : 0;
+
+      return {
+        auditorId: auditor.auditorId,
+        auditorName: auditor.auditorName,
+        allottedSKUs: auditor.allottedSKUs,
+        completedSKUs: auditor.completedSKUs,
+        completionRate: completionRate,
+        avgTime: parseFloat((auditor.totalAvgTime / auditor.count).toFixed(1)),
+        matchRate: parseFloat((auditor.totalMatchRate / auditor.count).toFixed(1)),
+        editRate: parseFloat((auditor.totalEditRate / auditor.count).toFixed(1))
+      };
+    });
+
+    // 3. Sort by Allotted SKUs Descending
+    processedList.sort((a, b) => b.allottedSKUs - a.allottedSKUs);
+
+    // 4. Return Full List
+    return processedList;
+  }, []); // Dependency array empty as we are using static imported data
+
+  // Calculate overall performance metrics for cards
+  const performanceMetrics = useMemo(() => {
+    if (auditorData.length === 0) return { avgTimePerSKU: '0 min', matchRate: 0, editRate: 0 };
+
+    const totalAvgTime = auditorData.reduce((sum, a) => sum + a.avgTime, 0);
+    const totalMatchRate = auditorData.reduce((sum, a) => sum + a.matchRate, 0);
+    const totalEditRate = auditorData.reduce((sum, a) => sum + a.editRate, 0);
+    const count = auditorData.length;
+
+    return {
+      avgTimePerSKU: `${(totalAvgTime / count).toFixed(1)} min`,
+      matchRate: (totalMatchRate / count).toFixed(1),
+      editRate: (totalEditRate / count).toFixed(1)
+    };
+  }, [auditorData]);
 
   const showAuditorPIDDetails = (auditor) => {
-    const auditorPIDMap = {
-      'Amit Singh': [
-        { pid: 'PID12345', productName: 'Dolo 650mg Tablet', assignedQty: 250, completedQty: 250, timeSpent: '18 min', status: 'Completed', deviations: 2, matchStatus: 'Matched' },
-        { pid: 'PID12346', productName: 'Paracetamol 500mg', assignedQty: 180, completedQty: 180, timeSpent: '14 min', status: 'Completed', deviations: 0, matchStatus: 'Matched' },
-        { pid: 'PID12347', productName: 'Amoxicillin 250mg', assignedQty: 320, completedQty: 280, timeSpent: '22 min', status: 'In Progress', deviations: 5, matchStatus: 'Partial' },
-        { pid: 'PID12348', productName: 'Metformin 500mg', assignedQty: 150, completedQty: 0, timeSpent: '0 min', status: 'Pending', deviations: 0, matchStatus: 'Not Started' }
-      ],
-      'Priya Reddy': [
-        { pid: 'PID22345', productName: 'Crocin Advance', assignedQty: 280, completedQty: 280, timeSpent: '16 min', status: 'Completed', deviations: 1, matchStatus: 'Matched' },
-        { pid: 'PID22346', productName: 'Cetrizine 10mg', assignedQty: 195, completedQty: 195, timeSpent: '12 min', status: 'Completed', deviations: 0, matchStatus: 'Matched' },
-        { pid: 'PID22347', productName: 'Azithromycin 500mg', assignedQty: 145, completedQty: 145, timeSpent: '15 min', status: 'Completed', deviations: 2, matchStatus: 'Matched' },
-        { pid: 'PID22348', productName: 'Omeprazole 20mg', assignedQty: 210, completedQty: 210, timeSpent: '13 min', status: 'Completed', deviations: 0, matchStatus: 'Matched' }
-      ],
-      'Suresh Kumar': [
-        { pid: 'PID32345', productName: 'Disprin Tablet', assignedQty: 165, completedQty: 165, timeSpent: '25 min', status: 'Completed', deviations: 8, matchStatus: 'Partial' },
-        { pid: 'PID32346', productName: 'Vicks Vaporub', assignedQty: 220, completedQty: 180, timeSpent: '28 min', status: 'In Progress', deviations: 12, matchStatus: 'Partial' },
-        { pid: 'PID32347', productName: 'Digene Tablet', assignedQty: 190, completedQty: 0, timeSpent: '0 min', status: 'Pending', deviations: 0, matchStatus: 'Not Started' }
-      ],
-      'Deepak Sharma': [
-        { pid: 'PID42345', productName: 'Combiflam Tablet', assignedQty: 310, completedQty: 310, timeSpent: '19 min', status: 'Completed', deviations: 3, matchStatus: 'Matched' },
-        { pid: 'PID42346', productName: 'Moov Pain Relief', assignedQty: 185, completedQty: 185, timeSpent: '17 min', status: 'Completed', deviations: 1, matchStatus: 'Matched' },
-        { pid: 'PID42347', productName: 'Volini Gel', assignedQty: 245, completedQty: 245, timeSpent: '16 min', status: 'Completed', deviations: 0, matchStatus: 'Matched' }
-      ],
-      'Ravi Verma': [
-        { pid: 'PID52345', productName: 'Iodex Balm', assignedQty: 175, completedQty: 175, timeSpent: '21 min', status: 'Completed', deviations: 4, matchStatus: 'Matched' },
-        { pid: 'PID52346', productName: 'Betadine Solution', assignedQty: 135, completedQty: 135, timeSpent: '18 min', status: 'Completed', deviations: 2, matchStatus: 'Matched' },
-        { pid: 'PID52347', productName: 'Burnol Cream', assignedQty: 205, completedQty: 150, timeSpent: '24 min', status: 'In Progress', deviations: 6, matchStatus: 'Partial' }
-      ]
-    };
-
-    const mockPIDData = auditorPIDMap[auditor.auditorName] || [];
-
+    // Note: detailed PID data is not available in the summary JSON
     setModalConfig({
       show: true,
       title: `${auditor.auditorName} (${auditor.auditorId}) - PID Workload View`,
-      data: mockPIDData,
+      data: [],
       columns: [
         { key: 'pid', label: 'PID' },
         { key: 'productName', label: 'Product Name' },
@@ -131,6 +124,16 @@ const AuditorPerformance = ({ filters = {} }) => {
     });
   };
 
+  // ... existing code ...
+
+  const [showAuditorDetail, setShowAuditorDetail] = useState(false);
+  const [selectedAuditorId, setSelectedAuditorId] = useState(null);
+
+  const handleAuditorClick = (auditor) => {
+    setSelectedAuditorId(auditor.auditorId);
+    setShowAuditorDetail(true);
+  };
+
   const getCompletionColor = (rate) => {
     if (rate >= 90) return 'success';
     if (rate >= 80) return 'warning';
@@ -142,8 +145,83 @@ const AuditorPerformance = ({ filters = {} }) => {
     return isGood ? 'success' : 'danger';
   };
 
+  const renderTableRows = (data) => (
+    <Table hover className="mb-0 auditor-table">
+      <thead className="bg-light sticky-top" style={{ top: 0, zIndex: 1, position: 'sticky' }}>
+        <tr>
+          <th>Auditor ID</th>
+          <th>Auditor Name</th>
+          <th>Allotted SKUs</th>
+          <th>Completed SKUs</th>
+          <th>Completion %</th>
+          <th>Avg Time/SKU</th>
+          <th>Match Rate %</th>
+          <th>Edit Rate %</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((auditor, idx) => (
+          <tr
+            key={idx}
+            className="auditor-row"
+            onClick={() => handleAuditorClick(auditor)}
+            style={{ cursor: 'pointer' }}
+          >
+            <td>
+              <Badge bg="light" text="dark" className="font-monospace">
+                {auditor.auditorId}
+              </Badge>
+            </td>
+            <td className="fw-semibold">
+              <i className="fas fa-user me-2 text-muted"></i>
+              {auditor.auditorName}
+            </td>
+            <td>{auditor.allottedSKUs.toLocaleString()}</td>
+            <td>
+              <strong className="text-primary">
+                {auditor.completedSKUs.toLocaleString()}
+              </strong>
+            </td>
+            <td style={{ minWidth: '200px' }}>
+              <div className="d-flex align-items-center gap-2">
+                <ProgressBar
+                  now={auditor.completionRate}
+                  variant={getCompletionColor(auditor.completionRate)}
+                  style={{ height: '20px', flex: 1 }}
+                />
+                <Badge bg={getCompletionColor(auditor.completionRate)}>
+                  {auditor.completionRate.toFixed(1)}%
+                </Badge>
+              </div>
+            </td>
+            <td>
+              <Badge bg={auditor.avgTime < 4.5 ? 'success' : 'warning'}>
+                {auditor.avgTime} min
+              </Badge>
+            </td>
+            <td>
+              <Badge bg={getPerformanceBadge(auditor.matchRate, 93)}>
+                {auditor.matchRate.toFixed(1)}%
+              </Badge>
+            </td>
+            <td>
+              <Badge bg={getPerformanceBadge(auditor.editRate, 10, true)}>
+                {auditor.editRate.toFixed(1)}%
+              </Badge>
+            </td>
+            <td>
+              <i className="fas fa-chevron-right text-primary"></i>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+
   return (
-    <Container fluid className="auditor-performance-tab py-4">      {/* Filter Status Alert */}
+    <Container fluid className="auditor-performance-tab py-4">
+      {/* Filter Status Alert */}
       {hasActiveFilters && (
         <Alert variant="info" className="mb-3">
           <i className="fas fa-filter me-2"></i>
@@ -154,7 +232,9 @@ const AuditorPerformance = ({ filters = {} }) => {
           {filters.auditProcessType && <Badge bg="primary" className="ms-2">Process: {filters.auditProcessType}</Badge>}
           {filters.auditStatus && <Badge bg="primary" className="ms-2">Status: {filters.auditStatus}</Badge>}
         </Alert>
-      )}      {/* Performance Summary Cards */}
+      )}
+
+      {/* Performance Summary Cards */}
       <Row className="g-3 mb-4">
         <Col md={4}>
           <KPICard
@@ -194,85 +274,50 @@ const AuditorPerformance = ({ filters = {} }) => {
                 <i className="fas fa-users me-2 text-primary"></i>
                 Auditor Productivity Summary
               </h5>
-              <small className="text-muted">Click on any auditor to view PID-level workload and bottlenecks</small>
+              <small className="text-muted">Click on any auditor to view detailed performance metrics</small>
             </Card.Header>
             <Card.Body className="p-0">
               <div className="table-responsive">
-                <Table hover className="mb-0 auditor-table">
-                  <thead className="bg-light">
-                    <tr>
-                      <th>Auditor ID</th>
-                      <th>Auditor Name</th>
-                      <th>Allotted SKUs</th>
-                      <th>Completed SKUs</th>
-                      <th>Completion %</th>
-                      <th>Avg Time/SKU</th>
-                      <th>Match Rate %</th>
-                      <th>Edit Rate %</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {auditorData.map((auditor, idx) => (
-                      <tr 
-                        key={idx}
-                        className="auditor-row"
-                        onClick={() => showAuditorPIDDetails(auditor)}
-                      >
-                        <td>
-                          <Badge bg="light" text="dark" className="font-monospace">
-                            {auditor.auditorId}
-                          </Badge>
-                        </td>
-                        <td className="fw-semibold">
-                          <i className="fas fa-user me-2 text-muted"></i>
-                          {auditor.auditorName}
-                        </td>
-                        <td>{auditor.allottedSKUs.toLocaleString()}</td>
-                        <td>
-                          <strong className="text-primary">
-                            {auditor.completedSKUs.toLocaleString()}
-                          </strong>
-                        </td>
-                        <td style={{ minWidth: '200px' }}>
-                          <div className="d-flex align-items-center gap-2">
-                            <ProgressBar 
-                              now={auditor.completionRate} 
-                              variant={getCompletionColor(auditor.completionRate)}
-                              style={{ height: '20px', flex: 1 }}
-                            />
-                            <Badge bg={getCompletionColor(auditor.completionRate)}>
-                              {auditor.completionRate.toFixed(1)}%
-                            </Badge>
-                          </div>
-                        </td>
-                        <td>
-                          <Badge bg={auditor.avgTime < 4.5 ? 'success' : 'warning'}>
-                            {auditor.avgTime} min
-                          </Badge>
-                        </td>
-                        <td>
-                          <Badge bg={getPerformanceBadge(auditor.matchRate, 93)}>
-                            {auditor.matchRate.toFixed(1)}%
-                          </Badge>
-                        </td>
-                        <td>
-                          <Badge bg={getPerformanceBadge(auditor.editRate, 10, true)}>
-                            {auditor.editRate.toFixed(1)}%
-                          </Badge>
-                        </td>
-                        <td>
-                          <i className="fas fa-chevron-right text-primary"></i>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
+                {renderTableRows(auditorData.slice(0, 5))}
               </div>
             </Card.Body>
+            <Card.Footer className="bg-white border-0 text-center py-3">
+              <Button
+                variant="link"
+                className="text-decoration-none fw-bold"
+                onClick={() => setShowAllModal(true)}
+              >
+                VIEW MORE <i className="fas fa-arrow-right ms-2"></i>
+              </Button>
+            </Card.Footer>
           </Card>
         </Col>
       </Row>
+
+      {/* All Auditors Modal */}
+      <Modal
+        show={showAllModal}
+        onHide={() => setShowAllModal(false)}
+        size="xl"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <i className="fas fa-users me-2 text-primary"></i>
+            All Auditors Performance
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="p-0" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+          <div className="table-responsive">
+            {renderTableRows(auditorData)}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowAllModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       {/* Performance Insights */}
       <Row className="mt-4">
@@ -302,7 +347,7 @@ const AuditorPerformance = ({ filters = {} }) => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={6}>
           <Card className="border-0 shadow-sm">
             <Card.Header className="bg-white border-0 py-3">
@@ -331,13 +376,12 @@ const AuditorPerformance = ({ filters = {} }) => {
         </Col>
       </Row>
 
-      {/* Drill-Down Modal */}
-      <DrillDownModal
-        show={modalConfig.show}
-        onHide={() => setModalConfig({ ...modalConfig, show: false })}
-        title={modalConfig.title}
-        data={modalConfig.data}
-        columns={modalConfig.columns}
+      {/* Detailed Auditor Modal */}
+      <AuditorDetailModal
+        show={showAuditorDetail}
+        onHide={() => setShowAuditorDetail(false)}
+        auditorId={selectedAuditorId}
+        allData={rawAuditData}
       />
     </Container>
   );

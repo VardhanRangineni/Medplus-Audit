@@ -4,7 +4,7 @@ import './GlobalHeader.css';
 
 const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
   const [filters, setFilters] = useState({
-    financialYear: '2024-25',
+    financialYear: 'All-time',
     state: '',
     store: '',
     auditJobType: '',
@@ -46,8 +46,8 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
                 <i className="fas fa-sync-alt me-2"></i>
                 Last Refreshed: <strong>{formatTimestamp(lastRefreshed)}</strong>
               </div>
-              <Button 
-                variant="outline-primary" 
+              <Button
+                variant="outline-primary"
                 size="sm"
                 onClick={onRefresh}
                 className="d-flex align-items-center gap-2"
@@ -64,17 +64,19 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
           <Col md={2}>
             <Form.Group>
               <Form.Label className="small fw-semibold mb-1">
-                Financial Year <span className="text-danger">*</span>
+                Time Period <span className="text-danger">*</span>
               </Form.Label>
-              <Form.Select 
+              <Form.Select
                 size="sm"
                 value={filters.financialYear}
                 onChange={(e) => handleFilterChange('financialYear', e.target.value)}
                 className="filter-select"
               >
-                <option value="2024-25">2024-25</option>
-                <option value="2023-24">2023-24</option>
-                <option value="2022-23">2022-23</option>
+                <option value="All-time">All-time</option>
+                <option value="Oct 2025 - Dec 2025">Oct 2025 - Dec 2025</option>
+                <option value="Jul 2025 - Sep 2025">Jul 2025 - Sep 2025</option>
+                <option value="Apr 2025 - Jun 2025">Apr 2025 - Jun 2025</option>
+                <option value="Jan 2025 - Mar 2025">Jan 2025 - Mar 2025</option>
               </Form.Select>
             </Form.Group>
           </Col>
@@ -82,7 +84,7 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
           <Col md={2}>
             <Form.Group>
               <Form.Label className="small fw-semibold mb-1">State</Form.Label>
-              <Form.Select 
+              <Form.Select
                 size="sm"
                 value={filters.state}
                 onChange={(e) => handleFilterChange('state', e.target.value)}
@@ -101,7 +103,7 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
           <Col md={2}>
             <Form.Group>
               <Form.Label className="small fw-semibold mb-1">Store</Form.Label>
-              <Form.Select 
+              <Form.Select
                 size="sm"
                 value={filters.store}
                 onChange={(e) => handleFilterChange('store', e.target.value)}
@@ -118,7 +120,7 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
           <Col md={2}>
             <Form.Group>
               <Form.Label className="small fw-semibold mb-1">Audit Job Type</Form.Label>
-              <Form.Select 
+              <Form.Select
                 size="sm"
                 value={filters.auditJobType}
                 onChange={(e) => handleFilterChange('auditJobType', e.target.value)}
@@ -134,7 +136,7 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
           <Col md={2}>
             <Form.Group>
               <Form.Label className="small fw-semibold mb-1">Process Type</Form.Label>
-              <Form.Select 
+              <Form.Select
                 size="sm"
                 value={filters.auditProcessType}
                 onChange={(e) => handleFilterChange('auditProcessType', e.target.value)}
@@ -150,7 +152,7 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
           <Col md={2}>
             <Form.Group>
               <Form.Label className="small fw-semibold mb-1">Audit Status</Form.Label>
-              <Form.Select 
+              <Form.Select
                 size="sm"
                 value={filters.auditStatus}
                 onChange={(e) => handleFilterChange('auditStatus', e.target.value)}

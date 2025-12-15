@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react';
 import { Container, Row, Col, Card, Table, Badge, ProgressBar, Alert, Button, Modal } from 'react-bootstrap';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+
 import KPICard from '../components/KPICard';
 import SupervisorDetailModal from '../components/SupervisorDetailModal';
 import rawAuditData from '../data/audit_dataset_200_records.json';
 import './SupervisorApprovals.css';
 
 // Reusable Table Component for Supervisors
+<<<<<<< Updated upstream
 const SupervisorTable = ({ data, onRowClick }) => (
   <Table hover className="mb-0">
     <thead className="bg-light">
@@ -31,16 +32,31 @@ const SupervisorTable = ({ data, onRowClick }) => (
                 <div className="fw-bold">{supervisor.supervisorName}</div>
                 <small className="text-muted">{supervisor.supervisorId}</small>
               </div>
+=======
+// Reusable Table Component for Supervisors
+const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) return <i className="fas fa-sort text-muted ms-1 small"></i>;
+    return sortConfig.direction === 'ascending'
+      ? <i className="fas fa-sort-up text-primary ms-1 small"></i>
+      : <i className="fas fa-sort-down text-primary ms-1 small"></i>;
+  };
+
+  return (
+    <Table hover className="mb-0 hover-scale-row align-middle">
+      <thead className="bg-light sticky-top" style={{ top: 0, zIndex: 20 }}>
+        <tr className="align-middle">
+          <th onClick={() => requestSort('supervisorId')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              ID {getSortIcon('supervisorId')}
+>>>>>>> Stashed changes
             </div>
-          </td>
-          <td>
-            <div className="fs-5 fw-semibold">{supervisor.storesManaged}</div>
-          </td>
-          <td>
-            <div className="d-flex align-items-center gap-2">
-              <ProgressBar now={supervisor.auditCompletion} variant={supervisor.auditCompletion >= 90 ? 'success' : 'primary'} style={{ height: '8px', flex: 1 }} />
-              <span className="small fw-bold">{supervisor.auditCompletion}%</span>
+          </th>
+          <th onClick={() => requestSort('supervisorName')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Name {getSortIcon('supervisorName')}
             </div>
+<<<<<<< Updated upstream
           </td>
           <td className="text-center">
             {supervisor.pendingApprovals > 0 ? (
@@ -61,28 +77,93 @@ const SupervisorTable = ({ data, onRowClick }) => (
               <i className="fas fa-chevron-right text-primary"></i>
             </Button>
           </td>
+=======
+          </th>
+          <th onClick={() => requestSort('storesManaged')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Stores Managed {getSortIcon('storesManaged')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('totalAudits')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Total Audits {getSortIcon('totalAudits')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('totalPIDs')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Total SKUs {getSortIcon('totalPIDs')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('auditCompletion')} style={{ cursor: 'pointer', minWidth: '200px' }}>
+            <div className="d-flex align-items-center gap-1">
+              Audit Completion {getSortIcon('auditCompletion')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('pendingApprovals')} style={{ cursor: 'pointer' }} className="text-center">
+            <div className="d-flex align-items-center justify-content-center gap-1">
+              Pending Approvals {getSortIcon('pendingApprovals')}
+            </div>
+          </th>
+          <th>Actions</th>
+>>>>>>> Stashed changes
         </tr>
-      ))}
-    </tbody>
-  </Table>
-);
+      </thead>
+      <tbody>
+        {data.map((supervisor, idx) => (
+          <tr key={idx} onClick={() => onRowClick(supervisor)} style={{ cursor: 'pointer' }}>
+            <td>
+              <Badge bg="light" text="dark" className="font-monospace">
+                {supervisor.supervisorId}
+              </Badge>
+            </td>
+            <td>
+              <div className="fw-bold">{supervisor.supervisorName}</div>
+            </td>
+            <td>
+              <div className="fs-5 fw-semibold">{supervisor.storesManaged}</div>
+            </td>
+            <td>
+              <div className="fs-5 fw-semibold">{supervisor.totalAudits}</div>
+            </td>
+            <td>
+              <div className="fs-5 fw-semibold">{supervisor.totalPIDs?.toLocaleString()}</div>
+            </td>
+            <td>
+              <div className="d-flex align-items-center gap-2">
+                <ProgressBar now={supervisor.auditCompletion} variant={supervisor.auditCompletion >= 90 ? 'success' : 'primary'} style={{ height: '8px', flex: 1 }} />
+                <span className="small fw-bold">{supervisor.auditCompletion}%</span>
+              </div>
+            </td>
+            <td className="text-center">
+              {supervisor.pendingApprovals > 0 ? (
+                <Badge bg="warning" text="dark" pill className="px-3 py-2">
+                  {supervisor.pendingApprovals}
+                </Badge>
+              ) : <span className="text-muted">-</span>}
+            </td>
+            <td>
+              <Button variant="light" size="sm" className="rounded-circle">
+                <i className="fas fa-chevron-right text-primary"></i>
+              </Button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  );
+};
 
 const SupervisorApprovals = ({ filters = {} }) => {
-  const [showAllModal, setShowAllModal] = useState(false);
   const [selectedSupervisor, setSelectedSupervisor] = useState(null);
+  const [sortConfig, setSortConfig] = useState({ key: 'supervisorId', direction: 'ascending' });
 
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
 
   // Process data to get supervisor metrics and global aggregated stats
-  const { supervisorData, reauditData, overallMetrics } = useMemo(() => {
+  const { supervisorData, overallMetrics } = useMemo(() => {
     const supervisorMap = {};
-    const reauditStats = {
-      appeared: 0,
-      matched: 0,
-      revised: 0,
-      pending: 0
-    };
+
 
     // Helper to track unique audits per supervisor to avoid double counting TotalPIDs
     const supervisorAuditMap = {};
@@ -134,11 +215,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
 
       supervisorAuditMap[sId].add(record.AUDIT_ID);
 
-      // Re-audit waterfall
-      reauditStats.appeared += (record.AppearedCount || 0);
-      reauditStats.matched += (record.MatchedCount || 0);
-      reauditStats.revised += (record.RevisedCount || 0);
-      reauditStats.pending += (record.PendingCount || 0);
+
     });
 
     const processedSupervisors = Object.values(supervisorMap).map(sup => {
@@ -155,6 +232,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
         supervisorId: sup.supervisorId,
         supervisorName: sup.supervisorName,
         storesManaged: sup.stores.size,
+        totalAudits: supervisorAuditMap[sup.supervisorId].size,
         auditCompletion: parseFloat(avgCompletion.toFixed(1)),
         pendingApprovals: sup.pendingApprovals,
         totalPIDs: totalPIDs,
@@ -162,8 +240,19 @@ const SupervisorApprovals = ({ filters = {} }) => {
       };
     });
 
-    // Sort by Stores Managed Descending (Default)
-    const sortedSupervisors = processedSupervisors.sort((a, b) => b.storesManaged - a.storesManaged);
+    // Sort by Config
+    const sortedSupervisors = [...processedSupervisors];
+    if (sortConfig.key) {
+      sortedSupervisors.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
 
     // Calculate aggregations
     const metrics = sortedSupervisors.reduce((acc, curr) => ({
@@ -176,24 +265,25 @@ const SupervisorApprovals = ({ filters = {} }) => {
 
     const avgGlobalCompletion = metrics.totalSupervisors > 0 ? (metrics.sumCompletion / metrics.totalSupervisors).toFixed(1) : 0;
 
-    const processedReaudit = [
-      { stage: 'Initially Appeared', count: reauditStats.appeared, color: '#dc3545' },
-      { stage: 'Matched (Verified)', count: reauditStats.matched, color: '#198754' },
-      { stage: 'Edited (Modified)', count: reauditStats.revised, color: '#ffc107' },
-      { stage: 'Pending (Awaiting)', count: reauditStats.pending, color: '#0d6efd' }
-    ];
+
 
     return {
       supervisorData: sortedSupervisors,
-      reauditData: processedReaudit,
+
       overallMetrics: {
         ...metrics,
         avgCompletion: avgGlobalCompletion
       }
     };
-  }, [filters]);
+  }, [filters, sortConfig]);
 
-  const displayedSupervisors = supervisorData.slice(0, 5);
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
 
   const showSupervisorDetails = (supervisor) => {
     setSelectedSupervisor(supervisor);
@@ -262,13 +352,9 @@ const SupervisorApprovals = ({ filters = {} }) => {
                 </h5>
                 <small className="text-muted">Overview of supervisor metrics and workloads</small>
               </div>
-              <div>
-                <small className="text-muted me-2">
-                  Showing {displayedSupervisors.length} of {supervisorData.length} Supervisors
-                </small>
-              </div>
             </Card.Header>
             <Card.Body className="p-0">
+<<<<<<< Updated upstream
               <SupervisorTable data={displayedSupervisors} onRowClick={showSupervisorDetails} />
             </Card.Body>
             <Card.Footer className="bg-white text-center py-3 border-0">
@@ -311,27 +397,25 @@ const SupervisorApprovals = ({ filters = {} }) => {
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
+=======
+              <div className="table-responsive" style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                <SupervisorTable
+                  data={supervisorData}
+                  onRowClick={showSupervisorDetails}
+                  sortConfig={sortConfig}
+                  requestSort={requestSort}
+                />
+              </div>
+>>>>>>> Stashed changes
             </Card.Body>
           </Card>
         </Col>
       </Row>
 
 
-      {/* All Supervisors Modal */}
-      <Modal show={showAllModal} onHide={() => setShowAllModal(false)} size="xl">
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <i className="fas fa-users me-2 text-primary"></i>
-            All Supervisors
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="p-0">
-          <SupervisorTable data={supervisorData} onRowClick={showSupervisorDetails} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowAllModal(false)}>Close</Button>
-        </Modal.Footer>
-      </Modal>
+
+
+
 
       {/* Detail Modal */}
       <SupervisorDetailModal

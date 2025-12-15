@@ -6,6 +6,22 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
     const [timeRange, setTimeRange] = useState('All-time');
     const [selectedAudit, setSelectedAudit] = useState(null);
     const [showAuditDetail, setShowAuditDetail] = useState(false);
+    const [sortConfig, setSortConfig] = useState({ key: 'AUDIT_ID', direction: 'ascending' });
+
+    const requestSort = (key) => {
+        let direction = 'ascending';
+        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+            direction = 'descending';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const getSortIcon = (key) => {
+        if (sortConfig.key !== key) return <i className="fas fa-sort text-muted ms-1 small"></i>;
+        return sortConfig.direction === 'ascending'
+            ? <i className="fas fa-sort-up text-primary ms-1 small"></i>
+            : <i className="fas fa-sort-down text-primary ms-1 small"></i>;
+    };
 
     // Filter data for this supervisor
     const supervisorRecords = useMemo(() => {
@@ -34,8 +50,24 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                 }
             });
         }
-        return filtered.sort((a, b) => b.AuditDate - a.AuditDate);
+        return filtered;
     }, [supervisorId, allData, timeRange]);
+
+    const sortedRecords = useMemo(() => {
+        const sorted = [...supervisorRecords];
+        if (sortConfig.key) {
+            sorted.sort((a, b) => {
+                if (a[sortConfig.key] < b[sortConfig.key]) {
+                    return sortConfig.direction === 'ascending' ? -1 : 1;
+                }
+                if (a[sortConfig.key] > b[sortConfig.key]) {
+                    return sortConfig.direction === 'ascending' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        return sorted;
+    }, [supervisorRecords, sortConfig]);
 
     // Specific Supervisor Details (Name from first record)
     const supervisorName = supervisorRecords.length > 0 ? supervisorRecords[0].SupervisorName : 'Unknown';
@@ -255,20 +287,39 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>AUDIT HISTORY</h6>
                     <Card className="border-0 shadow-sm mb-4">
                         <Card.Body className="p-0">
+<<<<<<< Updated upstream
                             <Table hover responsive className="mb-0">
                                 <thead className="bg-light text-muted small text-uppercase">
+=======
+                            <Table hover responsive className="mb-0 hover-scale-row">
+                                <thead className="bg-light text-muted small text-uppercase sticky-top" style={{ top: 0, zIndex: 1 }}>
+>>>>>>> Stashed changes
                                     <tr>
-                                        <th className="border-0 py-3 ps-4">Audit ID</th>
-                                        <th className="border-0 py-3">Store</th>
-                                        <th className="border-0 py-3">Date</th>
-                                        <th className="border-0 py-3">Job Type</th>
-                                        <th className="border-0 py-3">Status</th>
-                                        <th className="border-0 py-3 text-end">SKUs</th>
-                                        <th className="border-0 py-3 text-end pe-4">PIDs</th>
+                                        <th className="border-0 py-3 ps-4" onClick={() => requestSort('AUDIT_ID')} style={{ cursor: 'pointer' }}>
+                                            Audit ID {getSortIcon('AUDIT_ID')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('StoreName')} style={{ cursor: 'pointer' }}>
+                                            Store {getSortIcon('StoreName')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('AuditDate')} style={{ cursor: 'pointer' }}>
+                                            Date {getSortIcon('AuditDate')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('AuditJobType')} style={{ cursor: 'pointer' }}>
+                                            Job Type {getSortIcon('AuditJobType')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('Status')} style={{ cursor: 'pointer' }}>
+                                            Status {getSortIcon('Status')}
+                                        </th>
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedSKUs')} style={{ cursor: 'pointer' }}>
+                                            SKUs {getSortIcon('AuditorAllottedSKUs')}
+                                        </th>
+                                        <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AuditorAllottedPIDs')} style={{ cursor: 'pointer' }}>
+                                            PIDs {getSortIcon('AuditorAllottedPIDs')}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {supervisorRecords.map((audit, idx) => (
+                                    {sortedRecords.map((audit, idx) => (
                                         <tr
                                             key={idx}
                                             className="align-middle"

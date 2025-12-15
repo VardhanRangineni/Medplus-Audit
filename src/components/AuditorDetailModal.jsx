@@ -1,5 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { Modal, Container, Row, Col, Card, Table, Badge, Form, Button } from 'react-bootstrap';
+import { Modal, Container, Row, Col, Card, Table, Badge, Form, Button, Dropdown } from 'react-bootstrap';
+import { utils, writeFile } from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import AuditSpecificDetailModal from './AuditSpecificDetailModal';
 
 const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
@@ -59,10 +62,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             acc.appeared.value += (r.AppearedValue || 0);
 
             acc.matched.count += (r.MatchedCount || 0);
-            // Data missing for Matched Qty/Value, estimating roughly for UI demo or setting to 0 if strict
-            // For now, let's assume Matched/Revised/Pending don't have explicit Qty/Value in this dataset
-            // and we just show Count. 
-            // But to match the "pic", I will mock Qty/Value based on average value per count from Appeared
+
             const avgQty = r.AppearedCount ? r.AppearedQty / r.AppearedCount : 0;
             const avgVal = r.AppearedCount ? r.AppearedValue / r.AppearedCount : 0;
 
@@ -87,6 +87,134 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
         return { totalAudits, totalSKUs, totalPIDs, statusBreakdown, deviations };
     }, [auditorRecords]);
+
+    const handleDownloadExcel = () => {
+        const wb = utils.book_new();
+
+        // 1. Summary Sheet
+        const summaryData = [
+            ["Auditor Name", auditorName],
+            ["Auditor ID", auditorId],
+            ["Generated On", new Date().toLocaleString()],
+            [],
+            ["Metric", "Value"],
+            ["Total Audits", metrics.totalAudits],
+            ["Total SKUs", metrics.totalSKUs],
+            ["Total PIDs", metrics.totalPIDs],
+            [],
+            ["Status Breakdown", "Count"],
+            ["Completed", metrics.statusBreakdown.Completed],
+            ["In-Progress", metrics.statusBreakdown.InProgress],
+            ["Pending", metrics.statusBreakdown.Pending],
+            ["Created", metrics.statusBreakdown.Created],
+            [],
+            ["Deviation Summary", "Count", "Qty", "Value"],
+            ["Appeared", metrics.deviations.appeared.count, metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
+            ["Matched", metrics.deviations.matched.count, metrics.deviations.matched.qty, metrics.deviations.matched.value],
+            ["Revised", metrics.deviations.revised.count, metrics.deviations.revised.qty, metrics.deviations.revised.value],
+            ["In-Progress", metrics.deviations.pending.count, metrics.deviations.pending.qty, metrics.deviations.pending.value],
+        ];
+        const wsSummary = utils.aoa_to_sheet(summaryData);
+
+        // Set column widths for Summary
+        wsSummary['!cols'] = [
+            { wch: 25 }, // Metric
+            { wch: 20 }, // Value / Count
+            { wch: 15 }, // Qty
+            { wch: 15 }  // Value
+        ];
+
+        utils.book_append_sheet(wb, wsSummary, "Summary");
+
+        // 2. Detailed Data Sheet
+        const detailedData = auditorRecords.map(r => ({
+            "Audit ID": r.AUDIT_ID,
+            "Store Name": r.StoreName,
+            "Date": new Date(r.AuditDate).toLocaleDateString('en-GB'),
+            "Job Type": r.AuditJobType,
+            "Status": r.Status,
+            "Allocated SKUs": r.AuditorAllottedSKUs,
+            "Allocated PIDs": r.AuditorAllottedPIDs,
+            "Audit Completion %": r.CompletionPercent,
+        }));
+        const wsDetails = utils.json_to_sheet(detailedData);
+
+        // Set column widths for Details
+        wsDetails['!cols'] = [
+            { wch: 15 }, // Audit ID
+            { wch: 30 }, // Store Name
+            { wch: 15 }, // Date
+            { wch: 25 }, // Job Type
+            { wch: 15 }, // Status
+            { wch: 15 }, // SKUs
+            { wch: 15 }, // PIDs
+            { wch: 20 }  // Completion
+        ];
+
+        utils.book_append_sheet(wb, wsDetails, "Audit Details");
+
+        writeFile(wb, `Auditor_${auditorName.replace(/\s+/g, '_')}_metrics.xlsx`);
+    };
+
+    const handleDownloadPDF = () => {
+        const doc = new jsPDF();
+
+        // Title
+        doc.setFontSize(16);
+        doc.text("Auditor Performance Report", 14, 20);
+
+        doc.setFontSize(10);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
+        doc.text(`Auditor: ${auditorName} (${auditorId})`, 14, 34);
+
+        // Metrics Table
+        autoTable(doc, {
+            startY: 40,
+            head: [['Category', 'Details']],
+            body: [
+                ['Total Audits', metrics.totalAudits],
+                ['Total SKUs', metrics.totalSKUs.toLocaleString()],
+                ['Total PIDs', metrics.totalPIDs.toLocaleString()],
+                ['Completed Audits', metrics.statusBreakdown.Completed],
+                ['In-Progress Audits', metrics.statusBreakdown.InProgress],
+            ],
+            theme: 'striped',
+            headStyles: { fillColor: [41, 128, 185] }
+        });
+
+        // Deviation Summary Table
+        autoTable(doc, {
+            startY: doc.lastAutoTable.finalY + 10,
+            head: [['Deviation Stage', 'Count', 'Qty', 'Value (INR)']],
+            body: [
+                ['Appeared', metrics.deviations.appeared.count, metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
+                ['Matched', metrics.deviations.matched.count, metrics.deviations.matched.qty, metrics.deviations.matched.value],
+                ['Revised', metrics.deviations.revised.count, metrics.deviations.revised.qty, metrics.deviations.revised.value],
+                ['In-Progress', metrics.deviations.pending.count, metrics.deviations.pending.qty, metrics.deviations.pending.value],
+            ],
+            theme: 'grid',
+            headStyles: { fillColor: [243, 156, 18] }
+        });
+
+        // Audit History Table
+        autoTable(doc, {
+            startY: doc.lastAutoTable.finalY + 10,
+            head: [['Audit ID', 'Store', 'Date', 'Status', 'SKUs', 'Comp %']],
+            body: auditorRecords.map(r => [
+                r.AUDIT_ID,
+                r.StoreName,
+                new Date(r.AuditDate).toLocaleDateString('en-GB'),
+                r.Status,
+                r.AuditorAllottedSKUs,
+                `${r.CompletionPercent}%`
+            ]),
+            theme: 'plain',
+            styles: { fontSize: 8 },
+            headStyles: { fillColor: [52, 73, 94], textColor: 255 }
+        });
+
+        doc.save(`Auditor_${auditorName.replace(/\s+/g, '_')}_Report.pdf`);
+    };
 
     // Format Date
     const formatDate = (timestamp) => {
@@ -113,8 +241,27 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Modal.Title className="fw-bold mb-0 h5">{auditorName}</Modal.Title>
                             <small className="text-muted">ID: {auditorId}</small>
                         </div>
-                        <div>
-                            <Form.Select size="sm" value={timeRange} onChange={(e) => setTimeRange(e.target.value)} style={{ width: '150px' }}>
+                        <div className="d-flex gap-2">
+                            <Dropdown>
+                                <Dropdown.Toggle
+                                    size="sm"
+                                    className="d-flex align-items-center gap-2 fw-bold shadow-sm"
+                                    style={{ backgroundColor: '#0dcaf0', color: 'white', border: 'none' }}
+                                    id="download-dropdown"
+                                >
+                                    <i className="fas fa-download"></i> Download Report
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu>
+                                    <Dropdown.Item onClick={handleDownloadExcel}>
+                                        <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={handleDownloadPDF}>
+                                        <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <Form.Select size="sm" value={timeRange} onChange={(e) => setTimeRange(e.target.value)} style={{ width: '200px' }}>
                                 <option>All-time</option>
                                 <option>Oct 2025 - Dec 2025</option>
                                 <option>Jul 2025 - Sep 2025</option>
@@ -259,7 +406,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                     <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>AUDIT HISTORY</h6>
                     <Card className="border-0 shadow-sm mb-4">
                         <Card.Body className="p-0">
-                            <Table hover responsive className="mb-0">
+                            <Table hover responsive className="mb-0 hover-scale-row">
                                 <thead className="bg-light text-muted small text-uppercase">
                                     <tr>
                                         <th className="border-0 py-3 ps-4">Audit ID</th>

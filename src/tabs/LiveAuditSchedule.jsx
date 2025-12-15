@@ -142,6 +142,56 @@ const LiveAuditSchedule = ({ filters = {} }) => {
     return 'danger';
   };
 
+  // Export audit data to Excel
+  const exportAuditDataToExcel = () => {
+    let dataToExport = [];
+    let fileName = `Audit_${selectedStatus}_${new Date().toISOString().split('T')[0]}.xlsx`;
+    
+    if (selectedStatus === 'completed') {
+      dataToExport = auditTableData.map(audit => ({
+        'Store ID': audit.storeId,
+        'Store Name': audit.storeName,
+        'State': audit.state,
+        'Supervisor': audit.supervisor,
+        'No of Auditors': audit.noOfAuditors,
+        'Auditors': audit.auditors,
+        'Start Date': audit.startDate,
+        'End Date': audit.endDate,
+        'Total PIDs': audit.totalPIDs,
+        'Total SKUs': audit.totalSKUs,
+        'Completed SKUs': audit.completedSKUs,
+        'Duration (hrs)': audit.duration,
+        'Deviations': audit.deviations,
+        'Mismatch Count': audit.mismatch,
+        'Audit Job Type': audit.auditJobType,
+        'Process Type': audit.processType,
+        'Status': 'Completed'
+      }));
+    } else {
+      dataToExport = auditTableData.map(audit => ({
+        'Store ID': audit.storeId,
+        'Store Name': audit.storeName,
+        'Supervisor': audit.supervisor,
+        'Assigned Auditors': audit.auditors,
+        'Start Date': audit.startDate,
+        'Completed SKUs': audit.completedSKUs,
+        'Total SKUs': audit.totalSKUs,
+        'Progress (%)': audit.progress.toFixed(1),
+        'Status': audit.status === 'in-progress' ? 'In Progress' : audit.status.charAt(0).toUpperCase() + audit.status.slice(1)
+      }));
+    }
+
+    // Create worksheet
+    const ws = window.XLSX.utils.json_to_sheet(dataToExport);
+    
+    // Create workbook
+    const wb = window.XLSX.utils.book_new();
+    window.XLSX.utils.book_append_sheet(wb, ws, 'Audit Data');
+    
+    // Download file
+    window.XLSX.writeFile(wb, fileName);
+  };
+
   return (
     <Container fluid className="live-audit-tab py-4">
       {/* Filter Status Alert */}
@@ -233,9 +283,19 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                   </h5>
                   <small className="text-muted">Click on any row to view auditor-wise allocation and real-time progress</small>
                 </div>
-                <Badge bg="primary" pill style={{ fontSize: '0.9rem', padding: '8px 16px' }}>
-                  {auditTableData.length} {auditTableData.length === 1 ? 'Audit' : 'Audits'}
-                </Badge>
+                <div className="d-flex gap-2 align-items-center">
+                  <button
+                    className="btn btn-success btn-sm"
+                    onClick={exportAuditDataToExcel}
+                    disabled={auditTableData.length === 0}
+                  >
+                    <i className="fas fa-file-excel me-1"></i>
+                    Export Excel
+                  </button>
+                  <Badge bg="primary" pill style={{ fontSize: '0.9rem', padding: '8px 16px' }}>
+                    {auditTableData.length} {auditTableData.length === 1 ? 'Audit' : 'Audits'}
+                  </Badge>
+                </div>
               </div>
             </Card.Header>
             <Card.Body className="p-0">

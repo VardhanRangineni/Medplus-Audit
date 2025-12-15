@@ -28,35 +28,35 @@ const DetailsPage = ({ filters = {} }) => {
   const getData = () => {
     if (type === 'total-active-stores') {
       return [
-        { storeId: 'MP001', storeName: 'Chennai Central', state: 'Tamil Nadu', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2020-01-15', lastAuditedDate: '2024-11-15', status: 'Active', inventoryValueMRP: 125000 },
-        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'Karnataka', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2019-08-20', lastAuditedDate: '2024-11-20', status: 'Active', inventoryValueMRP: 198000 },
-        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'Telangana', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2020-03-12', lastAuditedDate: '2024-10-28', status: 'Active', inventoryValueMRP: 167000 },
-        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'Maharashtra', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2019-05-10', lastAuditedDate: '2024-10-15', status: 'Active', inventoryValueMRP: 215000 },
-        { storeId: 'MP005', storeName: 'Pune West', state: 'Maharashtra', storeType: 'Retail', boxType: 'Type C', storeCreatedDate: '2021-02-05', lastAuditedDate: '2024-11-05', status: 'Active', inventoryValueMRP: 89000 },
-        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'Delhi', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2020-06-18', lastAuditedDate: '2024-11-28', status: 'Active', inventoryValueMRP: 245000 },
-        { storeId: 'MP007', storeName: 'Ahmedabad Main', state: 'Gujarat', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2020-09-22', lastAuditedDate: '2024-08-20', status: 'Active', inventoryValueMRP: 178000 },
-        { storeId: 'MP008', storeName: 'Kolkata East', state: 'West Bengal', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2019-11-30', lastAuditedDate: '2024-09-10', status: 'Active', inventoryValueMRP: 198000 },
-        { storeId: 'MP009', storeName: 'Nagpur Central', state: 'Maharashtra', storeType: 'Retail', boxType: 'Type C', storeCreatedDate: '2021-04-08', lastAuditedDate: '2024-07-25', status: 'Active', inventoryValueMRP: 156000 },
-        { storeId: 'MP010', storeName: 'Bhopal Main', state: 'Madhya Pradesh', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2020-12-15', lastAuditedDate: '2024-06-18', status: 'Active', inventoryValueMRP: 134000 }
+        { storeId: 'MP001', storeName: 'Chennai Central', state: 'Tamil Nadu', storeType: 'HUB', boxType: 'Box Mapping', storeCreatedDate: '2020-01-15', lastAuditedDate: '2024-11-15', status: 'Active', inventoryValueMRP: 125000 },
+        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'Karnataka', storeType: 'HUB', boxType: 'Box Mapping', storeCreatedDate: '2019-08-20', lastAuditedDate: '2024-11-20', status: 'Active', inventoryValueMRP: 198000 },
+        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'Telangana', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2020-03-12', lastAuditedDate: '2024-10-28', status: 'Active', inventoryValueMRP: 167000 },
+        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'Maharashtra', storeType: 'HUB', boxType: 'Box Mapping', storeCreatedDate: '2019-05-10', lastAuditedDate: '2024-10-15', status: 'Active', inventoryValueMRP: 215000 },
+        { storeId: 'MP005', storeName: 'Pune West', state: 'Maharashtra', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2021-02-05', lastAuditedDate: '2024-11-05', status: 'Active', inventoryValueMRP: 89000 },
+        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'Delhi', storeType: 'HUB', boxType: 'Box Mapping', storeCreatedDate: '2020-06-18', lastAuditedDate: '2024-11-28', status: 'Active', inventoryValueMRP: 245000 },
+        { storeId: 'MP007', storeName: 'Ahmedabad Main', state: 'Gujarat', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2020-09-22', lastAuditedDate: '2024-08-20', status: 'Active', inventoryValueMRP: 178000 },
+        { storeId: 'MP008', storeName: 'Kolkata East', state: 'West Bengal', storeType: 'HUB', boxType: 'Box Mapping', storeCreatedDate: '2019-11-30', lastAuditedDate: '2024-09-10', status: 'Active', inventoryValueMRP: 198000 },
+        { storeId: 'MP009', storeName: 'Nagpur Central', state: 'Maharashtra', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2021-04-08', lastAuditedDate: '2024-07-25', status: 'Active', inventoryValueMRP: 156000 },
+        { storeId: 'MP010', storeName: 'Bhopal Main', state: 'Madhya Pradesh', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2020-12-15', lastAuditedDate: '2024-06-18', status: 'Active', inventoryValueMRP: 134000 }
       ];
     } else if (type === 'covered-stores') {
       return [
-        { storeId: 'MP001', storeName: 'Chennai Central', state: 'Tamil Nadu', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2020-01-15', lastAuditedDate: '2024-11-15', mismatch: 12, deviation: 4, status: 'Active', inventoryValueMRP: 125000 },
-        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'Karnataka', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2019-08-20', lastAuditedDate: '2024-11-20', mismatch: 8, deviation: 3, status: 'Active', inventoryValueMRP: 198000 },
-        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'Telangana', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2020-03-12', lastAuditedDate: '2024-10-28', mismatch: 15, deviation: 5, status: 'Active', inventoryValueMRP: 167000 },
-        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'Maharashtra', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2019-05-10', lastAuditedDate: '2024-10-15', mismatch: 10, deviation: 4, status: 'Active', inventoryValueMRP: 215000 },
-        { storeId: 'MP005', storeName: 'Pune West', state: 'Maharashtra', storeType: 'Retail', boxType: 'Type C', storeCreatedDate: '2021-02-05', lastAuditedDate: '2024-11-05', mismatch: 6, deviation: 2, status: 'Active', inventoryValueMRP: 89000 },
-        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'Delhi', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2020-06-18', lastAuditedDate: '2024-11-28', mismatch: 14, deviation: 6, status: 'Active', inventoryValueMRP: 245000 },
-        { storeId: 'MP007', storeName: 'Ahmedabad Main', state: 'Gujarat', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2020-09-22', lastAuditedDate: '2024-08-20', mismatch: 18, deviation: 7, status: 'Active', inventoryValueMRP: 178000 },
-        { storeId: 'MP008', storeName: 'Kolkata East', state: 'West Bengal', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2019-11-30', lastAuditedDate: '2024-09-10', mismatch: 11, deviation: 4, status: 'Active', inventoryValueMRP: 198000 }
+        { storeId: 'MP001', storeName: 'Chennai Central', state: 'Tamil Nadu', storeType: 'HUB', boxType: 'Box Mapping', storeCreatedDate: '2020-01-15', lastAuditedDate: '2024-11-15', mismatch: 12, deviation: 4, status: 'Active', inventoryValueMRP: 125000 },
+        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'Karnataka', storeType: 'HUB', boxType: 'Box Mapping', storeCreatedDate: '2019-08-20', lastAuditedDate: '2024-11-20', mismatch: 8, deviation: 3, status: 'Active', inventoryValueMRP: 198000 },
+        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'Telangana', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2020-03-12', lastAuditedDate: '2024-10-28', mismatch: 15, deviation: 5, status: 'Active', inventoryValueMRP: 167000 },
+        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'Maharashtra', storeType: 'HUB', boxType: 'Box Mapping', storeCreatedDate: '2019-05-10', lastAuditedDate: '2024-10-15', mismatch: 10, deviation: 4, status: 'Active', inventoryValueMRP: 215000 },
+        { storeId: 'MP005', storeName: 'Pune West', state: 'Maharashtra', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2021-02-05', lastAuditedDate: '2024-11-05', mismatch: 6, deviation: 2, status: 'Active', inventoryValueMRP: 89000 },
+        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'Delhi', storeType: 'HUB', boxType: 'Box Mapping', storeCreatedDate: '2020-06-18', lastAuditedDate: '2024-11-28', mismatch: 14, deviation: 6, status: 'Active', inventoryValueMRP: 245000 },
+        { storeId: 'MP007', storeName: 'Ahmedabad Main', state: 'Gujarat', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2020-09-22', lastAuditedDate: '2024-08-20', mismatch: 18, deviation: 7, status: 'Active', inventoryValueMRP: 178000 },
+        { storeId: 'MP008', storeName: 'Kolkata East', state: 'West Bengal', storeType: 'HUB', boxType: 'Box Mapping', storeCreatedDate: '2019-11-30', lastAuditedDate: '2024-09-10', mismatch: 11, deviation: 4, status: 'Active', inventoryValueMRP: 198000 }
       ];
     } else if (type === 'uncovered-stores') {
       return [
-        { storeId: 'MP015', storeName: 'Jaipur Pink City', state: 'Rajasthan', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2024-10-15', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 95000 },
-        { storeId: 'MP022', storeName: 'Lucknow Central', state: 'Uttar Pradesh', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2024-11-01', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 145000 },
-        { storeId: 'MP033', storeName: 'Chandigarh Hub', state: 'Punjab', storeType: 'Hub', boxType: 'Type A', storeCreatedDate: '2024-09-20', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 189000 },
-        { storeId: 'MP041', storeName: 'Indore Main', state: 'Madhya Pradesh', storeType: 'Retail', boxType: 'Type C', storeCreatedDate: '2024-11-10', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 112000 },
-        { storeId: 'MP045', storeName: 'Patna Central', state: 'Bihar', storeType: 'Retail', boxType: 'Type B', storeCreatedDate: '2024-10-28', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 87000 }
+        { storeId: 'MP015', storeName: 'Jaipur Pink City', state: 'Rajasthan', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2024-10-15', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 95000 },
+        { storeId: 'MP022', storeName: 'Lucknow Central', state: 'Uttar Pradesh', storeType: 'HUB', boxType: 'Box Mapping', storeCreatedDate: '2024-11-01', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 145000 },
+        { storeId: 'MP033', storeName: 'Chandigarh Hub', state: 'Punjab', storeType: 'HUB', boxType: 'Box Mapping', storeCreatedDate: '2024-09-20', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 189000 },
+        { storeId: 'MP041', storeName: 'Indore Main', state: 'Madhya Pradesh', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2024-11-10', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 112000 },
+        { storeId: 'MP045', storeName: 'Patna Central', state: 'Bihar', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2024-10-28', lastAuditedDate: '-', status: 'Active', inventoryValueMRP: 87000 }
       ];
     } else if (type === 'stores-recency-oct-dec') {
       return [

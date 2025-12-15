@@ -2,7 +2,7 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   font-weight: 400;
-  
+
   color-scheme: light;
   color: #212529;
   background-color: #ffffff;
@@ -59,14 +59,27 @@ textarea:focus-visible {
   .no-print {
     display: none !important;
   }
-  
+
   body {
     background: white;
   }
-  
+
   .shadow-sm,
   .shadow {
     box-shadow: none !important;
   }
 }
 
+/* Custom Table Row Hover Effect */
+.hover-scale-row tbody tr {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-scale-row tbody tr:hover {
+  transform: scale(1.01);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  /* Ensure it stands out if transparent */
+  z-index: 10;
+  position: relative;
+}

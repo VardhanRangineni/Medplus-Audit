@@ -287,7 +287,6 @@ const SupervisorApprovals = ({ filters = {} }) => {
                   <XAxis type="number" />
                   <YAxis type="category" dataKey="stage" width={150} />
                   <Tooltip />
-                  <Legend />
                   <Bar dataKey="count" fill="#0d6efd">
                     {reauditData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />

@@ -1,5 +1,8 @@
 import React from 'react';
-import { Modal, Card, Badge, Table, Button } from 'react-bootstrap';
+import { Modal, Card, Badge, Table, Button, Dropdown } from 'react-bootstrap';
+import { utils, writeFile } from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
     if (!audit) return null;
@@ -12,12 +15,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
     const getStatusBadge = (status) => {
         switch (status) {
             case 'Completed': return 'success';
-            case 'In-Progress': return 'warning'; // Changed to match image blue/primary usually but code used warning previously. Image shows Blue for In-Progress? No, image status badge is Blue for "In-Progress".
-            // Wait, standard bootstrap "primary" is blue, "warning" is yellow.
-            // Previous code used 'warning' (yellow) for In-Progress.
-            // The image attached shows a BLUE "In-Progress" badge.
-            // I will switch In-Progress to 'primary' (blue) to match the image if possible, or stick to 'primary'.
-            // Let's use 'primary' for In-Progress to match the specific image provided in this turn.
+            case 'In-Progress': return 'primary'; // Mapped to primary as per earlier logic/comment
             case 'Pending': return 'info';
             case 'Created': return 'secondary';
             default: return 'light';
@@ -36,19 +34,122 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
 
     const matched = calculateMetrics(audit.MatchedCount);
     const revised = calculateMetrics(audit.RevisedCount);
-    const deviations = calculateMetrics(audit.PendingCount); // Mapping Pending to Deviations
+    const deviations = calculateMetrics(audit.PendingCount);
 
-    // For Appeared, use actuals if available, else calc (though actuals are there)
     const appeared = {
         count: audit.AppearedCount,
         qty: audit.AppearedQty,
         value: audit.AppearedValue
     };
 
+    const participatingAuditors = allData ? allData.filter(d => d.AUDIT_ID === audit.AUDIT_ID) : [];
+
+    const handleDownloadExcel = () => {
+        const wb = utils.book_new();
+
+        // 1. Summary Sheet
+        const summaryData = [
+            ["Audit ID", audit.AUDIT_ID],
+            ["Store Name", audit.StoreName],
+            ["Date", formatDate(audit.AuditDate)],
+            ["Status", audit.Status],
+            [],
+            ["Re-Audit Category", "Count", "Qty", "Value"],
+            ["Appeared", appeared.count, appeared.qty, appeared.value],
+            ["Matched", matched.count, matched.qty, matched.value],
+            ["Revised", revised.count, revised.qty, revised.value],
+            ["Deviations", deviations.count, deviations.qty, deviations.value],
+        ];
+        const wsSummary = utils.aoa_to_sheet(summaryData);
+        wsSummary['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 20 }];
+        utils.book_append_sheet(wb, wsSummary, "Audit Summary");
+
+        // 2. Participating Auditors Sheet
+        const auditorsData = participatingAuditors.map(r => ({
+            "Auditor Name": r.AuditorName,
+            "ID": r.AuditorID,
+            "Allocated SKUs": r.AuditorAllottedSKUs,
+            "Completion %": `${r.CompletionPercent}%`,
+            "Status": r.Status
+        }));
+        const wsAuditors = utils.json_to_sheet(auditorsData);
+        wsAuditors['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
+        utils.book_append_sheet(wb, wsAuditors, "Participating Auditors");
+
+        writeFile(wb, `Audit_${audit.AUDIT_ID}_Report.xlsx`);
+    };
+
+    const handleDownloadPDF = () => {
+        const doc = new jsPDF();
+
+        // Title
+        doc.setFontSize(16);
+        doc.text(`Audit Details: ${audit.AUDIT_ID}`, 14, 20);
+
+        doc.setFontSize(10);
+        doc.text(`Store: ${audit.StoreName}`, 14, 28);
+        doc.text(`Date: ${formatDate(audit.AuditDate)}`, 14, 34);
+        doc.text(`Status: ${audit.Status}`, 14, 40);
+
+        // Re-Audit Summary Table
+        autoTable(doc, {
+            startY: 45,
+            head: [['Re-Audit Category', 'Count', 'Qty', 'Value (INR)']],
+            body: [
+                ['Appeared', appeared.count, appeared.qty, appeared.value],
+                ['Matched', matched.count, matched.qty, matched.value],
+                ['Revised', revised.count, revised.qty, revised.value],
+                ['Deviations', deviations.count, deviations.qty, deviations.value],
+            ],
+            theme: 'grid',
+            headStyles: { fillColor: [41, 128, 185] }
+        });
+
+        // Participating Auditors Table
+        if (participatingAuditors.length > 0) {
+            autoTable(doc, {
+                startY: doc.lastAutoTable.finalY + 15,
+                head: [['Auditor Name', 'ID', 'Make SKUs', 'Comp %', 'Status']],
+                body: participatingAuditors.map(r => [
+                    r.AuditorName,
+                    r.AuditorID,
+                    r.AuditorAllottedSKUs,
+                    `${r.CompletionPercent}%`,
+                    r.Status
+                ]),
+                theme: 'striped',
+                headStyles: { fillColor: [52, 73, 94] }
+            });
+        }
+
+        doc.save(`Audit_${audit.AUDIT_ID}_Report.pdf`);
+    };
+
     return (
         <Modal show={show} onHide={onHide} centered size="lg" backdrop="static" className="audit-specific-modal" backdropClassName="audit-specific-backdrop">
             <Modal.Header closeButton className="border-0 pb-0">
-                <Modal.Title className="fw-bold h5">Audit Details</Modal.Title>
+                <div className="d-flex w-100 justify-content-between align-items-center pe-3">
+                    <Modal.Title className="fw-bold h5">Audit Details</Modal.Title>
+                    <Dropdown>
+                        <Dropdown.Toggle
+                            size="sm"
+                            className="d-flex align-items-center gap-2 fw-bold shadow-sm"
+                            style={{ backgroundColor: '#0dcaf0', color: 'white', border: 'none' }}
+                            id="audit-download-dropdown"
+                        >
+                            <i className="fas fa-download"></i> Download Report
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={handleDownloadExcel}>
+                                <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={handleDownloadPDF}>
+                                <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </div>
             </Modal.Header>
             <Modal.Body className="bg-light p-4">
                 {/* Top Card */}
@@ -115,7 +216,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                 </Card>
 
                 {/* Participating Auditors */}
-                {allData && (
+                {participatingAuditors.length > 0 && (
                     <>
                         <h6 className="text-muted text-uppercase fw-bold mb-3" style={{ fontSize: '0.85rem' }}>PARTICIPATING AUDITORS</h6>
                         <Card className="border-0 shadow-sm">
@@ -131,7 +232,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {allData.filter(d => d.AUDIT_ID === audit.AUDIT_ID).map((record, idx) => (
+                                        {participatingAuditors.map((record, idx) => (
                                             <tr key={idx}>
                                                 <td className="ps-4 fw-bold text-primary">{record.AuditorName}</td>
                                                 <td>{record.AuditorID}</td>

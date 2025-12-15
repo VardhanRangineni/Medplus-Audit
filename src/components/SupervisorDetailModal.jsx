@@ -287,13 +287,12 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>AUDIT HISTORY</h6>
                     <Card className="border-0 shadow-sm mb-4">
                         <Card.Body className="p-0">
-<<<<<<< Updated upstream
-                            <Table hover responsive className="mb-0">
-                                <thead className="bg-light text-muted small text-uppercase">
-=======
                             <Table hover responsive className="mb-0 hover-scale-row">
-                                <thead className="bg-light text-muted small text-uppercase sticky-top" style={{ top: 0, zIndex: 1 }}>
->>>>>>> Stashed changes
+                                <thead
+                                    className="bg-light text-muted small text-uppercase sticky-top"
+                                    style={{ top: 0, zIndex: 1 }}
+                                >
+
                                     <tr>
                                         <th className="border-0 py-3 ps-4" onClick={() => requestSort('AUDIT_ID')} style={{ cursor: 'pointer' }}>
                                             Audit ID {getSortIcon('AUDIT_ID')}

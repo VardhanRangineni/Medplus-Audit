@@ -104,7 +104,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             end.setHours(23, 59, 59, 999);
 
             filtered = filtered.filter(d => {
-                const recordDate = new Date(d.AuditDate);
+                const recordDate = new Date(d.AuditStartDate);
                 return recordDate >= start && recordDate <= end;
             });
         }
@@ -223,14 +223,15 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         const historyData = sortedRecords.map(r => ({
             "Audit ID": r.AUDIT_ID,
             "Store Name": r.StoreName,
-            "Date": formatDate(r.AuditDate),
+            "Date": formatDate(r.AuditStartDate),
             "Job Type": r.AuditJobType,
             "Status": r.Status,
             "SKUs": r.AuditorAllottedSKUs,
-            "PIDs": r.AuditorAllottedPIDs
+            "PIDs": r.AuditorAllottedPIDs,
+            "Value (₹)": r.AppearedValue || 0
         }));
         const wsHistory = utils.json_to_sheet(historyData);
-        wsHistory['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }];
+        wsHistory['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }, { wch: 15 }];
         utils.book_append_sheet(wb, wsHistory, "Audit History");
 
         writeFile(wb, `Supervisor_${supervisorId}_Report.xlsx`);
@@ -280,15 +281,16 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         if (sortedRecords.length > 0) {
             autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 15,
-                head: [['Audit ID', 'Store', 'Date', 'Type', 'Status', 'SKUs', 'PIDs']],
+                head: [['Audit ID', 'Store', 'Date', 'Type', 'Status', 'SKUs', 'PIDs', 'Value']],
                 body: sortedRecords.map(r => [
                     r.AUDIT_ID,
                     r.StoreName,
-                    formatDate(r.AuditDate),
+                    formatDate(r.AuditStartDate),
                     r.AuditJobType,
                     r.Status,
                     r.AuditorAllottedSKUs,
-                    r.AuditorAllottedPIDs
+                    r.AuditorAllottedPIDs,
+                    `₹${(r.AppearedValue || 0).toLocaleString('en-IN')}`
                 ]),
                 theme: 'striped',
                 headStyles: { fillColor: [52, 73, 94] }
@@ -504,8 +506,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                         <th className="border-0 py-3" onClick={() => requestSort('StoreName')} style={{ cursor: 'pointer' }}>
                                             Store {getSortIcon('StoreName')}
                                         </th>
-                                        <th className="border-0 py-3" onClick={() => requestSort('AuditDate')} style={{ cursor: 'pointer' }}>
-                                            Date {getSortIcon('AuditDate')}
+                                        <th className="border-0 py-3" onClick={() => requestSort('AuditStartDate')} style={{ cursor: 'pointer' }}>
+                                            Date {getSortIcon('AuditStartDate')}
                                         </th>
                                         <th className="border-0 py-3" onClick={() => requestSort('AuditJobType')} style={{ cursor: 'pointer' }}>
                                             Job Type {getSortIcon('AuditJobType')}
@@ -516,8 +518,11 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                         <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedSKUs')} style={{ cursor: 'pointer' }}>
                                             SKUs {getSortIcon('AuditorAllottedSKUs')}
                                         </th>
-                                        <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AuditorAllottedPIDs')} style={{ cursor: 'pointer' }}>
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedPIDs')} style={{ cursor: 'pointer' }}>
                                             PIDs {getSortIcon('AuditorAllottedPIDs')}
+                                        </th>
+                                        <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AppearedValue')} style={{ cursor: 'pointer' }}>
+                                            Value {getSortIcon('AppearedValue')}
                                         </th>
                                     </tr>
                                 </thead>
@@ -531,7 +536,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                         >
                                             <td className="ps-4 fw-bold text-primary">{audit.AUDIT_ID}</td>
                                             <td>{audit.StoreName}</td>
-                                            <td>{formatDate(audit.AuditDate)}</td>
+                                            <td>{formatDate(audit.AuditStartDate)}</td>
                                             <td>{audit.AuditJobType}</td>
                                             <td>
                                                 <Badge bg={getStatusBadge(audit.Status)} className="fw-normal px-3 py-1 rounded-pill">
@@ -539,7 +544,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                                 </Badge>
                                             </td>
                                             <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString()}</td>
-                                            <td className="text-end pe-4 font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString()}</td>
+                                            <td className="text-end font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString()}</td>
+                                            <td className="text-end pe-4 fw-bold">₹{(audit.AppearedValue || 0).toLocaleString('en-IN')}</td>
                                         </tr>
                                     ))}
                                 </tbody>

@@ -1,8 +1,11 @@
 import { useState, useMemo } from 'react';
-import { Container, Row, Col, Card, Table, ProgressBar, Badge, Alert, Modal, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Table, ProgressBar, Badge, Alert, Dropdown } from 'react-bootstrap';
+import { utils, writeFile } from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import KPICard from '../components/KPICard';
 import AuditorDetailModal from '../components/AuditorDetailModal';
-import rawAuditData from '../data/audit_dataset_records.json';
+import auditData from '../data/audit_dataset.json';
 import './AuditorPerformance.css';
 
 const AuditorPerformance = ({ filters = {} }) => {
@@ -31,13 +34,13 @@ const AuditorPerformance = ({ filters = {} }) => {
     // 1. Group by Auditor
     const auditorMap = {};
 
-    rawAuditData.forEach(record => {
+    auditData.forEach(record => {
       const id = record.AuditorID;
       if (!id) return;
 
       // Filter by Time Period (financialYear prop)
       if (filters.financialYear && filters.financialYear !== 'All-time') {
-        const recordDate = new Date(record.AuditDate);
+        const recordDate = new Date(record.AuditStartDate);
         // Format: "2024-25" -> startYear=2024, endYear=2025
         const [startYearStr, endYearShort] = filters.financialYear.split('-');
         const startYear = parseInt(startYearStr, 10);
@@ -63,6 +66,7 @@ const AuditorPerformance = ({ filters = {} }) => {
           totalAvgTime: 0,
           totalMatchRate: 0,
           totalEditRate: 0,
+          totalValue: 0,
           count: 0
         };
       }
@@ -74,6 +78,7 @@ const AuditorPerformance = ({ filters = {} }) => {
       auditor.totalAvgTime += (record.AvgTimePerSKU || 0);
       auditor.totalMatchRate += (record.MatchRatePercent || 0);
       auditor.totalEditRate += (record.EditRatePercent || 0);
+      auditor.totalValue += (record.AppearedValue || 0);
       auditor.count += 1;
     });
 
@@ -92,7 +97,8 @@ const AuditorPerformance = ({ filters = {} }) => {
         completionRate: completionRate,
         avgTime: parseFloat((auditor.totalAvgTime / auditor.count).toFixed(1)),
         matchRate: parseFloat((auditor.totalMatchRate / auditor.count).toFixed(1)),
-        editRate: parseFloat((auditor.totalEditRate / auditor.count).toFixed(1))
+        editRate: parseFloat((auditor.totalEditRate / auditor.count).toFixed(1)),
+        totalValue: auditor.totalValue
       };
     });
 
@@ -151,6 +157,80 @@ const AuditorPerformance = ({ filters = {} }) => {
     return isGood ? 'success' : 'danger';
   };
 
+  // Download Handlers
+  const handleDownloadExcel = () => {
+    const wb = utils.book_new();
+
+    // Detailed Data Sheet
+    const detailedData = auditorData.map(a => ({
+      "Auditor ID": a.auditorId,
+      "Auditor Name": a.auditorName,
+      "Allotted SKUs": a.allottedSKUs,
+      "Completed SKUs": a.completedSKUs,
+      "Completion %": `${a.completionRate.toFixed(1)}%`,
+      "Avg Time/SKU (min)": a.avgTime,
+      "Match Rate %": a.matchRate,
+      "Edit Rate %": a.editRate,
+      "Total Value (₹)": a.totalValue,
+    }));
+    const wsDetails = utils.json_to_sheet(detailedData);
+    wsDetails['!cols'] = [
+      { wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 15 },
+      { wch: 15 }, { wch: 18 }, { wch: 15 }, { wch: 12 }, { wch: 18 }
+    ];
+    utils.book_append_sheet(wb, wsDetails, "Auditor Details");
+
+    writeFile(wb, `Auditor_Productivity_Summary_${new Date().toISOString().split('T')[0]}.xlsx`);
+  };
+
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(16);
+    doc.text("Auditor Productivity Summary", 14, 20);
+
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
+    doc.text(`Financial Year: ${filters.financialYear || 'All-time'}`, 14, 34);
+
+    // Metrics Summary Table
+    autoTable(doc, {
+      startY: 42,
+      head: [['Metric', 'Value']],
+      body: [
+        ['Avg Time per SKU', performanceMetrics.avgTimePerSKU],
+        ['Match Rate', `${performanceMetrics.matchRate}%`],
+        ['Edit Rate', `${performanceMetrics.editRate}%`],
+        ['Total Auditors', auditorData.length],
+      ],
+      theme: 'striped',
+      headStyles: { fillColor: [41, 128, 185] }
+    });
+
+    // Auditor Details Table
+    autoTable(doc, {
+      startY: doc.lastAutoTable.finalY + 10,
+      head: [['ID', 'Name', 'Allotted', 'Completed', 'Comp %', 'Avg Time', 'Match %', 'Edit %', 'Value']],
+      body: auditorData.map(a => [
+        a.auditorId,
+        a.auditorName,
+        a.allottedSKUs.toLocaleString(),
+        a.completedSKUs.toLocaleString(),
+        `${a.completionRate.toFixed(1)}%`,
+        `${a.avgTime} min`,
+        `${a.matchRate}%`,
+        `${a.editRate}%`,
+        `₹${a.totalValue?.toLocaleString('en-IN')}`
+      ]),
+      theme: 'grid',
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [52, 73, 94], textColor: 255 }
+    });
+
+    doc.save(`Auditor_Productivity_Summary_${new Date().toISOString().split('T')[0]}.pdf`);
+  };
+
   const renderTableRows = (data) => (
     <Table hover className="mb-0 auditor-table align-middle">
       <thead className="bg-light sticky-top" style={{ top: 0, zIndex: 20, position: 'sticky' }}>
@@ -195,6 +275,11 @@ const AuditorPerformance = ({ filters = {} }) => {
               Edit Rate % {getSortIcon('editRate')}
             </div>
           </th>
+          <th onClick={() => requestSort('totalValue')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Total Value {getSortIcon('totalValue')}
+            </div>
+          </th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -220,17 +305,13 @@ const AuditorPerformance = ({ filters = {} }) => {
                 {auditor.completedSKUs.toLocaleString()}
               </strong>
             </td>
-            <td style={{ minWidth: '200px' }}>
-              <div className="d-flex align-items-center gap-2">
-                <ProgressBar
-                  now={auditor.completionRate}
-                  variant={getCompletionColor(auditor.completionRate)}
-                  style={{ height: '20px', flex: 1 }}
-                />
-                <Badge bg={getCompletionColor(auditor.completionRate)}>
-                  {auditor.completionRate.toFixed(1)}%
-                </Badge>
-              </div>
+            <td style={{ minWidth: '180px' }}>
+              <ProgressBar
+                now={auditor.completionRate}
+                variant={getCompletionColor(auditor.completionRate)}
+                label={`${auditor.completionRate.toFixed(1)}%`}
+                style={{ height: '24px' }}
+              />
             </td>
             <td>
               <Badge bg={auditor.avgTime < 4.5 ? 'success' : 'warning'}>
@@ -247,6 +328,7 @@ const AuditorPerformance = ({ filters = {} }) => {
                 {auditor.editRate.toFixed(1)}%
               </Badge>
             </td>
+            <td className="fw-semibold">₹{auditor.totalValue?.toLocaleString('en-IN')}</td>
             <td>
               <i className="fas fa-chevron-right text-primary"></i>
             </td>
@@ -270,6 +352,28 @@ const AuditorPerformance = ({ filters = {} }) => {
           {filters.auditStatus && <Badge bg="primary" className="ms-2">Status: {filters.auditStatus}</Badge>}
         </Alert>
       )}
+
+      {/* Export Button */}
+      <div className="d-flex justify-content-end mb-3">
+        <Dropdown>
+          <Dropdown.Toggle
+            size="sm"
+            className="d-flex align-items-center gap-2 fw-bold shadow-sm"
+            style={{ backgroundColor: '#0d6efd', color: 'white', border: 'none' }}
+            id="auditor-export-dropdown"
+          >
+            <i className="fas fa-download"></i> Export Report
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={handleDownloadExcel}>
+              <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
+            </Dropdown.Item>
+            <Dropdown.Item onClick={handleDownloadPDF}>
+              <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
 
       {/* Performance Summary Cards */}
       <Row className="g-3 mb-4">
@@ -388,7 +492,7 @@ const AuditorPerformance = ({ filters = {} }) => {
         show={showAuditorDetail}
         onHide={() => setShowAuditorDetail(false)}
         auditorId={selectedAuditorId}
-        allData={rawAuditData}
+        allData={auditData}
       />
     </Container >
   );

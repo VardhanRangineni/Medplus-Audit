@@ -23,6 +23,22 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
     const [selectedAudit, setSelectedAudit] = useState(null);
     const [showAuditDetail, setShowAuditDetail] = useState(false);
+    const [sortConfig, setSortConfig] = useState({ key: 'AuditStartDate', direction: 'descending' });
+
+    const requestSort = (key) => {
+        let direction = 'ascending';
+        if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+            direction = 'descending';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const getSortIcon = (key) => {
+        if (sortConfig.key !== key) return <i className="fas fa-sort text-muted ms-1 small"></i>;
+        return sortConfig.direction === 'ascending'
+            ? <i className="fas fa-sort-up text-primary ms-1 small"></i>
+            : <i className="fas fa-sort-down text-primary ms-1 small"></i>;
+    };
 
     // Handle Date Changes with Validation
     const handleDateChange = (type, date) => {
@@ -86,12 +102,28 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             end.setHours(23, 59, 59, 999);
 
             filtered = filtered.filter(d => {
-                const recordDate = new Date(d.AuditDate);
+                const recordDate = new Date(d.AuditStartDate);
                 return recordDate >= start && recordDate <= end;
             });
         }
-        return filtered.sort((a, b) => b.AuditDate - a.AuditDate);
+        return filtered;
     }, [auditorId, allData, fromDate, toDate]);
+
+    const sortedRecords = useMemo(() => {
+        const sorted = [...auditorRecords];
+        if (sortConfig.key) {
+            sorted.sort((a, b) => {
+                if (a[sortConfig.key] < b[sortConfig.key]) {
+                    return sortConfig.direction === 'ascending' ? -1 : 1;
+                }
+                if (a[sortConfig.key] > b[sortConfig.key]) {
+                    return sortConfig.direction === 'ascending' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+        return sorted;
+    }, [auditorRecords, sortConfig]);
 
     // Specific Auditor Details (Name from first record)
     const auditorName = auditorRecords.length > 0 ? auditorRecords[0].AuditorName : 'Unknown';
@@ -184,11 +216,12 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
         const detailedData = auditorRecords.map(r => ({
             "Audit ID": r.AUDIT_ID,
             "Store Name": r.StoreName,
-            "Date": new Date(r.AuditDate).toLocaleDateString('en-GB'),
+            "Date": new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
             "Job Type": r.AuditJobType,
             "Status": r.Status,
             "Allocated SKUs": r.AuditorAllottedSKUs,
             "Allocated PIDs": r.AuditorAllottedPIDs,
+            "Value (₹)": r.AppearedValue || 0,
             "Audit Completion %": r.CompletionPercent,
         }));
         const wsDetails = utils.json_to_sheet(detailedData);
@@ -202,6 +235,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             { wch: 15 }, // Status
             { wch: 15 }, // SKUs
             { wch: 15 }, // PIDs
+            { wch: 15 }, // Value
             { wch: 20 }  // Completion
         ];
 
@@ -251,16 +285,16 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             headStyles: { fillColor: [243, 156, 18] }
         });
 
-        // Audit History Table
         autoTable(doc, {
             startY: doc.lastAutoTable.finalY + 10,
-            head: [['Audit ID', 'Store', 'Date', 'Status', 'SKUs', 'Comp %']],
+            head: [['Audit ID', 'Store', 'Date', 'Status', 'SKUs', 'Value', 'Comp %']],
             body: auditorRecords.map(r => [
                 r.AUDIT_ID,
                 r.StoreName,
-                new Date(r.AuditDate).toLocaleDateString('en-GB'),
+                new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
                 r.Status,
                 r.AuditorAllottedSKUs,
+                `₹${(r.AppearedValue || 0).toLocaleString('en-IN')}`,
                 `${r.CompletionPercent}%`
             ]),
             theme: 'plain',
@@ -484,17 +518,34 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Table hover responsive className="mb-0 hover-scale-row">
                                 <thead className="bg-light text-muted small text-uppercase">
                                     <tr>
-                                        <th className="border-0 py-3 ps-4">Audit ID</th>
-                                        <th className="border-0 py-3">Store</th>
-                                        <th className="border-0 py-3">Date</th>
-                                        <th className="border-0 py-3">Job Type</th>
-                                        <th className="border-0 py-3">Status</th>
-                                        <th className="border-0 py-3 text-end">SKUs</th>
-                                        <th className="border-0 py-3 text-end pe-4">PIDs</th>
+                                        <th className="border-0 py-3 ps-4" onClick={() => requestSort('AUDIT_ID')} style={{ cursor: 'pointer' }}>
+                                            Audit ID {getSortIcon('AUDIT_ID')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('StoreName')} style={{ cursor: 'pointer' }}>
+                                            Store {getSortIcon('StoreName')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('AuditStartDate')} style={{ cursor: 'pointer' }}>
+                                            Date {getSortIcon('AuditStartDate')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('AuditJobType')} style={{ cursor: 'pointer' }}>
+                                            Job Type {getSortIcon('AuditJobType')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('Status')} style={{ cursor: 'pointer' }}>
+                                            Status {getSortIcon('Status')}
+                                        </th>
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedSKUs')} style={{ cursor: 'pointer' }}>
+                                            SKUs {getSortIcon('AuditorAllottedSKUs')}
+                                        </th>
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedPIDs')} style={{ cursor: 'pointer' }}>
+                                            PIDs {getSortIcon('AuditorAllottedPIDs')}
+                                        </th>
+                                        <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AppearedValue')} style={{ cursor: 'pointer' }}>
+                                            Value {getSortIcon('AppearedValue')}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {auditorRecords.map((audit, idx) => (
+                                    {sortedRecords.map((audit, idx) => (
                                         <tr
                                             key={idx}
                                             className="align-middle"
@@ -503,7 +554,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                         >
                                             <td className="ps-4 fw-bold text-primary">{audit.AUDIT_ID}</td>
                                             <td>{audit.StoreName}</td>
-                                            <td>{formatDate(audit.AuditDate)}</td>
+                                            <td>{formatDate(audit.AuditStartDate)}</td>
                                             <td>{audit.AuditJobType}</td>
                                             <td>
                                                 <Badge bg={getStatusBadge(audit.Status)} className="fw-normal px-3 py-1 rounded-pill">
@@ -511,7 +562,8 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                                 </Badge>
                                             </td>
                                             <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString()}</td>
-                                            <td className="text-end pe-4 font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString()}</td>
+                                            <td className="text-end font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString()}</td>
+                                            <td className="text-end pe-4 fw-bold">₹{(audit.AppearedValue || 0).toLocaleString('en-IN')}</td>
                                         </tr>
                                     ))}
                                 </tbody>

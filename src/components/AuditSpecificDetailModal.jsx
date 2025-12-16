@@ -51,7 +51,8 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
         const summaryData = [
             ["Audit ID", audit.AUDIT_ID],
             ["Store Name", audit.StoreName],
-            ["Date", formatDate(audit.AuditDate)],
+            ["Start Date", formatDate(audit.AuditStartDate)],
+            ["End Date", audit.Status === 'Completed' ? formatDate(audit.AuditEndDate) : '-'],
             ["Status", audit.Status],
             [],
             ["Re-Audit Category", "Count", "Qty", "Value"],
@@ -88,12 +89,18 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
 
         doc.setFontSize(10);
         doc.text(`Store: ${audit.StoreName}`, 14, 28);
-        doc.text(`Date: ${formatDate(audit.AuditDate)}`, 14, 34);
-        doc.text(`Status: ${audit.Status}`, 14, 40);
+        if (audit.Status === 'Completed') {
+            doc.text(`Start Date: ${formatDate(audit.AuditStartDate)}`, 14, 34);
+            doc.text(`End Date: ${formatDate(audit.AuditEndDate)}`, 14, 40);
+            doc.text(`Status: ${audit.Status}`, 14, 46);
+        } else {
+            doc.text(`Date: ${formatDate(audit.AuditStartDate)}`, 14, 34);
+            doc.text(`Status: ${audit.Status}`, 14, 40);
+        }
 
         // Re-Audit Summary Table
         autoTable(doc, {
-            startY: 45,
+            startY: audit.Status === 'Completed' ? 52 : 46,
             head: [['Re-Audit Category', 'Count', 'Qty', 'Value (INR)']],
             body: [
                 ['Appeared', appeared.count, appeared.qty, appeared.value],
@@ -161,10 +168,23 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                 <i className="fas fa-map-marker-alt me-2"></i>
                                 {audit.StoreName}
                             </div>
-                            <div className="text-muted">
-                                <i className="fas fa-calendar-alt me-2"></i>
-                                {formatDate(audit.AuditDate)}
-                            </div>
+                            {audit.Status === 'Completed' ? (
+                                <>
+                                    <div className="text-muted mb-1">
+                                        <i className="fas fa-calendar-alt me-2"></i>
+                                        <strong>Start Date:</strong> {formatDate(audit.AuditStartDate)}
+                                    </div>
+                                    <div className="text-muted">
+                                        <i className="fas fa-calendar-check me-2"></i>
+                                        <strong>End Date:</strong> {formatDate(audit.AuditEndDate)}
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="text-muted">
+                                    <i className="fas fa-calendar-alt me-2"></i>
+                                    {formatDate(audit.AuditStartDate)}
+                                </div>
+                            )}
                         </div>
                         <Badge bg={audit.Status === 'In-Progress' ? 'primary' : getStatusBadge(audit.Status)} className="px-3 py-2 rounded-pill">
                             {audit.Status}

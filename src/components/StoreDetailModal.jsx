@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import { Modal, Button, Row, Col, Card, Table, Badge, ProgressBar } from 'react-bootstrap';
+import { Modal, Button, Row, Col, Card, Table, Badge, ProgressBar, Dropdown } from 'react-bootstrap';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { utils, writeFile } from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import './StoreDetailModal.css';
 
 const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
@@ -39,7 +42,8 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     contra = [],
     auditProgress = {},
     inventorySummary = {},
-    auditors = []
+    auditors = [],
+    productFormData: passedProductFormData = {}
   } = storeData;
 
   // Calculate total deviation value
@@ -56,8 +60,8 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
   const COLORS = ['#dc3545', '#ffc107', '#0d6efd', '#198754', '#6f42c1'];
   const FORM_COLORS = ['#8B5CF6', '#FF6B35', '#4ADE80', '#FF1493', '#3B82F6', '#FFD700', '#FF4500', '#00CED1', '#DA70D6', '#00BFFF'];
 
-  // Product form breakdown for each deviation type (10 Audit Forms)
-  const productFormData = {
+  // Use passed product form data if available, otherwise use hardcoded fallback
+  const productFormData = Object.keys(passedProductFormData).length > 0 ? passedProductFormData : {
     'Invoiced': [
       { form: 'Tablets', value: 35000, count: 198 },
       { form: 'Liquids', value: 28000, count: 145 },
@@ -342,6 +346,300 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     window.XLSX.writeFile(wb, fileName);
   };
 
+  // Handle Excel Export
+  const handleDownloadExcel = () => {
+    const wb = utils.book_new();
+
+    // 1. Store Summary Sheet
+    const summaryData = [
+      ["Store Details Report"],
+      ["Store ID", storeId],
+      ["Store Name", storeName],
+      ["State", state],
+      ["Supervisor", supervisor || 'N/A'],
+      [],
+      ["Audit Progress"],
+      ["Completion Percentage", `${auditProgress.percentage || 0}%`],
+      ["Completed SKUs", auditProgress.completedSKUs || 0],
+      ["Total SKUs", auditProgress.totalSKUs || 0],
+      [],
+      ["Inventory Summary"],
+      ["Total SKUs", inventorySummary.totalSKUs || 0],
+      ["Total PIDs", inventorySummary.totalPIDs || 0],
+      ["Audited SKUs", inventorySummary.auditedSKUs || 0],
+      ["Total Value (₹)", inventorySummary.totalValue || 0],
+      ["Total Quantity", inventorySummary.totalQuantity || 0],
+    ];
+    const wsSummary = utils.aoa_to_sheet(summaryData);
+    wsSummary['!cols'] = [{ wch: 25 }, { wch: 20 }];
+    utils.book_append_sheet(wb, wsSummary, "Store Summary");
+
+    // 2. Auditors Sheet
+    if (auditors && auditors.length > 0) {
+      const auditorsData = auditors.map(a => ({
+        "Auditor Name": a.name,
+        "Assigned SKUs": a.assignedSKUs || 0,
+        "Completed SKUs": a.completedSKUs || 0,
+        "Completion Rate (%)": a.completionRate || 0,
+        "Match Rate (%)": a.matchRate || 0,
+        "Value Covered (₹)": a.valueCovered || 0
+      }));
+      const wsAuditors = utils.json_to_sheet(auditorsData);
+      wsAuditors['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 15 }, { wch: 18 }];
+      utils.book_append_sheet(wb, wsAuditors, "Auditors");
+    }
+
+    // 3. Deviations Sheet
+    if (deviations && deviations.length > 0) {
+      const deviationsData = deviations.map(d => ({
+        "Deviation Type": d.type,
+        "Count": d.count || 0,
+        "Value (₹)": d.value || 0
+      }));
+      const wsDeviations = utils.json_to_sheet(deviationsData);
+      wsDeviations['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 15 }];
+      utils.book_append_sheet(wb, wsDeviations, "Deviations");
+    }
+
+    // 4. Contra Items Sheet
+    if (contra && contra.length > 0) {
+      const contraData = contra.map(c => ({
+        "SKU Code": c.skuCode,
+        "Product Name": c.productName,
+        "Type": c.type,
+        "Quantity": c.quantity || 0,
+        "Value (₹)": c.value || 0,
+        "Status": c.status || 'Pending'
+      }));
+      const wsContra = utils.json_to_sheet(contraData);
+      wsContra['!cols'] = [{ wch: 15 }, { wch: 30 }, { wch: 18 }, { wch: 12 }, { wch: 15 }, { wch: 12 }];
+      utils.book_append_sheet(wb, wsContra, "Contra Items");
+    }
+
+    // 5. Product-Level Details Sheets (by Deviation Type and Product Form)
+    Object.keys(detailedProductData).forEach(deviationType => {
+      const deviationData = detailedProductData[deviationType];
+      const productDetails = [];
+
+      if (typeof deviationData === 'object' && !Array.isArray(deviationData)) {
+        // Has product forms (like Invoiced, Contra Short)
+        Object.keys(deviationData).forEach(productForm => {
+          deviationData[productForm].forEach(product => {
+            productDetails.push({
+              "Deviation Type": deviationType,
+              "Product Form": productForm,
+              "Product ID": product.productId,
+              "SKU": product.sku,
+              "Product Name": product.productName,
+              "Batch No": product.batchNo,
+              "System Qty": product.systemQty,
+              "Physical Qty": product.physicalQty,
+              "Difference": product.difference || 0,
+              "Unit Price (₹)": product.unitPrice,
+              "Total Value (₹)": product.totalValue,
+              "Expiry Date": product.expiryDate
+            });
+          });
+        });
+      } else if (Array.isArray(deviationData)) {
+        // Direct array (like Contra Excess, Excess Submitted)
+        deviationData.forEach(product => {
+          productDetails.push({
+            "Deviation Type": deviationType,
+            "Product Form": "N/A",
+            "Product ID": product.productId,
+            "SKU": product.sku,
+            "Product Name": product.productName,
+            "Batch No": product.batchNo,
+            "System Qty": product.systemQty,
+            "Physical Qty": product.physicalQty,
+            "Difference": product.difference || 0,
+            "Unit Price (₹)": product.unitPrice,
+            "Total Value (₹)": product.totalValue,
+            "Expiry Date": product.expiryDate
+          });
+        });
+      }
+
+      if (productDetails.length > 0) {
+        const wsProducts = utils.json_to_sheet(productDetails);
+        wsProducts['!cols'] = [
+          { wch: 18 }, { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 30 }, 
+          { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, 
+          { wch: 15 }, { wch: 12 }
+        ];
+        // Truncate sheet name to 31 characters (Excel limit)
+        const sheetName = deviationType.length > 31 ? deviationType.substring(0, 28) + '...' : deviationType;
+        utils.book_append_sheet(wb, wsProducts, sheetName);
+      }
+    });
+
+    writeFile(wb, `Store_${storeId}_${storeName.replace(/\s+/g, '_')}_Report.xlsx`);
+  };
+
+  // Handle PDF Export
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(16);
+    doc.text(`Store Details Report: ${storeName}`, 14, 20);
+
+    doc.setFontSize(10);
+    doc.text(`Store ID: ${storeId}`, 14, 28);
+    doc.text(`State: ${state}`, 14, 34);
+    doc.text(`Supervisor: ${supervisor || 'N/A'}`, 14, 40);
+
+    // Audit Progress
+    doc.setFontSize(12);
+    doc.text('Audit Progress', 14, 52);
+    autoTable(doc, {
+      startY: 56,
+      head: [['Metric', 'Value']],
+      body: [
+        ['Completion Percentage', `${auditProgress.percentage || 0}%`],
+        ['Completed SKUs', `${auditProgress.completedSKUs || 0}`],
+        ['Total SKUs', `${auditProgress.totalSKUs || 0}`]
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [41, 128, 185] }
+    });
+
+    // Inventory Summary
+    let finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(12);
+    doc.text('Inventory Summary', 14, finalY);
+    autoTable(doc, {
+      startY: finalY + 4,
+      head: [['Metric', 'Value']],
+      body: [
+        ['Total SKUs', `${inventorySummary.totalSKUs || 0}`],
+        ['Total PIDs', `${inventorySummary.totalPIDs || 0}`],
+        ['Audited SKUs', `${inventorySummary.auditedSKUs || 0}`],
+        ['Total Value', `Rs. ${(inventorySummary.totalValue || 0).toLocaleString()}`],
+        ['Total Quantity', `${inventorySummary.totalQuantity || 0}`]
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [41, 128, 185] }
+    });
+
+    // Auditors
+    if (auditors && auditors.length > 0) {
+      finalY = doc.lastAutoTable.finalY + 10;
+      if (finalY > 250) {
+        doc.addPage();
+        finalY = 20;
+      }
+      doc.setFontSize(12);
+      doc.text('Auditors Breakdown', 14, finalY);
+      autoTable(doc, {
+        startY: finalY + 4,
+        head: [['Auditor', 'Assigned SKUs', 'Completed', 'Completion %', 'Match %', 'Value Covered']],
+        body: auditors.map(a => [
+          a.name,
+          a.assignedSKUs || 0,
+          a.completedSKUs || 0,
+          `${a.completionRate || 0}%`,
+          `${a.matchRate || 0}%`,
+          `Rs. ${(a.valueCovered || 0).toLocaleString()}`
+        ]),
+        theme: 'striped',
+        headStyles: { fillColor: [52, 152, 219] },
+        styles: { fontSize: 8 }
+      });
+    }
+
+    // Deviations
+    if (deviations && deviations.length > 0) {
+      finalY = doc.lastAutoTable.finalY + 10;
+      if (finalY > 250) {
+        doc.addPage();
+        finalY = 20;
+      }
+      doc.setFontSize(12);
+      doc.text('Deviations Breakdown', 14, finalY);
+      autoTable(doc, {
+        startY: finalY + 4,
+        head: [['Deviation Type', 'Count', 'Value (Rs.)']],
+        body: deviations.map(d => [
+          d.type,
+          d.count || 0,
+          `Rs. ${(d.value || 0).toLocaleString()}`
+        ]),
+        theme: 'striped',
+        headStyles: { fillColor: [231, 76, 60] }
+      });
+    }
+
+    // Product-Level Details (by Deviation Type)
+    Object.keys(detailedProductData).forEach(deviationType => {
+      const deviationData = detailedProductData[deviationType];
+      const productDetails = [];
+
+      if (typeof deviationData === 'object' && !Array.isArray(deviationData)) {
+        // Has product forms (like Invoiced, Contra Short)
+        Object.keys(deviationData).forEach(productForm => {
+          deviationData[productForm].forEach(product => {
+            productDetails.push([
+              productForm,
+              product.productId,
+              product.sku,
+              product.productName.length > 20 ? product.productName.substring(0, 17) + '...' : product.productName,
+              product.systemQty,
+              product.physicalQty,
+              product.difference || 0,
+              `Rs. ${product.totalValue}`
+            ]);
+          });
+        });
+      } else if (Array.isArray(deviationData)) {
+        // Direct array (like Contra Excess, Excess Submitted)
+        deviationData.forEach(product => {
+          productDetails.push([
+            'N/A',
+            product.productId,
+            product.sku,
+            product.productName.length > 20 ? product.productName.substring(0, 17) + '...' : product.productName,
+            product.systemQty,
+            product.physicalQty,
+            product.difference || 0,
+            `₹${product.totalValue}`
+          ]);
+        });
+      }
+
+      if (productDetails.length > 0) {
+        finalY = doc.lastAutoTable.finalY + 10;
+        if (finalY > 250) {
+          doc.addPage();
+          finalY = 20;
+        }
+        doc.setFontSize(11);
+        doc.text(`Product Details: ${deviationType}`, 14, finalY);
+        autoTable(doc, {
+          startY: finalY + 4,
+          head: [['Form', 'PID', 'SKU', 'Product', 'Sys Qty', 'Phy Qty', 'Diff', 'Value']],
+          body: productDetails,
+          theme: 'grid',
+          headStyles: { fillColor: [46, 134, 193], fontSize: 8 },
+          styles: { fontSize: 7 },
+          columnStyles: {
+            0: { cellWidth: 20 },
+            1: { cellWidth: 18 },
+            2: { cellWidth: 18 },
+            3: { cellWidth: 40 },
+            4: { cellWidth: 15 },
+            5: { cellWidth: 15 },
+            6: { cellWidth: 12 },
+            7: { cellWidth: 20 }
+          }
+        });
+      }
+    });
+
+    doc.save(`Store_${storeId}_${storeName.replace(/\s+/g, '_')}_Report.pdf`);
+  };
+
   // Handle deviation row click
   const handleDeviationClick = (deviationType) => {
     console.log('Deviation clicked:', deviationType);
@@ -351,10 +649,30 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
   return (
     <Modal show={show} onHide={onHide} size="xl" className="store-detail-modal">
       <Modal.Header closeButton className="bg-primary text-white">
-        <Modal.Title>
-          <i className="fas fa-store me-2"></i>
-          {storeName} - Store Details
-        </Modal.Title>
+        <div className="d-flex w-100 justify-content-between align-items-center pe-3">
+          <Modal.Title>
+            <i className="fas fa-store me-2"></i>
+            {storeName} - Store Details
+          </Modal.Title>
+          <Dropdown>
+            <Dropdown.Toggle
+              size="sm"
+              className="d-flex align-items-center gap-2 fw-bold shadow-sm"
+              style={{ backgroundColor: '#0dcaf0', color: 'white', border: 'none' }}
+              id="store-download-dropdown"
+            >
+              <i className="fas fa-download"></i> Download Report
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={handleDownloadExcel}>
+                <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
+              </Dropdown.Item>
+              <Dropdown.Item onClick={handleDownloadPDF}>
+                <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
       </Modal.Header>
       <Modal.Body className="p-4">
         {/* Store Info Header */}

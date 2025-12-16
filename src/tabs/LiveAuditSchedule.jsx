@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Badge, Table, ProgressBar, Alert, Form, InputGroup } from 'react-bootstrap';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Container, Row, Col, Card, Badge, Table, ProgressBar, Alert, Form, InputGroup, Dropdown } from 'react-bootstrap';
+import { utils, writeFile } from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import KPICard from '../components/KPICard';
 import StoreDetailModal from '../components/StoreDetailModal';
 import { mockDataService } from '../services/mockDataService';
+import liveAuditData from '../data/live_audit_schedule_data.json';
+import storeCoverageData from '../data/store_coverage_data.json';
 import './LiveAuditSchedule.css';
 
 const LiveAuditSchedule = ({ filters = {} }) => {
@@ -16,63 +21,205 @@ const LiveAuditSchedule = ({ filters = {} }) => {
 
   // Fetch store data when selectedStore changes
   useEffect(() => {
-    const fetchStoreData = async () => {
-      if (selectedStore?.storeId) {
-        const data = await mockDataService.getStoreDetailedInfo(selectedStore.storeId, filters);
-        setStoreData(data);
+    if (selectedStore?.storeId) {
+      // Find the audit data for this store
+      const auditData = liveAuditData.find(a => a.StoreID === selectedStore.storeId);
+      // Also find store inventory data
+      const storeInventory = storeCoverageData.find(s => s.StoreID === selectedStore.storeId);
+      
+      if (auditData) {
+        // Transform auditors data to match modal expected structure
+        const transformedAuditors = auditData.Auditors ? auditData.Auditors.map(auditor => ({
+          name: auditor.AuditorName,
+          assignedSKUs: auditor.AllottedSKUs || 0,
+          completedSKUs: auditor.CompletedSKUs || 0,
+          completionRate: auditor.CompletionPercent || 0,
+          matchRate: auditor.MatchRate || 0,
+          valueCovered: auditor.ValueCovered || 0
+        })) : [];
+
+        // Transform mismatch details to deviations and contra
+        const deviationMap = {};
+        const contraItems = [];
+        const productFormDataMap = {};
+        
+        if (auditData.MismatchDetails && Array.isArray(auditData.MismatchDetails)) {
+          auditData.MismatchDetails.forEach(item => {
+            const devType = item.Type || 'Other';
+            if (!deviationMap[devType]) {
+              deviationMap[devType] = { type: devType, count: 0, value: 0 };
+            }
+            deviationMap[devType].count++;
+            // Calculate value based on difference and unit price
+            const value = Math.abs(item.Difference || 0) * (item.Value ? (item.Value / Math.abs(item.Difference || 1)) : 150);
+            deviationMap[devType].value += value;
+            
+            // Add to contra items with proper structure
+            contraItems.push({
+              skuCode: item.SKU,
+              productName: item.ProductName,
+              type: item.Type,
+              quantity: Math.abs(item.Difference || 0),
+              value: value,
+              status: 'Pending'
+            });
+          });
+        }
+
+        // Get product form data from store coverage if available
+        if (storeInventory && storeInventory.Deviations && Array.isArray(storeInventory.Deviations)) {
+          storeInventory.Deviations.forEach(deviation => {
+            const devType = deviation.DeviationType;
+            if (deviation.ProductForms && Array.isArray(deviation.ProductForms)) {
+              if (!productFormDataMap[devType]) {
+                productFormDataMap[devType] = [];
+              }
+              deviation.ProductForms.forEach(pf => {
+                const existingForm = productFormDataMap[devType].find(f => f.form === pf.ProductForm);
+                if (existingForm) {
+                  existingForm.count += pf.Count;
+                  existingForm.value += pf.Value;
+                } else {
+                  productFormDataMap[devType].push({
+                    form: pf.ProductForm,
+                    count: pf.Count,
+                    value: Math.round(pf.Value)
+                  });
+                }
+              });
+            }
+          });
+        }
+
+        // Transform to match modal expected structure
+        const transformedData = {
+          storeId: auditData.StoreID,
+          storeName: auditData.StoreName,
+          state: auditData.State,
+          supervisor: auditData.SupervisorName,
+          auditProgress: {
+            percentage: auditData.CompletionPercent || 0,
+            completedSKUs: auditData.CompletedSKUs || 0,
+            totalSKUs: auditData.TotalSKUs || 0
+          },
+          inventorySummary: {
+            totalSKUs: auditData.TotalSKUs || 0,
+            totalPIDs: auditData.TotalPIDs || 0,
+            auditedSKUs: auditData.CompletedSKUs || 0,
+            totalValue: storeInventory?.InventoryValue || transformedAuditors.reduce((sum, a) => sum + (a.valueCovered || 0), 0),
+            totalQuantity: storeInventory?.TotalQuantity || auditData.CompletedSKUs || 0
+          },
+          auditors: transformedAuditors,
+          deviations: Object.values(deviationMap),
+          contra: contraItems,
+          productFormData: productFormDataMap
+        };
+        
+        setStoreData(transformedData);
+      } else {
+        setStoreData(null);
       }
-    };
-    fetchStoreData();
+    }
   }, [selectedStore, filters]);
 
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
 
-  // Mock Data
-  const workflowStats = {
-    created: 9,
-    inProgress: 5,
-    pending: 1,
-    completed: 3
-  };
+  // Apply filters to audit data
+  const filteredAuditData = useMemo(() => {
+    let data = [...liveAuditData];
 
-  // Sample audit data for table
-  const allCreatedAudits = [
-    { storeId: 'MP001', storeName: 'Chennai Central', supervisor: 'Rajesh Kumar', auditors: 'Amit, Priya, Suresh', startDate: '2024-12-01', completedSKUs: 3250, totalSKUs: 4200, progress: 77.4, status: 'in-progress' },
-    { storeId: 'MP002', storeName: 'Bangalore Hub', supervisor: 'Lakshmi Iyer', auditors: 'Deepak, Anitha', startDate: '2024-12-03', completedSKUs: 2800, totalSKUs: 3900, progress: 71.8, status: 'in-progress' },
-    { storeId: 'MP003', storeName: 'Hyderabad Main', supervisor: 'Mohammed Ali', auditors: 'Ravi, Sneha', startDate: '2024-12-05', completedSKUs: 4100, totalSKUs: 5200, progress: 78.8, status: 'in-progress' },
-    { storeId: 'MP004', storeName: 'Pune West', supervisor: 'Pradeep Singh', auditors: 'Vijay, Pooja', startDate: '2024-12-07', completedSKUs: 1850, totalSKUs: 3100, progress: 59.7, status: 'in-progress' },
-    { storeId: 'MP005', storeName: 'Mumbai Central', supervisor: 'Neha Sharma', auditors: 'Arun, Divya', startDate: '2024-12-08', completedSKUs: 2950, totalSKUs: 4800, progress: 61.5, status: 'in-progress' },
-    { storeId: 'MP007', storeName: 'Ahmedabad Main', supervisor: 'Kiran Patel', auditors: 'Not Assigned', startDate: '2024-12-06', completedSKUs: 0, totalSKUs: 3600, progress: 0, status: 'created' },
-    { storeId: 'MP012', storeName: 'Surat Hub', supervisor: 'Dipak Shah', auditors: 'Hitesh, Nisha', startDate: '2024-12-07', completedSKUs: 0, totalSKUs: 2800, progress: 0, status: 'pending' },
-    // Completed Audits
-    {
-      storeId: 'MP006', storeName: 'Delhi NCR', state: 'DL', supervisor: 'Amit Verma', noOfAuditors: 3, auditors: 'Rohit, Sneha, Karan', startDate: '2024-11-20', endDate: '2024-11-28', totalPIDs: 1850, totalSKUs: 4500, completedSKUs: 4500, duration: 192, deviations: 4, mismatch: 12, mismatchDetails: [
-        { productId: 'PID001', sku: 'SKU12345', productName: 'Paracetamol 500mg', type: 'Short', systemQty: 100, physicalQty: 95, difference: -5 },
-        { productId: 'PID002', sku: 'SKU12346', productName: 'Ibuprofen 400mg', type: 'Excess', systemQty: 50, physicalQty: 53, difference: 3 },
-        { productId: 'PID003', sku: 'SKU12347', productName: 'Aspirin 75mg', type: 'Contra Short', systemQty: 80, physicalQty: 78, difference: -2 },
-        { productId: 'PID004', sku: 'SKU12348', productName: 'Vitamin C Tablets', type: 'Contra Excess', systemQty: 120, physicalQty: 122, difference: 2 }
-      ], auditJobType: 'Full Audit', processType: 'Product Audit', progress: 100, status: 'completed'
-    },
-    {
-      storeId: 'MP008', storeName: 'Kolkata East', state: 'WB', supervisor: 'Sourav Das', noOfAuditors: 2, auditors: 'Ankit, Rina', startDate: '2024-11-22', endDate: '2024-11-30', totalPIDs: 1650, totalSKUs: 3800, completedSKUs: 3800, duration: 192, deviations: 4, mismatch: 18, mismatchDetails: [
-        { productId: 'PID006', sku: 'SKU22345', productName: 'Metformin 500mg', type: 'Short', systemQty: 200, physicalQty: 192, difference: -8 },
-        { productId: 'PID007', sku: 'SKU22346', productName: 'Amlodipine 5mg', type: 'Excess', systemQty: 75, physicalQty: 79, difference: 4 }
-      ], auditJobType: 'Partial/Random Audit', processType: 'Batch Audit', progress: 100, status: 'completed'
-    },
-    {
-      storeId: 'MP009', storeName: 'Nagpur Central', state: 'MH', supervisor: 'Pooja Deshmukh', noOfAuditors: 2, auditors: 'Manoj, Kavita', startDate: '2024-11-25', endDate: '2024-12-02', totalPIDs: 1420, totalSKUs: 3200, completedSKUs: 3200, duration: 168, deviations: 3, mismatch: 8, mismatchDetails: [
-        { productId: 'PID010', sku: 'SKU32345', productName: 'Omeprazole 20mg', type: 'Short', systemQty: 150, physicalQty: 147, difference: -3 }
-      ], auditJobType: 'Full Audit', processType: 'Product Audit', progress: 100, status: 'completed'
-    },
-  ];
+    // Apply state filter
+    if (filters.state) {
+      data = data.filter(audit => audit.State === filters.state);
+    }
 
-  const allAuditData = {
-    created: allCreatedAudits, // Show all audits when 'Created' is selected
-    'in-progress': allCreatedAudits.filter(audit => audit.status === 'in-progress'),
-    pending: allCreatedAudits.filter(audit => audit.status === 'pending'),
-    completed: allCreatedAudits.filter(audit => audit.status === 'completed')
-  };
+    // Apply store type filter (HUB or REGULAR)
+    if (filters.store) {
+      data = data.filter(audit => {
+        const storeInfo = storeCoverageData.find(s => s.StoreID === audit.StoreID);
+        return storeInfo && storeInfo.StoreType === filters.store;
+      });
+    }
+
+    // Apply audit job type filter
+    if (filters.auditJobType) {
+      data = data.filter(audit => audit.AuditJobType === filters.auditJobType);
+    }
+
+    // Apply audit process type filter
+    if (filters.auditProcessType) {
+      data = data.filter(audit => audit.AuditProcessType === filters.auditProcessType);
+    }
+
+    // Apply audit status filter
+    if (filters.auditStatus) {
+      data = data.filter(audit => audit.Status === filters.auditStatus);
+    }
+
+    return data;
+  }, [filters, liveAuditData]);
+
+  // Transform data to match component structure
+  const transformedAuditData = useMemo(() => {
+    return filteredAuditData.map(audit => {
+      const startDate = new Date(audit.StartDate);
+      const endDate = audit.EndDate ? new Date(audit.EndDate) : null;
+      
+      // Transform mismatch details to match component field names
+      const transformedMismatchDetails = (audit.MismatchDetails || []).map(item => ({
+        productId: item.ProductID,
+        sku: item.SKU,
+        productName: item.ProductName,
+        productForm: item.ProductForm,
+        type: item.Type,
+        systemQty: item.SystemQty,
+        physicalQty: item.PhysicalQty,
+        difference: item.Difference,
+        value: item.Value
+      }));
+      
+      return {
+        storeId: audit.StoreID,
+        storeName: audit.StoreName,
+        state: audit.State,
+        supervisor: audit.SupervisorName,
+        noOfAuditors: audit.NumberOfAuditors,
+        auditors: audit.AuditorNames,
+        startDate: startDate.toISOString().split('T')[0],
+        endDate: endDate ? endDate.toISOString().split('T')[0] : null,
+        totalPIDs: audit.TotalPIDs,
+        totalSKUs: audit.TotalSKUs,
+        completedSKUs: audit.CompletedSKUs,
+        progress: audit.CompletionPercent,
+        duration: audit.DurationHours,
+        deviations: audit.DeviationCount || 0,
+        mismatch: audit.MismatchCount || 0,
+        mismatchDetails: transformedMismatchDetails,
+        auditJobType: audit.AuditJobType,
+        processType: audit.AuditProcessType,
+        status: audit.Status.toLowerCase().replace(/\s+/g, '-')
+      };
+    });
+  }, [filteredAuditData]);
+
+  // Calculate workflow stats from filtered data
+  const workflowStats = useMemo(() => {
+    const stats = {
+      created: transformedAuditData.filter(a => a.status === 'created').length,
+      inProgress: transformedAuditData.filter(a => a.status === 'in-progress').length,
+      pending: transformedAuditData.filter(a => a.status === 'pending').length,
+      completed: transformedAuditData.filter(a => a.status === 'completed').length
+    };
+    return stats;
+  }, [transformedAuditData]);
+
+  const allAuditData = useMemo(() => ({
+    created: transformedAuditData,
+    'in-progress': transformedAuditData.filter(audit => audit.status === 'in-progress'),
+    pending: transformedAuditData.filter(audit => audit.status === 'pending'),
+    completed: transformedAuditData.filter(audit => audit.status === 'completed')
+  }), [transformedAuditData]);
 
   const auditTableData = allAuditData[selectedStatus] || [];
 
@@ -176,14 +323,101 @@ const LiveAuditSchedule = ({ filters = {} }) => {
     }
 
     // Create worksheet
-    const ws = window.XLSX.utils.json_to_sheet(dataToExport);
+    const ws = utils.json_to_sheet(dataToExport);
     
     // Create workbook
-    const wb = window.XLSX.utils.book_new();
-    window.XLSX.utils.book_append_sheet(wb, ws, 'Audit Data');
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, 'Audit Data');
     
     // Download file
-    window.XLSX.writeFile(wb, fileName);
+    writeFile(wb, fileName);
+  };
+
+  // Export audit data to PDF
+  const exportAuditDataToPDF = () => {
+    const doc = new jsPDF();
+    
+    // Title
+    doc.setFontSize(16);
+    const statusTitle = selectedStatus === 'created' ? 'Created' : 
+                       selectedStatus === 'in-progress' ? 'In Progress' : 
+                       selectedStatus === 'pending' ? 'Pending' : 'Completed';
+    doc.text(`Live Audit Schedule - ${statusTitle}`, 14, 20);
+    
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 28);
+    doc.text(`Total Audits: ${auditTableData.length}`, 14, 34);
+    
+    // Prepare table data
+    let headers = [];
+    let rows = [];
+    
+    if (selectedStatus === 'completed') {
+      headers = [['Store ID', 'Store Name', 'State', 'Supervisor', 'Auditors', 'Start Date', 'End Date', 'PIDs', 'SKUs', 'Duration', 'Deviations', 'Mismatch']];
+      rows = auditTableData.map(audit => [
+        audit.storeId,
+        audit.storeName,
+        audit.state,
+        audit.supervisor,
+        audit.noOfAuditors,
+        audit.startDate,
+        audit.endDate,
+        audit.totalPIDs,
+        audit.totalSKUs,
+        `${audit.duration}h`,
+        audit.deviations,
+        audit.mismatch
+      ]);
+    } else {
+      headers = [['Store ID', 'Store Name', 'Supervisor', 'Assigned Auditors', 'Start Date', 'Completed', 'Total', 'Progress']];
+      rows = auditTableData.map(audit => [
+        audit.storeId,
+        audit.storeName,
+        audit.supervisor,
+        audit.auditors,
+        audit.startDate,
+        audit.completedSKUs,
+        audit.totalSKUs,
+        `${audit.progress.toFixed(1)}%`
+      ]);
+    }
+    
+    // Create table
+    autoTable(doc, {
+      startY: 42,
+      head: headers,
+      body: rows,
+      theme: 'striped',
+      headStyles: { fillColor: [13, 110, 253] },
+      styles: { fontSize: 8 },
+      columnStyles: selectedStatus === 'completed' ? {
+        0: { cellWidth: 18 },
+        1: { cellWidth: 30 },
+        2: { cellWidth: 12 },
+        3: { cellWidth: 25 },
+        4: { cellWidth: 12 },
+        5: { cellWidth: 20 },
+        6: { cellWidth: 20 },
+        7: { cellWidth: 12 },
+        8: { cellWidth: 12 },
+        9: { cellWidth: 12 },
+        10: { cellWidth: 15 },
+        11: { cellWidth: 15 }
+      } : {
+        0: { cellWidth: 20 },
+        1: { cellWidth: 35 },
+        2: { cellWidth: 30 },
+        3: { cellWidth: 35 },
+        4: { cellWidth: 22 },
+        5: { cellWidth: 18 },
+        6: { cellWidth: 18 },
+        7: { cellWidth: 20 }
+      }
+    });
+    
+    // Save PDF
+    const fileName = `Audit_${selectedStatus}_${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(fileName);
   };
 
   return (
@@ -278,14 +512,27 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                   <small className="text-muted">Click on any row to view auditor-wise allocation and real-time progress</small>
                 </div>
                 <div className="d-flex gap-2 align-items-center">
-                  <button
-                    className="btn btn-success btn-sm"
-                    onClick={exportAuditDataToExcel}
-                    disabled={auditTableData.length === 0}
-                  >
-                    <i className="fas fa-file-excel me-1"></i>
-                    Export Excel
-                  </button>
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      size="sm"
+                      variant="success"
+                      disabled={auditTableData.length === 0}
+                      id="audit-export-dropdown"
+                    >
+                      <i className="fas fa-download me-1"></i>
+                      Export Report
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={exportAuditDataToExcel}>
+                        <i className="fas fa-file-excel text-success me-2"></i>
+                        Export as Excel
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={exportAuditDataToPDF}>
+                        <i className="fas fa-file-pdf text-danger me-2"></i>
+                        Export as PDF
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
                   <Badge bg="primary" pill style={{ fontSize: '0.9rem', padding: '8px 16px' }}>
                     {auditTableData.length} {auditTableData.length === 1 ? 'Audit' : 'Audits'}
                   </Badge>

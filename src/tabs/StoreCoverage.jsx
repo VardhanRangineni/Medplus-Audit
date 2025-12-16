@@ -228,10 +228,6 @@ const StoreCoverage = ({ filters = {} }) => {
     navigate(`/details?title=${encodeURIComponent(type)}&type=${typeMap[type]}`);
   };
 
-  const showDeviationDetails = (deviationType) => {
-    navigate(`/details?title=${encodeURIComponent(deviationType + ' - SKU Details')}&type=deviation-${deviationType.toLowerCase().replace(/\s+/g, '-')}`);
-  };
-
   return (
     <Container fluid className="store-coverage-tab py-4">
       {/* Filter Status Alert */}

@@ -199,7 +199,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
         avgCompletion: metrics.count ? (metrics.sumCompletion / metrics.count).toFixed(1) : 0
       }
     };
-  }, [filters, sortConfig]);
+  }, [sortConfig]);
 
   const requestSort = (key) => {
     setSortConfig(prev => ({

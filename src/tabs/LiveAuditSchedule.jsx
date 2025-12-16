@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Badge, Table, ProgressBar, Alert, Form, InputGroup } from 'react-bootstrap';
 import KPICard from '../components/KPICard';
 import StoreDetailModal from '../components/StoreDetailModal';
@@ -7,7 +6,6 @@ import { mockDataService } from '../services/mockDataService';
 import './LiveAuditSchedule.css';
 
 const LiveAuditSchedule = ({ filters = {} }) => {
-  const navigate = useNavigate();
   const [selectedStatus, setSelectedStatus] = useState('in-progress');
   const [expandedRows, setExpandedRows] = useState({});
   const [mismatchFilters, setMismatchFilters] = useState({});
@@ -125,10 +123,6 @@ const LiveAuditSchedule = ({ filters = {} }) => {
     }
 
     return filtered;
-  };
-
-  const showLiveAuditProgress = (store) => {
-    navigate(`/details?title=${encodeURIComponent(store.storeName + ' - Live Audit Progress')}&type=audit-progress&store=${encodeURIComponent(store.storeName)}`);
   };
 
   const showStoreDetails = (store) => {

@@ -6,8 +6,6 @@ import rawAuditData from '../data/audit_dataset_records.json';
 import './AuditorPerformance.css';
 
 const AuditorPerformance = ({ filters = {} }) => {
-  const [modalConfig, setModalConfig] = useState({ show: false, title: '', data: [], columns: [] });
-
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
 
   const requestSort = (key) => {
@@ -116,7 +114,7 @@ const AuditorPerformance = ({ filters = {} }) => {
 
     // 4. Return Full List
     return processedList;
-  }, [sortConfig]); // Re-sort when config changes
+  }, [sortConfig, filters.financialYear]); // Re-sort when config changes
 
   // Calculate overall performance metrics for cards
   const performanceMetrics = useMemo(() => {
@@ -133,27 +131,6 @@ const AuditorPerformance = ({ filters = {} }) => {
       editRate: (totalEditRate / count).toFixed(1)
     };
   }, [auditorData]);
-
-  const showAuditorPIDDetails = (auditor) => {
-    // Note: detailed PID data is not available in the summary JSON
-    setModalConfig({
-      show: true,
-      title: `${auditor.auditorName} (${auditor.auditorId}) - PID Workload View`,
-      data: [],
-      columns: [
-        { key: 'pid', label: 'PID' },
-        { key: 'productName', label: 'Product Name' },
-        { key: 'assignedQty', label: 'Assigned Qty' },
-        { key: 'completedQty', label: 'Completed Qty' },
-        { key: 'timeSpent', label: 'Time Spent' },
-        { key: 'status', label: 'Status' },
-        { key: 'deviations', label: 'Deviations' },
-        { key: 'matchStatus', label: 'Match Status' }
-      ]
-    });
-  };
-
-  // ... existing code ...
 
   const [showAuditorDetail, setShowAuditorDetail] = useState(false);
   const [selectedAuditorId, setSelectedAuditorId] = useState(null);

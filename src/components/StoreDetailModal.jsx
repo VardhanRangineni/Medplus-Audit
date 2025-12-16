@@ -9,7 +9,6 @@ import './StoreDetailModal.css';
 const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
   const [selectedDeviationType, setSelectedDeviationType] = useState(null);
   const [expandedAuditors, setExpandedAuditors] = useState({});
-  const [expandedPIDs, setExpandedPIDs] = useState({});
 
   console.log('StoreDetailModal render - show:', show, 'storeData:', storeData, 'auditStatus:', auditStatus);
 
@@ -51,6 +50,19 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
   // Calculate total deviation value
   const totalDeviationValue = deviations.reduce((sum, dev) => sum + (dev.value || 0), 0);
   const totalContraValue = contra.reduce((sum, item) => sum + (item.value || 0), 0);
+
+  // Calculate breakdown by type
+  const deviationsByType = {
+    deviations: deviations.filter(d => d.type === 'Short' || d.type === 'Excess').reduce((sum, d) => sum + (d.count || 0), 0),
+    mismatch: deviations.filter(d => d.type === 'Contra Short' || d.type === 'Contra Excess').reduce((sum, d) => sum + (d.count || 0), 0)
+  };
+
+  const contraBreakdown = {
+    contraShort: deviations.find(d => d.type === 'Contra Short')?.count || 0,
+    contraExcess: deviations.find(d => d.type === 'Contra Excess')?.count || 0,
+    short: deviations.find(d => d.type === 'Short')?.count || 0,
+    excessShort: deviations.find(d => d.type === 'Excess')?.count || 0
+  };
 
   // Prepare deviation chart data
   const deviationChartData = deviations.slice(0, 5).map((dev, idx) => ({
@@ -656,41 +668,19 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     }));
   };
 
-  // Toggle PID expansion
-  const togglePID = (auditorIndex, pidIndex) => {
-    const key = `${auditorIndex}-${pidIndex}`;
-    setExpandedPIDs(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
-  };
-
-  // Generate PID and SKU data for each auditor
+  // Generate PID data for each auditor
   const generateAuditorDetails = (auditor, auditorIndex) => {
     const pidCount = Math.floor((auditor.assignedSKUs || 0) / 3); // Average 3 SKUs per PID
     const pids = [];
 
     for (let i = 0; i < pidCount; i++) {
       const skuCountForPID = Math.floor(Math.random() * 4) + 2; // 2-5 SKUs per PID
-      const skus = [];
-      
-      for (let j = 0; j < skuCountForPID; j++) {
-        const isCompleted = Math.random() < (auditor.completionRate || 0) / 100;
-        const isMatched = isCompleted && Math.random() < (auditor.matchRate || 0) / 100;
-        
-        skus.push({
-          sku: `SKU${(auditorIndex + 1) * 10000 + i * 100 + j + 1}`,
-          productName: `Product ${i + 1}-${j + 1}`,
-          status: isCompleted ? 'Completed' : 'Pending',
-          matched: isCompleted ? (isMatched ? 'Yes' : 'No') : '-'
-        });
-      }
+      const completedSKUs = Math.floor(skuCountForPID * ((auditor.completionRate || 0) / 100));
 
       pids.push({
         pid: `PID${(auditorIndex + 1) * 1000 + i + 1}`,
         skuCount: skuCountForPID,
-        completedSKUs: skus.filter(s => s.status === 'Completed').length,
-        skus: skus
+        completedSKUs: completedSKUs
       });
     }
 
@@ -787,16 +777,41 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                   <Card.Body className="text-center">
                     <div className="text-muted small mb-1">Total Deviations</div>
                     <h3 className="mb-0 text-danger">{deviations.length}</h3>
-                    <small className="text-muted">₹{(totalDeviationValue / 1000).toFixed(0)}K</small>
+                    <div className="d-flex justify-content-around mt-2">
+                      <div>
+                        <small className="text-muted d-block">Deviations</small>
+                        <Badge bg="danger">{deviationsByType.deviations}</Badge>
+                      </div>
+                      <div>
+                        <small className="text-muted d-block">Mismatch</small>
+                        <Badge bg="warning">{deviationsByType.mismatch}</Badge>
+                      </div>
+                    </div>
                   </Card.Body>
                 </Card>
               </Col>
               <Col md={3}>
                 <Card className="h-100 border-0 shadow-sm">
                   <Card.Body className="text-center">
-                    <div className="text-muted small mb-1">Contra Items</div>
-                    <h3 className="mb-0 text-warning">{contra.length}</h3>
-                    <small className="text-muted">₹{(totalContraValue / 1000).toFixed(0)}K</small>
+                    <div className="text-muted small mb-1">Breakdown</div>
+                    <div className="row g-2 mt-1">
+                      <div className="col-6">
+                        <small className="text-muted d-block" style={{ fontSize: '0.7rem' }}>Contra Short</small>
+                        <Badge bg="dark">{contraBreakdown.contraShort}</Badge>
+                      </div>
+                      <div className="col-6">
+                        <small className="text-muted d-block" style={{ fontSize: '0.7rem' }}>Contra Excess</small>
+                        <Badge bg="secondary">{contraBreakdown.contraExcess}</Badge>
+                      </div>
+                      <div className="col-6">
+                        <small className="text-muted d-block" style={{ fontSize: '0.7rem' }}>Short</small>
+                        <Badge bg="danger">{contraBreakdown.short}</Badge>
+                      </div>
+                      <div className="col-6">
+                        <small className="text-muted d-block" style={{ fontSize: '0.7rem' }}>Excess</small>
+                        <Badge bg="warning">{contraBreakdown.excessShort}</Badge>
+                      </div>
+                    </div>
                   </Card.Body>
                 </Card>
               </Col>
@@ -866,66 +881,25 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                         </tr>
 
                         {/* Expanded PID Rows */}
-                        {isExpanded && pidData.map((pid, pidIdx) => {
-                          const isPIDExpanded = expandedPIDs[`${auditorIdx}-${pidIdx}`];
-                          
-                          return (
-                            <>
-                              {/* PID Row */}
-                              <tr 
-                                key={`${auditorIdx}-pid-${pidIdx}`} 
-                                style={{ backgroundColor: '#f8f9fa', cursor: 'pointer' }}
-                              >
-                                <td></td>
-                                <td 
-                                  onClick={() => togglePID(auditorIdx, pidIdx)}
-                                  className="ps-4"
-                                >
-                                  <i className={`fas fa-chevron-${isPIDExpanded ? 'down' : 'right'} text-secondary me-2`}></i>
-                                  <strong>{pid.pid}</strong>
-                                </td>
-                                {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
-                                  <>
-                                    <td><Badge bg="info">{pid.skuCount} SKUs</Badge></td>
-                                    <td><Badge bg="success">{pid.completedSKUs} Completed</Badge></td>
-                                    <td colSpan="2"></td>
-                                  </>
-                                )}
-                              </tr>
-
-                              {/* Expanded SKU Rows */}
-                              {isPIDExpanded && pid.skus.map((sku, skuIdx) => (
-                                <tr 
-                                  key={`${auditorIdx}-pid-${pidIdx}-sku-${skuIdx}`}
-                                  style={{ backgroundColor: '#e9ecef' }}
-                                >
-                                  <td></td>
-                                  <td className="ps-5">
-                                    <i className="fas fa-barcode text-muted me-2"></i>
-                                    {sku.sku} - {sku.productName}
-                                  </td>
-                                  {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
-                                    <>
-                                      <td colSpan="2">
-                                        <Badge bg={sku.status === 'Completed' ? 'success' : 'warning'}>
-                                          {sku.status}
-                                        </Badge>
-                                      </td>
-                                      <td>
-                                        {sku.matched !== '-' && (
-                                          <Badge bg={sku.matched === 'Yes' ? 'success' : 'danger'}>
-                                            Match: {sku.matched}
-                                          </Badge>
-                                        )}
-                                      </td>
-                                      <td></td>
-                                    </>
-                                  )}
-                                </tr>
-                              ))}
-                            </>
-                          );
-                        })}
+                        {isExpanded && pidData.map((pid, pidIdx) => (
+                          <tr 
+                            key={`${auditorIdx}-pid-${pidIdx}`} 
+                            style={{ backgroundColor: '#f8f9fa' }}
+                          >
+                            <td></td>
+                            <td className="ps-4">
+                              <i className="fas fa-box text-secondary me-2"></i>
+                              <strong>{pid.pid}</strong>
+                            </td>
+                            {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
+                              <>
+                                <td><Badge bg="info">{pid.skuCount} SKUs</Badge></td>
+                                <td><Badge bg="success">{pid.completedSKUs} Completed</Badge></td>
+                                <td colSpan="2"></td>
+                              </>
+                            )}
+                          </tr>
+                        ))}
                       </>
                     );
                   })}

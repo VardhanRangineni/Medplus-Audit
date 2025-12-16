@@ -13,7 +13,7 @@ const StoreCoverage = ({ filters = {} }) => {
   const navigate = useNavigate();
   const [selectedDeviation, setSelectedDeviation] = useState(null);
   const [recencyView, setRecencyView] = useState('quarterly'); // quarterly, half-yearly, yearly
-  
+
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
 
@@ -33,21 +33,21 @@ const StoreCoverage = ({ filters = {} }) => {
 
     // Apply audit job type filter
     if (filters.auditJobType) {
-      data = data.filter(store => 
+      data = data.filter(store =>
         store.IsCovered && store.LastAuditJobType === filters.auditJobType
       );
     }
 
     // Apply audit process type filter
     if (filters.auditProcessType) {
-      data = data.filter(store => 
+      data = data.filter(store =>
         store.IsCovered && store.LastAuditProcessType === filters.auditProcessType
       );
     }
 
     // Apply audit status filter
     if (filters.auditStatus) {
-      data = data.filter(store => 
+      data = data.filter(store =>
         store.IsCovered && store.LastAuditStatus === filters.auditStatus
       );
     }
@@ -82,7 +82,7 @@ const StoreCoverage = ({ filters = {} }) => {
     ];
 
     filteredStoreData.forEach(store => {
-      const idx = breakdown.findIndex(b => 
+      const idx = breakdown.findIndex(b =>
         b.storeType === store.StoreType && b.boxType === store.BoxMapping
       );
       if (idx !== -1) {
@@ -101,7 +101,7 @@ const StoreCoverage = ({ filters = {} }) => {
   // Calculate recency data
   const recencyDataSets = useMemo(() => {
     const coveredStores = filteredStoreData.filter(s => s.IsCovered);
-    
+
     const quarterly = {
       'Oct - Dec': coveredStores.filter(s => s.RecencyQuarter === 'Oct - Dec').length,
       'Jul - Sep': coveredStores.filter(s => s.RecencyQuarter === 'Jul - Sep').length,
@@ -225,7 +225,7 @@ const StoreCoverage = ({ filters = {} }) => {
   const exportProductFormToExcel = () => {
     let dataToExport = [];
     let fileName = 'Product_Form_Overall.xlsx';
-    
+
     if (selectedDeviation && productFormData[selectedDeviation.type] && productFormData[selectedDeviation.type].length > 0) {
       // Export specific deviation data
       dataToExport = productFormData[selectedDeviation.type].map(item => ({
@@ -247,7 +247,7 @@ const StoreCoverage = ({ filters = {} }) => {
           overallData[item.form].count += item.count;
         });
       });
-      
+
       dataToExport = Object.entries(overallData)
         .map(([form, data]) => ({
           'Product Form': form,
@@ -264,11 +264,11 @@ const StoreCoverage = ({ filters = {} }) => {
 
     // Create worksheet
     const ws = utils.json_to_sheet(dataToExport);
-    
+
     // Create workbook
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, 'Product Forms');
-    
+
     // Download file
     writeFile(wb, fileName);
   };
@@ -276,17 +276,17 @@ const StoreCoverage = ({ filters = {} }) => {
   // Export product form data to PDF
   const exportProductFormToPDF = () => {
     const doc = new jsPDF();
-    
+
     if (selectedDeviation && productFormData[selectedDeviation.type] && productFormData[selectedDeviation.type].length > 0) {
       // Export specific deviation data
       doc.setFontSize(16);
       doc.text(`Product Form Analysis: ${selectedDeviation.type}`, 14, 20);
-      
+
       doc.setFontSize(10);
       doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 28);
       doc.text(`Total Value: Rs. ${selectedDeviation.value.toLocaleString()}`, 14, 34);
       doc.text(`Total Items: ${selectedDeviation.count}`, 14, 40);
-      
+
       autoTable(doc, {
         startY: 46,
         head: [['Product Form', 'Value (Rs.)', 'Item Count']],
@@ -298,7 +298,7 @@ const StoreCoverage = ({ filters = {} }) => {
         theme: 'striped',
         headStyles: { fillColor: [13, 110, 253] }
       });
-      
+
       doc.save(`Product_Form_${selectedDeviation.type.replace(/\s+/g, '_')}.pdf`);
     } else {
       // Export overall data
@@ -312,7 +312,7 @@ const StoreCoverage = ({ filters = {} }) => {
           overallData[item.form].count += item.count;
         });
       });
-      
+
       const dataToExport = Object.entries(overallData)
         .map(([form, data]) => [form, `Rs. ${data.value.toLocaleString()}`, data.count.toString()])
         .sort((a, b) => {
@@ -320,14 +320,14 @@ const StoreCoverage = ({ filters = {} }) => {
           const bVal = parseInt(b[1].replace(/[Rs.,\s]/g, ''));
           return bVal - aVal;
         });
-      
+
       doc.setFontSize(16);
       doc.text('Overall Product Form Distribution', 14, 20);
-      
+
       doc.setFontSize(10);
       doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 28);
       doc.text('Across all deviation types', 14, 34);
-      
+
       autoTable(doc, {
         startY: 40,
         head: [['Product Form', 'Value (Rs.)', 'Item Count']],
@@ -335,7 +335,7 @@ const StoreCoverage = ({ filters = {} }) => {
         theme: 'striped',
         headStyles: { fillColor: [13, 110, 253] }
       });
-      
+
       doc.save('Product_Form_Overall.pdf');
     }
   };
@@ -362,19 +362,19 @@ const StoreCoverage = ({ filters = {} }) => {
 
     // Create workbook with multiple sheets
     const wb = utils.book_new();
-    
+
     // Store Coverage sheet
     const ws1 = utils.json_to_sheet(summaryData);
     utils.book_append_sheet(wb, ws1, 'Store Coverage');
-    
+
     // Inventory Summary sheet
     const ws2 = utils.json_to_sheet(inventorySummary);
     utils.book_append_sheet(wb, ws2, 'Inventory Summary');
-    
+
     // Deviation Summary sheet
     const ws3 = utils.json_to_sheet(deviationSummary);
     utils.book_append_sheet(wb, ws3, 'Deviation Summary');
-    
+
     // Add product-level details for each deviation type
     Object.keys(productFormData).forEach(deviationType => {
       if (productFormData[deviationType] && productFormData[deviationType].length > 0) {
@@ -384,14 +384,14 @@ const StoreCoverage = ({ filters = {} }) => {
           'Value (₹)': item.value,
           'Item Count': item.count
         }));
-        
+
         // Truncate sheet name to 31 characters (Excel limit)
         const sheetName = deviationType.length > 31 ? deviationType.substring(0, 28) + '...' : deviationType;
         const ws = utils.json_to_sheet(productDetails);
         utils.book_append_sheet(wb, ws, sheetName);
       }
     });
-    
+
     // Download file
     const fileName = `Store_Coverage_Summary_${new Date().toISOString().split('T')[0]}.xlsx`;
     writeFile(wb, fileName);
@@ -519,11 +519,11 @@ const StoreCoverage = ({ filters = {} }) => {
 
     // Create worksheet
     const ws = utils.json_to_sheet(dataToExport);
-    
+
     // Create workbook
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, 'Recency Analysis');
-    
+
     // Download file
     const fileName = `Store_Recency_Analysis_${recencyView}_${new Date().toISOString().split('T')[0]}.xlsx`;
     writeFile(wb, fileName);
@@ -790,12 +790,13 @@ const StoreCoverage = ({ filters = {} }) => {
                   <XAxis dataKey="range" />
                   <YAxis />
                   <Tooltip />
-                  <Legend />
-                  <Bar 
-                    dataKey="stores" 
-                    fill="#0d6efd" 
+                  <Bar
+                    dataKey="stores"
+                    fill="#0d6efd"
+                    radius={[5, 5, 0, 0]}
                     onClick={(data) => showStoreDetails(`Stores - ${data.range}`)}
                     cursor="pointer"
+                    barSize={80}
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -907,8 +908,8 @@ const StoreCoverage = ({ filters = {} }) => {
                     </Dropdown.Menu>
                   </Dropdown>
                   {selectedDeviation && (
-                    <Button 
-                      size="sm" 
+                    <Button
+                      size="sm"
                       variant="outline-secondary"
                       onClick={() => setSelectedDeviation(null)}
                     >
@@ -956,7 +957,7 @@ const StoreCoverage = ({ filters = {} }) => {
                         {productFormData[selectedDeviation.type].map((form, idx) => (
                           <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
                             <div className="d-flex align-items-center">
-                              <div 
+                              <div
                                 style={{
                                   width: '12px',
                                   height: '12px',
@@ -996,7 +997,7 @@ const StoreCoverage = ({ filters = {} }) => {
                       overallData[item.form].count += item.count;
                     });
                   });
-                  
+
                   const overallFormArray = Object.entries(overallData)
                     .map(([form, data]) => ({ form, value: data.value, count: data.count }))
                     .sort((a, b) => b.value - a.value);
@@ -1037,7 +1038,7 @@ const StoreCoverage = ({ filters = {} }) => {
                             {overallFormArray.map((form, idx) => (
                               <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
                                 <div className="d-flex align-items-center">
-                                  <div 
+                                  <div
                                     style={{
                                       width: '12px',
                                       height: '12px',

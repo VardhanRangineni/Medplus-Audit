@@ -6,39 +6,96 @@ import autoTable from 'jspdf-autotable';
 import AuditSpecificDetailModal from './AuditSpecificDetailModal';
 
 const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
-    const [timeRange, setTimeRange] = useState('All-time');
+    // State for Date Selection
+    // Initialize defaults: 1 year ago to today
+    const startDefault = new Date();
+    startDefault.setFullYear(startDefault.getFullYear() - 1);
+    const startStr = startDefault.toISOString().split('T')[0];
+    const endStr = new Date().toISOString().split('T')[0];
+
+    const [fromDate, setFromDate] = useState(startStr);
+    const [toDate, setToDate] = useState(endStr);
+    // Store last valid range to revert on invalid selection
+    const [lastValidRange, setLastValidRange] = useState({ start: startStr, end: endStr });
+    const [dateWarning, setDateWarning] = useState('');
+
     const [selectedAudit, setSelectedAudit] = useState(null);
     const [showAuditDetail, setShowAuditDetail] = useState(false);
+
+    // Handle Date Changes with Validation
+    const handleDateChange = (type, value) => {
+        setDateWarning(''); // Clear previous warnings
+        let newStart = fromDate;
+        let newEnd = toDate;
+
+        if (type === 'start') newStart = value;
+        else newEnd = value;
+
+        // 1. Basic Update
+        if (type === 'start') setFromDate(value);
+        else setToDate(value);
+
+        // 2. Validation triggers only when BOTH dates are present
+        if (newStart && newEnd) {
+            const startD = new Date(newStart);
+            const endD = new Date(newEnd);
+
+            // Check if Start is after End
+            if (startD > endD) {
+                setDateWarning('From Date cannot be after To Date');
+                setTimeout(() => {
+                    setFromDate(lastValidRange.start);
+                    setToDate(lastValidRange.end);
+                    setDateWarning('');
+                }, 2000);
+                return;
+            }
+
+            // Check Interval > 1 Year (365 days)
+            const oneYearms = 365 * 24 * 60 * 60 * 1000;
+            const diff = endD - startD;
+
+            if (diff > oneYearms) {
+                setDateWarning("Interval can't be more than 1 year");
+                setTimeout(() => {
+                    setFromDate(lastValidRange.start);
+                    setToDate(lastValidRange.end);
+                    setDateWarning('');
+                }, 2000);
+                return;
+            }
+
+            // If Valid, update the "Last Valid" state
+            setLastValidRange({ start: newStart, end: newEnd });
+        } else {
+            // Intermediate state is valid (clearing filter)
+            setLastValidRange({ start: newStart, end: newEnd });
+        }
+    };
 
     // Filter data for this auditor
     const auditorRecords = useMemo(() => {
         if (!auditorId || !allData) return [];
         let filtered = allData.filter(d => d.AuditorID === auditorId);
 
-        if (timeRange !== 'All-time') {
-            filtered = filtered.filter(d => {
-                const date = new Date(d.AuditDate);
-                const month = date.getMonth(); // 0-11
-                const year = date.getFullYear();
+        if (fromDate && toDate) {
+            const startStr = fromDate;
+            const endStr = toDate;
 
-                if (year !== 2025) return false;
+            // Basic validity check
+            const startD = new Date(startStr);
+            const endD = new Date(endStr);
 
-                switch (timeRange) {
-                    case 'Oct 2025 - Dec 2025':
-                        return month >= 9 && month <= 11;
-                    case 'Jul 2025 - Sep 2025':
-                        return month >= 6 && month <= 8;
-                    case 'Apr 2025 - Jun 2025':
-                        return month >= 3 && month <= 5;
-                    case 'Jan 2025 - Mar 2025':
-                        return month >= 0 && month <= 2;
-                    default:
-                        return true;
-                }
-            });
+            if (!isNaN(startD) && !isNaN(endD)) {
+                filtered = filtered.filter(d => {
+                    // Ensure d.AuditDate is handled correctly
+                    const recordDateStr = new Date(d.AuditDate).toISOString().split('T')[0];
+                    return recordDateStr >= startStr && recordDateStr <= endStr;
+                });
+            }
         }
         return filtered.sort((a, b) => b.AuditDate - a.AuditDate);
-    }, [auditorId, allData, timeRange]);
+    }, [auditorId, allData, fromDate, toDate]);
 
     // Specific Auditor Details (Name from first record)
     const auditorName = auditorRecords.length > 0 ? auditorRecords[0].AuditorName : 'Unknown';
@@ -96,6 +153,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             ["Auditor Name", auditorName],
             ["Auditor ID", auditorId],
             ["Generated On", new Date().toLocaleString()],
+            ["Period", `${fromDate} to ${toDate}`],
             [],
             ["Metric", "Value"],
             ["Total Audits", metrics.totalAudits],
@@ -166,10 +224,11 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
         doc.setFontSize(10);
         doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
         doc.text(`Auditor: ${auditorName} (${auditorId})`, 14, 34);
+        doc.text(`Period: ${fromDate} to ${toDate}`, 14, 40);
 
         // Metrics Table
         autoTable(doc, {
-            startY: 40,
+            startY: 46,
             head: [['Category', 'Details']],
             body: [
                 ['Total Audits', metrics.totalAudits],
@@ -241,7 +300,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Modal.Title className="fw-bold mb-0 h5">{auditorName}</Modal.Title>
                             <small className="text-muted">ID: {auditorId}</small>
                         </div>
-                        <div className="d-flex gap-2">
+                        <div className="d-flex gap-2 align-items-center">
                             <Dropdown>
                                 <Dropdown.Toggle
                                     size="sm"
@@ -261,13 +320,48 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                     </Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
-                            <Form.Select size="sm" value={timeRange} onChange={(e) => setTimeRange(e.target.value)} style={{ width: '200px' }}>
-                                <option>All-time</option>
-                                <option>Oct 2025 - Dec 2025</option>
-                                <option>Jul 2025 - Sep 2025</option>
-                                <option>Apr 2025 - Jun 2025</option>
-                                <option>Jan 2025 - Mar 2025</option>
-                            </Form.Select>
+
+                            <div className="d-flex align-items-center gap-2 position-relative">
+                                {/* Warning Message Overlay */}
+                                {dateWarning && (
+                                    <div className="position-absolute px-2 py-1 bg-danger text-white rounded small shadow"
+                                        style={{ top: '100%', right: 0, zIndex: 10, whiteSpace: 'nowrap', marginTop: '4px', fontSize: '0.75rem' }}>
+                                        <i className="fas fa-exclamation-circle me-1"></i> {dateWarning}
+                                    </div>
+                                )}
+
+                                <div className="d-flex align-items-center">
+                                    <div className="input-group input-group-sm">
+                                        <span className="input-group-text bg-white border-end-0 text-muted ps-2 pe-1">
+                                            <i className="fas fa-calendar-alt"></i>
+                                        </span>
+                                        <Form.Control
+                                            type="date"
+                                            placeholder="From date"
+                                            className="border-start-0 ps-1"
+                                            value={fromDate}
+                                            onChange={(e) => handleDateChange('start', e.target.value)}
+                                            style={{ width: '135px', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                                        />
+                                    </div>
+                                </div>
+                                <span className="text-muted small fw-bold">-</span>
+                                <div className="d-flex align-items-center">
+                                    <div className="input-group input-group-sm">
+                                        <span className="input-group-text bg-white border-end-0 text-muted ps-2 pe-1">
+                                            <i className="fas fa-calendar-alt"></i>
+                                        </span>
+                                        <Form.Control
+                                            type="date"
+                                            placeholder="To date"
+                                            className="border-start-0 ps-1"
+                                            value={toDate}
+                                            onChange={(e) => handleDateChange('end', e.target.value)}
+                                            style={{ width: '135px', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </Modal.Header>

@@ -37,21 +37,21 @@ const AuditorPerformance = ({ filters = {} }) => {
 
       // Filter by Time Period (financialYear prop)
       if (filters.financialYear && filters.financialYear !== 'All-time') {
-        const date = new Date(record.AuditDate);
-        const month = date.getMonth(); // 0-11
-        const year = date.getFullYear();
+        const recordDate = new Date(record.AuditDate);
+        // Format: "2024-25" -> startYear=2024, endYear=2025
+        const [startYearStr, endYearShort] = filters.financialYear.split('-');
+        const startYear = parseInt(startYearStr, 10);
+        const endYear = startYear + 1; // 2024 -> 2025
 
-        if (year !== 2025) return; // Only 2025 supported for now as per requirements
+        // Financial Year: April 1st of StartYear to March 31st of EndYear
+        const fyStart = new Date(`${startYear}-04-01`);
+        const fyEnd = new Date(`${endYear}-03-31`);
+        // Adjust end date to include the full day
+        fyEnd.setHours(23, 59, 59, 999);
 
-        let inRange = false;
-        switch (filters.financialYear) {
-          case 'Oct 2025 - Dec 2025': inRange = month >= 9 && month <= 11; break;
-          case 'Jul 2025 - Sep 2025': inRange = month >= 6 && month <= 8; break;
-          case 'Apr 2025 - Jun 2025': inRange = month >= 3 && month <= 5; break;
-          case 'Jan 2025 - Mar 2025': inRange = month >= 0 && month <= 2; break;
-          default: inRange = true;
+        if (recordDate < fyStart || recordDate > fyEnd) {
+          return;
         }
-        if (!inRange) return;
       }
 
       if (!auditorMap[id]) {

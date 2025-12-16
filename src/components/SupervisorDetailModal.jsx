@@ -4,6 +4,7 @@ import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import AuditSpecificDetailModal from './AuditSpecificDetailModal';
+import ModernDatePicker from './ModernDatePicker';
 
 const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
 
@@ -11,13 +12,13 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
     // Initialize defaults: 1 year ago to today
     const startDefault = new Date();
     startDefault.setFullYear(startDefault.getFullYear() - 1);
-    const startStr = startDefault.toISOString().split('T')[0];
-    const endStr = new Date().toISOString().split('T')[0];
 
-    const [startDate, setStartDate] = useState(startStr);
-    const [endDate, setEndDate] = useState(endStr);
+    // Use Date objects for react-datepicker
+    const [startDate, setStartDate] = useState(startDefault);
+    const [endDate, setEndDate] = useState(new Date());
+
     // Store last valid range to revert on invalid selection
-    const [lastValidRange, setLastValidRange] = useState({ start: startStr, end: endStr });
+    const [lastValidRange, setLastValidRange] = useState({ start: startDefault, end: new Date() });
     const [dateWarning, setDateWarning] = useState('');
 
     const [selectedAudit, setSelectedAudit] = useState(null);
@@ -25,32 +26,23 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
     const [sortConfig, setSortConfig] = useState({ key: 'AUDIT_ID', direction: 'ascending' });
 
     // Handle Date Changes with Validation
-    const handleDateChange = (type, value) => {
+    const handleDateChange = (type, date) => {
         setDateWarning(''); // Clear previous warnings
         let newStart = startDate;
         let newEnd = endDate;
 
-        if (type === 'start') newStart = value;
-        else newEnd = value;
+        if (type === 'start') newStart = date;
+        else newEnd = date;
 
-        // 1. Basic Update (allow single inputs to be typed)
-        if (type === 'start') setStartDate(value);
-        else setEndDate(value);
+        // 1. Basic Update
+        if (type === 'start') setStartDate(date);
+        else setEndDate(date);
 
-        // 2. Validation triggers only when BOTH dates are present (or being set)
+        // 2. Validation triggers only when BOTH dates are present
         if (newStart && newEnd) {
-            const startD = new Date(newStart);
-            const endD = new Date(newEnd);
-
             // Check if Start is after End
-            if (startD > endD) {
-                // If user is editing Start and it becomes > End, just let them (or maybe reset End?)
-                // Requirement says: "Revert... on invalid selection".
-                // Usually for Start > End, we might swap or error.
-                // Text says "From Date must always be earlier than or equal to To Date".
-                // Let's treat this strictly.
+            if (newStart > newEnd) {
                 setDateWarning('From Date cannot be after To Date');
-                // Revert to known last valid
                 setTimeout(() => {
                     setStartDate(lastValidRange.start);
                     setEndDate(lastValidRange.end);
@@ -61,11 +53,10 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
 
             // Check Interval > 1 Year (365 days)
             const oneYearms = 365 * 24 * 60 * 60 * 1000;
-            const diff = endD - startD;
+            const diff = newEnd - newStart;
 
             if (diff > oneYearms) {
                 setDateWarning("Interval can't be more than 1 year");
-                // Revert
                 setTimeout(() => {
                     setStartDate(lastValidRange.start);
                     setEndDate(lastValidRange.end);
@@ -77,8 +68,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             // If Valid, update the "Last Valid" state
             setLastValidRange({ start: newStart, end: newEnd });
         } else {
-            // If one is empty, it's technically valid intermediate state, but not a "range" yet.
-            // We can accept it effectively clearing the filter.
+            // Intermediate state is valid (clearing filter)
             setLastValidRange({ start: newStart, end: newEnd });
         }
     };
@@ -106,19 +96,17 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
 
 
         if (startDate && endDate) {
+            // Set time to start and end of dates
             const start = new Date(startDate);
-            const end = new Date(endDate);
-            // Validation ensures start <= end and diff <= 1 year
-            // Double check validity before filtering to be safe
-            if (!isNaN(start) && !isNaN(end)) {
-                // Set end date to end of day to include records on that day
-                end.setHours(23, 59, 59, 999);
+            start.setHours(0, 0, 0, 0);
 
-                filtered = filtered.filter(d => {
-                    const date = new Date(d.AuditDate);
-                    return date >= start && date <= end;
-                });
-            }
+            const end = new Date(endDate);
+            end.setHours(23, 59, 59, 999);
+
+            filtered = filtered.filter(d => {
+                const recordDate = new Date(d.AuditDate);
+                return recordDate >= start && recordDate <= end;
+            });
         }
         return filtered;
     }, [supervisorId, allData, startDate, endDate]);
@@ -348,37 +336,20 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                     </div>
                                 )}
 
-                                <div className="d-flex align-items-center">
-                                    <div className="input-group input-group-sm">
-                                        <span className="input-group-text bg-white border-end-0 text-muted ps-2 pe-1">
-                                            <i className="fas fa-calendar-alt"></i>
-                                        </span>
-                                        <Form.Control
-                                            type="date"
-                                            placeholder="From date"
-                                            className="border-start-0 ps-1"
-                                            value={startDate}
-                                            onChange={(e) => handleDateChange('start', e.target.value)}
-                                            style={{ width: '135px', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                                        />
-                                    </div>
-                                </div>
-                                <span className="text-muted small fw-bold">-</span>
-                                <div className="d-flex align-items-center">
-                                    <div className="input-group input-group-sm">
-                                        <span className="input-group-text bg-white border-end-0 text-muted ps-2 pe-1">
-                                            <i className="fas fa-calendar-alt"></i>
-                                        </span>
-                                        <Form.Control
-                                            type="date"
-                                            placeholder="To date"
-                                            className="border-start-0 ps-1"
-                                            value={endDate}
-                                            onChange={(e) => handleDateChange('end', e.target.value)}
-                                            style={{ width: '135px', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                                        />
-                                    </div>
-                                </div>
+                                <span className="small fw-bold text-muted">From</span>
+                                <ModernDatePicker
+                                    selected={startDate}
+                                    onChange={(date) => handleDateChange('start', date)}
+                                    placeholderText="From date"
+                                    maxDate={endDate}
+                                />
+                                <span className="small fw-bold text-muted">To</span>
+                                <ModernDatePicker
+                                    selected={endDate}
+                                    onChange={(date) => handleDateChange('end', date)}
+                                    placeholderText="To date"
+                                    minDate={startDate}
+                                />
                             </div>
                         </div>
                     </div>

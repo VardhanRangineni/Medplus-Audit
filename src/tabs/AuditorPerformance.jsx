@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Container, Row, Col, Card, Table, ProgressBar, Badge, Alert, Modal, Button } from 'react-bootstrap';
 import KPICard from '../components/KPICard';
 import AuditorDetailModal from '../components/AuditorDetailModal';
-import rawAuditData from '../data/audit_dataset_200_records.json';
+import rawAuditData from '../data/audit_dataset_records.json';
 import './AuditorPerformance.css';
 
 const AuditorPerformance = ({ filters = {} }) => {
@@ -212,7 +212,6 @@ const AuditorPerformance = ({ filters = {} }) => {
               </Badge>
             </td>
             <td className="fw-semibold">
-              <i className="fas fa-user me-2 text-muted"></i>
               {auditor.auditorName}
             </td>
             <td>{auditor.allottedSKUs.toLocaleString()}</td>

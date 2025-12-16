@@ -32,17 +32,17 @@
   border-radius: 3px;
 }
 
-.contra-table tbody tr {
+.supervisor-table tbody tr {
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.contra-table tbody tr:hover {
+.supervisor-table tbody tr:hover {
   background-color: rgba(13, 110, 253, 0.05);
   transform: scale(1.01);
 }
 
-.contra-row td {
+.supervisor-row td {
   vertical-align: middle;
   padding: 1rem;
 }

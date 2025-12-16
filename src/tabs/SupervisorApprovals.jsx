@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, Table, Badge, ProgressBar, Alert, Button } f
 
 import KPICard from '../components/KPICard';
 import SupervisorDetailModal from '../components/SupervisorDetailModal';
-import rawAuditData from '../data/audit_dataset_200_records.json';
+import rawAuditData from '../data/audit_dataset_records.json';
 import './SupervisorApprovals.css';
 
 /* ================================
@@ -17,30 +17,50 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
       : <i className="fas fa-sort-down text-primary ms-1 small"></i>;
   };
 
+  const getCompletionColor = (rate) => {
+    if (rate >= 90) return 'success';
+    if (rate >= 80) return 'warning';
+    return 'danger';
+  };
+
   return (
-    <Table hover className="mb-0 hover-scale-row align-middle">
+    <Table hover className="mb-0 supervisor-table align-middle">
       <thead className="bg-light sticky-top" style={{ top: 0, zIndex: 20 }}>
         <tr>
           <th onClick={() => requestSort('supervisorId')} style={{ cursor: 'pointer' }}>
-            ID {getSortIcon('supervisorId')}
+            <div className="d-flex align-items-center gap-1">
+              ID {getSortIcon('supervisorId')}
+            </div>
           </th>
           <th onClick={() => requestSort('supervisorName')} style={{ cursor: 'pointer' }}>
-            Name {getSortIcon('supervisorName')}
+            <div className="d-flex align-items-center gap-1">
+              Name {getSortIcon('supervisorName')}
+            </div>
           </th>
           <th onClick={() => requestSort('storesManaged')} style={{ cursor: 'pointer' }}>
-            Stores Managed {getSortIcon('storesManaged')}
+            <div className="d-flex align-items-center gap-1">
+              Stores Managed {getSortIcon('storesManaged')}
+            </div>
           </th>
           <th onClick={() => requestSort('totalAudits')} style={{ cursor: 'pointer' }}>
-            Total Audits {getSortIcon('totalAudits')}
+            <div className="d-flex align-items-center gap-1">
+              Total Audits {getSortIcon('totalAudits')}
+            </div>
           </th>
           <th onClick={() => requestSort('totalPIDs')} style={{ cursor: 'pointer' }}>
-            Total SKUs {getSortIcon('totalPIDs')}
+            <div className="d-flex align-items-center gap-1">
+              Total SKUs {getSortIcon('totalPIDs')}
+            </div>
           </th>
           <th onClick={() => requestSort('auditCompletion')} style={{ cursor: 'pointer', minWidth: '200px' }}>
-            Audit Completion {getSortIcon('auditCompletion')}
+            <div className="d-flex align-items-center gap-1">
+              Audit Completion {getSortIcon('auditCompletion')}
+            </div>
           </th>
           <th onClick={() => requestSort('pendingApprovals')} className="text-center" style={{ cursor: 'pointer' }}>
-            Pending Approvals {getSortIcon('pendingApprovals')}
+            <div className="d-flex align-items-center gap-1 justify-content-center">
+              Pending Approvals {getSortIcon('pendingApprovals')}
+            </div>
           </th>
           <th>Actions</th>
         </tr>
@@ -48,13 +68,15 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
 
       <tbody>
         {data.map((sup, idx) => (
-          <tr key={idx} onClick={() => onRowClick(sup)} style={{ cursor: 'pointer' }}>
+          <tr key={idx} onClick={() => onRowClick(sup)} className="supervisor-row" style={{ cursor: 'pointer' }}>
             <td>
               <Badge bg="light" text="dark" className="font-monospace">
                 {sup.supervisorId}
               </Badge>
             </td>
-            <td className="fw-bold">{sup.supervisorName}</td>
+            <td className="fw-semibold">
+              {sup.supervisorName}
+            </td>
             <td className="fw-semibold">{sup.storesManaged}</td>
             <td className="fw-semibold">{sup.totalAudits}</td>
             <td className="fw-semibold">{sup.totalPIDs?.toLocaleString()}</td>
@@ -62,10 +84,12 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
               <div className="d-flex align-items-center gap-2">
                 <ProgressBar
                   now={sup.auditCompletion}
-                  variant={sup.auditCompletion >= 90 ? 'success' : 'primary'}
-                  style={{ height: '8px', flex: 1 }}
+                  variant={getCompletionColor(sup.auditCompletion)}
+                  style={{ height: '20px', flex: 1 }}
                 />
-                <span className="small fw-bold">{sup.auditCompletion}%</span>
+                <Badge bg={getCompletionColor(sup.auditCompletion)}>
+                  {sup.auditCompletion}%
+                </Badge>
               </div>
             </td>
             <td className="text-center">
@@ -78,9 +102,7 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
               )}
             </td>
             <td>
-              <Button variant="light" size="sm" className="rounded-circle">
-                <i className="fas fa-chevron-right text-primary"></i>
-              </Button>
+              <i className="fas fa-chevron-right text-primary"></i>
             </td>
           </tr>
         ))}

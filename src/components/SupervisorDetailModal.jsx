@@ -133,12 +133,14 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     Status: record.Status,
                     AuditorAllottedPIDs: 0,
                     AuditorAllottedSKUs: 0,
-                    AppearedValue: 0
+                    AppearedValue: 0,
+                    AppearedQty: 0
                 };
             }
             auditMap[auditId].AuditorAllottedPIDs += (record.AuditorAllottedPIDs || 0);
             auditMap[auditId].AuditorAllottedSKUs += (record.AuditorAllottedSKUs || 0);
             auditMap[auditId].AppearedValue += (record.AppearedValue || 0);
+            auditMap[auditId].AppearedQty += (record.AppearedQty || 0);
         });
         return Object.values(auditMap);
     }, [supervisorRecords]);
@@ -260,10 +262,11 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             "Status": r.Status,
             "SKUs": r.AuditorAllottedSKUs,
             "PIDs": r.AuditorAllottedPIDs,
+            "Quantity": r.AppearedQty || 0,
             "Value (₹)": r.AppearedValue || 0
         }));
         const wsHistory = utils.json_to_sheet(historyData);
-        wsHistory['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }, { wch: 15 }];
+        wsHistory['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 15 }];
         utils.book_append_sheet(wb, wsHistory, "Audit History");
 
         writeFile(wb, `Supervisor_${supervisorId}_Report.xlsx`);
@@ -313,7 +316,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         if (sortedRecords.length > 0) {
             autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 15,
-                head: [['Audit ID', 'Store', 'Date', 'Type', 'Status', 'SKUs', 'PIDs', 'Value']],
+                head: [['Audit ID', 'Store', 'Date', 'Type', 'Status', 'SKUs', 'PIDs', 'Qty', 'Value']],
                 body: sortedRecords.map(r => [
                     r.AUDIT_ID,
                     r.StoreName,
@@ -322,6 +325,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     r.Status,
                     r.AuditorAllottedSKUs,
                     r.AuditorAllottedPIDs,
+                    (r.AppearedQty || 0).toLocaleString('en-IN'),
                     `₹${(r.AppearedValue || 0).toLocaleString('en-IN')}`
                 ]),
                 theme: 'striped',
@@ -512,6 +516,9 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                         <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedSKUs')} style={{ cursor: 'pointer' }}>
                                             SKUs {getSortIcon('AuditorAllottedSKUs')}
                                         </th>
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AppearedQty')} style={{ cursor: 'pointer' }}>
+                                            QTY {getSortIcon('AppearedQty')}
+                                        </th>
                                         <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AppearedValue')} style={{ cursor: 'pointer' }}>
                                             Value {getSortIcon('AppearedValue')}
                                         </th>
@@ -531,6 +538,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                             <td>{audit.AuditJobType}</td>
                                             <td className="text-end font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString('en-IN')}</td>
                                             <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString('en-IN')}</td>
+                                            <td className="text-end fw-bold">{audit.AppearedQty?.toLocaleString('en-IN')}</td>
                                             <td className="text-end pe-4 fw-bold">₹{formatIndianCurrency(audit.AppearedValue)}</td>
                                         </tr>
                                     ))}

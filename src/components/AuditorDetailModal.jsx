@@ -228,6 +228,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             "Status": r.Status,
             "Allocated SKUs": r.AuditorAllottedSKUs,
             "Allocated PIDs": r.AuditorAllottedPIDs,
+            "Quantity": r.AppearedQty || 0,
             "Value (₹)": r.AppearedValue || 0,
             "Audit Completion %": r.CompletionPercent,
         }));
@@ -242,6 +243,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             { wch: 15 }, // Status
             { wch: 15 }, // SKUs
             { wch: 15 }, // PIDs
+            { wch: 15 }, // Qty
             { wch: 15 }, // Value
             { wch: 20 }  // Completion
         ];
@@ -294,13 +296,14 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
         autoTable(doc, {
             startY: doc.lastAutoTable.finalY + 10,
-            head: [['Audit ID', 'Store', 'Date', 'Status', 'SKUs', 'Value', 'Comp %']],
+            head: [['Audit ID', 'Store', 'Date', 'Status', 'SKUs', 'Qty', 'Value', 'Comp %']],
             body: auditorRecords.map(r => [
                 r.AUDIT_ID,
                 r.StoreName,
                 new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
                 r.Status,
                 r.AuditorAllottedSKUs,
+                (r.AppearedQty || 0).toLocaleString('en-IN'),
                 `₹${(r.AppearedValue || 0).toLocaleString('en-IN')}`,
                 `${r.CompletionPercent}%`
             ]),
@@ -505,6 +508,9 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                         <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedSKUs')} style={{ cursor: 'pointer' }}>
                                             SKUs {getSortIcon('AuditorAllottedSKUs')}
                                         </th>
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AppearedQty')} style={{ cursor: 'pointer' }}>
+                                            QTY {getSortIcon('AppearedQty')}
+                                        </th>
                                         <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AppearedValue')} style={{ cursor: 'pointer' }}>
                                             Value {getSortIcon('AppearedValue')}
                                         </th>
@@ -524,6 +530,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                             <td>{audit.AuditJobType}</td>
                                             <td className="text-end font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString('en-IN')}</td>
                                             <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString('en-IN')}</td>
+                                            <td className="text-end fw-bold">{audit.AppearedQty?.toLocaleString('en-IN')}</td>
                                             <td className="text-end pe-4 fw-bold">₹{formatIndianCurrency(audit.AppearedValue)}</td>
                                         </tr>
                                     ))}

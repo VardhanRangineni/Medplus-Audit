@@ -1,9 +1,12 @@
 import { useState, useMemo } from 'react';
-import { Container, Row, Col, Card, Table, Badge, ProgressBar, Alert, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Table, Badge, ProgressBar, Alert, Dropdown } from 'react-bootstrap';
+import { utils, writeFile } from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 import KPICard from '../components/KPICard';
 import SupervisorDetailModal from '../components/SupervisorDetailModal';
-import rawAuditData from '../data/audit_dataset_records.json';
+import auditData from '../data/audit_dataset.json';
 import './SupervisorApprovals.css';
 
 /* ================================
@@ -47,9 +50,24 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
               Total Audits {getSortIcon('totalAudits')}
             </div>
           </th>
+          <th onClick={() => requestSort('daysSupervised')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Days Supervised {getSortIcon('daysSupervised')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('auditorsSupervised')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Auditors Supervised {getSortIcon('auditorsSupervised')}
+            </div>
+          </th>
           <th onClick={() => requestSort('totalPIDs')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
               Total SKUs {getSortIcon('totalPIDs')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('totalValue')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Total Value {getSortIcon('totalValue')}
             </div>
           </th>
           <th onClick={() => requestSort('auditCompletion')} style={{ cursor: 'pointer', minWidth: '200px' }}>
@@ -79,18 +97,17 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
             </td>
             <td className="fw-semibold">{sup.storesManaged}</td>
             <td className="fw-semibold">{sup.totalAudits}</td>
+            <td className="fw-semibold">{sup.daysSupervised}</td>
+            <td className="fw-semibold">{sup.auditorsSupervised}</td>
             <td className="fw-semibold">{sup.totalPIDs?.toLocaleString()}</td>
+            <td className="fw-semibold">₹{sup.totalValue?.toLocaleString('en-IN')}</td>
             <td>
-              <div className="d-flex align-items-center gap-2">
-                <ProgressBar
-                  now={sup.auditCompletion}
-                  variant={getCompletionColor(sup.auditCompletion)}
-                  style={{ height: '20px', flex: 1 }}
-                />
-                <Badge bg={getCompletionColor(sup.auditCompletion)}>
-                  {sup.auditCompletion}%
-                </Badge>
-              </div>
+              <ProgressBar
+                now={sup.auditCompletion}
+                variant={getCompletionColor(sup.auditCompletion)}
+                label={`${sup.auditCompletion}%`}
+                style={{ height: '24px', minWidth: '150px' }}
+              />
             </td>
             <td className="text-center">
               {sup.pendingApprovals > 0 ? (
@@ -125,10 +142,14 @@ const SupervisorApprovals = ({ filters = {} }) => {
     const supervisorMap = {};
     const supervisorAuditMap = {};
     const auditTotalPIDsMap = {};
+    const auditMetaMap = {};
 
-    rawAuditData.forEach(record => {
+    auditData.forEach(record => {
       if (!auditTotalPIDsMap[record.AUDIT_ID]) {
         auditTotalPIDsMap[record.AUDIT_ID] = record.TotalPIDs || 0;
+      }
+      if (!auditMetaMap[record.AUDIT_ID]) {
+        auditMetaMap[record.AUDIT_ID] = { start: record.AuditStartDate, end: record.AuditEndDate };
       }
 
       const sId = record.SupervisorID;
@@ -141,7 +162,9 @@ const SupervisorApprovals = ({ filters = {} }) => {
           stores: new Set(),
           pendingApprovals: 0,
           allocatedPIDs: 0,
-          completion: []
+          completion: [],
+          auditors: new Set(),
+          totalValue: 0
         };
         supervisorAuditMap[sId] = new Set();
       }
@@ -151,13 +174,22 @@ const SupervisorApprovals = ({ filters = {} }) => {
       sup.pendingApprovals += record.PendingCount || 0;
       sup.allocatedPIDs += record.AuditorAllottedPIDs || 0;
       sup.completion.push(record.CompletionPercent || 0);
+      if (record.AuditorID) sup.auditors.add(record.AuditorID);
+      sup.totalValue += record.AppearedValue || 0;
       supervisorAuditMap[sId].add(record.AUDIT_ID);
     });
 
     const supervisors = Object.values(supervisorMap).map(sup => {
       let totalPIDs = 0;
+      let totalDays = 0;
       supervisorAuditMap[sup.supervisorId].forEach(aid => {
         totalPIDs += auditTotalPIDsMap[aid] || 0;
+        const meta = auditMetaMap[aid];
+        if (meta && meta.start && meta.end) {
+          const diff = meta.end - meta.start;
+          // Count at least 1 day if start == end
+          totalDays += Math.max(1, Math.round(diff / (1000 * 60 * 60 * 24)));
+        }
       });
 
       const avgCompletion =
@@ -168,9 +200,12 @@ const SupervisorApprovals = ({ filters = {} }) => {
         supervisorName: sup.supervisorName,
         storesManaged: sup.stores.size,
         totalAudits: supervisorAuditMap[sup.supervisorId].size,
+        daysSupervised: totalDays,
+        auditorsSupervised: sup.auditors.size,
         auditCompletion: +avgCompletion.toFixed(1),
         pendingApprovals: sup.pendingApprovals,
         totalPIDs,
+        totalValue: sup.totalValue,
         unallocatedPIDs: Math.max(0, totalPIDs - sup.allocatedPIDs)
       };
     });
@@ -217,6 +252,89 @@ const SupervisorApprovals = ({ filters = {} }) => {
         </Alert>
       )}
 
+      {/* Export Button */}
+      <div className="d-flex justify-content-end mb-3">
+        <Dropdown>
+          <Dropdown.Toggle
+            size="sm"
+            className="d-flex align-items-center gap-2 fw-bold shadow-sm"
+            style={{ backgroundColor: '#0d6efd', color: 'white', border: 'none' }}
+            id="supervisor-export-dropdown"
+          >
+            <i className="fas fa-download"></i> Export Report
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={() => {
+              const wb = utils.book_new();
+              const detailedData = supervisorData.map(s => ({
+                "Supervisor ID": s.supervisorId,
+                "Supervisor Name": s.supervisorName,
+                "Stores Managed": s.storesManaged,
+                "Total Audits": s.totalAudits,
+                "Days Supervised": s.daysSupervised,
+                "Auditors Supervised": s.auditorsSupervised,
+                "Total SKUs": s.totalPIDs,
+                "Total Value (₹)": s.totalValue,
+                "Audit Completion %": `${s.auditCompletion}%`,
+                "Pending Approvals": s.pendingApprovals,
+                "Unallocated PIDs": s.unallocatedPIDs,
+              }));
+              const wsDetails = utils.json_to_sheet(detailedData);
+              wsDetails['!cols'] = [
+                { wch: 15 }, { wch: 25 }, { wch: 18 }, { wch: 15 },
+                { wch: 18 }, { wch: 20 }, { wch: 15 }, { wch: 18 },
+                { wch: 20 }, { wch: 18 }, { wch: 18 }
+              ];
+              utils.book_append_sheet(wb, wsDetails, "Supervisor Details");
+              writeFile(wb, `Supervisor_Performance_Summary_${new Date().toISOString().split('T')[0]}.xlsx`);
+            }}>
+              <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => {
+              const doc = new jsPDF();
+              doc.setFontSize(16);
+              doc.text("Supervisor Performance Summary", 14, 20);
+              doc.setFontSize(10);
+              doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
+              autoTable(doc, {
+                startY: 36,
+                head: [['Metric', 'Value']],
+                body: [
+                  ['Total Stores Managed', overallMetrics.totalStores],
+                  ['Avg Completion', `${overallMetrics.avgCompletion}%`],
+                  ['Pending Approvals', overallMetrics.totalPending],
+                  ['Unallocated PIDs', overallMetrics.totalUnallocated],
+                ],
+                theme: 'striped',
+                headStyles: { fillColor: [41, 128, 185] }
+              });
+              autoTable(doc, {
+                startY: doc.lastAutoTable.finalY + 10,
+                head: [['ID', 'Name', 'Stores', 'Audits', 'Days', 'Auditors', 'SKUs', 'Value', 'Comp %', 'Pending']],
+                body: supervisorData.map(s => [
+                  s.supervisorId,
+                  s.supervisorName,
+                  s.storesManaged,
+                  s.totalAudits,
+                  s.daysSupervised,
+                  s.auditorsSupervised,
+                  s.totalPIDs?.toLocaleString(),
+                  `₹${s.totalValue?.toLocaleString('en-IN')}`,
+                  `${s.auditCompletion}%`,
+                  s.pendingApprovals
+                ]),
+                theme: 'grid',
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: [52, 73, 94], textColor: 255 }
+              });
+              doc.save(`Supervisor_Performance_Summary_${new Date().toISOString().split('T')[0]}.pdf`);
+            }}>
+              <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+
       <Row className="g-3 mb-4">
         <Col md={3}><KPICard title="Total Stores Managed" value={overallMetrics.totalStores} /></Col>
         <Col md={3}><KPICard title="Avg Completion" value={`${overallMetrics.avgCompletion}%`} /></Col>
@@ -248,7 +366,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
         show={!!selectedSupervisor}
         onHide={() => setSelectedSupervisor(null)}
         supervisorId={selectedSupervisor?.supervisorId}
-        allData={rawAuditData}
+        allData={auditData}
       />
     </Container>
   );

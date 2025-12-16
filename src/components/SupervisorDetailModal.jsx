@@ -301,55 +301,57 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
     return (
         <>
             <Modal show={show} onHide={onHide} size="xl" centered backdrop="static" className="supervisor-detail-modal">
-                <Modal.Header closeButton className="bg-white border-bottom">
-                    <div className="d-flex w-100 justify-content-between align-items-center pe-3">
-                        <div className="d-flex flex-column">
-                            <Modal.Title className="fw-bold mb-0 h5">{supervisorName}</Modal.Title>
-                            <small className="text-muted">ID: {supervisorId}</small>
-                        </div>
-                        <div className="d-flex align-items-center gap-2">
-                            <Dropdown>
-                                <Dropdown.Toggle
-                                    size="sm"
-                                    className="d-flex align-items-center gap-2 fw-bold shadow-sm"
-                                    style={{ backgroundColor: '#0dcaf0', color: 'white', border: 'none' }}
-                                    id="supervisor-download-dropdown"
-                                >
-                                    <i className="fas fa-download"></i> Download Report
-                                </Dropdown.Toggle>
+                <Modal.Header closeButton style={{ zIndex: 10, position: 'relative' }}>
+                    <div className="w-100">
+                        <div className="d-flex justify-content-between align-items-start mb-3">
+                            <div className="d-flex flex-column">
+                                <Modal.Title className="fw-bold mb-0 h5">{supervisorName}</Modal.Title>
+                                <small className="text-muted">ID: {supervisorId}</small>
+                            </div>
+                            <div className="d-flex align-items-center gap-2">
+                                <Dropdown>
+                                    <Dropdown.Toggle
+                                        size="sm"
+                                        className="d-flex align-items-center gap-2 fw-bold shadow-sm"
+                                        style={{ backgroundColor: '#0dcaf0', color: 'white', border: 'none' }}
+                                        id="supervisor-download-dropdown"
+                                    >
+                                        <i className="fas fa-download"></i> Download Report
+                                    </Dropdown.Toggle>
 
-                                <Dropdown.Menu>
-                                    <Dropdown.Item onClick={handleDownloadExcel}>
-                                        <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={handleDownloadPDF}>
-                                        <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                            <div className="d-flex align-items-center gap-2 position-relative">
-                                {/* Warning Message Overlay */}
-                                {dateWarning && (
-                                    <div className="position-absolute px-2 py-1 bg-danger text-white rounded small shadow"
-                                        style={{ top: '100%', right: 0, zIndex: 10, whiteSpace: 'nowrap', marginTop: '4px', fontSize: '0.75rem' }}>
-                                        <i className="fas fa-exclamation-circle me-1"></i> {dateWarning}
-                                    </div>
-                                )}
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item onClick={handleDownloadExcel}>
+                                            <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
+                                        </Dropdown.Item>
+                                        <Dropdown.Item onClick={handleDownloadPDF}>
+                                            <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
+                                        </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                                <div className="d-flex align-items-center gap-2 position-relative">
+                                    {/* Warning Message Overlay */}
+                                    {dateWarning && (
+                                        <div className="position-absolute px-2 py-1 bg-danger text-white rounded small shadow"
+                                            style={{ top: '100%', right: 0, zIndex: 10, whiteSpace: 'nowrap', marginTop: '4px', fontSize: '0.75rem' }}>
+                                            <i className="fas fa-exclamation-circle me-1"></i> {dateWarning}
+                                        </div>
+                                    )}
 
-                                <span className="small fw-bold text-muted">From</span>
-                                <ModernDatePicker
-                                    selected={startDate}
-                                    onChange={(date) => handleDateChange('start', date)}
-                                    placeholderText="From date"
-                                    maxDate={endDate}
-                                />
-                                <span className="small fw-bold text-muted">To</span>
-                                <ModernDatePicker
-                                    selected={endDate}
-                                    onChange={(date) => handleDateChange('end', date)}
-                                    placeholderText="To date"
-                                    minDate={startDate}
-                                />
+                                    <span className="small fw-bold text-muted">From</span>
+                                    <ModernDatePicker
+                                        selected={startDate}
+                                        onChange={(date) => handleDateChange('start', date)}
+                                        placeholderText="From date"
+                                        maxDate={endDate}
+                                    />
+                                    <span className="small fw-bold text-muted">To</span>
+                                    <ModernDatePicker
+                                        selected={endDate}
+                                        onChange={(date) => handleDateChange('end', date)}
+                                        placeholderText="To date"
+                                        minDate={startDate}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

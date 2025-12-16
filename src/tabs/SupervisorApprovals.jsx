@@ -225,7 +225,13 @@ const SupervisorApprovals = ({ filters = {} }) => {
       </Row>
 
       <Card className="border-0 shadow-sm">
-        <Card.Header className="bg-white fw-bold">Supervisor Performance Summary</Card.Header>
+        <Card.Header className="bg-white border-0 py-3">
+          <h5 className="mb-0 fw-bold">
+            <i className="fas fa-user-tie me-2 text-primary"></i>
+            Supervisor Performance Summary
+          </h5>
+          <small className="text-muted">Click on any supervisor to view detailed performance metrics</small>
+        </Card.Header>
         <Card.Body className="p-0">
           <div className="table-responsive" style={{ maxHeight: '600px', overflowY: 'auto' }}>
             <SupervisorTable

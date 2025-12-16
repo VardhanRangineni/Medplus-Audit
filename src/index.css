@@ -31,7 +31,12 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 600;
   color: #212529;
 }
@@ -79,7 +84,5 @@ textarea:focus-visible {
   transform: scale(1.01);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   background-color: #fff;
-  /* Ensure it stands out if transparent */
-  z-index: 10;
-  position: relative;
+  /* Note: Do NOT add z-index or position here as it interferes with date picker stacking */
 }

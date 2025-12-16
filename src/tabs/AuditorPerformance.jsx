@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Container, Row, Col, Card, Table, ProgressBar, Badge, Alert, Dropdown } from 'react-bootstrap';
+import { Container, Row, Col, Card, Table, ProgressBar, Badge, Alert, Dropdown, Form, InputGroup } from 'react-bootstrap';
 import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -10,6 +10,7 @@ import './AuditorPerformance.css';
 
 const AuditorPerformance = ({ filters = {} }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+  const [searchQuery, setSearchQuery] = useState('');
 
   const requestSort = (key) => {
     let direction = 'ascending';
@@ -460,15 +461,43 @@ const AuditorPerformance = ({ filters = {} }) => {
         <Col>
           <Card className="border-0 shadow-sm">
             <Card.Header className="bg-white border-0 py-3">
-              <h5 className="mb-0 fw-bold">
-                <i className="fas fa-users me-2 text-primary"></i>
-                Auditor Productivity Summary
-              </h5>
-              <small className="text-muted">Click on any auditor to view detailed performance metrics</small>
+              <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                  <h5 className="mb-0 fw-bold">
+                    <i className="fas fa-users me-2 text-primary"></i>
+                    Auditor Productivity Summary
+                  </h5>
+                  <small className="text-muted">Click on any auditor to view detailed performance metrics</small>
+                </div>
+                <InputGroup style={{ maxWidth: '300px' }}>
+                  <InputGroup.Text className="bg-white border-end-0">
+                    <i className="fas fa-search text-muted"></i>
+                  </InputGroup.Text>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search by auditor name..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="border-start-0"
+                    style={{ boxShadow: 'none' }}
+                  />
+                  {searchQuery && (
+                    <InputGroup.Text
+                      className="bg-white cursor-pointer"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => setSearchQuery('')}
+                    >
+                      <i className="fas fa-times text-muted"></i>
+                    </InputGroup.Text>
+                  )}
+                </InputGroup>
+              </div>
             </Card.Header>
             <Card.Body className="p-0">
               <div className="table-responsive" style={{ maxHeight: '600px', overflowY: 'auto' }}>
-                {renderTableRows(auditorData)}
+                {renderTableRows(auditorData.filter(a =>
+                  a.auditorName.toLowerCase().includes(searchQuery.toLowerCase())
+                ))}
               </div>
             </Card.Body>
             {/* View More Removed - Showing All Records */}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Container, Row, Col, Form, Button, Badge } from 'react-bootstrap';
 import './GlobalHeader.css';
+import medplusIcon from '../assets/Group 1420.png';
 
 const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
   const [filters, setFilters] = useState({
@@ -36,8 +37,7 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
         <Row className="mb-3 align-items-center">
           <Col>
             <h3 className="mb-0 text-primary fw-bold">
-              <i className="fas fa-chart-line me-2"></i>
-              Audit HOD Dashboard
+             Medplus Audit Dashboard
             </h3>
           </Col>
           <Col xs="auto" className="text-end">

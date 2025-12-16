@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './Sidebar.css';
+import medplusIcon from '../assets/Group 1420.png';
 
 const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -40,7 +41,7 @@ const Sidebar = () => {
     >
       <div className="sidebar-header">
         <div className="logo-container">
-          <i className="fas fa-chart-line logo-icon"></i>
+          <img src={medplusIcon} alt="MedPlus" className="logo-icon" style={{ width: '32px', height: '32px' }} />
           {isExpanded && <span className="logo-text">Audit Dashboard</span>}
         </div>
       </div>

@@ -110,9 +110,8 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
                 className="filter-select"
               >
                 <option value="">All Stores</option>
-                <option value="MP001">MP001 - Chennai Central</option>
-                <option value="MP002">MP002 - Bangalore Hub</option>
-                <option value="MP003">MP003 - Hyderabad Main</option>
+                <option value="HUB">HUB</option>
+                <option value="REGULAR">Regular</option>
               </Form.Select>
             </Form.Group>
           </Col>
@@ -127,8 +126,9 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
                 className="filter-select"
               >
                 <option value="">All Types</option>
-                <option value="full">Full Audit</option>
-                <option value="partial">Partial Audit</option>
+                <option value="Full Audit">Full Audit</option>
+                <option value="Select SKUs">Select SKUs</option>
+                <option value="Select SKUs">Batch Audit</option>
               </Form.Select>
             </Form.Group>
           </Col>
@@ -143,8 +143,8 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
                 className="filter-select"
               >
                 <option value="">All Processes</option>
-                <option value="product">Product</option>
-                <option value="batch">Batch</option>
+                <option value="Product Audit">Product Audit</option>
+                <option value="Box Audit">Box Audit</option>
               </Form.Select>
             </Form.Group>
           </Col>
@@ -159,10 +159,10 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
                 className="filter-select"
               >
                 <option value="">All Statuses</option>
-                <option value="created">Created</option>
-                <option value="in-progress">In Progress</option>
-                <option value="pending">Pending</option>
-                <option value="completed">Completed</option>
+                <option value="Created">Created</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
               </Form.Select>
             </Form.Group>
           </Col>

@@ -4,44 +4,43 @@ import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import AuditSpecificDetailModal from './AuditSpecificDetailModal';
+import ModernDatePicker from './ModernDatePicker';
 
 const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
+    // State for Date Selection
     // State for Date Selection
     // Initialize defaults: 1 year ago to today
     const startDefault = new Date();
     startDefault.setFullYear(startDefault.getFullYear() - 1);
-    const startStr = startDefault.toISOString().split('T')[0];
-    const endStr = new Date().toISOString().split('T')[0];
 
-    const [fromDate, setFromDate] = useState(startStr);
-    const [toDate, setToDate] = useState(endStr);
+    // Use Date objects for react-datepicker
+    const [fromDate, setFromDate] = useState(startDefault);
+    const [toDate, setToDate] = useState(new Date());
+
     // Store last valid range to revert on invalid selection
-    const [lastValidRange, setLastValidRange] = useState({ start: startStr, end: endStr });
+    const [lastValidRange, setLastValidRange] = useState({ start: startDefault, end: new Date() });
     const [dateWarning, setDateWarning] = useState('');
 
     const [selectedAudit, setSelectedAudit] = useState(null);
     const [showAuditDetail, setShowAuditDetail] = useState(false);
 
     // Handle Date Changes with Validation
-    const handleDateChange = (type, value) => {
+    const handleDateChange = (type, date) => {
         setDateWarning(''); // Clear previous warnings
         let newStart = fromDate;
         let newEnd = toDate;
 
-        if (type === 'start') newStart = value;
-        else newEnd = value;
+        if (type === 'start') newStart = date;
+        else newEnd = date;
 
         // 1. Basic Update
-        if (type === 'start') setFromDate(value);
-        else setToDate(value);
+        if (type === 'start') setFromDate(date);
+        else setToDate(date);
 
         // 2. Validation triggers only when BOTH dates are present
         if (newStart && newEnd) {
-            const startD = new Date(newStart);
-            const endD = new Date(newEnd);
-
             // Check if Start is after End
-            if (startD > endD) {
+            if (newStart > newEnd) {
                 setDateWarning('From Date cannot be after To Date');
                 setTimeout(() => {
                     setFromDate(lastValidRange.start);
@@ -53,7 +52,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
             // Check Interval > 1 Year (365 days)
             const oneYearms = 365 * 24 * 60 * 60 * 1000;
-            const diff = endD - startD;
+            const diff = newEnd - newStart;
 
             if (diff > oneYearms) {
                 setDateWarning("Interval can't be more than 1 year");
@@ -79,20 +78,17 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
         let filtered = allData.filter(d => d.AuditorID === auditorId);
 
         if (fromDate && toDate) {
-            const startStr = fromDate;
-            const endStr = toDate;
+            // Set time to start and end of days for accurate comparison
+            const start = new Date(fromDate);
+            start.setHours(0, 0, 0, 0);
 
-            // Basic validity check
-            const startD = new Date(startStr);
-            const endD = new Date(endStr);
+            const end = new Date(toDate);
+            end.setHours(23, 59, 59, 999);
 
-            if (!isNaN(startD) && !isNaN(endD)) {
-                filtered = filtered.filter(d => {
-                    // Ensure d.AuditDate is handled correctly
-                    const recordDateStr = new Date(d.AuditDate).toISOString().split('T')[0];
-                    return recordDateStr >= startStr && recordDateStr <= endStr;
-                });
-            }
+            filtered = filtered.filter(d => {
+                const recordDate = new Date(d.AuditDate);
+                return recordDate >= start && recordDate <= end;
+            });
         }
         return filtered.sort((a, b) => b.AuditDate - a.AuditDate);
     }, [auditorId, allData, fromDate, toDate]);
@@ -153,7 +149,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             ["Auditor Name", auditorName],
             ["Auditor ID", auditorId],
             ["Generated On", new Date().toLocaleString()],
-            ["Period", `${fromDate} to ${toDate}`],
+            ["Period", `${fromDate ? new Date(fromDate).toLocaleDateString('en-GB') : '-'} to ${toDate ? new Date(toDate).toLocaleDateString('en-GB') : '-'}`],
             [],
             ["Metric", "Value"],
             ["Total Audits", metrics.totalAudits],
@@ -224,7 +220,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
         doc.setFontSize(10);
         doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
         doc.text(`Auditor: ${auditorName} (${auditorId})`, 14, 34);
-        doc.text(`Period: ${fromDate} to ${toDate}`, 14, 40);
+        doc.text(`Period: ${fromDate ? new Date(fromDate).toLocaleDateString('en-GB') : '-'} to ${toDate ? new Date(toDate).toLocaleDateString('en-GB') : '-'}`, 14, 40);
 
         // Metrics Table
         autoTable(doc, {
@@ -330,37 +326,20 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                     </div>
                                 )}
 
-                                <div className="d-flex align-items-center">
-                                    <div className="input-group input-group-sm">
-                                        <span className="input-group-text bg-white border-end-0 text-muted ps-2 pe-1">
-                                            <i className="fas fa-calendar-alt"></i>
-                                        </span>
-                                        <Form.Control
-                                            type="date"
-                                            placeholder="From date"
-                                            className="border-start-0 ps-1"
-                                            value={fromDate}
-                                            onChange={(e) => handleDateChange('start', e.target.value)}
-                                            style={{ width: '135px', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                                        />
-                                    </div>
-                                </div>
-                                <span className="text-muted small fw-bold">-</span>
-                                <div className="d-flex align-items-center">
-                                    <div className="input-group input-group-sm">
-                                        <span className="input-group-text bg-white border-end-0 text-muted ps-2 pe-1">
-                                            <i className="fas fa-calendar-alt"></i>
-                                        </span>
-                                        <Form.Control
-                                            type="date"
-                                            placeholder="To date"
-                                            className="border-start-0 ps-1"
-                                            value={toDate}
-                                            onChange={(e) => handleDateChange('end', e.target.value)}
-                                            style={{ width: '135px', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
-                                        />
-                                    </div>
-                                </div>
+                                <span className="small fw-bold text-muted">From</span>
+                                <ModernDatePicker
+                                    selected={fromDate}
+                                    onChange={(date) => handleDateChange('start', date)}
+                                    placeholderText="From date"
+                                    maxDate={toDate}
+                                />
+                                <span className="small fw-bold text-muted">To</span>
+                                <ModernDatePicker
+                                    selected={toDate}
+                                    onChange={(date) => handleDateChange('end', date)}
+                                    placeholderText="To date"
+                                    minDate={fromDate}
+                                />
                             </div>
                         </div>
                     </div>

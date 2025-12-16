@@ -1,0 +1,141 @@
+/* Wrapper for positioning input and icon */
+.modern-date-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Icon positioning */
+.modern-date-icon {
+    position: absolute;
+    left: 12px;
+    color: #6c757d;
+    /* text-muted */
+    pointer-events: none;
+    z-index: 5;
+    font-size: 0.9rem;
+}
+
+/* Input styling - Read Only text input that triggers the popup */
+.modern-date-input {
+    padding-left: 36px !important;
+    padding-right: 12px !important;
+    border-radius: 50rem !important;
+    /* Pill shape */
+    border: 1px solid #dee2e6;
+    background-color: #fff !important;
+    /* Force white background even for readonly */
+    transition: all 0.2s ease-in-out;
+    height: 38px;
+    font-size: 0.9rem;
+    color: #495057;
+    font-weight: 500;
+    width: 150px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+.modern-date-input:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15) !important;
+    outline: 0;
+}
+
+.modern-date-input:hover {
+    border-color: #b0b8c1;
+    background-color: #fcfcfc;
+}
+
+/* =========================================
+   React DatePicker Custom Overrides
+   ========================================= */
+
+/* Main Popup Container */
+.modern-calendar {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    padding: 0.5rem;
+}
+
+/* Header (Month/Year) */
+.react-datepicker__header {
+    background-color: #fff !important;
+    border-bottom: 1px solid #f0f0f0 !important;
+    padding-top: 0.5rem !important;
+}
+
+.react-datepicker__current-month {
+    font-weight: 700 !important;
+    color: #333 !important;
+    margin-bottom: 0.5rem !important;
+    font-size: 1rem !important;
+}
+
+.react-datepicker__day-name {
+    color: #6c757d !important;
+    font-weight: 600 !important;
+    width: 2.5rem !important;
+}
+
+/* Days */
+.react-datepicker__day {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    line-height: 2.5rem !important;
+    border-radius: 50% !important;
+    /* Round selection */
+    margin: 0.1rem !important;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.react-datepicker__day:hover {
+    background-color: #e9ecef !important;
+    color: #333 !important;
+}
+
+/* Selected Day */
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+    background-color: #0d6efd !important;
+    /* Bootstrap Primary */
+    color: #fff !important;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+}
+
+/* Today */
+.react-datepicker__day--today {
+    font-weight: bold !important;
+    color: #0d6efd;
+    position: relative;
+}
+
+/* Outside Month */
+.react-datepicker__day--outside-month {
+    color: #adb5bd !important;
+}
+
+/* Navigation Arrows */
+.react-datepicker__navigation {
+    top: 12px !important;
+}
+
+.react-datepicker__navigation-icon::before {
+    border-color: #6c757d !important;
+    border-width: 2px 2px 0 0 !important;
+}
+
+/* Triangle arrow on top of popup - remove it for cleaner look */
+.react-datepicker__triangle {
+    display: none !important;
+}
+
+/* Month/Year Dropdowns */
+.react-datepicker__year-read-view--down-arrow,
+.react-datepicker__month-read-view--down-arrow {
+    border-color: #6c757d !important;
+}

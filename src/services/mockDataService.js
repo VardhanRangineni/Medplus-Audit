@@ -421,8 +421,8 @@ export const mockDataService = {
           { skuCode: 'MED052', productName: 'Medical Tape', type: 'Short', quantity: 22, value: 2600, status: 'Approved' }
         ]
       },
-      'MP007': {
-        storeId: 'MP007',
+      'MP011': {
+        storeId: 'MP011',
         storeName: 'Ahmedabad Main',
         state: 'GJ',
         supervisor: 'Kiran Patel',
@@ -584,8 +584,8 @@ export const mockDataService = {
         deviations: [],
         contra: []
       },
-      'MP006': {
-        storeId: 'MP006',
+      'MP013': {
+        storeId: 'MP013',
         storeName: 'Delhi NCR',
         state: 'DL',
         supervisor: 'Amit Verma',
@@ -607,8 +607,8 @@ export const mockDataService = {
           { skuCode: 'SKU12348', productName: 'Vitamin C Tablets', type: 'Excess', quantity: 2, value: 180, status: 'Approved' }
         ]
       },
-      'MP008': {
-        storeId: 'MP008',
+      'MP014': {
+        storeId: 'MP014',
         storeName: 'Kolkata East',
         state: 'WB',
         supervisor: 'Sourav Das',
@@ -628,8 +628,8 @@ export const mockDataService = {
           { skuCode: 'SKU22346', productName: 'Amlodipine 5mg', type: 'Excess', quantity: 4, value: 480, status: 'Approved' }
         ]
       },
-      'MP009': {
-        storeId: 'MP009',
+      'MP016': {
+        storeId: 'MP016',
         storeName: 'Nagpur Central',
         state: 'MH',
         supervisor: 'Pooja Deshmukh',

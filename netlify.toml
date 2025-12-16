@@ -1,0 +1,44 @@
+# Netlify Configuration File
+
+[build]
+  # Build command to run
+  command = "npm run build"
+  
+  # Directory to publish (Vite outputs to dist/)
+  publish = "dist"
+  
+  # Node version to use
+  [build.environment]
+    NODE_VERSION = "18"
+
+# Redirect rules for Single Page Application (SPA)
+# This ensures all routes are handled by index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Cache static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"

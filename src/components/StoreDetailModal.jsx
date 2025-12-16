@@ -1,17 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Modal, Button, Row, Col, Card, Table, Badge, ProgressBar } from 'react-bootstrap';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import './StoreDetailModal.css';
 
 const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
   const [selectedDeviationType, setSelectedDeviationType] = useState(null);
-
-  // Reset filter when modal closes or data changes
-  useEffect(() => {
-    if (!show) {
-      setSelectedDeviationType(null);
-    }
-  }, [show, storeData]);
 
   console.log('StoreDetailModal render - show:', show, 'storeData:', storeData, 'auditStatus:', auditStatus);
 
@@ -348,31 +341,6 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     // Download file
     window.XLSX.writeFile(wb, fileName);
   };
-
-  // Calculate contra summary
-  const contraShort = contra.filter(c => c.type === 'Short').reduce((sum, c) => sum + (c.value || 0), 0);
-  const contraExcess = contra.filter(c => c.type === 'Excess').reduce((sum, c) => sum + (c.value || 0), 0);
-
-  // Filter contra items based on selected deviation type
-  const getFilteredContraItems = () => {
-    console.log('Filtering contra items:', { selectedDeviationType, totalContraItems: contra.length });
-
-    if (!selectedDeviationType) return contra;
-
-    // Map deviation type to contra type
-    if (selectedDeviationType === 'Contra Short') {
-      const filtered = contra.filter(c => c.type === 'Short');
-      console.log('Filtered Contra Short:', filtered.length, 'items');
-      return filtered;
-    } else if (selectedDeviationType === 'Contra Excess') {
-      const filtered = contra.filter(c => c.type === 'Excess');
-      console.log('Filtered Contra Excess:', filtered.length, 'items');
-      return filtered;
-    }
-    return contra;
-  };
-
-  const filteredContraItems = getFilteredContraItems();
 
   // Handle deviation row click
   const handleDeviationClick = (deviationType) => {

@@ -13,6 +13,13 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
         if (!timestamp) return '-';
         return new Date(timestamp).toLocaleDateString('en-GB');
     };
+    const formatIndianCurrency = (value) => {
+        if (value === undefined || value === null) return '0';
+        const val = Number(value);
+        if (val >= 10000000) return (val / 10000000).toFixed(2) + ' Cr';
+        if (val >= 100000) return (val / 100000).toFixed(2) + ' L';
+        return val.toLocaleString('en-IN');
+    };
 
     const getStatusBadge = (status) => {
         switch (status) {
@@ -144,7 +151,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                     r.AuditorAllottedPIDs,
                     r.AuditorAllottedSKUs,
                     r.AppearedQty,
-                    `₹${(r.AppearedValue || 0).toLocaleString('en-IN')}`
+                    `₹${formatIndianCurrency(r.AppearedValue)}`
                 ]),
                 theme: 'striped',
                 headStyles: { fillColor: [52, 73, 94] }
@@ -243,7 +250,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                             <div className="text-end">
                                 <div className="text-muted small mb-1">Total Value</div>
                                 <h3 className="fw-bold mb-0" style={{ color: '#059669' }}>
-                                    ₹{appeared.value?.toLocaleString('en-IN')}
+                                    ₹{formatIndianCurrency(appeared.value)}
                                 </h3>
                             </div>
                         </div>
@@ -289,7 +296,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                     </td>
                                     <td className="text-end py-3 fw-semibold">{appeared.count?.toLocaleString()}</td>
                                     <td className="text-end py-3 fw-semibold">{appeared.qty?.toLocaleString()}</td>
-                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#0f172a' }}>₹{appeared.value?.toLocaleString('en-IN')}</td>
+                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#0f172a' }}>₹{formatIndianCurrency(appeared.value)}</td>
                                 </tr>
                                 <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
                                     <td className="ps-4 py-3">
@@ -298,7 +305,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                     </td>
                                     <td className="text-end py-3 fw-semibold">{matched.count?.toLocaleString()}</td>
                                     <td className="text-end py-3 fw-semibold">{matched.qty?.toLocaleString()}</td>
-                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#059669' }}>₹{matched.value?.toLocaleString('en-IN')}</td>
+                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#059669' }}>₹{formatIndianCurrency(matched.value)}</td>
                                 </tr>
                                 <tr>
                                     <td className="ps-4 py-3">
@@ -307,7 +314,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                     </td>
                                     <td className="text-end py-3 fw-semibold">{revised.count?.toLocaleString()}</td>
                                     <td className="text-end py-3 fw-semibold">{revised.qty?.toLocaleString()}</td>
-                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#d97706' }}>₹{revised.value?.toLocaleString('en-IN')}</td>
+                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#d97706' }}>₹{formatIndianCurrency(revised.value)}</td>
                                 </tr>
                             </tbody>
                         </Table>
@@ -372,7 +379,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                                     <td className="text-end py-3 font-monospace">{record.AuditorAllottedPIDs?.toLocaleString()}</td>
                                                     <td className="text-end py-3 font-monospace fw-medium">{record.AuditorAllottedSKUs?.toLocaleString()}</td>
                                                     <td className="text-end py-3 font-monospace">{record.AppearedQty?.toLocaleString()}</td>
-                                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#059669' }}>₹{record.AppearedValue?.toLocaleString('en-IN')}</td>
+                                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#059669' }}>₹{formatIndianCurrency(record.AppearedValue)}</td>
                                                 </tr>
                                                 {expandedAuditor === idx && (
                                                     <tr>
@@ -399,7 +406,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                                                             </td>
                                                                             <td className="text-end py-2 small fw-medium">{record.AppearedCount?.toLocaleString()}</td>
                                                                             <td className="text-end py-2 small fw-medium">{record.AppearedQty?.toLocaleString()}</td>
-                                                                            <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#0f172a' }}>₹{record.AppearedValue?.toLocaleString('en-IN')}</td>
+                                                                            <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#0f172a' }}>₹{formatIndianCurrency(record.AppearedValue)}</td>
                                                                         </tr>
                                                                         <tr style={{ backgroundColor: 'white' }}>
                                                                             <td className="ps-3 py-2">
@@ -408,7 +415,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                                                             </td>
                                                                             <td className="text-end py-2 small fw-medium">{record.MatchedCount?.toLocaleString()}</td>
                                                                             <td className="text-end py-2 small fw-medium">{record.MatchedQty?.toLocaleString()}</td>
-                                                                            <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#059669' }}>₹{record.MatchedValue?.toLocaleString('en-IN')}</td>
+                                                                            <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#059669' }}>₹{formatIndianCurrency(record.MatchedValue)}</td>
                                                                         </tr>
                                                                         <tr style={{ backgroundColor: 'white' }}>
                                                                             <td className="ps-3 py-2">
@@ -417,7 +424,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                                                             </td>
                                                                             <td className="text-end py-2 small fw-medium">{record.RevisedCount?.toLocaleString()}</td>
                                                                             <td className="text-end py-2 small fw-medium">{record.RevisedQty?.toLocaleString()}</td>
-                                                                            <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#d97706' }}>₹{record.RevisedValue?.toLocaleString('en-IN')}</td>
+                                                                            <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#d97706' }}>₹{formatIndianCurrency(record.RevisedValue)}</td>
                                                                         </tr>
                                                                     </tbody>
                                                                 </Table>

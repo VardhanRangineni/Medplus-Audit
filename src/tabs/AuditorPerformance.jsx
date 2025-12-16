@@ -27,6 +27,14 @@ const AuditorPerformance = ({ filters = {} }) => {
       : <i className="fas fa-sort-down text-primary ms-1 small"></i>;
   };
 
+  const formatIndianCurrency = (value) => {
+    if (value === undefined || value === null) return '0';
+    const val = Number(value);
+    if (val >= 10000000) return (val / 10000000).toFixed(2) + ' Cr';
+    if (val >= 100000) return (val / 100000).toFixed(2) + ' L';
+    return val.toLocaleString('en-IN');
+  };
+
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
 
@@ -312,7 +320,7 @@ const AuditorPerformance = ({ filters = {} }) => {
                 {auditor.editRate.toFixed(1)}%
               </Badge>
             </td>
-            <td className="fw-semibold">₹{auditor.totalValue?.toLocaleString('en-IN')}</td>
+            <td className="fw-semibold">₹{formatIndianCurrency(auditor.totalValue)}</td>
             <td>
               <i className="fas fa-chevron-right text-primary"></i>
             </td>

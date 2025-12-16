@@ -7,6 +7,13 @@ import AuditSpecificDetailModal from './AuditSpecificDetailModal';
 import ModernDatePicker from './ModernDatePicker';
 
 const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
+    const formatIndianCurrency = (value) => {
+        if (value === undefined || value === null) return '0';
+        const val = Number(value);
+        if (val >= 10000000) return (val / 10000000).toFixed(2) + ' Cr';
+        if (val >= 100000) return (val / 100000).toFixed(2) + ' L';
+        return val.toLocaleString('en-IN');
+    };
 
     // State for Date Selection
     // Initialize defaults: 1 year ago to today
@@ -400,7 +407,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL SKUS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalSKUs.toLocaleString()}</h2>
+                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalSKUs.toLocaleString('en-IN')}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -408,7 +415,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL PIDS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalPIDs.toLocaleString()}</h2>
+                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalPIDs.toLocaleString('en-IN')}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -431,7 +438,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                     </div>
                                     <div className="d-flex justify-content-between text-muted small">
                                         <span>Value</span>
-                                        <span className="fw-bold text-dark">₹{metrics.deviations.appeared.value.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">₹{formatIndianCurrency(metrics.deviations.appeared.value)}</span>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -450,7 +457,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                     </div>
                                     <div className="d-flex justify-content-between text-muted small">
                                         <span>Value</span>
-                                        <span className="fw-bold text-dark">₹{metrics.deviations.matched.value.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">₹{formatIndianCurrency(metrics.deviations.matched.value)}</span>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -469,7 +476,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                     </div>
                                     <div className="d-flex justify-content-between text-muted small">
                                         <span>Value</span>
-                                        <span className="fw-bold text-dark">₹{metrics.deviations.revised.value.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">₹{formatIndianCurrency(metrics.deviations.revised.value)}</span>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -522,9 +529,9 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                             <td>{audit.StoreName}</td>
                                             <td>{formatDate(audit.AuditStartDate)}</td>
                                             <td>{audit.AuditJobType}</td>
-                                            <td className="text-end font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString()}</td>
-                                            <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString()}</td>
-                                            <td className="text-end pe-4 fw-bold">₹{(audit.AppearedValue || 0).toLocaleString('en-IN')}</td>
+                                            <td className="text-end font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString('en-IN')}</td>
+                                            <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString('en-IN')}</td>
+                                            <td className="text-end pe-4 fw-bold">₹{formatIndianCurrency(audit.AppearedValue)}</td>
                                         </tr>
                                     ))}
                                 </tbody>

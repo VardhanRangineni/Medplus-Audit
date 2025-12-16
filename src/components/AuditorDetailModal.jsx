@@ -7,6 +7,13 @@ import AuditSpecificDetailModal from './AuditSpecificDetailModal';
 import ModernDatePicker from './ModernDatePicker';
 
 const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
+    const formatIndianCurrency = (value) => {
+        if (value === undefined || value === null) return '0';
+        const val = Number(value);
+        if (val >= 10000000) return (val / 10000000).toFixed(2) + ' Cr';
+        if (val >= 100000) return (val / 100000).toFixed(2) + ' L';
+        return val.toLocaleString('en-IN');
+    };
     // State for Date Selection
     // State for Date Selection
     // Initialize defaults: 1 year ago to today
@@ -397,7 +404,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL PIDS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalPIDs.toLocaleString()}</h2>
+                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalPIDs.toLocaleString('en-IN')}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -405,7 +412,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL SKUS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalSKUs.toLocaleString()}</h2>
+                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalSKUs.toLocaleString('en-IN')}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -420,15 +427,15 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                     <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED DEVIATIONS</h6>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Count</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.appeared.count.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">{metrics.deviations.appeared.count.toLocaleString('en-IN')}</span>
                                     </div>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.appeared.qty.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">{metrics.deviations.appeared.qty.toLocaleString('en-IN')}</span>
                                     </div>
                                     <div className="d-flex justify-content-between text-muted small">
                                         <span>Value</span>
-                                        <span className="fw-bold text-dark">₹{metrics.deviations.appeared.value.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">₹{formatIndianCurrency(metrics.deviations.appeared.value)}</span>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -439,15 +446,15 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                     <h6 className="text-success fw-bold text-uppercase mb-3">MATCHED DEVIATIONS</h6>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Count</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.matched.count.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">{metrics.deviations.matched.count.toLocaleString('en-IN')}</span>
                                     </div>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.matched.qty.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">{metrics.deviations.matched.qty.toLocaleString('en-IN')}</span>
                                     </div>
                                     <div className="d-flex justify-content-between text-muted small">
                                         <span>Value</span>
-                                        <span className="fw-bold text-dark">₹{metrics.deviations.matched.value.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">₹{formatIndianCurrency(metrics.deviations.matched.value)}</span>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -458,15 +465,15 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                     <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED DEVIATIONS</h6>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Count</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.revised.count.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">{metrics.deviations.revised.count.toLocaleString('en-IN')}</span>
                                     </div>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.revised.qty.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">{metrics.deviations.revised.qty.toLocaleString('en-IN')}</span>
                                     </div>
                                     <div className="d-flex justify-content-between text-muted small">
                                         <span>Value</span>
-                                        <span className="fw-bold text-dark">₹{metrics.deviations.revised.value.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">₹{formatIndianCurrency(metrics.deviations.revised.value)}</span>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -515,9 +522,9 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                             <td>{audit.StoreName}</td>
                                             <td>{formatDate(audit.AuditStartDate)}</td>
                                             <td>{audit.AuditJobType}</td>
-                                            <td className="text-end font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString()}</td>
-                                            <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString()}</td>
-                                            <td className="text-end pe-4 fw-bold">₹{(audit.AppearedValue || 0).toLocaleString('en-IN')}</td>
+                                            <td className="text-end font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString('en-IN')}</td>
+                                            <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString('en-IN')}</td>
+                                            <td className="text-end pe-4 fw-bold">₹{formatIndianCurrency(audit.AppearedValue)}</td>
                                         </tr>
                                     ))}
                                 </tbody>

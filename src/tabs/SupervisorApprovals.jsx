@@ -70,16 +70,6 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
               Total Value {getSortIcon('totalValue')}
             </div>
           </th>
-          <th onClick={() => requestSort('auditCompletion')} style={{ cursor: 'pointer', minWidth: '200px' }}>
-            <div className="d-flex align-items-center gap-1">
-              Audit Completion {getSortIcon('auditCompletion')}
-            </div>
-          </th>
-          <th onClick={() => requestSort('pendingApprovals')} className="text-center" style={{ cursor: 'pointer' }}>
-            <div className="d-flex align-items-center gap-1 justify-content-center">
-              Pending Approvals {getSortIcon('pendingApprovals')}
-            </div>
-          </th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -101,23 +91,6 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
             <td className="fw-semibold">{sup.auditorsSupervised}</td>
             <td className="fw-semibold">{sup.totalPIDs?.toLocaleString()}</td>
             <td className="fw-semibold">₹{sup.totalValue?.toLocaleString('en-IN')}</td>
-            <td>
-              <ProgressBar
-                now={sup.auditCompletion}
-                variant={getCompletionColor(sup.auditCompletion)}
-                label={`${sup.auditCompletion}%`}
-                style={{ height: '24px', minWidth: '150px' }}
-              />
-            </td>
-            <td className="text-center">
-              {sup.pendingApprovals > 0 ? (
-                <Badge bg="warning" text="dark" pill className="px-3 py-2">
-                  {sup.pendingApprovals}
-                </Badge>
-              ) : (
-                <span className="text-muted">-</span>
-              )}
-            </td>
             <td>
               <i className="fas fa-chevron-right text-primary"></i>
             </td>
@@ -219,12 +192,14 @@ const SupervisorApprovals = ({ filters = {} }) => {
     const metrics = supervisors.reduce(
       (acc, cur) => ({
         totalStores: acc.totalStores + cur.storesManaged,
+        totalAudits: acc.totalAudits + cur.totalAudits,
+        totalValue: acc.totalValue + (cur.totalValue || 0),
         totalPending: acc.totalPending + cur.pendingApprovals,
         totalUnallocated: acc.totalUnallocated + cur.unallocatedPIDs,
         sumCompletion: acc.sumCompletion + cur.auditCompletion,
         count: acc.count + 1
       }),
-      { totalStores: 0, totalPending: 0, totalUnallocated: 0, sumCompletion: 0, count: 0 }
+      { totalStores: 0, totalAudits: 0, totalValue: 0, totalPending: 0, totalUnallocated: 0, sumCompletion: 0, count: 0 }
     );
 
     return {
@@ -275,15 +250,13 @@ const SupervisorApprovals = ({ filters = {} }) => {
                 "Auditors Supervised": s.auditorsSupervised,
                 "Total SKUs": s.totalPIDs,
                 "Total Value (₹)": s.totalValue,
-                "Audit Completion %": `${s.auditCompletion}%`,
-                "Pending Approvals": s.pendingApprovals,
                 "Unallocated PIDs": s.unallocatedPIDs,
               }));
               const wsDetails = utils.json_to_sheet(detailedData);
               wsDetails['!cols'] = [
                 { wch: 15 }, { wch: 25 }, { wch: 18 }, { wch: 15 },
                 { wch: 18 }, { wch: 20 }, { wch: 15 }, { wch: 18 },
-                { wch: 20 }, { wch: 18 }, { wch: 18 }
+                { wch: 18 }
               ];
               utils.book_append_sheet(wb, wsDetails, "Supervisor Details");
               writeFile(wb, `Supervisor_Performance_Summary_${new Date().toISOString().split('T')[0]}.xlsx`);
@@ -301,16 +274,13 @@ const SupervisorApprovals = ({ filters = {} }) => {
                 head: [['Metric', 'Value']],
                 body: [
                   ['Total Stores Managed', overallMetrics.totalStores],
-                  ['Avg Completion', `${overallMetrics.avgCompletion}%`],
-                  ['Pending Approvals', overallMetrics.totalPending],
-                  ['Unallocated PIDs', overallMetrics.totalUnallocated],
                 ],
                 theme: 'striped',
                 headStyles: { fillColor: [41, 128, 185] }
               });
               autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 10,
-                head: [['ID', 'Name', 'Stores', 'Audits', 'Days', 'Auditors', 'SKUs', 'Value', 'Comp %', 'Pending']],
+                head: [['ID', 'Name', 'Stores', 'Audits', 'Days', 'Auditors', 'SKUs', 'Value']],
                 body: supervisorData.map(s => [
                   s.supervisorId,
                   s.supervisorName,
@@ -319,9 +289,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
                   s.daysSupervised,
                   s.auditorsSupervised,
                   s.totalPIDs?.toLocaleString(),
-                  `₹${s.totalValue?.toLocaleString('en-IN')}`,
-                  `${s.auditCompletion}%`,
-                  s.pendingApprovals
+                  `₹${s.totalValue?.toLocaleString('en-IN')}`
                 ]),
                 theme: 'grid',
                 styles: { fontSize: 8 },
@@ -336,10 +304,10 @@ const SupervisorApprovals = ({ filters = {} }) => {
       </div>
 
       <Row className="g-3 mb-4">
+        <Col md={3}><KPICard title="Total Supervisors" value={supervisorData.length} /></Col>
         <Col md={3}><KPICard title="Total Stores Managed" value={overallMetrics.totalStores} /></Col>
-        <Col md={3}><KPICard title="Avg Completion" value={`${overallMetrics.avgCompletion}%`} /></Col>
-        <Col md={3}><KPICard title="Pending Approvals" value={overallMetrics.totalPending} /></Col>
-        <Col md={3}><KPICard title="Unallocated PIDs" value={overallMetrics.totalUnallocated} /></Col>
+        <Col md={3}><KPICard title="Total Audits" value={overallMetrics.totalAudits?.toLocaleString()} /></Col>
+        <Col md={3}><KPICard title="Total Value" value={`₹${overallMetrics.totalValue?.toLocaleString('en-IN')}`} /></Col>
       </Row>
 
       <Card className="border-0 shadow-sm">

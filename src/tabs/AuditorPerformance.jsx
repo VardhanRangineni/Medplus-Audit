@@ -64,8 +64,9 @@ const AuditorPerformance = ({ filters = {} }) => {
           allottedSKUs: 0,
           completedSKUs: 0,
           totalAvgTime: 0,
-          totalMatchRate: 0,
-          totalEditRate: 0,
+          totalAppearedQty: 0,
+          totalMatchedQty: 0,
+          totalRevisedQty: 0,
           totalValue: 0,
           count: 0
         };
@@ -76,8 +77,9 @@ const AuditorPerformance = ({ filters = {} }) => {
       auditor.allottedSKUs += (record.AuditorAllottedSKUs || 0);
       auditor.completedSKUs += (record.CompletedSKUs || 0);
       auditor.totalAvgTime += (record.AvgTimePerSKU || 0);
-      auditor.totalMatchRate += (record.MatchRatePercent || 0);
-      auditor.totalEditRate += (record.EditRatePercent || 0);
+      auditor.totalAppearedQty += (record.AppearedQty || 0);
+      auditor.totalMatchedQty += (record.MatchedQty || 0);
+      auditor.totalRevisedQty += (record.RevisedQty || 0);
       auditor.totalValue += (record.AppearedValue || 0);
       auditor.count += 1;
     });
@@ -89,6 +91,14 @@ const AuditorPerformance = ({ filters = {} }) => {
         ? (auditor.completedSKUs / auditor.allottedSKUs) * 100
         : 0;
 
+      // Calculate Match Rate and Edit Rate from qty totals
+      const matchRate = auditor.totalAppearedQty > 0
+        ? (auditor.totalMatchedQty / auditor.totalAppearedQty) * 100
+        : 0;
+      const editRate = auditor.totalAppearedQty > 0
+        ? (auditor.totalRevisedQty / auditor.totalAppearedQty) * 100
+        : 0;
+
       return {
         auditorId: auditor.auditorId,
         auditorName: auditor.auditorName,
@@ -96,8 +106,8 @@ const AuditorPerformance = ({ filters = {} }) => {
         completedSKUs: auditor.completedSKUs,
         completionRate: completionRate,
         avgTime: parseFloat((auditor.totalAvgTime / auditor.count).toFixed(1)),
-        matchRate: parseFloat((auditor.totalMatchRate / auditor.count).toFixed(1)),
-        editRate: parseFloat((auditor.totalEditRate / auditor.count).toFixed(1)),
+        matchRate: parseFloat(matchRate.toFixed(1)),
+        editRate: parseFloat(editRate.toFixed(1)),
         totalValue: auditor.totalValue
       };
     });
@@ -166,8 +176,6 @@ const AuditorPerformance = ({ filters = {} }) => {
       "Auditor ID": a.auditorId,
       "Auditor Name": a.auditorName,
       "Allotted SKUs": a.allottedSKUs,
-      "Completed SKUs": a.completedSKUs,
-      "Completion %": `${a.completionRate.toFixed(1)}%`,
       "Avg Time/SKU (min)": a.avgTime,
       "Match Rate %": a.matchRate,
       "Edit Rate %": a.editRate,
@@ -175,8 +183,8 @@ const AuditorPerformance = ({ filters = {} }) => {
     }));
     const wsDetails = utils.json_to_sheet(detailedData);
     wsDetails['!cols'] = [
-      { wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 15 },
-      { wch: 15 }, { wch: 18 }, { wch: 15 }, { wch: 12 }, { wch: 18 }
+      { wch: 15 }, { wch: 25 }, { wch: 15 },
+      { wch: 18 }, { wch: 15 }, { wch: 12 }, { wch: 18 }
     ];
     utils.book_append_sheet(wb, wsDetails, "Auditor Details");
 
@@ -211,13 +219,11 @@ const AuditorPerformance = ({ filters = {} }) => {
     // Auditor Details Table
     autoTable(doc, {
       startY: doc.lastAutoTable.finalY + 10,
-      head: [['ID', 'Name', 'Allotted', 'Completed', 'Comp %', 'Avg Time', 'Match %', 'Edit %', 'Value']],
+      head: [['ID', 'Name', 'Allotted', 'Avg Time', 'Match %', 'Edit %', 'Value']],
       body: auditorData.map(a => [
         a.auditorId,
         a.auditorName,
         a.allottedSKUs.toLocaleString(),
-        a.completedSKUs.toLocaleString(),
-        `${a.completionRate.toFixed(1)}%`,
         `${a.avgTime} min`,
         `${a.matchRate}%`,
         `${a.editRate}%`,
@@ -248,16 +254,6 @@ const AuditorPerformance = ({ filters = {} }) => {
           <th onClick={() => requestSort('allottedSKUs')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
               Allotted SKUs {getSortIcon('allottedSKUs')}
-            </div>
-          </th>
-          <th onClick={() => requestSort('completedSKUs')} style={{ cursor: 'pointer' }}>
-            <div className="d-flex align-items-center gap-1">
-              Completed SKUs {getSortIcon('completedSKUs')}
-            </div>
-          </th>
-          <th onClick={() => requestSort('completionRate')} style={{ cursor: 'pointer' }}>
-            <div className="d-flex align-items-center gap-1">
-              Completion % {getSortIcon('completionRate')}
             </div>
           </th>
           <th onClick={() => requestSort('avgTime')} style={{ cursor: 'pointer' }}>
@@ -300,19 +296,6 @@ const AuditorPerformance = ({ filters = {} }) => {
               {auditor.auditorName}
             </td>
             <td>{auditor.allottedSKUs.toLocaleString()}</td>
-            <td>
-              <strong className="text-primary">
-                {auditor.completedSKUs.toLocaleString()}
-              </strong>
-            </td>
-            <td style={{ minWidth: '180px' }}>
-              <ProgressBar
-                now={auditor.completionRate}
-                variant={getCompletionColor(auditor.completionRate)}
-                label={`${auditor.completionRate.toFixed(1)}%`}
-                style={{ height: '24px' }}
-              />
-            </td>
             <td>
               <Badge bg={auditor.avgTime < 4.5 ? 'success' : 'warning'}>
                 {auditor.avgTime} min
@@ -377,7 +360,16 @@ const AuditorPerformance = ({ filters = {} }) => {
 
       {/* Performance Summary Cards */}
       <Row className="g-3 mb-4">
-        <Col md={4}>
+        <Col md={3}>
+          <KPICard
+            title="Total Auditors"
+            value={auditorData.length}
+            subtitle="Active auditors"
+            icon="fas fa-users"
+            color="info"
+          />
+        </Col>
+        <Col md={3}>
           <KPICard
             title="Average Time per SKU"
             value={performanceMetrics.avgTimePerSKU}
@@ -386,7 +378,7 @@ const AuditorPerformance = ({ filters = {} }) => {
             color="primary"
           />
         </Col>
-        <Col md={4}>
+        <Col md={3}>
           <KPICard
             title="Match Rate"
             value={`${performanceMetrics.matchRate}%`}
@@ -395,7 +387,7 @@ const AuditorPerformance = ({ filters = {} }) => {
             color="success"
           />
         </Col>
-        <Col md={4}>
+        <Col md={3}>
           <KPICard
             title="Edit Rate"
             value={`${performanceMetrics.editRate}%`}
@@ -419,7 +411,7 @@ const AuditorPerformance = ({ filters = {} }) => {
             <Card.Body>
               <div className="performance-list">
                 {[...auditorData]
-                  .sort((a, b) => b.completionRate - a.completionRate)
+                  .sort((a, b) => b.matchRate - a.matchRate)
                   .slice(0, 3)
                   .map((auditor, idx) => (
                     <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
@@ -427,7 +419,7 @@ const AuditorPerformance = ({ filters = {} }) => {
                         <Badge bg="success" className="me-2">{idx + 1}</Badge>
                         <strong>{auditor.auditorName}</strong>
                       </div>
-                      <Badge bg="success" pill>{auditor.completionRate.toFixed(1)}%</Badge>
+                      <Badge bg="success" pill>{auditor.matchRate.toFixed(1)}%</Badge>
                     </div>
                   ))}
               </div>
@@ -446,7 +438,7 @@ const AuditorPerformance = ({ filters = {} }) => {
             <Card.Body>
               <div className="performance-list">
                 {[...auditorData]
-                  .sort((a, b) => a.completionRate - b.completionRate)
+                  .sort((a, b) => a.matchRate - b.matchRate)
                   .slice(0, 3)
                   .map((auditor, idx) => (
                     <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
@@ -454,7 +446,7 @@ const AuditorPerformance = ({ filters = {} }) => {
                         <Badge bg="warning" className="me-2">{idx + 1}</Badge>
                         <strong>{auditor.auditorName}</strong>
                       </div>
-                      <Badge bg="warning" pill>{auditor.completionRate.toFixed(1)}%</Badge>
+                      <Badge bg="warning" pill>{auditor.matchRate.toFixed(1)}%</Badge>
                     </div>
                   ))}
               </div>

@@ -111,8 +111,33 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         return filtered;
     }, [supervisorId, allData, startDate, endDate]);
 
+    // Aggregate records by AUDIT_ID - sum up PIDs, SKUs, Value
+    const aggregatedRecords = useMemo(() => {
+        const auditMap = {};
+        supervisorRecords.forEach(record => {
+            const auditId = record.AUDIT_ID;
+            if (!auditMap[auditId]) {
+                auditMap[auditId] = {
+                    AUDIT_ID: auditId,
+                    StoreName: record.StoreName,
+                    AuditStartDate: record.AuditStartDate,
+                    AuditEndDate: record.AuditEndDate,
+                    AuditJobType: record.AuditJobType,
+                    Status: record.Status,
+                    AuditorAllottedPIDs: 0,
+                    AuditorAllottedSKUs: 0,
+                    AppearedValue: 0
+                };
+            }
+            auditMap[auditId].AuditorAllottedPIDs += (record.AuditorAllottedPIDs || 0);
+            auditMap[auditId].AuditorAllottedSKUs += (record.AuditorAllottedSKUs || 0);
+            auditMap[auditId].AppearedValue += (record.AppearedValue || 0);
+        });
+        return Object.values(auditMap);
+    }, [supervisorRecords]);
+
     const sortedRecords = useMemo(() => {
-        const sorted = [...supervisorRecords];
+        const sorted = [...aggregatedRecords];
         if (sortConfig.key) {
             sorted.sort((a, b) => {
                 if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -125,14 +150,14 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             });
         }
         return sorted;
-    }, [supervisorRecords, sortConfig]);
+    }, [aggregatedRecords, sortConfig]);
 
     // Specific Supervisor Details (Name from first record)
     const supervisorName = supervisorRecords.length > 0 ? supervisorRecords[0].SupervisorName : 'Unknown';
 
     // Calculate Metrics
     const metrics = useMemo(() => {
-        const totalAudits = supervisorRecords.length;
+        const totalAudits = aggregatedRecords.length; // Count unique audits
         const totalSKUs = supervisorRecords.reduce((sum, r) => sum + (r.AuditorAllottedSKUs || 0), 0);
         const totalPIDs = supervisorRecords.reduce((sum, r) => sum + (r.AuditorAllottedPIDs || 0), 0);
 
@@ -172,7 +197,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         });
 
         return { totalAudits, totalSKUs, totalPIDs, statusBreakdown, deviations };
-    }, [supervisorRecords]);
+    }, [supervisorRecords, aggregatedRecords]);
 
     // Format Date
     const formatDate = (timestamp) => {
@@ -387,25 +412,6 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={3}>
-                            <Card className="h-100 border-0 shadow-sm">
-                                <Card.Body>
-                                    <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>STATUS BREAKDOWN</h6>
-                                    <div className="d-flex justify-content-between mb-1">
-                                        <span className="text-success fw-bold">Completed</span>
-                                        <span className="fw-bold">{metrics.statusBreakdown.Completed}</span>
-                                    </div>
-                                    <div className="d-flex justify-content-between mb-1">
-                                        <span className="text-warning fw-bold">In-Progress</span>
-                                        <span className="fw-bold">{metrics.statusBreakdown.InProgress}</span>
-                                    </div>
-                                    <div className="d-flex justify-content-between">
-                                        <span className="text-secondary fw-bold">Other</span>
-                                        <span className="fw-bold">{metrics.statusBreakdown.Pending + metrics.statusBreakdown.Created}</span>
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </Col>
                     </Row>
 
                     {/* Deviation Summary */}
@@ -468,25 +474,6 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={3}>
-                            <Card className="border-0 shadow-sm border-start border-4 border-danger">
-                                <Card.Body>
-                                    <h6 className="text-danger fw-bold text-uppercase mb-3">IN-PROGRESS DEVIATIONS</h6>
-                                    <div className="d-flex justify-content-between mb-1 text-muted small">
-                                        <span>Count</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.pending.count.toLocaleString()}</span>
-                                    </div>
-                                    <div className="d-flex justify-content-between mb-1 text-muted small">
-                                        <span>Qty</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.pending.qty.toLocaleString()}</span>
-                                    </div>
-                                    <div className="d-flex justify-content-between text-muted small">
-                                        <span>Value</span>
-                                        <span className="fw-bold text-dark">₹{metrics.deviations.pending.value.toLocaleString()}</span>
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </Col>
                     </Row>
 
                     {/* Audit History Table */}
@@ -512,14 +499,11 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                         <th className="border-0 py-3" onClick={() => requestSort('AuditJobType')} style={{ cursor: 'pointer' }}>
                                             Job Type {getSortIcon('AuditJobType')}
                                         </th>
-                                        <th className="border-0 py-3" onClick={() => requestSort('Status')} style={{ cursor: 'pointer' }}>
-                                            Status {getSortIcon('Status')}
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedPIDs')} style={{ cursor: 'pointer' }}>
+                                            PIDs {getSortIcon('AuditorAllottedPIDs')}
                                         </th>
                                         <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedSKUs')} style={{ cursor: 'pointer' }}>
                                             SKUs {getSortIcon('AuditorAllottedSKUs')}
-                                        </th>
-                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedPIDs')} style={{ cursor: 'pointer' }}>
-                                            PIDs {getSortIcon('AuditorAllottedPIDs')}
                                         </th>
                                         <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AppearedValue')} style={{ cursor: 'pointer' }}>
                                             Value {getSortIcon('AppearedValue')}
@@ -538,13 +522,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                             <td>{audit.StoreName}</td>
                                             <td>{formatDate(audit.AuditStartDate)}</td>
                                             <td>{audit.AuditJobType}</td>
-                                            <td>
-                                                <Badge bg={getStatusBadge(audit.Status)} className="fw-normal px-3 py-1 rounded-pill">
-                                                    {audit.Status}
-                                                </Badge>
-                                            </td>
-                                            <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString()}</td>
                                             <td className="text-end font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString()}</td>
+                                            <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString()}</td>
                                             <td className="text-end pe-4 fw-bold">₹{(audit.AppearedValue || 0).toLocaleString('en-IN')}</td>
                                         </tr>
                                     ))}

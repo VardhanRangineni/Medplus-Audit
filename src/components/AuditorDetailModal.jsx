@@ -396,14 +396,6 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                         <Col md={3}>
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
-                                    <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL SKUS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalSKUs.toLocaleString()}</h2>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        <Col md={3}>
-                            <Card className="h-100 border-0 shadow-sm">
-                                <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL PIDS</h6>
                                     <h2 className="fw-bold mb-0 text-dark">{metrics.totalPIDs.toLocaleString()}</h2>
                                 </Card.Body>
@@ -412,19 +404,8 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                         <Col md={3}>
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
-                                    <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>STATUS BREAKDOWN</h6>
-                                    <div className="d-flex justify-content-between mb-1">
-                                        <span className="text-success fw-bold">Completed</span>
-                                        <span className="fw-bold">{metrics.statusBreakdown.Completed}</span>
-                                    </div>
-                                    <div className="d-flex justify-content-between mb-1">
-                                        <span className="text-warning fw-bold">In-Progress</span>
-                                        <span className="fw-bold">{metrics.statusBreakdown.InProgress}</span>
-                                    </div>
-                                    <div className="d-flex justify-content-between">
-                                        <span className="text-secondary fw-bold">Other (Pending/Created)</span>
-                                        <span className="fw-bold">{metrics.statusBreakdown.Pending + metrics.statusBreakdown.Created}</span>
-                                    </div>
+                                    <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL SKUS</h6>
+                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalSKUs.toLocaleString()}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -490,25 +471,6 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={3}>
-                            <Card className="border-0 shadow-sm border-start border-4 border-danger">
-                                <Card.Body>
-                                    <h6 className="text-danger fw-bold text-uppercase mb-3">IN-PROGRESS DEVIATIONS</h6>
-                                    <div className="d-flex justify-content-between mb-1 text-muted small">
-                                        <span>Count</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.pending.count.toLocaleString()}</span>
-                                    </div>
-                                    <div className="d-flex justify-content-between mb-1 text-muted small">
-                                        <span>Qty</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.pending.qty.toLocaleString()}</span>
-                                    </div>
-                                    <div className="d-flex justify-content-between text-muted small">
-                                        <span>Value</span>
-                                        <span className="fw-bold text-dark">₹{metrics.deviations.pending.value.toLocaleString()}</span>
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </Col>
                     </Row>
 
                     {/* Audit History Table */}
@@ -530,14 +492,11 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                         <th className="border-0 py-3" onClick={() => requestSort('AuditJobType')} style={{ cursor: 'pointer' }}>
                                             Job Type {getSortIcon('AuditJobType')}
                                         </th>
-                                        <th className="border-0 py-3" onClick={() => requestSort('Status')} style={{ cursor: 'pointer' }}>
-                                            Status {getSortIcon('Status')}
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedPIDs')} style={{ cursor: 'pointer' }}>
+                                            PIDs {getSortIcon('AuditorAllottedPIDs')}
                                         </th>
                                         <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedSKUs')} style={{ cursor: 'pointer' }}>
                                             SKUs {getSortIcon('AuditorAllottedSKUs')}
-                                        </th>
-                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedPIDs')} style={{ cursor: 'pointer' }}>
-                                            PIDs {getSortIcon('AuditorAllottedPIDs')}
                                         </th>
                                         <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AppearedValue')} style={{ cursor: 'pointer' }}>
                                             Value {getSortIcon('AppearedValue')}
@@ -556,13 +515,8 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                             <td>{audit.StoreName}</td>
                                             <td>{formatDate(audit.AuditStartDate)}</td>
                                             <td>{audit.AuditJobType}</td>
-                                            <td>
-                                                <Badge bg={getStatusBadge(audit.Status)} className="fw-normal px-3 py-1 rounded-pill">
-                                                    {audit.Status}
-                                                </Badge>
-                                            </td>
-                                            <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString()}</td>
                                             <td className="text-end font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString()}</td>
+                                            <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString()}</td>
                                             <td className="text-end pe-4 fw-bold">₹{(audit.AppearedValue || 0).toLocaleString('en-IN')}</td>
                                         </tr>
                                     ))}

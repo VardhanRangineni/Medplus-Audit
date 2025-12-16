@@ -45,3 +45,21 @@
 .store-detail-modal .deviation-row:hover {
   background-color: rgba(13, 110, 253, 0.05) !important;
 }
+/* Expandable rows styling */
+.store-detail-modal .table tbody tr[style*="cursor: pointer"] {
+  transition: background-color 0.2s ease;
+}
+
+.store-detail-modal .table tbody tr[style*="cursor: pointer"]:hover {
+  background-color: #e7f3ff !important;
+}
+
+.store-detail-modal .table tbody tr .fa-chevron-right,
+.store-detail-modal .table tbody tr .fa-chevron-down {
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+}
+
+.store-detail-modal .table tbody tr .fa-barcode {
+  font-size: 0.9rem;
+}

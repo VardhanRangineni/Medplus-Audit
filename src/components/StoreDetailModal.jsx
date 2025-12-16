@@ -8,6 +8,8 @@ import './StoreDetailModal.css';
 
 const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
   const [selectedDeviationType, setSelectedDeviationType] = useState(null);
+  const [expandedAuditors, setExpandedAuditors] = useState({});
+  const [expandedPIDs, setExpandedPIDs] = useState({});
 
   console.log('StoreDetailModal render - show:', show, 'storeData:', storeData, 'auditStatus:', auditStatus);
 
@@ -646,6 +648,55 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     setSelectedDeviationType(selectedDeviationType === deviationType ? null : deviationType);
   };
 
+  // Toggle auditor expansion
+  const toggleAuditor = (auditorIndex) => {
+    setExpandedAuditors(prev => ({
+      ...prev,
+      [auditorIndex]: !prev[auditorIndex]
+    }));
+  };
+
+  // Toggle PID expansion
+  const togglePID = (auditorIndex, pidIndex) => {
+    const key = `${auditorIndex}-${pidIndex}`;
+    setExpandedPIDs(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  // Generate PID and SKU data for each auditor
+  const generateAuditorDetails = (auditor, auditorIndex) => {
+    const pidCount = Math.floor((auditor.assignedSKUs || 0) / 3); // Average 3 SKUs per PID
+    const pids = [];
+
+    for (let i = 0; i < pidCount; i++) {
+      const skuCountForPID = Math.floor(Math.random() * 4) + 2; // 2-5 SKUs per PID
+      const skus = [];
+      
+      for (let j = 0; j < skuCountForPID; j++) {
+        const isCompleted = Math.random() < (auditor.completionRate || 0) / 100;
+        const isMatched = isCompleted && Math.random() < (auditor.matchRate || 0) / 100;
+        
+        skus.push({
+          sku: `SKU${(auditorIndex + 1) * 10000 + i * 100 + j + 1}`,
+          productName: `Product ${i + 1}-${j + 1}`,
+          status: isCompleted ? 'Completed' : 'Pending',
+          matched: isCompleted ? (isMatched ? 'Yes' : 'No') : '-'
+        });
+      }
+
+      pids.push({
+        pid: `PID${(auditorIndex + 1) * 1000 + i + 1}`,
+        skuCount: skuCountForPID,
+        completedSKUs: skus.filter(s => s.status === 'Completed').length,
+        skus: skus
+      });
+    }
+
+    return pids;
+  };
+
   return (
     <Modal show={show} onHide={onHide} size="xl" className="store-detail-modal">
       <Modal.Header closeButton className="bg-primary text-white">
@@ -766,6 +817,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
               <Table hover className="mb-0" size="sm">
                 <thead>
                   <tr>
+                    <th style={{ width: '30px' }}></th>
                     <th>Auditor Name</th>
                     {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
                       <>
@@ -778,30 +830,105 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {auditors.map((auditor, idx) => (
-                    <tr key={idx}>
-                      <td className="fw-semibold">{auditor.name}</td>
-                      {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
-                        <>
-                          <td>{auditor.assignedSKUs?.toLocaleString()}</td>
-                          <td>{auditor.completedSKUs?.toLocaleString()}</td>
-                          <td style={{ minWidth: '150px' }}>
-                            <ProgressBar
-                              now={auditor.completionRate || 0}
-                              label={`${(auditor.completionRate || 0).toFixed(1)}%`}
-                              variant={auditor.completionRate >= 80 ? 'success' : 'warning'}
-                              style={{ height: '20px' }}
-                            />
+                  {auditors.map((auditor, auditorIdx) => {
+                    const isExpanded = expandedAuditors[auditorIdx];
+                    const pidData = isExpanded ? generateAuditorDetails(auditor, auditorIdx) : [];
+
+                    return (
+                      <>
+                        {/* Main Auditor Row */}
+                        <tr key={auditorIdx} style={{ cursor: 'pointer' }}>
+                          <td onClick={() => toggleAuditor(auditorIdx)}>
+                            <i className={`fas fa-chevron-${isExpanded ? 'down' : 'right'} text-primary`}></i>
                           </td>
-                          <td>
-                            <Badge bg={auditor.matchRate >= 95 ? 'success' : auditor.matchRate >= 90 ? 'warning' : 'danger'}>
-                              {auditor.matchRate?.toFixed(1)}%
-                            </Badge>
+                          <td className="fw-semibold" onClick={() => toggleAuditor(auditorIdx)}>
+                            {auditor.name}
                           </td>
-                        </>
-                      )}
-                    </tr>
-                  ))}
+                          {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
+                            <>
+                              <td>{auditor.assignedSKUs?.toLocaleString()}</td>
+                              <td>{auditor.completedSKUs?.toLocaleString()}</td>
+                              <td style={{ minWidth: '150px' }}>
+                                <ProgressBar
+                                  now={auditor.completionRate || 0}
+                                  label={`${(auditor.completionRate || 0).toFixed(1)}%`}
+                                  variant={auditor.completionRate >= 80 ? 'success' : 'warning'}
+                                  style={{ height: '20px' }}
+                                />
+                              </td>
+                              <td>
+                                <Badge bg={auditor.matchRate >= 95 ? 'success' : auditor.matchRate >= 90 ? 'warning' : 'danger'}>
+                                  {auditor.matchRate?.toFixed(1)}%
+                                </Badge>
+                              </td>
+                            </>
+                          )}
+                        </tr>
+
+                        {/* Expanded PID Rows */}
+                        {isExpanded && pidData.map((pid, pidIdx) => {
+                          const isPIDExpanded = expandedPIDs[`${auditorIdx}-${pidIdx}`];
+                          
+                          return (
+                            <>
+                              {/* PID Row */}
+                              <tr 
+                                key={`${auditorIdx}-pid-${pidIdx}`} 
+                                style={{ backgroundColor: '#f8f9fa', cursor: 'pointer' }}
+                              >
+                                <td></td>
+                                <td 
+                                  onClick={() => togglePID(auditorIdx, pidIdx)}
+                                  className="ps-4"
+                                >
+                                  <i className={`fas fa-chevron-${isPIDExpanded ? 'down' : 'right'} text-secondary me-2`}></i>
+                                  <strong>{pid.pid}</strong>
+                                </td>
+                                {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
+                                  <>
+                                    <td><Badge bg="info">{pid.skuCount} SKUs</Badge></td>
+                                    <td><Badge bg="success">{pid.completedSKUs} Completed</Badge></td>
+                                    <td colSpan="2"></td>
+                                  </>
+                                )}
+                              </tr>
+
+                              {/* Expanded SKU Rows */}
+                              {isPIDExpanded && pid.skus.map((sku, skuIdx) => (
+                                <tr 
+                                  key={`${auditorIdx}-pid-${pidIdx}-sku-${skuIdx}`}
+                                  style={{ backgroundColor: '#e9ecef' }}
+                                >
+                                  <td></td>
+                                  <td className="ps-5">
+                                    <i className="fas fa-barcode text-muted me-2"></i>
+                                    {sku.sku} - {sku.productName}
+                                  </td>
+                                  {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
+                                    <>
+                                      <td colSpan="2">
+                                        <Badge bg={sku.status === 'Completed' ? 'success' : 'warning'}>
+                                          {sku.status}
+                                        </Badge>
+                                      </td>
+                                      <td>
+                                        {sku.matched !== '-' && (
+                                          <Badge bg={sku.matched === 'Yes' ? 'success' : 'danger'}>
+                                            Match: {sku.matched}
+                                          </Badge>
+                                        )}
+                                      </td>
+                                      <td></td>
+                                    </>
+                                  )}
+                                </tr>
+                              ))}
+                            </>
+                          );
+                        })}
+                      </>
+                    );
+                  })}
                 </tbody>
               </Table>
             </Card.Body>

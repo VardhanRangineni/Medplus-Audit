@@ -282,15 +282,23 @@ const SupervisorApprovals = ({ filters = {} }) => {
                 startY: 36,
                 head: [['Metric', 'Value']],
                 body: [
-                  ['Total Stores Managed', overallMetrics.totalStores],
+                  ['Total Supervisors', supervisorData.length],
+                  ['Total Audits', overallMetrics.totalAudits.toLocaleString()],
+                  ['Total Value', `₹${formatIndianCurrency(overallMetrics.totalValue)}`],
                 ],
                 theme: 'striped',
                 headStyles: { fillColor: [41, 128, 185] }
               });
+
+              // Use filtered data for the table if search is active
+              const dataToExport = searchQuery
+                ? supervisorData.filter(s => (s.supervisorName || '').toLowerCase().includes(searchQuery.toLowerCase()))
+                : supervisorData;
+
               autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 10,
                 head: [['ID', 'Name', 'Stores', 'Audits', 'Days', 'Auditors', 'SKUs', 'Value']],
-                body: supervisorData.map(s => [
+                body: dataToExport.map(s => [
                   s.supervisorId,
                   s.supervisorName,
                   s.storesManaged,

@@ -229,15 +229,17 @@ const AuditorPerformance = ({ filters = {} }) => {
     autoTable(doc, {
       startY: doc.lastAutoTable.finalY + 10,
       head: [['ID', 'Name', 'Allotted', 'Avg Time', 'Match %', 'Edit %', 'Value']],
-      body: auditorData.map(a => [
-        a.auditorId,
-        a.auditorName,
-        a.allottedSKUs.toLocaleString(),
-        `${a.avgTime} min`,
-        `${a.matchRate}%`,
-        `${a.editRate}%`,
-        `₹${a.totalValue?.toLocaleString('en-IN')}`
-      ]),
+      body: (searchQuery
+        ? auditorData.filter(a => a.auditorName.toLowerCase().includes(searchQuery.toLowerCase()))
+        : auditorData).map(a => [
+          a.auditorId,
+          a.auditorName,
+          a.allottedSKUs.toLocaleString(),
+          `${a.avgTime} min`,
+          `${a.matchRate}%`,
+          `${a.editRate}%`,
+          `₹${a.totalValue?.toLocaleString('en-IN')}`
+        ]),
       theme: 'grid',
       styles: { fontSize: 8 },
       headStyles: { fillColor: [52, 73, 94], textColor: 255 }

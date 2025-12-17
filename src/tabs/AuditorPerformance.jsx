@@ -117,7 +117,8 @@ const AuditorPerformance = ({ filters = {} }) => {
         avgTime: parseFloat((auditor.totalAvgTime / auditor.count).toFixed(1)),
         matchRate: parseFloat(matchRate.toFixed(1)),
         editRate: parseFloat(editRate.toFixed(1)),
-        totalValue: auditor.totalValue
+        totalValue: auditor.totalValue,
+        totalAudits: auditor.count
       };
     });
 
@@ -184,6 +185,7 @@ const AuditorPerformance = ({ filters = {} }) => {
     const detailedData = auditorData.map(a => ({
       "Auditor ID": a.auditorId,
       "Auditor Name": a.auditorName,
+      "Total Audits": a.totalAudits,
       "Allotted SKUs": a.allottedSKUs,
       "Avg Time/SKU (min)": a.avgTime,
       "Match Rate %": a.matchRate,
@@ -193,7 +195,7 @@ const AuditorPerformance = ({ filters = {} }) => {
     const wsDetails = utils.json_to_sheet(detailedData);
     wsDetails['!cols'] = [
       { wch: 15 }, { wch: 25 }, { wch: 15 },
-      { wch: 18 }, { wch: 15 }, { wch: 12 }, { wch: 18 }
+      { wch: 18 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 18 }
     ];
     utils.book_append_sheet(wb, wsDetails, "Auditor Details");
 
@@ -228,12 +230,13 @@ const AuditorPerformance = ({ filters = {} }) => {
     // Auditor Details Table
     autoTable(doc, {
       startY: doc.lastAutoTable.finalY + 10,
-      head: [['ID', 'Name', 'Allotted', 'Avg Time', 'Match %', 'Edit %', 'Value']],
+      head: [['ID', 'Name', 'Audits', 'Allotted', 'Avg Time', 'Match %', 'Edit %', 'Value']],
       body: (searchQuery
         ? auditorData.filter(a => a.auditorName.toLowerCase().includes(searchQuery.toLowerCase()))
         : auditorData).map(a => [
           a.auditorId,
           a.auditorName,
+          a.totalAudits,
           a.allottedSKUs.toLocaleString(),
           `${a.avgTime} min`,
           `${a.matchRate}%`,
@@ -262,6 +265,11 @@ const AuditorPerformance = ({ filters = {} }) => {
               Auditor Name {getSortIcon('auditorName')}
             </div>
           </th>
+          <th onClick={() => requestSort('totalAudits')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Total Audits {getSortIcon('totalAudits')}
+            </div>
+          </th>
           <th onClick={() => requestSort('allottedSKUs')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
               Allotted SKUs {getSortIcon('allottedSKUs')}
@@ -282,6 +290,7 @@ const AuditorPerformance = ({ filters = {} }) => {
               Edit Rate % {getSortIcon('editRate')}
             </div>
           </th>
+
           <th onClick={() => requestSort('totalValue')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
               Total Value {getSortIcon('totalValue')}
@@ -306,6 +315,7 @@ const AuditorPerformance = ({ filters = {} }) => {
             <td className="fw-semibold">
               {auditor.auditorName}
             </td>
+            <td className="text-center">{auditor.totalAudits}</td>
             <td>{auditor.allottedSKUs.toLocaleString()}</td>
             <td>
               <Badge bg={auditor.avgTime < 4.5 ? 'success' : 'warning'}>
@@ -322,6 +332,7 @@ const AuditorPerformance = ({ filters = {} }) => {
                 {auditor.editRate.toFixed(1)}%
               </Badge>
             </td>
+
             <td className="fw-semibold">₹{formatIndianCurrency(auditor.totalValue)}</td>
             <td>
               <i className="fas fa-chevron-right text-primary"></i>

@@ -68,9 +68,9 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
               Auditors Supervised {getSortIcon('auditorsSupervised')}
             </div>
           </th>
-          <th onClick={() => requestSort('totalPIDs')} style={{ cursor: 'pointer' }}>
+          <th onClick={() => requestSort('totalSKUs')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
-              Total SKUs {getSortIcon('totalPIDs')}
+              Total SKUs {getSortIcon('totalSKUs')}
             </div>
           </th>
           <th onClick={() => requestSort('totalValue')} style={{ cursor: 'pointer' }}>
@@ -97,7 +97,7 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
             <td className="fw-semibold">{sup.totalAudits}</td>
             <td className="fw-semibold">{sup.daysSupervised}</td>
             <td className="fw-semibold">{sup.auditorsSupervised}</td>
-            <td className="fw-semibold">{sup.totalPIDs?.toLocaleString()}</td>
+            <td className="fw-semibold">{formatIndianCurrency(sup.totalSKUs)}</td>
             <td className="fw-semibold">₹{formatIndianCurrency(sup.totalValue)}</td>
             <td>
               <i className="fas fa-chevron-right text-primary"></i>
@@ -123,15 +123,15 @@ const SupervisorApprovals = ({ filters = {} }) => {
   const { supervisorData, overallMetrics } = useMemo(() => {
     const supervisorMap = {};
     const supervisorAuditMap = {};
-    const auditTotalPIDsMap = {};
-    const auditMetaMap = {};
+    const auditStoreTotalPIDsMap = {};
+    const auditStoreTotalSKUsMap = {};
 
     auditData.forEach(record => {
-      if (!auditTotalPIDsMap[record.AUDIT_ID]) {
-        auditTotalPIDsMap[record.AUDIT_ID] = record.TotalPIDs || 0;
+      if (!auditStoreTotalPIDsMap[record.AUDIT_ID]) {
+        auditStoreTotalPIDsMap[record.AUDIT_ID] = record.StoreTotalPIDs || 0;
       }
-      if (!auditMetaMap[record.AUDIT_ID]) {
-        auditMetaMap[record.AUDIT_ID] = { start: record.AuditStartDate, end: record.AuditEndDate };
+      if (!auditStoreTotalSKUsMap[record.AUDIT_ID]) {
+        auditStoreTotalSKUsMap[record.AUDIT_ID] = record.StoreTotalSKUs || 0;
       }
 
       const sId = record.SupervisorID;
@@ -146,7 +146,8 @@ const SupervisorApprovals = ({ filters = {} }) => {
           allocatedPIDs: 0,
           completion: [],
           auditors: new Set(),
-          totalValue: 0
+          totalValue: 0,
+          supervisedDates: new Set()
         };
         supervisorAuditMap[sId] = new Set();
       }
@@ -159,19 +160,19 @@ const SupervisorApprovals = ({ filters = {} }) => {
       if (record.AuditorID) sup.auditors.add(record.AuditorID);
       sup.totalValue += record.AppearedValue || 0;
       supervisorAuditMap[sId].add(record.AUDIT_ID);
+
+      if (record.DayWiseSummary) {
+        Object.keys(record.DayWiseSummary).forEach(date => sup.supervisedDates.add(date));
+      }
     });
 
     const supervisors = Object.values(supervisorMap).map(sup => {
       let totalPIDs = 0;
-      let totalDays = 0;
+      let totalSKUs = 0;
+
       supervisorAuditMap[sup.supervisorId].forEach(aid => {
-        totalPIDs += auditTotalPIDsMap[aid] || 0;
-        const meta = auditMetaMap[aid];
-        if (meta && meta.start && meta.end) {
-          const diff = meta.end - meta.start;
-          // Count at least 1 day if start == end
-          totalDays += Math.max(1, Math.round(diff / (1000 * 60 * 60 * 24)));
-        }
+        totalPIDs += auditStoreTotalPIDsMap[aid] || 0;
+        totalSKUs += auditStoreTotalSKUsMap[aid] || 0;
       });
 
       const avgCompletion =
@@ -182,11 +183,12 @@ const SupervisorApprovals = ({ filters = {} }) => {
         supervisorName: sup.supervisorName,
         storesManaged: sup.stores.size,
         totalAudits: supervisorAuditMap[sup.supervisorId].size,
-        daysSupervised: totalDays,
+        daysSupervised: sup.supervisedDates.size,
         auditorsSupervised: sup.auditors.size,
         auditCompletion: +avgCompletion.toFixed(1),
         pendingApprovals: sup.pendingApprovals,
         totalPIDs,
+        totalSKUs,
         totalValue: sup.totalValue,
         unallocatedPIDs: Math.max(0, totalPIDs - sup.allocatedPIDs)
       };
@@ -257,7 +259,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
                 "Total Audits": s.totalAudits,
                 "Days Supervised": s.daysSupervised,
                 "Auditors Supervised": s.auditorsSupervised,
-                "Total SKUs": s.totalPIDs,
+                "Total SKUs": s.totalSKUs,
                 "Total Value (₹)": s.totalValue,
                 "Unallocated PIDs": s.unallocatedPIDs,
               }));
@@ -305,7 +307,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
                   s.totalAudits,
                   s.daysSupervised,
                   s.auditorsSupervised,
-                  s.totalPIDs?.toLocaleString(),
+                  s.totalSKUs?.toLocaleString(),
                   `₹${s.totalValue?.toLocaleString('en-IN')}`
                 ]),
                 theme: 'grid',

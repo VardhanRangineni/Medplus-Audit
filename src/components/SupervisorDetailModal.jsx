@@ -131,6 +131,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     AuditEndDate: record.AuditEndDate,
                     AuditJobType: record.AuditJobType,
                     Status: record.Status,
+                    StoreAuditValue: record.StoreAuditValue || 0,
                     AuditorAllottedPIDs: 0,
                     AuditorAllottedSKUs: 0,
                     AppearedValue: 0,
@@ -183,19 +184,16 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             acc.appeared.value += (r.AppearedValue || 0);
 
             acc.matched.count += (r.MatchedCount || 0);
-            const avgQty = r.AppearedCount ? r.AppearedQty / r.AppearedCount : 0;
-            const avgVal = r.AppearedCount ? r.AppearedValue / r.AppearedCount : 0;
-
-            acc.matched.qty += Math.round((r.MatchedCount || 0) * avgQty);
-            acc.matched.value += Math.round((r.MatchedCount || 0) * avgVal);
+            acc.matched.qty += (r.MatchedQty || 0);
+            acc.matched.value += (r.MatchedValue || 0);
 
             acc.revised.count += (r.RevisedCount || 0);
-            acc.revised.qty += Math.round((r.RevisedCount || 0) * avgQty);
-            acc.revised.value += Math.round((r.RevisedCount || 0) * avgVal);
+            acc.revised.qty += (r.RevisedQty || 0);
+            acc.revised.value += (r.RevisedValue || 0);
 
             acc.pending.count += (r.PendingCount || 0);
-            acc.pending.qty += Math.round((r.PendingCount || 0) * avgQty);
-            acc.pending.value += Math.round((r.PendingCount || 0) * avgVal);
+            acc.pending.qty += (r.PendingQty || 0);
+            acc.pending.value += (r.PendingValue || 0);
 
             return acc;
         }, {
@@ -205,7 +203,16 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             pending: { count: 0, qty: 0, value: 0 }
         });
 
-        return { totalAudits, totalSKUs, totalPIDs, statusBreakdown, deviations };
+        // Calculate Days Supervised
+        const supervisedDates = new Set();
+        supervisorRecords.forEach(r => {
+            if (r.DayWiseSummary) {
+                Object.keys(r.DayWiseSummary).forEach(date => supervisedDates.add(date));
+            }
+        });
+        const daysSupervised = supervisedDates.size;
+
+        return { totalAudits, totalSKUs, totalPIDs, daysSupervised, statusBreakdown, deviations };
     }, [supervisorRecords, aggregatedRecords]);
 
     // Format Date
@@ -235,6 +242,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             [],
             ["Metrics Summary"],
             ["Total Audits", metrics.totalAudits],
+            ["Days Supervised", metrics.daysSupervised],
             ["Total PIDs", metrics.totalPIDs],
             ["Total SKUs", metrics.totalSKUs],
             [],
@@ -243,14 +251,14 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             ["In-Progress", metrics.statusBreakdown.InProgress],
             ["Pending/Created", metrics.statusBreakdown.Pending + metrics.statusBreakdown.Created],
             [],
-            ["Deviation Summary", "Count", "Qty", "Value"],
-            ["Appeared", metrics.deviations.appeared.count, metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
-            ["Matched", metrics.deviations.matched.count, metrics.deviations.matched.qty, metrics.deviations.matched.value],
-            ["Revised", metrics.deviations.revised.count, metrics.deviations.revised.qty, metrics.deviations.revised.value],
-            ["In-Progress/Pending", metrics.deviations.pending.count, metrics.deviations.pending.qty, metrics.deviations.pending.value],
+            ["Deviation Summary", "Qty", "Value"],
+            ["Appeared", metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
+            ["Matched", metrics.deviations.matched.qty, metrics.deviations.matched.value],
+            ["Revised", metrics.deviations.revised.qty, metrics.deviations.revised.value],
+            ["In-Progress/Pending", metrics.deviations.pending.qty, metrics.deviations.pending.value],
         ];
         const wsSummary = utils.aoa_to_sheet(summaryData);
-        wsSummary['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 20 }];
+        wsSummary['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 20 }];
         utils.book_append_sheet(wb, wsSummary, "Supervisor Summary");
 
         // 2. Audit History Sheet
@@ -288,6 +296,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             head: [['Metric', 'Value']],
             body: [
                 ['Total Audits', metrics.totalAudits],
+                ['Days Supervised', metrics.daysSupervised],
                 ['Total PIDs', metrics.totalPIDs.toLocaleString()],
                 ['Total SKUs', metrics.totalSKUs.toLocaleString()],
                 ['Completed', metrics.statusBreakdown.Completed],
@@ -300,12 +309,12 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         // Deviation Summary Table
         autoTable(doc, {
             startY: doc.lastAutoTable.finalY + 10,
-            head: [['Deviation Category', 'Count', 'Qty', 'Value (INR)']],
+            head: [['Deviation Category', 'Qty', 'Value (INR)']],
             body: [
-                ['Appeared', metrics.deviations.appeared.count, metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
-                ['Matched', metrics.deviations.matched.count, metrics.deviations.matched.qty, metrics.deviations.matched.value],
-                ['Revised', metrics.deviations.revised.count, metrics.deviations.revised.qty, metrics.deviations.revised.value],
-                ['In-Progress', metrics.deviations.pending.count, metrics.deviations.pending.qty, metrics.deviations.pending.value],
+                ['Appeared', metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
+                ['Matched', metrics.deviations.matched.qty, metrics.deviations.matched.value],
+                ['Revised', metrics.deviations.revised.qty, metrics.deviations.revised.value],
+                ['In-Progress', metrics.deviations.pending.qty, metrics.deviations.pending.value],
             ],
             theme: 'striped',
             headStyles: { fillColor: [41, 128, 185] }
@@ -408,8 +417,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                         <Col md={3}>
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
-                                    <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL SKUS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalSKUs.toLocaleString('en-IN')}</h2>
+                                    <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>DAYS SUPERVISED</h6>
+                                    <h2 className="fw-bold mb-0 text-dark">{metrics.daysSupervised}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -417,7 +426,15 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL PIDS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalPIDs.toLocaleString('en-IN')}</h2>
+                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianCurrency(metrics.totalPIDs)}</h2>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col md={3}>
+                            <Card className="h-100 border-0 shadow-sm">
+                                <Card.Body>
+                                    <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL SKUS</h6>
+                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianCurrency(metrics.totalSKUs)}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -430,10 +447,6 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                             <Card className="border-0 shadow-sm border-start border-4 border-primary">
                                 <Card.Body>
                                     <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED DEVIATIONS</h6>
-                                    <div className="d-flex justify-content-between mb-1 text-muted small">
-                                        <span>Count</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.appeared.count.toLocaleString()}</span>
-                                    </div>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
                                         <span className="fw-bold text-dark">{metrics.deviations.appeared.qty.toLocaleString()}</span>
@@ -450,10 +463,6 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                 <Card.Body>
                                     <h6 className="text-success fw-bold text-uppercase mb-3">MATCHED DEVIATIONS</h6>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
-                                        <span>Count</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.matched.count.toLocaleString()}</span>
-                                    </div>
-                                    <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
                                         <span className="fw-bold text-dark">{metrics.deviations.matched.qty.toLocaleString()}</span>
                                     </div>
@@ -468,10 +477,6 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                             <Card className="border-0 shadow-sm border-start border-4 border-warning">
                                 <Card.Body>
                                     <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED DEVIATIONS</h6>
-                                    <div className="d-flex justify-content-between mb-1 text-muted small">
-                                        <span>Count</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.revised.count.toLocaleString()}</span>
-                                    </div>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
                                         <span className="fw-bold text-dark">{metrics.deviations.revised.qty.toLocaleString()}</span>

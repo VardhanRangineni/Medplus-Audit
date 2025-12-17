@@ -80,17 +80,18 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
         const summaryData = [
             ["Audit ID", audit.AUDIT_ID],
             ["Store Name", audit.StoreName],
+            ["Total Value (₹)", audit.StoreAuditValue],
             ["Start Date", formatDate(audit.AuditStartDate)],
             ["End Date", audit.Status === 'Completed' ? formatDate(audit.AuditEndDate) : '-'],
             ["Status", audit.Status],
             [],
-            ["Re-Audit Category", "Count", "Qty", "Value"],
-            ["Appeared", appeared.count, appeared.qty, appeared.value],
-            ["Matched", matched.count, matched.qty, matched.value],
-            ["Deviations", revised.count, revised.qty, revised.value],
+            ["Re-Audit Category", "Qty", "Value"],
+            ["Appeared", appeared.qty, appeared.value],
+            ["Matched", matched.qty, matched.value],
+            ["Deviations", revised.qty, revised.value],
         ];
         const wsSummary = utils.aoa_to_sheet(summaryData);
-        wsSummary['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 20 }];
+        wsSummary['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 20 }];
         utils.book_append_sheet(wb, wsSummary, "Audit Summary");
 
         // 2. Participating Auditors Sheet
@@ -100,7 +101,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
             "PIDs": r.AuditorAllottedPIDs,
             "SKUs": r.AuditorAllottedSKUs,
             "Qty": r.AppearedQty,
-            "Value (₹)": r.AppearedValue
+            "Audited Value (₹)": r.AuditorAuditedValue
         }));
         const wsAuditors = utils.json_to_sheet(auditorsData);
         wsAuditors['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 15 }];
@@ -118,23 +119,24 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
 
         doc.setFontSize(10);
         doc.text(`Store: ${audit.StoreName}`, 14, 28);
+        doc.text(`Total Value: ₹${formatIndianCurrency(audit.StoreAuditValue)}`, 14, 34);
         if (audit.Status === 'Completed') {
-            doc.text(`Start Date: ${formatDate(audit.AuditStartDate)}`, 14, 34);
-            doc.text(`End Date: ${formatDate(audit.AuditEndDate)}`, 14, 40);
-            doc.text(`Status: ${audit.Status}`, 14, 46);
+            doc.text(`Start Date: ${formatDate(audit.AuditStartDate)}`, 14, 40);
+            doc.text(`End Date: ${formatDate(audit.AuditEndDate)}`, 14, 46);
+            doc.text(`Status: ${audit.Status}`, 14, 52);
         } else {
-            doc.text(`Date: ${formatDate(audit.AuditStartDate)}`, 14, 34);
-            doc.text(`Status: ${audit.Status}`, 14, 40);
+            doc.text(`Date: ${formatDate(audit.AuditStartDate)}`, 14, 40);
+            doc.text(`Status: ${audit.Status}`, 14, 46);
         }
 
         // Re-Audit Summary Table
         autoTable(doc, {
-            startY: audit.Status === 'Completed' ? 52 : 46,
-            head: [['Re-Audit Category', 'Count', 'Qty', 'Value (INR)']],
+            startY: audit.Status === 'Completed' ? 58 : 52,
+            head: [['Re-Audit Category', 'Qty', 'Value (INR)']],
             body: [
-                ['Appeared', appeared.count, appeared.qty, appeared.value],
-                ['Matched', matched.count, matched.qty, matched.value],
-                ['Deviations', revised.count, revised.qty, revised.value],
+                ['Appeared', appeared.qty, appeared.value],
+                ['Matched', matched.qty, matched.value],
+                ['Deviations', revised.qty, revised.value],
             ],
             theme: 'grid',
             headStyles: { fillColor: [41, 128, 185] }
@@ -144,14 +146,14 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
         if (participatingAuditors.length > 0) {
             autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 15,
-                head: [['ID', 'Auditor Name', 'PIDs', 'SKUs', 'Qty', 'Value']],
+                head: [['ID', 'Auditor Name', 'PIDs', 'SKUs', 'Qty', 'Audited Value']],
                 body: participatingAuditors.map(r => [
                     r.AuditorID,
                     r.AuditorName,
                     r.AuditorAllottedPIDs,
                     r.AuditorAllottedSKUs,
                     r.AppearedQty,
-                    `₹${formatIndianCurrency(r.AppearedValue)}`
+                    `₹${formatIndianCurrency(r.AuditorAuditedValue)}`
                 ]),
                 theme: 'striped',
                 headStyles: { fillColor: [52, 73, 94] }
@@ -250,7 +252,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                             <div className="text-end">
                                 <div className="text-muted small mb-1">Total Value</div>
                                 <h3 className="fw-bold mb-0" style={{ color: '#059669' }}>
-                                    ₹{formatIndianCurrency(appeared.value)}
+                                    ₹{formatIndianCurrency(audit.StoreAuditValue)}
                                 </h3>
                             </div>
                         </div>
@@ -283,7 +285,6 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                             <thead style={{ backgroundColor: '#f1f5f9' }}>
                                 <tr>
                                     <th className="py-3 ps-4 border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>Category</th>
-                                    <th className="py-3 text-end border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>Count</th>
                                     <th className="py-3 text-end border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>Qty</th>
                                     <th className="py-3 text-end pe-4 border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>Value</th>
                                 </tr>
@@ -294,7 +295,6 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                         <Badge pill bg="primary" className="me-2" style={{ width: '8px', height: '8px', padding: 0 }}></Badge>
                                         <span className="fw-medium">Appeared</span>
                                     </td>
-                                    <td className="text-end py-3 fw-semibold">{appeared.count?.toLocaleString()}</td>
                                     <td className="text-end py-3 fw-semibold">{appeared.qty?.toLocaleString()}</td>
                                     <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#0f172a' }}>₹{formatIndianCurrency(appeared.value)}</td>
                                 </tr>
@@ -303,7 +303,6 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                         <Badge pill bg="success" className="me-2" style={{ width: '8px', height: '8px', padding: 0 }}></Badge>
                                         <span className="fw-medium">Matched</span>
                                     </td>
-                                    <td className="text-end py-3 fw-semibold">{matched.count?.toLocaleString()}</td>
                                     <td className="text-end py-3 fw-semibold">{matched.qty?.toLocaleString()}</td>
                                     <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#059669' }}>₹{formatIndianCurrency(matched.value)}</td>
                                 </tr>
@@ -312,7 +311,6 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                         <Badge pill bg="warning" className="me-2" style={{ width: '8px', height: '8px', padding: 0 }}></Badge>
                                         <span className="fw-medium">Deviations</span>
                                     </td>
-                                    <td className="text-end py-3 fw-semibold">{revised.count?.toLocaleString()}</td>
                                     <td className="text-end py-3 fw-semibold">{revised.qty?.toLocaleString()}</td>
                                     <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#d97706' }}>₹{formatIndianCurrency(revised.value)}</td>
                                 </tr>
@@ -354,7 +352,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                             <th className="py-3 text-end border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>PIDs</th>
                                             <th className="py-3 text-end border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>SKUs</th>
                                             <th className="py-3 text-end border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>Qty</th>
-                                            <th className="py-3 text-end pe-4 border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>Value</th>
+                                            <th className="py-3 text-end pe-4 border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>Audited Value</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -379,7 +377,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                                     <td className="text-end py-3 font-monospace">{record.AuditorAllottedPIDs?.toLocaleString()}</td>
                                                     <td className="text-end py-3 font-monospace fw-medium">{record.AuditorAllottedSKUs?.toLocaleString()}</td>
                                                     <td className="text-end py-3 font-monospace">{record.AppearedQty?.toLocaleString()}</td>
-                                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#059669' }}>₹{formatIndianCurrency(record.AppearedValue)}</td>
+                                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#059669' }}>₹{formatIndianCurrency(record.AuditorAuditedValue)}</td>
                                                 </tr>
                                                 {expandedAuditor === idx && (
                                                     <tr>
@@ -389,11 +387,10 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                                                     <div style={{ width: '3px', height: '16px', borderRadius: '2px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}></div>
                                                                     <span className="fw-bold text-uppercase small" style={{ color: '#475569', letterSpacing: '0.05em' }}>Re-Audit Summary</span>
                                                                 </div>
-                                                                <Table size="sm" className="mb-0" style={{ maxWidth: '500px' }}>
+                                                                <Table size="sm" className="mb-0" style={{ maxWidth: '400px' }}>
                                                                     <thead style={{ backgroundColor: '#e2e8f0' }}>
                                                                         <tr>
                                                                             <th className="py-2 ps-3 border-0 small fw-bold" style={{ color: '#64748b' }}>Category</th>
-                                                                            <th className="py-2 text-end border-0 small fw-bold" style={{ color: '#64748b' }}>Count</th>
                                                                             <th className="py-2 text-end border-0 small fw-bold" style={{ color: '#64748b' }}>Qty</th>
                                                                             <th className="py-2 text-end pe-3 border-0 small fw-bold" style={{ color: '#64748b' }}>Value</th>
                                                                         </tr>
@@ -404,7 +401,6 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                                                                 <Badge pill bg="primary" className="me-2" style={{ width: '6px', height: '6px', padding: 0 }}></Badge>
                                                                                 <span className="small">Appeared</span>
                                                                             </td>
-                                                                            <td className="text-end py-2 small fw-medium">{record.AppearedCount?.toLocaleString()}</td>
                                                                             <td className="text-end py-2 small fw-medium">{record.AppearedQty?.toLocaleString()}</td>
                                                                             <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#0f172a' }}>₹{formatIndianCurrency(record.AppearedValue)}</td>
                                                                         </tr>
@@ -413,7 +409,6 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                                                                 <Badge pill bg="success" className="me-2" style={{ width: '6px', height: '6px', padding: 0 }}></Badge>
                                                                                 <span className="small">Matched</span>
                                                                             </td>
-                                                                            <td className="text-end py-2 small fw-medium">{record.MatchedCount?.toLocaleString()}</td>
                                                                             <td className="text-end py-2 small fw-medium">{record.MatchedQty?.toLocaleString()}</td>
                                                                             <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#059669' }}>₹{formatIndianCurrency(record.MatchedValue)}</td>
                                                                         </tr>
@@ -422,7 +417,6 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                                                                 <Badge pill bg="warning" className="me-2" style={{ width: '6px', height: '6px', padding: 0 }}></Badge>
                                                                                 <span className="small">Deviations</span>
                                                                             </td>
-                                                                            <td className="text-end py-2 small fw-medium">{record.RevisedCount?.toLocaleString()}</td>
                                                                             <td className="text-end py-2 small fw-medium">{record.RevisedQty?.toLocaleString()}</td>
                                                                             <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#d97706' }}>₹{formatIndianCurrency(record.RevisedValue)}</td>
                                                                         </tr>

@@ -149,32 +149,24 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
         };
 
         const deviations = auditorRecords.reduce((acc, r) => {
-            acc.appeared.count += (r.AppearedCount || 0);
             acc.appeared.qty += (r.AppearedQty || 0);
             acc.appeared.value += (r.AppearedValue || 0);
 
-            acc.matched.count += (r.MatchedCount || 0);
+            acc.matched.qty += (r.MatchedQty || 0);
+            acc.matched.value += (r.MatchedValue || 0);
 
-            const avgQty = r.AppearedCount ? r.AppearedQty / r.AppearedCount : 0;
-            const avgVal = r.AppearedCount ? r.AppearedValue / r.AppearedCount : 0;
+            acc.revised.qty += (r.RevisedQty || 0);
+            acc.revised.value += (r.RevisedValue || 0);
 
-            acc.matched.qty += Math.round((r.MatchedCount || 0) * avgQty);
-            acc.matched.value += Math.round((r.MatchedCount || 0) * avgVal);
-
-            acc.revised.count += (r.RevisedCount || 0);
-            acc.revised.qty += Math.round((r.RevisedCount || 0) * avgQty);
-            acc.revised.value += Math.round((r.RevisedCount || 0) * avgVal);
-
-            acc.pending.count += (r.PendingCount || 0);
-            acc.pending.qty += Math.round((r.PendingCount || 0) * avgQty);
-            acc.pending.value += Math.round((r.PendingCount || 0) * avgVal);
+            acc.pending.qty += (r.PendingQty || 0);
+            acc.pending.value += (r.PendingValue || 0);
 
             return acc;
         }, {
-            appeared: { count: 0, qty: 0, value: 0 },
-            matched: { count: 0, qty: 0, value: 0 },
-            revised: { count: 0, qty: 0, value: 0 },
-            pending: { count: 0, qty: 0, value: 0 }
+            appeared: { qty: 0, value: 0 },
+            matched: { qty: 0, value: 0 },
+            revised: { qty: 0, value: 0 },
+            pending: { qty: 0, value: 0 }
         });
 
         return { totalAudits, totalSKUs, totalPIDs, statusBreakdown, deviations };
@@ -201,11 +193,11 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             ["Pending", metrics.statusBreakdown.Pending],
             ["Created", metrics.statusBreakdown.Created],
             [],
-            ["Deviation Summary", "Count", "Qty", "Value"],
-            ["Appeared", metrics.deviations.appeared.count, metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
-            ["Matched", metrics.deviations.matched.count, metrics.deviations.matched.qty, metrics.deviations.matched.value],
-            ["Revised", metrics.deviations.revised.count, metrics.deviations.revised.qty, metrics.deviations.revised.value],
-            ["In-Progress", metrics.deviations.pending.count, metrics.deviations.pending.qty, metrics.deviations.pending.value],
+            ["Deviation Summary", "Qty", "Value"],
+            ["Appeared", metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
+            ["Matched", metrics.deviations.matched.qty, metrics.deviations.matched.value],
+            ["Revised", metrics.deviations.revised.qty, metrics.deviations.revised.value],
+            ["In-Progress", metrics.deviations.pending.qty, metrics.deviations.pending.value],
         ];
         const wsSummary = utils.aoa_to_sheet(summaryData);
 
@@ -214,7 +206,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             { wch: 25 }, // Metric
             { wch: 20 }, // Value / Count
             { wch: 15 }, // Qty
-            { wch: 15 }  // Value
+            { wch: 20 }  // Value
         ];
 
         utils.book_append_sheet(wb, wsSummary, "Summary");
@@ -228,7 +220,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             "Allocated PIDs": r.AuditorAllottedPIDs,
             "Allocated SKUs": r.AuditorAllottedSKUs,
             "Quantity": r.AppearedQty || 0,
-            "Value (₹)": r.AppearedValue || 0
+            "Audited Value (₹)": r.AuditorAuditedValue || 0
         }));
         const wsDetails = utils.json_to_sheet(detailedData);
 
@@ -241,7 +233,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             { wch: 15 }, // PIDs
             { wch: 15 }, // SKUs
             { wch: 15 }, // Qty
-            { wch: 15 }  // Value
+            { wch: 20 }  // Audited Value
         ];
 
         utils.book_append_sheet(wb, wsDetails, "Audit Details");
@@ -279,12 +271,12 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
         // Deviation Summary Table
         autoTable(doc, {
             startY: doc.lastAutoTable.finalY + 10,
-            head: [['Deviation Stage', 'Count', 'Qty', 'Value (INR)']],
+            head: [['Deviation Stage', 'Qty', 'Value (INR)']],
             body: [
-                ['Appeared', metrics.deviations.appeared.count, metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
-                ['Matched', metrics.deviations.matched.count, metrics.deviations.matched.qty, metrics.deviations.matched.value],
-                ['Revised', metrics.deviations.revised.count, metrics.deviations.revised.qty, metrics.deviations.revised.value],
-                ['In-Progress', metrics.deviations.pending.count, metrics.deviations.pending.qty, metrics.deviations.pending.value],
+                ['Appeared', metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
+                ['Matched', metrics.deviations.matched.qty, metrics.deviations.matched.value],
+                ['Revised', metrics.deviations.revised.qty, metrics.deviations.revised.value],
+                ['In-Progress', metrics.deviations.pending.qty, metrics.deviations.pending.value],
             ],
             theme: 'grid',
             headStyles: { fillColor: [243, 156, 18] }
@@ -292,7 +284,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
         autoTable(doc, {
             startY: doc.lastAutoTable.finalY + 10,
-            head: [['Audit ID', 'Store', 'Date', 'Job Type', 'PIDs', 'SKUs', 'Qty', 'Value']],
+            head: [['Audit ID', 'Store', 'Date', 'Job Type', 'PIDs', 'SKUs', 'Qty', 'Audited Value']],
             body: auditorRecords.map(r => [
                 r.AUDIT_ID,
                 r.StoreName,
@@ -301,7 +293,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                 r.AuditorAllottedPIDs,
                 r.AuditorAllottedSKUs,
                 (r.AppearedQty || 0).toLocaleString('en-IN'),
-                `₹${(r.AppearedValue || 0).toLocaleString('en-IN')}`
+                `₹${(r.AuditorAuditedValue || 0).toLocaleString('en-IN')}`
             ]),
             theme: 'plain',
             styles: { fontSize: 8 },
@@ -403,7 +395,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL PIDS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalPIDs.toLocaleString('en-IN')}</h2>
+                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianCurrency(metrics.totalPIDs)}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -411,7 +403,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL SKUS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalSKUs.toLocaleString('en-IN')}</h2>
+                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianCurrency(metrics.totalSKUs)}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -424,10 +416,6 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Card className="border-0 shadow-sm border-start border-4 border-primary">
                                 <Card.Body>
                                     <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED DEVIATIONS</h6>
-                                    <div className="d-flex justify-content-between mb-1 text-muted small">
-                                        <span>Count</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.appeared.count.toLocaleString('en-IN')}</span>
-                                    </div>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
                                         <span className="fw-bold text-dark">{metrics.deviations.appeared.qty.toLocaleString('en-IN')}</span>
@@ -444,10 +432,6 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                 <Card.Body>
                                     <h6 className="text-success fw-bold text-uppercase mb-3">MATCHED DEVIATIONS</h6>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
-                                        <span>Count</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.matched.count.toLocaleString('en-IN')}</span>
-                                    </div>
-                                    <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
                                         <span className="fw-bold text-dark">{metrics.deviations.matched.qty.toLocaleString('en-IN')}</span>
                                     </div>
@@ -462,10 +446,6 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Card className="border-0 shadow-sm border-start border-4 border-warning">
                                 <Card.Body>
                                     <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED DEVIATIONS</h6>
-                                    <div className="d-flex justify-content-between mb-1 text-muted small">
-                                        <span>Count</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.revised.count.toLocaleString('en-IN')}</span>
-                                    </div>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
                                         <span className="fw-bold text-dark">{metrics.deviations.revised.qty.toLocaleString('en-IN')}</span>
@@ -507,8 +487,8 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                         <th className="border-0 py-3 text-end" onClick={() => requestSort('AppearedQty')} style={{ cursor: 'pointer' }}>
                                             QTY {getSortIcon('AppearedQty')}
                                         </th>
-                                        <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AppearedValue')} style={{ cursor: 'pointer' }}>
-                                            Value {getSortIcon('AppearedValue')}
+                                        <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AuditorAuditedValue')} style={{ cursor: 'pointer' }}>
+                                            Audited Value {getSortIcon('AuditorAuditedValue')}
                                         </th>
                                     </tr>
                                 </thead>
@@ -527,7 +507,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                             <td className="text-end font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString('en-IN')}</td>
                                             <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString('en-IN')}</td>
                                             <td className="text-end fw-bold">{audit.AppearedQty?.toLocaleString('en-IN')}</td>
-                                            <td className="text-end pe-4 fw-bold">₹{formatIndianCurrency(audit.AppearedValue)}</td>
+                                            <td className="text-end pe-4 fw-bold">₹{formatIndianCurrency(audit.AuditorAuditedValue)}</td>
                                         </tr>
                                     ))}
                                 </tbody>

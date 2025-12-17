@@ -43,6 +43,8 @@ const AuditorPerformance = ({ filters = {} }) => {
     // 1. Group by Auditor
     const auditorMap = {};
 
+
+
     auditData.forEach(record => {
       const id = record.AuditorID;
       if (!id) return;
@@ -72,7 +74,8 @@ const AuditorPerformance = ({ filters = {} }) => {
           auditorName: record.AuditorName,
           allottedSKUs: 0,
           completedSKUs: 0,
-          totalAvgTime: 0,
+          totalAvgTimePerSKU: 0,
+          totalAvgTimePerPID: 0,
           totalAppearedQty: 0,
           totalMatchedQty: 0,
           totalRevisedQty: 0,
@@ -85,7 +88,11 @@ const AuditorPerformance = ({ filters = {} }) => {
       // Use "AuditorAllottedSKUs" and "CompletedSKUs" from JSON
       auditor.allottedSKUs += (record.AuditorAllottedSKUs || 0);
       auditor.completedSKUs += (record.CompletedSKUs || 0);
-      auditor.totalAvgTime += (record.AvgTimePerSKU || 0);
+
+      // Use direct values from JSON
+      auditor.totalAvgTimePerSKU += (record.AvgTimePerSKU || 0);
+      auditor.totalAvgTimePerPID += (record.AvgTimePerPID || 0);
+
       auditor.totalAppearedQty += (record.AppearedQty || 0);
       auditor.totalMatchedQty += (record.MatchedQty || 0);
       auditor.totalRevisedQty += (record.RevisedQty || 0);
@@ -108,13 +115,23 @@ const AuditorPerformance = ({ filters = {} }) => {
         ? (auditor.totalRevisedQty / auditor.totalAppearedQty) * 100
         : 0;
 
+      // Use average of records directly from data
+      const avgTime = auditor.count > 0
+        ? parseFloat((auditor.totalAvgTimePerSKU / auditor.count).toFixed(2))
+        : 0;
+
+      const avgTimePID = auditor.count > 0
+        ? parseFloat((auditor.totalAvgTimePerPID / auditor.count).toFixed(2))
+        : 0;
+
       return {
         auditorId: auditor.auditorId,
         auditorName: auditor.auditorName,
         allottedSKUs: auditor.allottedSKUs,
         completedSKUs: auditor.completedSKUs,
         completionRate: completionRate,
-        avgTime: parseFloat((auditor.totalAvgTime / auditor.count).toFixed(1)),
+        avgTime: avgTime,
+        avgTimePID: avgTimePID,
         matchRate: parseFloat(matchRate.toFixed(1)),
         editRate: parseFloat(editRate.toFixed(1)),
         totalValue: auditor.totalValue,
@@ -153,6 +170,7 @@ const AuditorPerformance = ({ filters = {} }) => {
 
     return {
       avgTimePerSKU: `${(totalAvgTime / count).toFixed(1)} min`,
+      avgTimePerPID: `${(auditorData.reduce((sum, a) => sum + a.avgTimePID, 0) / count).toFixed(1)} min`,
       matchRate: (totalMatchRate / count).toFixed(1),
       editRate: (totalEditRate / count).toFixed(1)
     };
@@ -188,6 +206,7 @@ const AuditorPerformance = ({ filters = {} }) => {
       "Total Audits": a.totalAudits,
       "Allotted SKUs": a.allottedSKUs,
       "Avg Time/SKU (min)": a.avgTime,
+      "Avg Time/PID (min)": a.avgTimePID,
       "Match Rate %": a.matchRate,
       "Edit Rate %": a.editRate,
       "Total Value (₹)": a.totalValue,
@@ -195,7 +214,7 @@ const AuditorPerformance = ({ filters = {} }) => {
     const wsDetails = utils.json_to_sheet(detailedData);
     wsDetails['!cols'] = [
       { wch: 15 }, { wch: 25 }, { wch: 15 },
-      { wch: 18 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 18 }
+      { wch: 18 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 18 }
     ];
     utils.book_append_sheet(wb, wsDetails, "Auditor Details");
 
@@ -219,6 +238,7 @@ const AuditorPerformance = ({ filters = {} }) => {
       head: [['Metric', 'Value']],
       body: [
         ['Avg Time per SKU', performanceMetrics.avgTimePerSKU],
+        ['Avg Time per PID', performanceMetrics.avgTimePerPID],
         ['Match Rate', `${performanceMetrics.matchRate}%`],
         ['Edit Rate', `${performanceMetrics.editRate}%`],
         ['Total Auditors', auditorData.length],
@@ -230,7 +250,7 @@ const AuditorPerformance = ({ filters = {} }) => {
     // Auditor Details Table
     autoTable(doc, {
       startY: doc.lastAutoTable.finalY + 10,
-      head: [['ID', 'Name', 'Audits', 'Allotted', 'Avg Time', 'Match %', 'Edit %', 'Value']],
+      head: [['ID', 'Name', 'Audits', 'Allotted', 'Avg T/SKU', 'Avg T/PID', 'Match %', 'Edit %', 'Value']],
       body: (searchQuery
         ? auditorData.filter(a => a.auditorName.toLowerCase().includes(searchQuery.toLowerCase()))
         : auditorData).map(a => [
@@ -239,6 +259,7 @@ const AuditorPerformance = ({ filters = {} }) => {
           a.totalAudits,
           a.allottedSKUs.toLocaleString(),
           `${a.avgTime} min`,
+          `${a.avgTimePID} min`,
           `${a.matchRate}%`,
           `${a.editRate}%`,
           `₹${a.totalValue?.toLocaleString('en-IN')}`
@@ -280,6 +301,11 @@ const AuditorPerformance = ({ filters = {} }) => {
               Avg Time/SKU {getSortIcon('avgTime')}
             </div>
           </th>
+          <th onClick={() => requestSort('avgTimePID')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Avg Time/PID {getSortIcon('avgTimePID')}
+            </div>
+          </th>
           <th onClick={() => requestSort('matchRate')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
               Match Rate % {getSortIcon('matchRate')}
@@ -318,19 +344,16 @@ const AuditorPerformance = ({ filters = {} }) => {
             <td className="text-center">{auditor.totalAudits}</td>
             <td>{auditor.allottedSKUs.toLocaleString()}</td>
             <td>
-              <Badge bg={auditor.avgTime < 4.5 ? 'success' : 'warning'}>
-                {auditor.avgTime} min
-              </Badge>
+              {auditor.avgTime} min
             </td>
             <td>
-              <Badge bg={getPerformanceBadge(auditor.matchRate, 93)}>
-                {auditor.matchRate.toFixed(1)}%
-              </Badge>
+              {auditor.avgTimePID} min
             </td>
             <td>
-              <Badge bg={getPerformanceBadge(auditor.editRate, 10, true)}>
-                {auditor.editRate.toFixed(1)}%
-              </Badge>
+              {auditor.matchRate.toFixed(1)}%
+            </td>
+            <td>
+              {auditor.editRate.toFixed(1)}%
             </td>
 
             <td className="fw-semibold">₹{formatIndianCurrency(auditor.totalValue)}</td>
@@ -393,11 +416,20 @@ const AuditorPerformance = ({ filters = {} }) => {
         </Col>
         <Col md={3}>
           <KPICard
-            title="Average Time per SKU"
+            title="Avg Time / SKU"
             value={performanceMetrics.avgTimePerSKU}
             subtitle="Productivity efficiency"
             icon="fas fa-clock"
             color="primary"
+          />
+        </Col>
+        <Col md={3}>
+          <KPICard
+            title="Avg Time / PID"
+            value={performanceMetrics.avgTimePerPID}
+            subtitle="Productivity efficiency"
+            icon="fas fa-hourglass-half"
+            color="info"
           />
         </Col>
         <Col md={3}>

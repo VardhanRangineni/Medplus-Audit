@@ -107,7 +107,8 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
         wsAuditors['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 15 }];
         utils.book_append_sheet(wb, wsAuditors, "Participating Auditors");
 
-        writeFile(wb, `Audit_${audit.AUDIT_ID}_Report.xlsx`);
+        const fileName = `Audit_${audit.AUDIT_ID}_Report.xlsx`;
+        writeFile(wb, fileName);
     };
 
     const handleDownloadPDF = () => {
@@ -117,26 +118,24 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
         doc.setFontSize(16);
         doc.text(`Audit Details: ${audit.AUDIT_ID}`, 14, 20);
 
-        doc.setFontSize(10);
         doc.text(`Store: ${audit.StoreName}`, 14, 28);
-        doc.text(`Total Value: ₹${formatIndianCurrency(audit.StoreAuditValue)}`, 14, 34);
+        doc.text(`Total Value: Rs. ${(audit.StoreAuditValue || 0).toLocaleString('en-IN')}`, 14, 34);
+
         if (audit.Status === 'Completed') {
             doc.text(`Start Date: ${formatDate(audit.AuditStartDate)}`, 14, 40);
             doc.text(`End Date: ${formatDate(audit.AuditEndDate)}`, 14, 46);
-            doc.text(`Status: ${audit.Status}`, 14, 52);
         } else {
             doc.text(`Date: ${formatDate(audit.AuditStartDate)}`, 14, 40);
-            doc.text(`Status: ${audit.Status}`, 14, 46);
         }
 
         // Re-Audit Summary Table
         autoTable(doc, {
-            startY: audit.Status === 'Completed' ? 58 : 52,
-            head: [['Re-Audit Category', 'Qty', 'Value (INR)']],
+            startY: audit.Status === 'Completed' ? 52 : 46,
+            head: [['Re-Audit Category', 'Qty', 'Value (Rs.)']],
             body: [
-                ['Appeared', appeared.qty, appeared.value],
-                ['Matched', matched.qty, matched.value],
-                ['Deviations', revised.qty, revised.value],
+                ['Appeared', appeared.qty.toLocaleString('en-IN'), appeared.value.toLocaleString('en-IN')],
+                ['Matched', matched.qty.toLocaleString('en-IN'), matched.value.toLocaleString('en-IN')],
+                ['Deviations', revised.qty.toLocaleString('en-IN'), revised.value.toLocaleString('en-IN')],
             ],
             theme: 'grid',
             headStyles: { fillColor: [41, 128, 185] }
@@ -146,21 +145,22 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
         if (participatingAuditors.length > 0) {
             autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 15,
-                head: [['ID', 'Auditor Name', 'PIDs', 'SKUs', 'Qty', 'Audited Value']],
+                head: [['ID', 'Auditor Name', 'PIDs', 'SKUs', 'Qty', 'Audited Value (Rs.)']],
                 body: participatingAuditors.map(r => [
                     r.AuditorID,
                     r.AuditorName,
-                    r.AuditorAllottedPIDs,
-                    r.AuditorAllottedSKUs,
-                    r.AppearedQty,
-                    `₹${formatIndianCurrency(r.AuditorAuditedValue)}`
+                    (r.AuditorAllottedPIDs || 0).toLocaleString('en-IN'),
+                    (r.AuditorAllottedSKUs || 0).toLocaleString('en-IN'),
+                    (r.AppearedQty || 0).toLocaleString('en-IN'),
+                    (r.AuditorAuditedValue || 0).toLocaleString('en-IN')
                 ]),
                 theme: 'striped',
                 headStyles: { fillColor: [52, 73, 94] }
             });
         }
 
-        doc.save(`Audit_${audit.AUDIT_ID}_Report.pdf`);
+        const pdfFileName = `Audit_${audit.AUDIT_ID}_Report.pdf`;
+        doc.save(pdfFileName);
     };
 
     return (

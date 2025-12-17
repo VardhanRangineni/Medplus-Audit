@@ -209,7 +209,7 @@ const AuditorPerformance = ({ filters = {} }) => {
       "Avg Time/PID (min)": a.avgTimePID,
       "Match Rate %": a.matchRate,
       "Edit Rate %": a.editRate,
-      "Total Value (₹)": a.totalValue,
+      "Total Value (Rs.)": a.totalValue,
     }));
     const wsDetails = utils.json_to_sheet(detailedData);
     wsDetails['!cols'] = [
@@ -250,7 +250,7 @@ const AuditorPerformance = ({ filters = {} }) => {
     // Auditor Details Table
     autoTable(doc, {
       startY: doc.lastAutoTable.finalY + 10,
-      head: [['ID', 'Name', 'Audits', 'Allotted', 'Avg T/SKU', 'Avg T/PID', 'Match %', 'Edit %', 'Value']],
+      head: [['ID', 'Name', 'Audits', 'Allotted', 'Avg T/SKU', 'Avg T/PID', 'Match %', 'Edit %', 'Value (Rs.)']],
       body: (searchQuery
         ? auditorData.filter(a => a.auditorName.toLowerCase().includes(searchQuery.toLowerCase()))
         : auditorData).map(a => [
@@ -262,7 +262,7 @@ const AuditorPerformance = ({ filters = {} }) => {
           `${a.avgTimePID} min`,
           `${a.matchRate}%`,
           `${a.editRate}%`,
-          `₹${a.totalValue?.toLocaleString('en-IN')}`
+          (a.totalValue || 0).toLocaleString('en-IN')
         ]),
       theme: 'grid',
       styles: { fontSize: 8 },

@@ -271,12 +271,11 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
         // Deviation Summary Table
         autoTable(doc, {
             startY: doc.lastAutoTable.finalY + 10,
-            head: [['Deviation Stage', 'Qty', 'Value (INR)']],
+            head: [['Deviation Stage', 'Qty', 'Value (Rs.)']],
             body: [
-                ['Appeared', metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
-                ['Matched', metrics.deviations.matched.qty, metrics.deviations.matched.value],
-                ['Revised', metrics.deviations.revised.qty, metrics.deviations.revised.value],
-                ['In-Progress', metrics.deviations.pending.qty, metrics.deviations.pending.value],
+                ['Appeared', metrics.deviations.appeared.qty.toLocaleString('en-IN'), metrics.deviations.appeared.value.toLocaleString('en-IN')],
+                ['Matched', metrics.deviations.matched.qty.toLocaleString('en-IN'), metrics.deviations.matched.value.toLocaleString('en-IN')],
+                ['Revised', metrics.deviations.revised.qty.toLocaleString('en-IN'), metrics.deviations.revised.value.toLocaleString('en-IN')],
             ],
             theme: 'grid',
             headStyles: { fillColor: [243, 156, 18] }
@@ -284,23 +283,24 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
         autoTable(doc, {
             startY: doc.lastAutoTable.finalY + 10,
-            head: [['Audit ID', 'Store', 'Date', 'Job Type', 'PIDs', 'SKUs', 'Qty', 'Audited Value']],
+            head: [['Audit ID', 'Store', 'Date', 'Job Type', 'PIDs', 'SKUs', 'Qty', 'Audited Value (Rs.)']],
             body: auditorRecords.map(r => [
                 r.AUDIT_ID,
                 r.StoreName,
                 new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
                 r.AuditJobType,
-                r.AuditorAllottedPIDs,
-                r.AuditorAllottedSKUs,
+                (r.AuditorAllottedPIDs || 0).toLocaleString('en-IN'),
+                (r.AuditorAllottedSKUs || 0).toLocaleString('en-IN'),
                 (r.AppearedQty || 0).toLocaleString('en-IN'),
-                `₹${(r.AuditorAuditedValue || 0).toLocaleString('en-IN')}`
+                (r.AuditorAuditedValue || 0).toLocaleString('en-IN')
             ]),
             theme: 'plain',
             styles: { fontSize: 8 },
             headStyles: { fillColor: [52, 73, 94], textColor: 255 }
         });
 
-        doc.save(`Auditor_${auditorName.replace(/\s+/g, '_')}_Report.pdf`);
+        const pdfFileName = `Auditor_${auditorName.replace(/\s+/g, '_')}_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+        doc.save(pdfFileName);
     };
 
     // Format Date

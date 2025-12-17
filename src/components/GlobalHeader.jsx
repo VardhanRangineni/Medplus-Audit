@@ -167,19 +167,6 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
             </Form.Group>
           </Col>
         </Row>
-
-        {/* Export Notice */}
-        <Row>
-          <Col>
-            <div className="text-muted small">
-              <Badge bg="info" className="me-2">
-                <i className="fas fa-file-excel me-1"></i>
-                Export Available
-              </Badge>
-              All list and drill-down views support Export to Excel
-            </div>
-          </Col>
-        </Row>
       </Container>
     </div>
   );

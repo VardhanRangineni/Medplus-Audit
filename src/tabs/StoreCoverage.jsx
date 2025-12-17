@@ -650,76 +650,6 @@ const StoreCoverage = ({ filters = {} }) => {
         </Col>
       </Row>
 
-      {/* Store Type & Box Mapping Breakdown */}
-      <Row className="mb-4">
-        <Col>
-          <Card className="border-0 shadow-sm">
-            <Card.Header className="bg-white border-0 py-3">
-              <h5 className="mb-0 fw-bold">
-                <i className="fas fa-table me-2 text-primary"></i>
-                Store Type & Box Mapping Breakdown
-              </h5>
-              <small className="text-muted">Distribution of stores by type and box mapping status</small>
-            </Card.Header>
-            <Card.Body>
-              <Table striped hover responsive className="mb-0">
-                <thead className="table-light">
-                  <tr>
-                    <th>Store Type</th>
-                    <th>Box</th>
-                    <th className="text-center">Total Stores</th>
-                    <th className="text-center">Covered</th>
-                    <th className="text-center">Uncovered</th>
-                    <th className="text-center">Coverage %</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {storeBreakdown.map((row, idx) => (
-                    <tr key={idx}>
-                      <td>
-                        <Badge bg={row.storeType === 'HUB' ? 'primary' : 'info'} className="px-3 py-2">
-                          {row.storeType}
-                        </Badge>
-                      </td>
-                      <td>
-                        <Badge bg={row.boxType === 'Box Mapping' ? 'success' : 'secondary'} className="px-3 py-2">
-                          {row.boxType}
-                        </Badge>
-                      </td>
-                      <td className="text-center fw-bold">{row.total}</td>
-                      <td className="text-center">
-                        <span className="text-success fw-semibold">{row.covered}</span>
-                      </td>
-                      <td className="text-center">
-                        <span className="text-danger fw-semibold">{row.uncovered}</span>
-                      </td>
-                      <td className="text-center">
-                        <Badge bg="light" text="dark" className="px-3 py-2">
-                          {((row.covered / row.total) * 100).toFixed(1)}%
-                        </Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-                <tfoot className="table-light fw-bold">
-                  <tr>
-                    <td colSpan="2" className="text-end">TOTAL:</td>
-                    <td className="text-center">{storeStats.totalActive}</td>
-                    <td className="text-center text-success">{storeStats.covered}</td>
-                    <td className="text-center text-danger">{storeStats.uncovered}</td>
-                    <td className="text-center">
-                      <Badge bg="primary" className="px-3 py-2">
-                        {storeStats.coveredPercentage}%
-                      </Badge>
-                    </td>
-                  </tr>
-                </tfoot>
-              </Table>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
       {/* Store Recency Analysis */}
       <Row className="mb-4">
         <Col>
@@ -838,7 +768,7 @@ const StoreCoverage = ({ filters = {} }) => {
 
       {/* Deviation Breakdown */}
       <Row>
-        <Col lg={6} className="mb-4">
+        <Col lg={4} className="mb-4">
           <Card className="border-0 shadow-sm h-100">
             <Card.Header className="bg-white border-0 py-3">
               <h5 className="mb-0 fw-bold">
@@ -873,7 +803,7 @@ const StoreCoverage = ({ filters = {} }) => {
           </Card>
         </Col>
 
-        <Col lg={6} className="mb-4">
+        <Col lg={8} className="mb-4">
           <Card className="border-0 shadow-sm h-100">
             <Card.Header className="bg-white border-0 py-3">
               <div className="d-flex justify-content-between align-items-center">
@@ -932,50 +862,54 @@ const StoreCoverage = ({ filters = {} }) => {
                     </div>
                   </div>
                   {productFormData[selectedDeviation.type].length > 0 ? (
-                    <>
-                      <ResponsiveContainer width="100%" height={280}>
-                        <PieChart>
-                          <Pie
-                            data={productFormData[selectedDeviation.type]}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={100}
-                            labelLine={false}
-                            label={(entry) => `${entry.form}: ₹${(entry.value / 1000).toFixed(0)}K`}
-                            fill="#8884d8"
-                            dataKey="value"
-                          >
-                            {productFormData[selectedDeviation.type].map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                        </PieChart>
-                      </ResponsiveContainer>
-                      <div className="mt-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
-                        {productFormData[selectedDeviation.type].map((form, idx) => (
-                          <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
-                            <div className="d-flex align-items-center">
-                              <div
-                                style={{
-                                  width: '12px',
-                                  height: '12px',
-                                  backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
-                                  borderRadius: '2px',
-                                  marginRight: '8px'
-                                }}
-                              />
-                              <span className="fw-semibold">{form.form}</span>
+                    <Row className="g-0">
+                      <Col xs={6}>
+                        <ResponsiveContainer width="100%" height={350}>
+                          <PieChart>
+                            <Pie
+                              data={productFormData[selectedDeviation.type]}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={50}
+                              outerRadius={80}
+                              labelLine={true}
+                              label={(entry) => entry.form}
+                              fill="#8884d8"
+                              dataKey="value"
+                            >
+                              {productFormData[selectedDeviation.type].map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
+                              ))}
+                            </Pie>
+                            <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </Col>
+                      <Col xs={6}>
+                        <div className="ps-3" style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                          {productFormData[selectedDeviation.type].map((form, idx) => (
+                            <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+                              <div className="d-flex align-items-center">
+                                <div
+                                  style={{
+                                    width: '12px',
+                                    height: '12px',
+                                    backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
+                                    borderRadius: '2px',
+                                    marginRight: '8px'
+                                  }}
+                                />
+                                <span className="fw-semibold">{form.form}</span>
+                              </div>
+                              <div className="text-end">
+                                <div className="fw-bold text-success">₹{form.value.toLocaleString()}</div>
+                                <div className="text-muted small">{form.count} items</div>
+                              </div>
                             </div>
-                            <div className="text-end">
-                              <div className="fw-bold text-success">₹{form.value.toLocaleString()}</div>
-                              <div className="text-muted small">{form.count} items</div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </>
+                          ))}
+                        </div>
+                      </Col>
+                    </Row>
                   ) : (
                     <div className="text-center text-muted py-5">
                       <i className="fas fa-inbox fa-3x mb-3 d-block"></i>
@@ -1013,54 +947,58 @@ const StoreCoverage = ({ filters = {} }) => {
                         </div>
                       </div>
                       {overallFormArray.length > 0 ? (
-                        <>
-                          <ResponsiveContainer width="100%" height={280}>
-                            <PieChart>
-                              <Pie
-                                data={overallFormArray}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={60}
-                                outerRadius={100}
-                                labelLine={false}
-                                label={(entry) => entry.value > 0 ? `${entry.form}: ₹${(entry.value / 1000).toFixed(0)}K` : ''}
-                                fill="#8884d8"
-                                dataKey="value"
-                              >
-                                {overallFormArray.map((entry, index) => (
-                                  <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
-                                ))}
-                              </Pie>
-                              <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                            </PieChart>
-                          </ResponsiveContainer>
-                          <div className="mt-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
-                            {overallFormArray.map((form, idx) => (
-                              <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
-                                <div className="d-flex align-items-center">
-                                  <div
-                                    style={{
-                                      width: '12px',
-                                      height: '12px',
-                                      backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
-                                      borderRadius: '2px',
-                                      marginRight: '8px'
-                                    }}
-                                  />
-                                  <span className="fw-semibold">{form.form}</span>
+                        <Row className="g-0">
+                          <Col xs={6}>
+                            <ResponsiveContainer width="100%" height={350}>
+                              <PieChart>
+                                <Pie
+                                  data={overallFormArray}
+                                  cx="50%"
+                                  cy="50%"
+                                  innerRadius={50}
+                                  outerRadius={80}
+                                  labelLine={true}
+                                  label={(entry) => entry.form}
+                                  fill="#8884d8"
+                                  dataKey="value"
+                                >
+                                  {overallFormArray.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
+                                  ))}
+                                </Pie>
+                                <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                              </PieChart>
+                            </ResponsiveContainer>
+                          </Col>
+                          <Col xs={6}>
+                            <div className="ps-3" style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                              {overallFormArray.map((form, idx) => (
+                                <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+                                  <div className="d-flex align-items-center">
+                                    <div
+                                      style={{
+                                        width: '12px',
+                                        height: '12px',
+                                        backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
+                                        borderRadius: '2px',
+                                        marginRight: '8px'
+                                      }}
+                                    />
+                                    <span className="fw-semibold">{form.form}</span>
+                                  </div>
+                                  <div className="text-end">
+                                    <div className="fw-bold text-success">₹{form.value.toLocaleString()}</div>
+                                    <div className="text-muted small">{form.count} items</div>
+                                  </div>
                                 </div>
-                                <div className="text-end">
-                                  <div className="fw-bold text-success">₹{form.value.toLocaleString()}</div>
-                                  <div className="text-muted small">{form.count} items</div>
-                                </div>
+                              ))}
+                              <div className="text-center mt-3 text-muted small">
+                                <i className="fas fa-info-circle me-1"></i>
+                                Click on any deviation segment to see specific breakdown
                               </div>
-                            ))}
-                          </div>
-                          <div className="text-center mt-3 text-muted small">
-                            <i className="fas fa-info-circle me-1"></i>
-                            Click on any deviation segment to see specific breakdown
-                          </div>
-                        </>
+                            </div>
+                          </Col>
+                        </Row>
                       ) : (
                         <div className="text-center text-muted py-5">
                           <i className="fas fa-inbox fa-3x mb-3 d-block"></i>

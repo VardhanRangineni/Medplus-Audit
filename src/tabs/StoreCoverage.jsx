@@ -778,15 +778,15 @@ const StoreCoverage = ({ filters = {} }) => {
               <small className="text-muted">Click on segments for details</small>
             </Card.Header>
             <Card.Body>
-              <ResponsiveContainer width="100%" height={350}>
+              <ResponsiveContainer width="100%" height={450}>
                 <PieChart>
                   <Pie
                     data={deviationData}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={(entry) => `${entry.type}: ₹${(entry.value / 1000).toFixed(0)}K`}
-                    outerRadius={100}
+                    label={false}
+                    outerRadius={90}
                     fill="#8884d8"
                     dataKey="value"
                     onClick={(data) => setSelectedDeviation(data)}
@@ -796,7 +796,16 @@ const StoreCoverage = ({ filters = {} }) => {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                  <Tooltip 
+                    formatter={(value) => `₹${value.toLocaleString()}`}
+                    contentStyle={{ fontSize: '12px' }}
+                  />
+                  <Legend 
+                    verticalAlign="bottom" 
+                    height={60}
+                    formatter={(value, entry) => `${entry.payload.type}: ₹${(entry.payload.value / 1000).toFixed(0)}K`}
+                    wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </Card.Body>

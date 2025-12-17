@@ -741,7 +741,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                                   <thead className="table-secondary">
                                     <tr>
                                       <th>Product ID</th>
-                                      <th>SKU</th>
+                                      <th>Product Form</th>
                                       <th>Product Name</th>
                                       <th>Mismatch Type</th>
                                       <th>System Qty</th>
@@ -754,7 +754,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                                       filterMismatchDetails(audit.mismatchDetails, audit.storeId).map((item, itemIdx) => (
                                         <tr key={itemIdx}>
                                           <td><code>{item.productId}</code></td>
-                                          <td><code>{item.sku}</code></td>
+                                          <td><Badge bg="secondary">{item.productForm || 'N/A'}</Badge></td>
                                           <td>{item.productName}</td>
                                           <td>
                                             <Badge

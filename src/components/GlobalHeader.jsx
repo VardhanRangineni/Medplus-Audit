@@ -128,7 +128,7 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
                 <option value="">All Types</option>
                 <option value="Full Audit">Full Audit</option>
                 <option value="Select SKUs">Select SKUs</option>
-                <option value="Select SKUs">Batch Audit</option>
+                <option value="Partial Audit">Partial Audit</option>
               </Form.Select>
             </Form.Group>
           </Col>
@@ -144,7 +144,7 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
               >
                 <option value="">All Processes</option>
                 <option value="Product Audit">Product Audit</option>
-                <option value="Box Audit">Box Audit</option>
+                <option value="Batch Audit">Batch Audit</option>
               </Form.Select>
             </Form.Group>
           </Col>

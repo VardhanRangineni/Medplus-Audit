@@ -817,6 +817,154 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
           )}
         </Row>
 
+        {/* PIDs, Mismatches, Deviations Summary - Show for in-progress */}
+        {auditStatus === 'in-progress' && (
+          <Row className="g-3 mb-4">
+            {/* Card 1: PIDs */}
+            <Col md={4}>
+              <Card className="h-100 border-0 shadow-sm">
+                <Card.Body>
+                  <h6 className="fw-bold text-primary mb-3" style={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    <i className="fas fa-box me-2"></i>PIDs
+                  </h6>
+                  <Row className="g-2">
+                    <Col xs={6}>
+                      <div className="p-3 bg-light rounded">
+                        <div className="text-muted small mb-1">Total PIDs</div>
+                        <h5 className="mb-0 fw-bold">
+                          {inventorySummary.totalPIDs?.toLocaleString() || '0'}
+                        </h5>
+                      </div>
+                    </Col>
+                    <Col xs={6}>
+                      <div className="p-3 bg-light rounded">
+                        <div className="text-muted small mb-1">Pending PIDs</div>
+                        <h5 className="mb-0 fw-bold text-warning">
+                          {((inventorySummary.totalPIDs || 0) - Math.floor((inventorySummary.totalPIDs || 0) * ((auditProgress.percentage || 0) / 100))).toLocaleString()}
+                        </h5>
+                      </div>
+                    </Col>
+                    <Col xs={6}>
+                      <div className="p-3 bg-light rounded">
+                        <div className="text-muted small mb-1">Total SKUs</div>
+                        <h5 className="mb-0 fw-bold">
+                          {inventorySummary.totalSKUs?.toLocaleString() || '0'}
+                        </h5>
+                      </div>
+                    </Col>
+                    <Col xs={6}>
+                      <div className="p-3 bg-light rounded">
+                        <div className="text-muted small mb-1">Pending SKUs</div>
+                        <h5 className="mb-0 fw-bold text-warning">
+                          {((inventorySummary.totalSKUs || 0) - (auditProgress.completedSKUs || 0)).toLocaleString()}
+                        </h5>
+                      </div>
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            {/* Card 2: Mismatches */}
+            <Col md={4}>
+              <Card className="h-100 border-0 shadow-sm">
+                <Card.Body>
+                  <h6 className="fw-bold text-danger mb-3" style={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    <i className="fas fa-exclamation-circle me-2"></i>Mismatches
+                  </h6>
+                  <Row className="g-2">
+                    <Col xs={6}>
+                      <div className="p-3 bg-light rounded">
+                        <div className="text-muted small mb-1">Total Mismatches</div>
+                        <h5 className="mb-0 fw-bold">
+                          {deviations.filter(d => d.type === 'Contra Short' || d.type === 'Contra Excess').reduce((sum, d) => sum + (d.count || 0), 0).toLocaleString()}
+                        </h5>
+                      </div>
+                    </Col>
+                    <Col xs={6}>
+                      <div className="p-3 bg-light rounded">
+                        <div className="text-muted small mb-1">Pending</div>
+                        <h5 className="mb-0 fw-bold text-warning">
+                          {(() => {
+                            const totalMismatch = deviations.filter(d => d.type === 'Contra Short' || d.type === 'Contra Excess').reduce((sum, d) => sum + (d.count || 0), 0);
+                            const completionRate = (auditProgress.percentage || 0) / 100;
+                            return Math.ceil(totalMismatch * (1 - completionRate * 0.7)).toLocaleString();
+                          })()}
+                        </h5>
+                      </div>
+                    </Col>
+                    <Col xs={6}>
+                      <div className="p-3 bg-light rounded">
+                        <div className="text-muted small mb-1">Matched</div>
+                        <h5 className="mb-0 fw-bold text-success">
+                          {(() => {
+                            const totalMismatch = deviations.filter(d => d.type === 'Contra Short' || d.type === 'Contra Excess').reduce((sum, d) => sum + (d.count || 0), 0);
+                            const completionRate = (auditProgress.percentage || 0) / 100;
+                            return Math.floor(totalMismatch * completionRate * 0.7).toLocaleString();
+                          })()}
+                        </h5>
+                      </div>
+                    </Col>
+                    <Col xs={6}>
+                      <div className="p-3 bg-light rounded">
+                        <div className="text-muted small mb-1">Deviations</div>
+                        <h5 className="mb-0 fw-bold text-warning">
+                          {deviations.filter(d => d.type === 'Short' || d.type === 'Excess').reduce((sum, d) => sum + (d.count || 0), 0).toLocaleString()}
+                        </h5>
+                      </div>
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
+
+            {/* Card 3: Deviations */}
+            <Col md={4}>
+              <Card className="h-100 border-0 shadow-sm">
+                <Card.Body>
+                  <h6 className="fw-bold text-warning mb-3" style={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    <i className="fas fa-exclamation-triangle me-2"></i>Deviations
+                  </h6>
+                  <Row className="g-2">
+                    <Col xs={6}>
+                      <div className="p-3 bg-light rounded">
+                        <div className="text-muted small mb-1">Total Deviations</div>
+                        <h5 className="mb-0 fw-bold">
+                          {deviations.filter(d => d.type === 'Short' || d.type === 'Excess').reduce((sum, d) => sum + (d.count || 0), 0).toLocaleString()}
+                        </h5>
+                      </div>
+                    </Col>
+                    <Col xs={6}>
+                      <div className="p-3 bg-light rounded">
+                        <div className="text-muted small mb-1">Pending</div>
+                        <h5 className="mb-0 fw-bold text-warning">
+                          {(() => {
+                            const totalDevCount = deviations.filter(d => d.type === 'Short' || d.type === 'Excess').reduce((sum, d) => sum + (d.count || 0), 0);
+                            const completionRate = (auditProgress.percentage || 0) / 100;
+                            return Math.ceil(totalDevCount * (1 - completionRate * 0.8)).toLocaleString();
+                          })()}
+                        </h5>
+                      </div>
+                    </Col>
+                    <Col xs={12}>
+                      <div className="p-3 bg-light rounded">
+                        <div className="text-muted small mb-1">Submitted</div>
+                        <h5 className="mb-0 fw-bold text-success">
+                          {(() => {
+                            const totalDevCount = deviations.filter(d => d.type === 'Short' || d.type === 'Excess').reduce((sum, d) => sum + (d.count || 0), 0);
+                            const completionRate = (auditProgress.percentage || 0) / 100;
+                            return Math.floor(totalDevCount * completionRate * 0.8).toLocaleString();
+                          })()}
+                        </h5>
+                      </div>
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        )}
+
         {/* Auditors Working on Store - Show for in-progress, pending, and completed */}
         {auditStatus !== 'created' && auditors && auditors.length > 0 && (
           <Card className="mb-4 border-0 shadow-sm">

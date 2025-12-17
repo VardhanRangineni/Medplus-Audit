@@ -192,8 +192,8 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             [],
             ["Metric", "Value"],
             ["Total Audits", metrics.totalAudits],
-            ["Total SKUs", metrics.totalSKUs],
             ["Total PIDs", metrics.totalPIDs],
+            ["Total SKUs", metrics.totalSKUs],
             [],
             ["Status Breakdown", "Count"],
             ["Completed", metrics.statusBreakdown.Completed],
@@ -225,12 +225,10 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             "Store Name": r.StoreName,
             "Date": new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
             "Job Type": r.AuditJobType,
-            "Status": r.Status,
-            "Allocated SKUs": r.AuditorAllottedSKUs,
             "Allocated PIDs": r.AuditorAllottedPIDs,
+            "Allocated SKUs": r.AuditorAllottedSKUs,
             "Quantity": r.AppearedQty || 0,
-            "Value (₹)": r.AppearedValue || 0,
-            "Audit Completion %": r.CompletionPercent,
+            "Value (₹)": r.AppearedValue || 0
         }));
         const wsDetails = utils.json_to_sheet(detailedData);
 
@@ -240,12 +238,10 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             { wch: 30 }, // Store Name
             { wch: 15 }, // Date
             { wch: 25 }, // Job Type
-            { wch: 15 }, // Status
-            { wch: 15 }, // SKUs
             { wch: 15 }, // PIDs
+            { wch: 15 }, // SKUs
             { wch: 15 }, // Qty
-            { wch: 15 }, // Value
-            { wch: 20 }  // Completion
+            { wch: 15 }  // Value
         ];
 
         utils.book_append_sheet(wb, wsDetails, "Audit Details");
@@ -271,8 +267,8 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             head: [['Category', 'Details']],
             body: [
                 ['Total Audits', metrics.totalAudits],
-                ['Total SKUs', metrics.totalSKUs.toLocaleString()],
                 ['Total PIDs', metrics.totalPIDs.toLocaleString()],
+                ['Total SKUs', metrics.totalSKUs.toLocaleString()],
                 ['Completed Audits', metrics.statusBreakdown.Completed],
                 ['In-Progress Audits', metrics.statusBreakdown.InProgress],
             ],
@@ -296,16 +292,16 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
         autoTable(doc, {
             startY: doc.lastAutoTable.finalY + 10,
-            head: [['Audit ID', 'Store', 'Date', 'Status', 'SKUs', 'Qty', 'Value', 'Comp %']],
+            head: [['Audit ID', 'Store', 'Date', 'Job Type', 'PIDs', 'SKUs', 'Qty', 'Value']],
             body: auditorRecords.map(r => [
                 r.AUDIT_ID,
                 r.StoreName,
                 new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
-                r.Status,
+                r.AuditJobType,
+                r.AuditorAllottedPIDs,
                 r.AuditorAllottedSKUs,
                 (r.AppearedQty || 0).toLocaleString('en-IN'),
-                `₹${(r.AppearedValue || 0).toLocaleString('en-IN')}`,
-                `${r.CompletionPercent}%`
+                `₹${(r.AppearedValue || 0).toLocaleString('en-IN')}`
             ]),
             theme: 'plain',
             styles: { fontSize: 8 },

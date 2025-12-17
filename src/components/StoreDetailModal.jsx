@@ -395,11 +395,10 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         "Assigned SKUs": a.assignedSKUs || 0,
         "Completed SKUs": a.completedSKUs || 0,
         "Completion Rate (%)": a.completionRate || 0,
-        "Match Rate (%)": a.matchRate || 0,
-        "Value Covered (₹)": a.valueCovered || 0
+        "Match Rate (%)": a.matchRate || 0
       }));
       const wsAuditors = utils.json_to_sheet(auditorsData);
-      wsAuditors['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 15 }, { wch: 18 }];
+      wsAuditors['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 15 }];
       utils.book_append_sheet(wb, wsAuditors, "Auditors");
     }
 
@@ -478,8 +477,8 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
       if (productDetails.length > 0) {
         const wsProducts = utils.json_to_sheet(productDetails);
         wsProducts['!cols'] = [
-          { wch: 18 }, { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 30 }, 
-          { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, 
+          { wch: 18 }, { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 30 },
+          { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 },
           { wch: 15 }, { wch: 12 }
         ];
         // Truncate sheet name to 31 characters (Excel limit)
@@ -548,14 +547,13 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
       doc.text('Auditors Breakdown', 14, finalY);
       autoTable(doc, {
         startY: finalY + 4,
-        head: [['Auditor', 'Assigned SKUs', 'Completed', 'Completion %', 'Match %', 'Value Covered']],
+        head: [['Auditor', 'Assigned SKUs', 'Completed', 'Completion %', 'Match %']],
         body: auditors.map(a => [
           a.name,
           a.assignedSKUs || 0,
           a.completedSKUs || 0,
           `${a.completionRate || 0}%`,
-          `${a.matchRate || 0}%`,
-          `Rs. ${(a.valueCovered || 0).toLocaleString()}`
+          `${a.matchRate || 0}%`
         ]),
         theme: 'striped',
         headStyles: { fillColor: [52, 152, 219] },
@@ -882,8 +880,8 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
                         {/* Expanded PID Rows */}
                         {isExpanded && pidData.map((pid, pidIdx) => (
-                          <tr 
-                            key={`${auditorIdx}-pid-${pidIdx}`} 
+                          <tr
+                            key={`${auditorIdx}-pid-${pidIdx}`}
                             style={{ backgroundColor: '#f8f9fa' }}
                           >
                             <td></td>

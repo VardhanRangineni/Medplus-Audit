@@ -235,8 +235,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             [],
             ["Metrics Summary"],
             ["Total Audits", metrics.totalAudits],
-            ["Total SKUs", metrics.totalSKUs],
             ["Total PIDs", metrics.totalPIDs],
+            ["Total SKUs", metrics.totalSKUs],
             [],
             ["Status Breakdown"],
             ["Completed", metrics.statusBreakdown.Completed],
@@ -259,14 +259,13 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             "Store Name": r.StoreName,
             "Date": formatDate(r.AuditStartDate),
             "Job Type": r.AuditJobType,
-            "Status": r.Status,
-            "SKUs": r.AuditorAllottedSKUs,
             "PIDs": r.AuditorAllottedPIDs,
+            "SKUs": r.AuditorAllottedSKUs,
             "Quantity": r.AppearedQty || 0,
             "Value (₹)": r.AppearedValue || 0
         }));
         const wsHistory = utils.json_to_sheet(historyData);
-        wsHistory['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 15 }];
+        wsHistory['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 15 }];
         utils.book_append_sheet(wb, wsHistory, "Audit History");
 
         writeFile(wb, `Supervisor_${supervisorId}_Report.xlsx`);
@@ -289,8 +288,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             head: [['Metric', 'Value']],
             body: [
                 ['Total Audits', metrics.totalAudits],
-                ['Total SKUs', metrics.totalSKUs.toLocaleString()],
                 ['Total PIDs', metrics.totalPIDs.toLocaleString()],
+                ['Total SKUs', metrics.totalSKUs.toLocaleString()],
                 ['Completed', metrics.statusBreakdown.Completed],
                 ['In-Progress', metrics.statusBreakdown.InProgress]
             ],
@@ -316,15 +315,14 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         if (sortedRecords.length > 0) {
             autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 15,
-                head: [['Audit ID', 'Store', 'Date', 'Type', 'Status', 'SKUs', 'PIDs', 'Qty', 'Value']],
+                head: [['Audit ID', 'Store', 'Date', 'Type', 'PIDs', 'SKUs', 'Qty', 'Value']],
                 body: sortedRecords.map(r => [
                     r.AUDIT_ID,
                     r.StoreName,
                     formatDate(r.AuditStartDate),
                     r.AuditJobType,
-                    r.Status,
-                    r.AuditorAllottedSKUs,
                     r.AuditorAllottedPIDs,
+                    r.AuditorAllottedSKUs,
                     (r.AppearedQty || 0).toLocaleString('en-IN'),
                     `₹${(r.AppearedValue || 0).toLocaleString('en-IN')}`
                 ]),

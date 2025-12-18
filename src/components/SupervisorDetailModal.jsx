@@ -255,7 +255,6 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             ["Appeared", metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
             ["Matched", metrics.deviations.matched.qty, metrics.deviations.matched.value],
             ["Revised", metrics.deviations.revised.qty, metrics.deviations.revised.value],
-            ["In-Progress/Pending", metrics.deviations.pending.qty, metrics.deviations.pending.value],
         ];
         const wsSummary = utils.aoa_to_sheet(summaryData);
         wsSummary['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 20 }];
@@ -270,7 +269,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             "PIDs": r.AuditorAllottedPIDs,
             "SKUs": r.AuditorAllottedSKUs,
             "Quantity": r.AppearedQty || 0,
-            "Value (₹)": r.AppearedValue || 0
+            "Value (Rs.)": r.AppearedValue || 0
         }));
         const wsHistory = utils.json_to_sheet(historyData);
         wsHistory['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 15 }];
@@ -297,8 +296,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             body: [
                 ['Total Audits', metrics.totalAudits],
                 ['Days Supervised', metrics.daysSupervised],
-                ['Total PIDs', metrics.totalPIDs.toLocaleString()],
-                ['Total SKUs', metrics.totalSKUs.toLocaleString()],
+                ['Total PIDs', metrics.totalPIDs.toLocaleString('en-IN')],
+                ['Total SKUs', metrics.totalSKUs.toLocaleString('en-IN')],
                 ['Completed', metrics.statusBreakdown.Completed],
                 ['In-Progress', metrics.statusBreakdown.InProgress]
             ],
@@ -309,12 +308,11 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         // Deviation Summary Table
         autoTable(doc, {
             startY: doc.lastAutoTable.finalY + 10,
-            head: [['Deviation Category', 'Qty', 'Value (INR)']],
+            head: [['Deviation Category', 'Qty', 'Value (Rs.)']],
             body: [
-                ['Appeared', metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
-                ['Matched', metrics.deviations.matched.qty, metrics.deviations.matched.value],
-                ['Revised', metrics.deviations.revised.qty, metrics.deviations.revised.value],
-                ['In-Progress', metrics.deviations.pending.qty, metrics.deviations.pending.value],
+                ['Appeared', metrics.deviations.appeared.qty.toLocaleString('en-IN'), metrics.deviations.appeared.value.toLocaleString('en-IN')],
+                ['Matched', metrics.deviations.matched.qty.toLocaleString('en-IN'), metrics.deviations.matched.value.toLocaleString('en-IN')],
+                ['Revised', metrics.deviations.revised.qty.toLocaleString('en-IN'), metrics.deviations.revised.value.toLocaleString('en-IN')],
             ],
             theme: 'striped',
             headStyles: { fillColor: [41, 128, 185] }
@@ -324,16 +322,16 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         if (sortedRecords.length > 0) {
             autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 15,
-                head: [['Audit ID', 'Store', 'Date', 'Type', 'PIDs', 'SKUs', 'Qty', 'Value']],
+                head: [['Audit ID', 'Store', 'Date', 'Type', 'PIDs', 'SKUs', 'Qty', 'Value (Rs.)']],
                 body: sortedRecords.map(r => [
                     r.AUDIT_ID,
                     r.StoreName,
                     formatDate(r.AuditStartDate),
                     r.AuditJobType,
-                    r.AuditorAllottedPIDs,
-                    r.AuditorAllottedSKUs,
+                    (r.AuditorAllottedPIDs || 0).toLocaleString('en-IN'),
+                    (r.AuditorAllottedSKUs || 0).toLocaleString('en-IN'),
                     (r.AppearedQty || 0).toLocaleString('en-IN'),
-                    `₹${(r.AppearedValue || 0).toLocaleString('en-IN')}`
+                    (r.AppearedValue || 0).toLocaleString('en-IN')
                 ]),
                 theme: 'striped',
                 headStyles: { fillColor: [52, 73, 94] }

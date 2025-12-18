@@ -120,6 +120,14 @@ const SupervisorApprovals = ({ filters = {} }) => {
   const hasActiveFilters =
     filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
 
+  const formatIndianCurrency = (value) => {
+    if (value === undefined || value === null) return '0';
+    const val = Number(value);
+    if (val >= 10000000) return (val / 10000000).toFixed(2) + ' Cr';
+    if (val >= 100000) return (val / 100000).toFixed(2) + ' L';
+    return val.toLocaleString('en-IN');
+  };
+
   const { supervisorData, overallMetrics } = useMemo(() => {
     const supervisorMap = {};
     const supervisorAuditMap = {};
@@ -286,7 +294,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
                 body: [
                   ['Total Supervisors', supervisorData.length],
                   ['Total Audits', overallMetrics.totalAudits.toLocaleString()],
-                  ['Total Value', `₹${formatIndianCurrency(overallMetrics.totalValue)}`],
+                  ['Total Value', `Rs. ${formatIndianCurrency(overallMetrics.totalValue)}`],
                 ],
                 theme: 'striped',
                 headStyles: { fillColor: [41, 128, 185] }
@@ -299,7 +307,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
 
               autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 10,
-                head: [['ID', 'Name', 'Stores', 'Audits', 'Days', 'Auditors', 'SKUs', 'Value']],
+                head: [['ID', 'Name', 'Stores', 'Audits', 'Days', 'Auditors', 'SKUs', 'Value (Rs.)']],
                 body: dataToExport.map(s => [
                   s.supervisorId,
                   s.supervisorName,
@@ -307,8 +315,8 @@ const SupervisorApprovals = ({ filters = {} }) => {
                   s.totalAudits,
                   s.daysSupervised,
                   s.auditorsSupervised,
-                  s.totalSKUs?.toLocaleString(),
-                  `₹${s.totalValue?.toLocaleString('en-IN')}`
+                  s.totalSKUs?.toLocaleString('en-IN'),
+                  (s.totalValue || 0).toLocaleString('en-IN')
                 ]),
                 theme: 'grid',
                 styles: { fontSize: 8 },

@@ -57,14 +57,21 @@ const StoreCoverage = ({ filters = {} }) => {
 
   // Calculate store stats from filtered data
   const storeStats = useMemo(() => {
-    const totalActive = filteredStoreData.length;
+    // Assume all stores in data are active (can be enhanced with IsActive field if available)
+    const activeStores = filteredStoreData.filter(s => s.IsActive !== false).length;
+    const inactiveStores = filteredStoreData.filter(s => s.IsActive === false).length;
+    const totalStores = filteredStoreData.length;
+    
     const covered = filteredStoreData.filter(s => s.IsCovered).length;
-    const uncovered = totalActive - covered;
-    const coveredPercentage = totalActive > 0 ? ((covered / totalActive) * 100).toFixed(1) : 0;
-    const uncoveredPercentage = totalActive > 0 ? ((uncovered / totalActive) * 100).toFixed(1) : 0;
+    const uncovered = totalStores - covered;
+    const coveredPercentage = totalStores > 0 ? ((covered / totalStores) * 100).toFixed(1) : 0;
+    const uncoveredPercentage = totalStores > 0 ? ((uncovered / totalStores) * 100).toFixed(1) : 0;
 
     return {
-      totalActive,
+      totalStores,
+      activeStores,
+      inactiveStores,
+      totalActive: activeStores, // Keep for backward compatibility
       covered,
       uncovered,
       coveredPercentage: parseFloat(coveredPercentage),
@@ -597,32 +604,11 @@ const StoreCoverage = ({ filters = {} }) => {
       )}
       {/* KPI Summary Cards */}
       <Row className="g-3 mb-4">
-        <Col xs={12} className="d-flex justify-content-end mb-2">
-          <Dropdown>
-            <Dropdown.Toggle
-              size="sm"
-              variant="success"
-              id="summary-export-dropdown"
-            >
-              <i className="fas fa-download me-1"></i>
-              Export Summary
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={exportStoreCoverageToExcel}>
-                <i className="fas fa-file-excel text-success me-2"></i>
-                Export as Excel
-              </Dropdown.Item>
-              <Dropdown.Item onClick={exportStoreCoverageToPDF}>
-                <i className="fas fa-file-pdf text-danger me-2"></i>
-                Export as PDF
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </Col>
         <Col md={4}>
           <KPICard
             title="Total Stores"
-            value={storeStats.totalActive}
+            value={storeStats.totalStores}
+            subtitle={`Active: ${storeStats.activeStores} | Inactive: ${storeStats.inactiveStores}`}
             icon="fas fa-store"
             color="primary"
             onClick={() => showStoreDetails('Total Stores')}
@@ -664,7 +650,7 @@ const StoreCoverage = ({ filters = {} }) => {
                   <small className="text-muted">Breakdown of covered stores by days since last audit</small>
                 </div>
                 <div className="d-flex gap-2">
-                  <Dropdown>
+                  {/* <Dropdown>
                     <Dropdown.Toggle
                       size="sm"
                       variant="success"
@@ -683,7 +669,7 @@ const StoreCoverage = ({ filters = {} }) => {
                         Export as PDF
                       </Dropdown.Item>
                     </Dropdown.Menu>
-                  </Dropdown>
+                  </Dropdown> */}
                   <div className="btn-group" role="group">
                     <Button
                       size="sm"

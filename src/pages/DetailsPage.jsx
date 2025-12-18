@@ -44,22 +44,47 @@ const DetailsPage = ({ filters = {} }) => {
       ];
     } else if (type === 'covered-stores') {
       return [
-        { storeId: 'MP001', storeName: 'Chennai Central', state: 'Tamil Nadu', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2020-01-15', lastAuditedDate: '2024-11-15', cycle: 'Cycle 3', skus: 4200, quantity: 385000, mismatch: 12, deviation: 4, status: 'Active', inventoryValueMRP: 125000 },
-        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'Karnataka', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-08-20', lastAuditedDate: '2024-11-20', cycle: 'Cycle 3', skus: 3900, quantity: 425000, mismatch: 8, deviation: 3, status: 'Active', inventoryValueMRP: 198000 },
-        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'Telangana', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-03-12', lastAuditedDate: '2024-10-28', cycle: 'Cycle 2', skus: 5200, quantity: 498000, mismatch: 15, deviation: 5, status: 'Active', inventoryValueMRP: 167000 },
-        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'Maharashtra', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-05-10', lastAuditedDate: '2024-10-15', cycle: 'Cycle 2', skus: 4800, quantity: 512000, mismatch: 10, deviation: 4, status: 'Active', inventoryValueMRP: 215000 },
-        { storeId: 'MP005', storeName: 'Pune West', state: 'Maharashtra', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2021-02-05', lastAuditedDate: '2024-11-05', cycle: 'Cycle 3', skus: 3100, quantity: 285000, mismatch: 6, deviation: 2, status: 'Active', inventoryValueMRP: 89000 },
-        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'Delhi', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2020-06-18', lastAuditedDate: '2024-11-28', cycle: 'Cycle 3', skus: 4500, quantity: 545000, mismatch: 14, deviation: 6, status: 'Active', inventoryValueMRP: 245000 },
-        { storeId: 'MP007', storeName: 'Ahmedabad Main', state: 'Gujarat', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-09-22', lastAuditedDate: '2024-08-20', cycle: 'Cycle 2', skus: 3600, quantity: 365000, mismatch: 18, deviation: 7, status: 'Active', inventoryValueMRP: 178000 },
-        { storeId: 'MP008', storeName: 'Kolkata East', state: 'West Bengal', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-11-30', lastAuditedDate: '2024-09-10', cycle: 'Cycle 2', skus: 3800, quantity: 398000, mismatch: 11, deviation: 4, status: 'Active', inventoryValueMRP: 198000 }
+        { storeId: 'MP001', storeName: 'Chennai Central', state: 'Tamil Nadu', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2020-01-15', lastAuditedDate: '2024-11-15', cycle: 'Cycle 3', skus: 4200, quantity: 385000, mismatch: 12, deviation: 4, short: 5, shortValue: 8250, excess: 4, excessValue: 6800, contraExcess: 2, contraExcessValue: 5400, contraShort: 1, contraShortValue: 2150, status: 'Active', inventoryValueMRP: 125000 },
+        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'Karnataka', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-08-20', lastAuditedDate: '2024-11-20', cycle: 'Cycle 3', skus: 3900, quantity: 425000, mismatch: 8, deviation: 3, short: 4, shortValue: 6500, excess: 3, excessValue: 4950, contraExcess: 1, contraExcessValue: 2800, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 198000 },
+        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'Telangana', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-03-12', lastAuditedDate: '2024-10-28', cycle: 'Cycle 2', skus: 5200, quantity: 498000, mismatch: 15, deviation: 5, short: 7, shortValue: 11550, excess: 5, excessValue: 8250, contraExcess: 2, contraExcessValue: 5600, contraShort: 1, contraShortValue: 2400, status: 'Active', inventoryValueMRP: 167000 },
+        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'Maharashtra', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-05-10', lastAuditedDate: '2024-10-15', cycle: 'Cycle 2', skus: 4800, quantity: 512000, mismatch: 10, deviation: 4, short: 6, shortValue: 9900, excess: 3, excessValue: 4950, contraExcess: 1, contraExcessValue: 2800, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 215000 },
+        { storeId: 'MP005', storeName: 'Pune West', state: 'Maharashtra', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2021-02-05', lastAuditedDate: '2024-11-05', cycle: 'Cycle 3', skus: 3100, quantity: 285000, mismatch: 6, deviation: 2, short: 3, shortValue: 4950, excess: 2, excessValue: 3300, contraExcess: 1, contraExcessValue: 2800, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 89000 },
+        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'Delhi', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2020-06-18', lastAuditedDate: '2024-11-28', cycle: 'Cycle 3', skus: 4500, quantity: 545000, mismatch: 14, deviation: 6, short: 8, shortValue: 13200, excess: 5, excessValue: 8250, contraExcess: 3, contraExcessValue: 8400, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 245000 },
+        { storeId: 'MP007', storeName: 'Ahmedabad Main', state: 'Gujarat', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-09-22', lastAuditedDate: '2024-08-20', cycle: 'Cycle 2', skus: 3600, quantity: 365000, mismatch: 18, deviation: 7, short: 9, shortValue: 14850, excess: 6, excessValue: 9900, contraExcess: 3, contraExcessValue: 8400, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 178000 },
+        { storeId: 'MP008', storeName: 'Kolkata East', state: 'West Bengal', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-11-30', lastAuditedDate: '2024-09-10', cycle: 'Cycle 2', skus: 3800, quantity: 398000, mismatch: 11, deviation: 4, short: 5, shortValue: 8250, excess: 4, excessValue: 6600, contraExcess: 1, contraExcessValue: 2800, contraShort: 1, contraShortValue: 2150, status: 'Active', inventoryValueMRP: 198000 }
       ];
     } else if (type === 'uncovered-stores') {
+      // Calculate days since last audit or store creation for uncovered stores
+      const calculateDaysSince = (lastAuditDate, createdDate) => {
+        const today = new Date('2024-12-18'); // Current date
+        let referenceDate;
+        
+        if (lastAuditDate && lastAuditDate !== 'Never Audited') {
+          referenceDate = new Date(lastAuditDate);
+        } else {
+          referenceDate = new Date(createdDate);
+        }
+        
+        const diffTime = Math.abs(today - referenceDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+      };
+
+      const formatDaysOrMonths = (days) => {
+        if (days < 30) {
+          return `${days} day${days !== 1 ? 's' : ''}`;
+        } else {
+          const months = Math.floor(days / 30);
+          return `${months} month${months !== 1 ? 's' : ''}`;
+        }
+      };
+
       return [
-        { storeId: 'MP015', storeName: 'Jaipur Pink City', state: 'Rajasthan', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2024-10-15', lastAuditedDate: '-', status: 'Active', skus: 2650, quantity: 245000, inventoryValueMRP: 95000 },
-        { storeId: 'MP022', storeName: 'Lucknow Central', state: 'Uttar Pradesh', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2024-11-01', lastAuditedDate: '-', status: 'Active', skus: 2800, quantity: 298000, inventoryValueMRP: 145000 },
-        { storeId: 'MP033', storeName: 'Chandigarh Hub', state: 'Punjab', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2024-09-20', lastAuditedDate: '-', status: 'Active', skus: 4100, quantity: 435000, inventoryValueMRP: 189000 },
-        { storeId: 'MP041', storeName: 'Indore Main', state: 'Madhya Pradesh', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2024-11-10', lastAuditedDate: '-', status: 'Active', skus: 3500, quantity: 342000, inventoryValueMRP: 112000 },
-        { storeId: 'MP045', storeName: 'Patna Central', state: 'Bihar', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2024-10-28', lastAuditedDate: '-', status: 'Active', skus: 2350, quantity: 218000, inventoryValueMRP: 87000 }
+        { storeId: 'MP015', storeName: 'Jaipur Pink City', state: 'Rajasthan', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2024-10-15', lastAuditedDate: '2024-05-20', daysSinceCreation: formatDaysOrMonths(calculateDaysSince('2024-05-20', '2024-10-15')), status: 'Active', skus: 2650, quantity: 245000, inventoryValueMRP: 95000 },
+        { storeId: 'MP022', storeName: 'Lucknow Central', state: 'Uttar Pradesh', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2024-11-01', lastAuditedDate: 'Never Audited', daysSinceCreation: formatDaysOrMonths(calculateDaysSince('Never Audited', '2024-11-01')), status: 'Active', skus: 2800, quantity: 298000, inventoryValueMRP: 145000 },
+        { storeId: 'MP033', storeName: 'Chandigarh Hub', state: 'Punjab', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2024-09-20', lastAuditedDate: '2024-03-15', daysSinceCreation: formatDaysOrMonths(calculateDaysSince('2024-03-15', '2024-09-20')), status: 'Active', skus: 4100, quantity: 435000, inventoryValueMRP: 189000 },
+        { storeId: 'MP041', storeName: 'Indore Main', state: 'Madhya Pradesh', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2024-11-10', lastAuditedDate: '2024-06-10', daysSinceCreation: formatDaysOrMonths(calculateDaysSince('2024-06-10', '2024-11-10')), status: 'Active', skus: 3500, quantity: 342000, inventoryValueMRP: 112000 },
+        { storeId: 'MP045', storeName: 'Patna Central', state: 'Bihar', storeType: 'REGULAR', boxType: 'Non Box Mapping', storeCreatedDate: '2024-10-28', lastAuditedDate: 'Never Audited', daysSinceCreation: formatDaysOrMonths(calculateDaysSince('Never Audited', '2024-10-28')), status: 'Active', skus: 2350, quantity: 218000, inventoryValueMRP: 87000 }
       ];
     } else if (type === 'stores-recency-oct-dec') {
       return [
@@ -303,14 +328,6 @@ const DetailsPage = ({ filters = {} }) => {
     const dataToExport = filteredData.map(row => {
       // Logic for Covered Stores specific headers
       if (type === 'covered-stores') {
-        // Synthesize breakdown data since it's not in the simple mock model
-        const totalDev = row.deviation || 0;
-        // Distribute approximately: Short 40%, Excess 30%, CE 20%, CS 10%
-        const short = Math.ceil(totalDev * 0.4);
-        const excess = Math.ceil(totalDev * 0.3);
-        const contraExcess = Math.ceil(totalDev * 0.2);
-        const contraShort = Math.max(0, totalDev - short - excess - contraExcess);
-
         return {
           "STORE ID": row.storeId,
           "STORE NAME": row.storeName,
@@ -324,14 +341,14 @@ const DetailsPage = ({ filters = {} }) => {
           "QUANTITY (units)": row.quantity,
           "MISMATCH": row.mismatch,
           "DEVIATION": row.deviation,
-          "SHORT": short,
-          "VALUE_SHORT": short * 1500, // Dummy value
-          "EXCESS": excess,
-          "VALUE_EXCESS": excess * 1200,
-          "CONTRA EXCESS": contraExcess,
-          "VALUE_CE": contraExcess * 2000,
-          "CONTRA SHORT": contraShort,
-          "VALUE_CS": contraShort * 1800
+          "SHORT": row.short || 0,
+          "VALUE_SHORT": row.shortValue || 0,
+          "EXCESS": row.excess || 0,
+          "VALUE_EXCESS": row.excessValue || 0,
+          "CONTRA EXCESS": row.contraExcess || 0,
+          "VALUE_CE": row.contraExcessValue || 0,
+          "CONTRA SHORT": row.contraShort || 0,
+          "VALUE_CS": row.contraShortValue || 0
         };
       } else {
         // Default generic export for other views
@@ -392,20 +409,14 @@ const DetailsPage = ({ filters = {} }) => {
       ];
 
       tableData = filteredData.map(row => {
-        const totalDev = row.deviation || 0;
-        const short = Math.ceil(totalDev * 0.4);
-        const excess = Math.ceil(totalDev * 0.3);
-        const contraExcess = Math.ceil(totalDev * 0.2);
-        const contraShort = Math.max(0, totalDev - short - excess - contraExcess);
-
         return [
           row.storeId, row.storeName, row.state, row.storeType, row.boxType,
           row.storeCreatedDate, row.lastAuditedDate, row.cycle, row.skus,
           row.quantity, row.mismatch, row.deviation,
-          short, (short * 1500).toLocaleString('en-IN'),
-          excess, (excess * 1200).toLocaleString('en-IN'),
-          contraExcess, (contraExcess * 2000).toLocaleString('en-IN'),
-          contraShort, (contraShort * 1800).toLocaleString('en-IN')
+          row.short || 0, '₹' + (row.shortValue || 0).toLocaleString('en-IN'),
+          row.excess || 0, '₹' + (row.excessValue || 0).toLocaleString('en-IN'),
+          row.contraExcess || 0, '₹' + (row.contraExcessValue || 0).toLocaleString('en-IN'),
+          row.contraShort || 0, '₹' + (row.contraShortValue || 0).toLocaleString('en-IN')
         ];
       });
 
@@ -496,6 +507,7 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'boxType') return 'BOX TYPE';
     if (key === 'storeCreatedDate') return 'STORE CREATED DATE';
     if (key === 'lastAuditedDate') return 'LAST AUDITED DATE';
+    if (key === 'daysSinceCreation') return 'NO. OF DAYS/MONTHS';
     if (key === 'status') return 'STATUS';
     if (key === 'inventoryValueMRP') return 'INVENTORY VALUE MRP (₹)';
     if (key === 'mismatch') return 'MISMATCH';
@@ -521,6 +533,12 @@ const DetailsPage = ({ filters = {} }) => {
     if (key.includes('sku') || key.includes('SKU') || key.includes('PID')) return label + ' (count)';
 
     return label;
+  };
+
+  // Helper function to filter out deviation detail columns from table display
+  const shouldHideColumn = (key) => {
+    const hiddenColumns = ['short', 'shortValue', 'excess', 'excessValue', 'contraExcess', 'contraExcessValue', 'contraShort', 'contraShortValue'];
+    return hiddenColumns.includes(key);
   };
 
   // Determine if store click is enabled for this view
@@ -673,7 +691,7 @@ const DetailsPage = ({ filters = {} }) => {
             <Table striped hover responsive className="mb-0">
               <thead style={{ position: 'sticky', top: 0, background: 'white', zIndex: 1 }}>
                 <tr>
-                  {Object.keys(filteredData[0] || {}).filter(key => key !== 'mismatchDetails').map(key => (
+                  {Object.keys(filteredData[0] || {}).filter(key => key !== 'mismatchDetails' && !shouldHideColumn(key)).map(key => (
                     <th key={key}>{formatColumnHeader(key)}</th>
                   ))}
                 </tr>
@@ -697,7 +715,7 @@ const DetailsPage = ({ filters = {} }) => {
                           e.currentTarget.style.backgroundColor = '';
                         }}
                       >
-                        {Object.entries(row).filter(([key]) => key !== 'mismatchDetails').map(([key, value], i) => (
+                        {Object.entries(row).filter(([key]) => key !== 'mismatchDetails' && !shouldHideColumn(key)).map(([key, value], i) => (
                           <td
                             key={i}
                             onClick={(e) => {

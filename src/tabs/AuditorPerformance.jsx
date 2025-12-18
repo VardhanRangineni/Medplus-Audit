@@ -73,6 +73,7 @@ const AuditorPerformance = ({ filters = {} }) => {
           auditorId: id,
           auditorName: record.AuditorName,
           allottedSKUs: 0,
+          allottedPIDs: 0,
           completedSKUs: 0,
           totalAvgTimePerSKU: 0,
           totalAvgTimePerPID: 0,
@@ -87,6 +88,7 @@ const AuditorPerformance = ({ filters = {} }) => {
       const auditor = auditorMap[id];
       // Use "AuditorAllottedSKUs" and "CompletedSKUs" from JSON
       auditor.allottedSKUs += (record.AuditorAllottedSKUs || 0);
+      auditor.allottedPIDs += (record.AuditorAllottedPIDs || 0);
       auditor.completedSKUs += (record.CompletedSKUs || 0);
 
       // Use direct values from JSON
@@ -128,6 +130,7 @@ const AuditorPerformance = ({ filters = {} }) => {
         auditorId: auditor.auditorId,
         auditorName: auditor.auditorName,
         allottedSKUs: auditor.allottedSKUs,
+        allottedPIDs: auditor.allottedPIDs,
         completedSKUs: auditor.completedSKUs,
         completionRate: completionRate,
         avgTime: avgTime,
@@ -204,9 +207,10 @@ const AuditorPerformance = ({ filters = {} }) => {
       "Auditor ID": a.auditorId,
       "Auditor Name": a.auditorName,
       "Total Audits": a.totalAudits,
+      "Allotted PIDs": a.allottedPIDs,
       "Allotted SKUs": a.allottedSKUs,
-      "Avg Time/SKU (min)": a.avgTime,
       "Avg Time/PID (min)": a.avgTimePID,
+      "Avg Time/SKU (min)": a.avgTime,
       "Match Rate %": a.matchRate,
       "Edit Rate %": a.editRate,
       "Total Value (Rs.)": a.totalValue,
@@ -214,7 +218,7 @@ const AuditorPerformance = ({ filters = {} }) => {
     const wsDetails = utils.json_to_sheet(detailedData);
     wsDetails['!cols'] = [
       { wch: 15 }, { wch: 25 }, { wch: 15 },
-      { wch: 18 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 18 }
+      { wch: 18 }, { wch: 18 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 18 }
     ];
     utils.book_append_sheet(wb, wsDetails, "Auditor Details");
 
@@ -237,8 +241,8 @@ const AuditorPerformance = ({ filters = {} }) => {
       startY: 42,
       head: [['Metric', 'Value']],
       body: [
-        ['Avg Time per SKU', performanceMetrics.avgTimePerSKU],
         ['Avg Time per PID', performanceMetrics.avgTimePerPID],
+        ['Avg Time per SKU', performanceMetrics.avgTimePerSKU],
         ['Match Rate', `${performanceMetrics.matchRate}%`],
         ['Edit Rate', `${performanceMetrics.editRate}%`],
         ['Total Auditors', auditorData.length],
@@ -250,16 +254,17 @@ const AuditorPerformance = ({ filters = {} }) => {
     // Auditor Details Table
     autoTable(doc, {
       startY: doc.lastAutoTable.finalY + 10,
-      head: [['ID', 'Name', 'Audits', 'Allotted', 'Avg T/SKU', 'Avg T/PID', 'Match %', 'Edit %', 'Value (Rs.)']],
+      head: [['ID', 'Name', 'Audits', 'Allotted PIDs', 'Allotted SKUs', 'Avg Time/PID', 'Avg Time/SKU', 'Match %', 'Edit %', 'Value (Rs.)']],
       body: (searchQuery
         ? auditorData.filter(a => a.auditorName.toLowerCase().includes(searchQuery.toLowerCase()))
         : auditorData).map(a => [
           a.auditorId,
           a.auditorName,
           a.totalAudits,
+          a.allottedPIDs.toLocaleString(),
           a.allottedSKUs.toLocaleString(),
-          `${a.avgTime} min`,
           `${a.avgTimePID} min`,
+          `${a.avgTime} min`,
           `${a.matchRate}%`,
           `${a.editRate}%`,
           (a.totalValue || 0).toLocaleString('en-IN')
@@ -291,19 +296,24 @@ const AuditorPerformance = ({ filters = {} }) => {
               Total Audits {getSortIcon('totalAudits')}
             </div>
           </th>
+          <th onClick={() => requestSort('allottedPIDs')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Allotted PIDs {getSortIcon('allottedPIDs')}
+            </div>
+          </th>
           <th onClick={() => requestSort('allottedSKUs')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
               Allotted SKUs {getSortIcon('allottedSKUs')}
             </div>
           </th>
-          <th onClick={() => requestSort('avgTime')} style={{ cursor: 'pointer' }}>
-            <div className="d-flex align-items-center gap-1">
-              Avg Time/SKU {getSortIcon('avgTime')}
-            </div>
-          </th>
           <th onClick={() => requestSort('avgTimePID')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
               Avg Time/PID {getSortIcon('avgTimePID')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('avgTime')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Avg Time/SKU {getSortIcon('avgTime')}
             </div>
           </th>
           <th onClick={() => requestSort('matchRate')} style={{ cursor: 'pointer' }}>
@@ -342,12 +352,13 @@ const AuditorPerformance = ({ filters = {} }) => {
               {auditor.auditorName}
             </td>
             <td className="text-center">{auditor.totalAudits}</td>
+            <td>{auditor.allottedPIDs.toLocaleString()}</td>
             <td>{auditor.allottedSKUs.toLocaleString()}</td>
             <td>
-              {auditor.avgTime} min
+              {auditor.avgTimePID} min
             </td>
             <td>
-              {auditor.avgTimePID} min
+              {auditor.avgTime} min
             </td>
             <td>
               {auditor.matchRate.toFixed(1)}%
@@ -416,20 +427,20 @@ const AuditorPerformance = ({ filters = {} }) => {
         </Col>
         <Col md={3}>
           <KPICard
-            title="Avg Time / SKU"
-            value={performanceMetrics.avgTimePerSKU}
-            subtitle="Productivity efficiency"
-            icon="fas fa-clock"
-            color="primary"
-          />
-        </Col>
-        <Col md={3}>
-          <KPICard
             title="Avg Time / PID"
             value={performanceMetrics.avgTimePerPID}
             subtitle="Productivity efficiency"
             icon="fas fa-hourglass-half"
             color="info"
+          />
+        </Col>
+        <Col md={3}>
+          <KPICard
+            title="Avg Time / SKU"
+            value={performanceMetrics.avgTimePerSKU}
+            subtitle="Productivity efficiency"
+            icon="fas fa-clock"
+            color="primary"
           />
         </Col>
         <Col md={3}>

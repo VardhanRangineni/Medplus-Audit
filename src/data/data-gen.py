@@ -4,39 +4,44 @@ from datetime import datetime, timedelta, date, time
 
 # ---------------- SUPERVISORS ----------------
 supervisors = {
-    "S001":"Aditya Reddy","S002":"Srinivas Rao","S003":"Karthik Reddy","S004":"Praveen Chowdary",
-    "S005":"Vamsi Krishna","S006":"Harsha Varma","S007":"Sandeep Reddy","S008":"Naveen Goud",
-    "S009":"Rohith Naidu","S010":"Sai Kumar"
+    "S001": "Aditya Reddy", "S002": "Srinivas Rao", "S003": "Karthik Reddy", "S004": "Praveen Chowdary",
+    "S005": "Vamsi Krishna", "S006": "Harsha Varma", "S007": "Sandeep Reddy", "S008": "Naveen Goud",
+    "S009": "Rohith Naidu", "S010": "Sai Kumar", "S011": "Manoj Kumar", "S012": "Rakesh Sharma",
+    "S013": "Vikram Singh", "S014": "Anand Raj", "S015": "Sathish Reddy"
 }
 
 # ---------------- AUDITORS ----------------
 auditors = {
-    "A011": "Raghu Babu","A012": "Chaitanya Reddy","A013": "Lokesh Rao","A014": "Mahesh Babu",
-    "A015": "Bharath Reddy","A016": "Venkatesh Varma","A017": "Surya Teja","A018": "Manoj Naidu",
-    "A019": "Arjun Reddy","A020": "Ravi Kumar","A021": "Santosh Rao","A022": "Pavan Kalyan",
-    "A023": "Anil Kumar","A024": "Teja Reddy","A025": "Rahul Varma","A026": "Deepak Goud",
-    "A027": "Sharath Reddy","A028": "Yogesh Naidu","A029": "Vinay Kumar","A030": "Sashank Reddy",
-    "A031": "Ajay Rao","A032": "Gopi Krishna","A033": "Sriram Reddy","A034": "Rajesh Chowdary",
-    "A035": "Sudheer Naidu","A036": "Kiran Kumar","A037": "Uday Varma","A038": "Balaji Reddy",
-    "A039": "Srikanth Rao","A040": "Madhav Naidu","A041": "Charan Reddy","A042": "Tarun Varma",
-    "A043": "Shankar Reddy","A044": "Jayanth Goud","A045": "Nikhil Reddy","A046": "Abhinay Naidu",
-    "A047": "Rakesh Kumar","A048": "Suman Reddy","A049": "Jagadeesh Rao","A050": "Gopi Krishna"
+    "A011": "Raghu Babu", "A012": "Chaitanya Reddy", "A013": "Lokesh Rao", "A014": "Mahesh Babu",
+    "A015": "Bharath Reddy", "A016": "Venkatesh Varma", "A017": "Surya Teja", "A018": "Manoj Naidu",
+    "A019": "Arjun Reddy", "A020": "Ravi Kumar", "A021": "Santosh Rao", "A022": "Pavan Kalyan",
+    "A023": "Anil Kumar", "A024": "Teja Reddy", "A025": "Rahul Varma", "A026": "Deepak Goud",
+    "A027": "Sharath Reddy", "A028": "Yogesh Naidu", "A029": "Vinay Kumar", "A030": "Sashank Reddy",
+    "A031": "Ajay Rao", "A032": "Gopi Krishna", "A033": "Sriram Reddy", "A034": "Rajesh Chowdary",
+    "A035": "Sudheer Naidu", "A036": "Kiran Kumar", "A037": "Uday Varma", "A038": "Balaji Reddy",
+    "A039": "Srikanth Rao", "A040": "Madhav Naidu", "A041": "Charan Reddy", "A042": "Tarun Varma",
+    "A043": "Shankar Reddy", "A044": "Jayanth Goud", "A045": "Nikhil Reddy", "A046": "Abhinay Naidu",
+    "A047": "Rakesh Kumar", "A048": "Suman Reddy", "A049": "Jagadeesh Rao", "A050": "Gopi Krishna"
 }
-
 
 # ---------------- STORES ----------------
 stores = [
-    "Hyd-Madhapur","Hyd-Kukatpally","Hyd-Ameerpet","Hyd-Begumpet","Hyd-Miyapur",
-    "Hyd-Banjara Hills","Hyd-Secunderabad","Hyd-Dilsukhnagar","Hyd-Tarnaka","Hyd-Gachibowli"
+    "Hyd-Madhapur", "Hyd-Kukatpally", "Hyd-Ameerpet", "Hyd-Begumpet", "Hyd-Miyapur",
+    "Hyd-Banjara Hills", "Hyd-Secunderabad", "Hyd-Dilsukhnagar", "Hyd-Tarnaka", "Hyd-Gachibowli",
+    "Hyd-Jubilee Hills", "Hyd-Hitech City", "Hyd-Kondapur", "Hyd-Manikonda", "Hyd-Mehdipatnam",
+    "Hyd-Charminar", "Hyd-LB Nagar", "Hyd-Uppal", "Hyd-Nagole", "Hyd-Ramanthapur",
+    "Hyd-Amberpet", "Hyd-Musheerabad", "Hyd-Nampally", "Hyd-Abids", "Hyd-Koti",
+    "Hyd-Malakpet", "Hyd-Saidabad", "Hyd-Santosh Nagar", "Hyd-Chandrayangutta", "Hyd-Falaknuma"
 ]
 
 store_ids = {store: f"MP{i+1:04d}" for i, store in enumerate(stores)}
 
 audit_job_types = ["Full Audit", "Partial Audit", "Select SKUs"]
+audit_statuses = ["Completed", "In-Progress", "Pending", "Created"]
 
 # ---------------- DATE RANGE ----------------
 DATA_START = datetime(2022, 12, 16)
-DATA_END   = datetime(2025, 12, 15)
+DATA_END = datetime(2025, 12, 15)
 TODAY = date.today()
 
 def rand_date():
@@ -79,7 +84,7 @@ def generate_day_wise_summary(start_date, end_date, pids, skus, value):
 
 rows = []
 audit_counter = 1
-TOTAL_AUDITS = 1000
+TOTAL_AUDITS = 876  # Changed from 1000 to be less "round"
 
 # ---------------- DATA GENERATION ----------------
 for _ in range(TOTAL_AUDITS):
@@ -90,6 +95,9 @@ for _ in range(TOTAL_AUDITS):
     store = random.choice(stores)
     store_id = store_ids[store]
     audit_job_type = random.choice(audit_job_types)
+    
+    # Weighted status to have fewer pending/created
+    status = random.choices(audit_statuses, weights=[70, 20, 5, 5], k=1)[0]
 
     supervisor_id = random.choice(list(supervisors))
     supervisor_name = supervisors[supervisor_id]
@@ -97,6 +105,8 @@ for _ in range(TOTAL_AUDITS):
     audit_start = rand_date().date()
     audit_end = min(audit_start + timedelta(days=random.randint(2, 5)), TODAY)
 
+    # If status is created or pending, end date might not be set or relevant, but keeping structurally consistant for now
+    
     # -------- STORE TOTALS --------
     store_total_pids = random.randint(2000, 6000)
     store_total_skus = store_total_pids * random.randint(3, 6)
@@ -107,6 +117,11 @@ for _ in range(TOTAL_AUDITS):
     pid_split = split_exact(store_total_pids, len(auditor_list))
     sku_split = split_exact(store_total_skus, len(auditor_list))
     value_split = split_exact(store_audit_value, len(auditor_list))
+
+    # Add PendingCount logic roughly
+    pending_count_total = 0
+    if status in ["Pending", "In-Progress"]:
+         pending_count_total = random.randint(5, 50)
 
     for aud_id, ap, asku, aval in zip(auditor_list, pid_split, sku_split, value_split):
 
@@ -131,7 +146,10 @@ for _ in range(TOTAL_AUDITS):
         avg_time_pid = round(avg_time_pid, 2)
 
         # ---------- SAMPLING / DEVIATION ----------
-        appeared_qty = random.randint(80, 220)
+        # Logic update: Qty should be > SKUs and < Value
+        # Assuming avg quantity per SKU is between 8 and 25
+        appeared_qty = int(asku * random.uniform(8, 25))
+        
         match_ratio = random.uniform(0.85, 0.97)
 
         matched_qty = int(appeared_qty * match_ratio)
@@ -140,6 +158,22 @@ for _ in range(TOTAL_AUDITS):
         appeared_value = random.randint(25_000, 75_000)
         matched_value = int(appeared_value * match_ratio)
         revised_value = appeared_value - matched_value
+        
+        # Pending logic per auditor
+        pending_count = 0 
+        pending_qty = 0
+        pending_val = 0
+        
+        if pending_count_total > 0:
+            pending_count = random.randint(0, min(10, pending_count_total))
+            pending_count_total -= pending_count
+            if pending_count > 0:
+                 pending_qty = pending_count * random.randint(1, 5)
+                 pending_val = pending_qty * random.randint(100, 500)
+
+        # Completed logic
+        completed_skus = int(asku * random.uniform(0.9, 1.0)) if status == "Completed" else int(asku * random.uniform(0.1, 0.7))
+        completion_percent = round((completed_skus / asku) * 100, 1) if asku > 0 else 0
 
         day_summary = generate_day_wise_summary(
             audit_start, audit_end, ap, asku, aval
@@ -150,6 +184,7 @@ for _ in range(TOTAL_AUDITS):
             "StoreID": store_id,
             "StoreName": store,
             "AuditJobType": audit_job_type,
+            "Status": status,
             "AuditStartDate": audit_start.isoformat(),
             "AuditEndDate": audit_end.isoformat(),
 
@@ -165,6 +200,9 @@ for _ in range(TOTAL_AUDITS):
             "AuditorAllottedPIDs": ap,
             "AuditorAllottedSKUs": asku,
             "AuditorAuditedValue": aval,
+            
+            "CompletedSKUs": completed_skus,
+            "CompletionPercent": completion_percent,
 
             "AvgTimePerSKU": avg_time_sku,
             "AvgTimePerPID": avg_time_pid,
@@ -175,6 +213,10 @@ for _ in range(TOTAL_AUDITS):
             "AppearedValue": appeared_value,
             "MatchedValue": matched_value,
             "RevisedValue": revised_value,
+            
+            "PendingCount": pending_count,
+            "PendingQty": pending_qty,
+            "PendingValue": pending_val,
 
             "DayWiseSummary": day_summary
         })

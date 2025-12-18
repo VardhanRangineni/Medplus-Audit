@@ -26,7 +26,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
       const auditData = liveAuditData.find(a => a.StoreID === selectedStore.storeId);
       // Also find store inventory data
       const storeInventory = storeCoverageData.find(s => s.StoreID === selectedStore.storeId);
-      
+
       if (auditData) {
         // Transform auditors data to match modal expected structure
         const transformedAuditors = auditData.Auditors ? auditData.Auditors.map(auditor => ({
@@ -42,7 +42,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
         const deviationMap = {};
         const contraItems = [];
         const productFormDataMap = {};
-        
+
         if (auditData.MismatchDetails && Array.isArray(auditData.MismatchDetails)) {
           auditData.MismatchDetails.forEach(item => {
             const devType = item.Type || 'Other';
@@ -53,7 +53,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
             // Calculate value based on difference and unit price
             const value = Math.abs(item.Difference || 0) * (item.Value ? (item.Value / Math.abs(item.Difference || 1)) : 150);
             deviationMap[devType].value += value;
-            
+
             // Add to contra items with proper structure
             contraItems.push({
               skuCode: item.SKU,
@@ -71,25 +71,25 @@ const LiveAuditSchedule = ({ filters = {} }) => {
           const totalSKUs = auditData.TotalSKUs || 0;
           const estimatedDeviationRate = 0.03; // 3% deviation rate
           const estimatedMismatchRate = 0.02; // 2% mismatch rate
-          
+
           // Generate estimated deviation counts
-          deviationMap['Short'] = { 
-            type: 'Short', 
+          deviationMap['Short'] = {
+            type: 'Short',
             count: Math.floor(totalSKUs * estimatedDeviationRate * 0.6),
             value: Math.floor(totalSKUs * estimatedDeviationRate * 0.6 * 150)
           };
-          deviationMap['Excess'] = { 
-            type: 'Excess', 
+          deviationMap['Excess'] = {
+            type: 'Excess',
             count: Math.floor(totalSKUs * estimatedDeviationRate * 0.4),
             value: Math.floor(totalSKUs * estimatedDeviationRate * 0.4 * 150)
           };
-          deviationMap['Contra Short'] = { 
-            type: 'Contra Short', 
+          deviationMap['Contra Short'] = {
+            type: 'Contra Short',
             count: Math.floor(totalSKUs * estimatedMismatchRate * 0.55),
             value: Math.floor(totalSKUs * estimatedMismatchRate * 0.55 * 180)
           };
-          deviationMap['Contra Excess'] = { 
-            type: 'Contra Excess', 
+          deviationMap['Contra Excess'] = {
+            type: 'Contra Excess',
             count: Math.floor(totalSKUs * estimatedMismatchRate * 0.45),
             value: Math.floor(totalSKUs * estimatedMismatchRate * 0.45 * 180)
           };
@@ -143,7 +143,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
           contra: contraItems,
           productFormData: productFormDataMap
         };
-        
+
         setStoreData(transformedData);
       } else {
         setStoreData(null);
@@ -194,7 +194,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
     return filteredAuditData.map(audit => {
       const startDate = new Date(audit.StartDate);
       const endDate = audit.EndDate ? new Date(audit.EndDate) : null;
-      
+
       // Transform mismatch details to match component field names
       const transformedMismatchDetails = (audit.MismatchDetails || []).map(item => ({
         productId: item.ProductID,
@@ -207,7 +207,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
         difference: item.Difference,
         value: item.Value
       }));
-      
+
       return {
         storeId: audit.StoreID,
         storeName: audit.StoreName,
@@ -316,7 +316,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
   const exportAuditDataToExcel = () => {
     let dataToExport = [];
     let fileName = `Audit_${selectedStatus}_${new Date().toISOString().split('T')[0]}.xlsx`;
-    
+
     if (selectedStatus === 'completed') {
       dataToExport = auditTableData.map(audit => ({
         'Store ID': audit.storeId,
@@ -353,11 +353,11 @@ const LiveAuditSchedule = ({ filters = {} }) => {
 
     // Create worksheet
     const ws = utils.json_to_sheet(dataToExport);
-    
+
     // Create workbook
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, 'Audit Data');
-    
+
     // Download file
     writeFile(wb, fileName);
   };
@@ -365,22 +365,22 @@ const LiveAuditSchedule = ({ filters = {} }) => {
   // Export audit data to PDF
   const exportAuditDataToPDF = () => {
     const doc = new jsPDF();
-    
+
     // Title
     doc.setFontSize(16);
-    const statusTitle = selectedStatus === 'created' ? 'Created' : 
-                       selectedStatus === 'in-progress' ? 'In Progress' : 
-                       selectedStatus === 'pending' ? 'Pending' : 'Completed';
+    const statusTitle = selectedStatus === 'created' ? 'Created' :
+      selectedStatus === 'in-progress' ? 'In Progress' :
+        selectedStatus === 'pending' ? 'Pending' : 'Completed';
     doc.text(`Live Audit Schedule - ${statusTitle}`, 14, 20);
-    
+
     doc.setFontSize(10);
     doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 28);
     doc.text(`Total Audits: ${auditTableData.length}`, 14, 34);
-    
+
     // Prepare table data
     let headers = [];
     let rows = [];
-    
+
     if (selectedStatus === 'completed') {
       headers = [['Store ID', 'Store Name', 'State', 'Supervisor', 'Auditors', 'Start Date', 'End Date', 'PIDs', 'SKUs', 'Duration', 'Deviations', 'Mismatch']];
       rows = auditTableData.map(audit => [
@@ -410,7 +410,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
         `${audit.progress.toFixed(1)}%`
       ]);
     }
-    
+
     // Create table
     autoTable(doc, {
       startY: 42,
@@ -443,7 +443,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
         7: { cellWidth: 20 }
       }
     });
-    
+
     // Save PDF
     const fileName = `Audit_${selectedStatus}_${new Date().toISOString().split('T')[0]}.pdf`;
     doc.save(fileName);
@@ -653,9 +653,6 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                                 <td>
                                   <Badge bg="primary">{audit.duration}</Badge>
                                 </td>
-                                <td>
-                                  <Badge bg="danger">{audit.deviations || 0}</Badge>
-                                </td>
                                 <td
                                   onClick={(e) => {
                                     if (audit.mismatchDetails && audit.mismatchDetails.length > 0) {
@@ -664,14 +661,18 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                                     }
                                   }}
                                   style={{
-                                    cursor: audit.mismatchDetails && audit.mismatchDetails.length > 0 ? 'pointer' : 'default',
-                                    color: audit.mismatchDetails && audit.mismatchDetails.length > 0 ? '#0d6efd' : 'inherit'
+                                    cursor: audit.mismatchDetails && audit.mismatchDetails.length > 0 ? 'pointer' : 'default'
                                   }}
                                 >
+                                  <div className="d-flex align-items-center justify-content-center gap-2">
+                                    <Badge bg="danger">{audit.deviations || 0}</Badge>
+                                    {audit.mismatchDetails && audit.mismatchDetails.length > 0 && (
+                                      <i className={`fas fa-chevron-${expandedRows[audit.storeId] ? 'up' : 'down'} text-primary`} style={{ fontSize: '0.8rem' }}></i>
+                                    )}
+                                  </div>
+                                </td>
+                                <td>
                                   <span className="fw-semibold">{audit.mismatch}</span>
-                                  {audit.mismatchDetails && audit.mismatchDetails.length > 0 && (
-                                    <i className={`fas fa-chevron-${expandedRows[audit.storeId] ? 'up' : 'down'} ms-2`}></i>
-                                  )}
                                 </td>
                               </>
                             )}

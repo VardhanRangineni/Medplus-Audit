@@ -200,7 +200,7 @@
     "CompletedSKUs": 5300,
     "CompletionPercent": 100,
     "DurationHours": 240,
-    "MismatchCount": 10,
+    "MismatchCount": 5,
     "MismatchDetails": [
       {
         "ProductID": "PID6942",
@@ -234,86 +234,9 @@
         "PhysicalQty": 117,
         "Difference": 2,
         "Value": 7292.14
-      },
-      {
-        "ProductID": "PID7769",
-        "SKU": "SKU87738",
-        "ProductName": "Medicine B 492mg",
-        "ProductForm": "Inhalers",
-        "Type": "Excess",
-        "SystemQty": 86,
-        "PhysicalQty": 94,
-        "Difference": 8,
-        "Value": 4101.52
-      },
-      {
-        "ProductID": "PID2893",
-        "SKU": "SKU64187",
-        "ProductName": "Medicine A 369mg",
-        "ProductForm": "General",
-        "Type": "Contra Short",
-        "SystemQty": 121,
-        "PhysicalQty": 113,
-        "Difference": -8,
-        "Value": 9331.26
-      },
-      {
-        "ProductID": "PID9821",
-        "SKU": "SKU20832",
-        "ProductName": "Medicine B 444mg",
-        "ProductForm": "Liquids",
-        "Type": "Contra Excess",
-        "SystemQty": 101,
-        "PhysicalQty": 106,
-        "Difference": 5,
-        "Value": 1319.7
-      },
-      {
-        "ProductID": "PID6763",
-        "SKU": "SKU83594",
-        "ProductName": "Medicine D 163mg",
-        "ProductForm": "Injection",
-        "Type": "Contra Short",
-        "SystemQty": 61,
-        "PhysicalQty": 58,
-        "Difference": -3,
-        "Value": 1618.49
-      },
-      {
-        "ProductID": "PID8173",
-        "SKU": "SKU43558",
-        "ProductName": "Medicine B 222mg",
-        "ProductForm": "Injection",
-        "Type": "Contra Short",
-        "SystemQty": 104,
-        "PhysicalQty": 98,
-        "Difference": -6,
-        "Value": 4786.09
-      },
-      {
-        "ProductID": "PID9940",
-        "SKU": "SKU67071",
-        "ProductName": "Medicine A 431mg",
-        "ProductForm": "Inhalers",
-        "Type": "Short",
-        "SystemQty": 153,
-        "PhysicalQty": 148,
-        "Difference": -5,
-        "Value": 5030.24
-      },
-      {
-        "ProductID": "PID9879",
-        "SKU": "SKU75979",
-        "ProductName": "Medicine B 330mg",
-        "ProductForm": "Powders",
-        "Type": "Excess",
-        "SystemQty": 114,
-        "PhysicalQty": 119,
-        "Difference": 5,
-        "Value": 9709.06
       }
     ],
-    "DeviationCount": 5,
+    "DeviationCount": 3,
     "Auditors": [
       {
         "AuditorID": "A015",
@@ -422,7 +345,7 @@
     "CompletedSKUs": 3141,
     "CompletionPercent": 100,
     "DurationHours": 120,
-    "MismatchCount": 9,
+    "MismatchCount": 7,
     "MismatchDetails": [
       {
         "ProductID": "PID7374",
@@ -524,7 +447,7 @@
         "Value": 5884.85
       }
     ],
-    "DeviationCount": 7,
+    "DeviationCount": 9,
     "Auditors": [
       {
         "AuditorID": "A013",
@@ -600,7 +523,7 @@
     "CompletedSKUs": 3101,
     "CompletionPercent": 100,
     "DurationHours": 288,
-    "MismatchCount": 13,
+    "MismatchCount": 7,
     "MismatchDetails": [
       {
         "ProductID": "PID5734",
@@ -746,7 +669,7 @@
         "Value": 9162.14
       }
     ],
-    "DeviationCount": 7,
+    "DeviationCount": 13,
     "Auditors": [
       {
         "AuditorID": "A008",
@@ -822,7 +745,7 @@
     "CompletedSKUs": 4191,
     "CompletionPercent": 100,
     "DurationHours": 192,
-    "MismatchCount": 7,
+    "MismatchCount": 6,
     "MismatchDetails": [
       {
         "ProductID": "PID3824",
@@ -902,7 +825,7 @@
         "Value": 5530.04
       }
     ],
-    "DeviationCount": 6,
+    "DeviationCount": 7,
     "Auditors": [
       {
         "AuditorID": "A009",
@@ -978,7 +901,7 @@
     "CompletedSKUs": 4723,
     "CompletionPercent": 100,
     "DurationHours": 192,
-    "MismatchCount": 8,
+    "MismatchCount": 7,
     "MismatchDetails": [
       {
         "ProductID": "PID9867",
@@ -1069,7 +992,7 @@
         "Value": 9467.55
       }
     ],
-    "DeviationCount": 7,
+    "DeviationCount": 8,
     "Auditors": [
       {
         "AuditorID": "A014",

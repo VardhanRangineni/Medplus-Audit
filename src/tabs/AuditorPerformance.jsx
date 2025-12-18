@@ -448,9 +448,9 @@ const AuditorPerformance = ({ filters = {} }) => {
               {auditor.auditorName}
             </td>
             <td className="text-center">{auditor.totalAudits}</td>
-            <td>{auditor.allottedPIDs.toLocaleString('en-IN')}</td>
-            <td>{auditor.allottedSKUs.toLocaleString('en-IN')}</td>
-            <td>{auditor.totalAppearedQty.toLocaleString('en-IN')}</td>
+            <td>{formatIndianCurrency(auditor.allottedPIDs)}</td>
+            <td>{formatIndianCurrency(auditor.allottedSKUs)}</td>
+            <td>{formatIndianCurrency(auditor.totalAppearedQty)}</td>
             <td>
               {auditor.avgTimePID} min
             </td>

@@ -288,8 +288,9 @@ const SupervisorApprovals = ({ filters = {} }) => {
               doc.text("Supervisor Performance Summary", 14, 20);
               doc.setFontSize(10);
               doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
+              doc.text(`Financial Year: ${filters.financialYear || 'All-time'}`, 14, 34);
               autoTable(doc, {
-                startY: 36,
+                startY: 42,
                 head: [['Metric', 'Value']],
                 body: [
                   ['Total Supervisors', supervisorData.length],

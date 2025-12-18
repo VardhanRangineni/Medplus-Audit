@@ -82,30 +82,34 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
             ["Store Name", audit.StoreName],
             ["Total Value (₹)", audit.StoreAuditValue],
             ["Start Date", formatDate(audit.AuditStartDate)],
-            ["End Date", audit.Status === 'Completed' ? formatDate(audit.AuditEndDate) : '-'],
-            ["Status", audit.Status],
+            ["End Date", formatDate(audit.AuditEndDate)],
             [],
             ["Re-Audit Category", "Qty", "Value"],
             ["Appeared", appeared.qty, appeared.value],
             ["Matched", matched.qty, matched.value],
             ["Deviations", revised.qty, revised.value],
+            [],
+            ["Participating Auditors"],
+            ["ID", "Auditor Name", "PIDs", "SKUs", "Qty", "Audited Value (Rs.)"]
         ];
-        const wsSummary = utils.aoa_to_sheet(summaryData);
-        wsSummary['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 20 }];
-        utils.book_append_sheet(wb, wsSummary, "Audit Summary");
 
-        // 2. Participating Auditors Sheet
-        const auditorsData = participatingAuditors.map(r => ({
-            "ID": r.AuditorID,
-            "Auditor Name": r.AuditorName,
-            "PIDs": r.AuditorAllottedPIDs,
-            "SKUs": r.AuditorAllottedSKUs,
-            "Qty": r.AppearedQty,
-            "Audited Value (₹)": r.AuditorAuditedValue
-        }));
-        const wsAuditors = utils.json_to_sheet(auditorsData);
-        wsAuditors['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 15 }];
-        utils.book_append_sheet(wb, wsAuditors, "Participating Auditors");
+        // Append Participating Auditors Information
+        participatingAuditors.forEach(r => {
+            summaryData.push([
+                r.AuditorID,
+                r.AuditorName,
+                r.AuditorAllottedPIDs,
+                r.AuditorAllottedSKUs,
+                r.AppearedQty,
+                r.AuditorAuditedValue
+            ]);
+        });
+
+        const wsSummary = utils.aoa_to_sheet(summaryData);
+        wsSummary['!cols'] = [
+            { wch: 20 }, { wch: 25 }, { wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 15 }
+        ];
+        utils.book_append_sheet(wb, wsSummary, "Audit Summary");
 
         const fileName = `Audit_${audit.AUDIT_ID}_Report.xlsx`;
         writeFile(wb, fileName);
@@ -121,16 +125,12 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
         doc.text(`Store: ${audit.StoreName}`, 14, 28);
         doc.text(`Total Value: Rs. ${(audit.StoreAuditValue || 0).toLocaleString('en-IN')}`, 14, 34);
 
-        if (audit.Status === 'Completed') {
-            doc.text(`Start Date: ${formatDate(audit.AuditStartDate)}`, 14, 40);
-            doc.text(`End Date: ${formatDate(audit.AuditEndDate)}`, 14, 46);
-        } else {
-            doc.text(`Date: ${formatDate(audit.AuditStartDate)}`, 14, 40);
-        }
+        doc.text(`Start Date: ${formatDate(audit.AuditStartDate)}`, 14, 40);
+        doc.text(`End Date: ${formatDate(audit.AuditEndDate)}`, 14, 46);
 
         // Re-Audit Summary Table
         autoTable(doc, {
-            startY: audit.Status === 'Completed' ? 52 : 46,
+            startY: 52,
             head: [['Re-Audit Category', 'Qty', 'Value (Rs.)']],
             body: [
                 ['Appeared', appeared.qty.toLocaleString('en-IN'), appeared.value.toLocaleString('en-IN')],

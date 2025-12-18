@@ -3,19 +3,11 @@ import { Container, Row, Col, Form, Button, Badge } from 'react-bootstrap';
 import './GlobalHeader.css';
 import medplusIcon from '../assets/Group 1420.png';
 
-const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
-  const [filters, setFilters] = useState({
-    financialYear: '2025-26',
-    state: '',
-    store: '',
-    auditJobType: '',
-    auditProcessType: '',
-    auditStatus: ''
-  });
+const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh }) => {
+  // Use filters from props instead of local state
 
   const handleFilterChange = (key, value) => {
     const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
     onFilterChange(newFilters);
   };
 
@@ -37,7 +29,7 @@ const GlobalHeader = ({ onFilterChange, lastRefreshed, onRefresh }) => {
         <Row className="mb-3 align-items-center">
           <Col>
             <h3 className="mb-0 text-primary fw-bold">
-             Medplus Audit Dashboard
+              Medplus Audit Dashboard
             </h3>
           </Col>
           <Col xs="auto" className="text-end">

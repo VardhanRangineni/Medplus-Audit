@@ -175,7 +175,16 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
     const handleDownloadExcel = () => {
         const wb = utils.book_new();
 
-        // 1. Summary Sheet
+        // 1. Audit History Headers (Extended)
+        const historyHeaders = [
+            "Store ID", "Store Name", "Date", "Job Type", "Allocated PIDs", "Allocated SKUs",
+            "Appeared Dev Qty", "Appeared Dev Value",
+            "Matched Dev Qty", "Matched Dev Value",
+            "Revised Dev Qty", "Revised Dev Value",
+            "Matched Rate (%)", "Edit Rate (%)"
+        ];
+
+        // 2. Combined Data Construction
         const summaryData = [
             ["Auditor Name", auditorName],
             ["Auditor ID", auditorId],
@@ -198,46 +207,46 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             ["Matched", metrics.deviations.matched.qty, metrics.deviations.matched.value],
             ["Revised", metrics.deviations.revised.qty, metrics.deviations.revised.value],
             ["In-Progress", metrics.deviations.pending.qty, metrics.deviations.pending.value],
-        ];
-        const wsSummary = utils.aoa_to_sheet(summaryData);
-
-        // Set column widths for Summary
-        wsSummary['!cols'] = [
-            { wch: 25 }, // Metric
-            { wch: 20 }, // Value / Count
-            { wch: 15 }, // Qty
-            { wch: 20 }  // Value
+            [],
+            ["Audit History"],
+            historyHeaders
         ];
 
-        utils.book_append_sheet(wb, wsSummary, "Summary");
+        // Append Audit History Rows with calculations
+        auditorRecords.forEach(r => {
+            const appearedQty = r.AppearedQty || 0;
+            const matchedQty = r.MatchedQty || 0;
+            const matchRate = appearedQty > 0 ? ((matchedQty / appearedQty) * 100).toFixed(2) : '0.00';
+            const editRate = (100 - parseFloat(matchRate)).toFixed(2);
 
-        // 2. Detailed Data Sheet
-        const detailedData = auditorRecords.map(r => ({
-            "Store ID": r.StoreID,
-            "Store Name": r.StoreName,
-            "Date": new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
-            "Job Type": r.AuditJobType,
-            "Allocated PIDs": r.AuditorAllottedPIDs,
-            "Allocated SKUs": r.AuditorAllottedSKUs,
-            "Quantity": r.AppearedQty || 0,
-            "Audited Value (₹)": r.AuditorAuditedValue || 0
-        }));
-        const wsDetails = utils.json_to_sheet(detailedData);
+            summaryData.push([
+                r.StoreID || r.AUDIT_ID,
+                r.StoreName,
+                new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
+                r.AuditJobType,
+                r.AuditorAllottedPIDs,
+                r.AuditorAllottedSKUs,
+                r.AppearedQty || 0, r.AppearedValue || 0,
+                r.MatchedQty || 0, r.MatchedValue || 0,
+                r.RevisedQty || 0, r.RevisedValue || 0,
+                matchRate + '%',
+                editRate + '%'
+            ]);
+        });
 
-        // Set column widths for Details
-        wsDetails['!cols'] = [
-            { wch: 15 }, // Audit ID
-            { wch: 30 }, // Store Name
-            { wch: 15 }, // Date
-            { wch: 25 }, // Job Type
-            { wch: 15 }, // PIDs
-            { wch: 15 }, // SKUs
-            { wch: 15 }, // Qty
-            { wch: 20 }  // Audited Value
+        const ws = utils.aoa_to_sheet(summaryData);
+
+        // Set column widths
+        ws['!cols'] = [
+            { wch: 25 }, { wch: 30 }, { wch: 15 }, { wch: 25 },
+            { wch: 15 }, { wch: 15 },
+            { wch: 18 }, { wch: 18 },
+            { wch: 18 }, { wch: 18 },
+            { wch: 18 }, { wch: 18 },
+            { wch: 15 }, { wch: 15 }
         ];
 
-        utils.book_append_sheet(wb, wsDetails, "Audit Details");
-
+        utils.book_append_sheet(wb, ws, "Auditor Report");
         writeFile(wb, `Auditor_${auditorName.replace(/\s+/g, '_')}_metrics.xlsx`);
     };
 
@@ -283,20 +292,34 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
         autoTable(doc, {
             startY: doc.lastAutoTable.finalY + 10,
-            head: [['Store ID', 'Store', 'Date', 'Job Type', 'PIDs', 'SKUs', 'Qty', 'Audited Value (Rs.)']],
-            body: auditorRecords.map(r => [
-                r.StoreID,
-                r.StoreName,
-                new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
-                r.AuditJobType,
-                (r.AuditorAllottedPIDs || 0).toLocaleString('en-IN'),
-                (r.AuditorAllottedSKUs || 0).toLocaleString('en-IN'),
-                (r.AppearedQty || 0).toLocaleString('en-IN'),
-                (r.AuditorAuditedValue || 0).toLocaleString('en-IN')
-            ]),
+            head: [['Store ID', 'Store', 'Date', 'Type', 'App. Qty', 'App. Val', 'Mat. Qty', 'Mat. Val', 'Rev. Qty', 'Rev. Val', 'Match %', 'Edit %']],
+            body: auditorRecords.map(r => {
+                const appearedQty = r.AppearedQty || 0;
+                const matchedQty = r.MatchedQty || 0;
+                const matchRate = appearedQty > 0 ? ((matchedQty / appearedQty) * 100).toFixed(2) : '0.00';
+                const editRate = (100 - parseFloat(matchRate)).toFixed(2);
+
+                return [
+                    r.StoreID || r.AUDIT_ID,
+                    r.StoreName,
+                    new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
+                    r.AuditJobType,
+                    (r.AppearedQty || 0).toLocaleString('en-IN'), (r.AppearedValue || 0).toLocaleString('en-IN'),
+                    (r.MatchedQty || 0).toLocaleString('en-IN'), (r.MatchedValue || 0).toLocaleString('en-IN'),
+                    (r.RevisedQty || 0).toLocaleString('en-IN'), (r.RevisedValue || 0).toLocaleString('en-IN'),
+                    matchRate + '%',
+                    editRate + '%'
+                ]
+            }),
             theme: 'plain',
-            styles: { fontSize: 8 },
-            headStyles: { fillColor: [52, 73, 94], textColor: 255 }
+            styles: { fontSize: 6, cellPadding: 1 },
+            headStyles: { fillColor: [52, 73, 94], textColor: 255 },
+            columnStyles: {
+                0: { cellWidth: 15 },
+                1: { cellWidth: 20 },
+                2: { cellWidth: 15 },
+                // Compact other columns
+            }
         });
 
         const pdfFileName = `Auditor_${auditorName.replace(/\s+/g, '_')}_Report_${new Date().toISOString().split('T')[0]}.pdf`;

@@ -82,6 +82,8 @@ const AuditorPerformance = ({ filters = {} }) => {
           totalMatchedQty: 0,
           totalRevisedQty: 0,
           totalValue: 0,
+          totalMatchedValue: 0,
+          totalRevisedValue: 0,
           count: 0
         };
       }

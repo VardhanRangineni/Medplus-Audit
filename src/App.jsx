@@ -1,15 +1,17 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import GlobalHeader from './components/GlobalHeader';
 import StoreCoverage from './tabs/StoreCoverage';
 import LiveAuditSchedule from './tabs/LiveAuditSchedule';
 import AuditorPerformance from './tabs/AuditorPerformance';
 import SupervisorApprovals from './tabs/SupervisorApprovals';
+import StorePIDAllotment from './pages/StorePIDAllotment';
 import DetailsPage from './pages/DetailsPage';
 import './App.css';
 
-function App() {
+function AppContent() {
+  const location = useLocation();
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
   const [filters, setFilters] = useState({
     financialYear: '2025-26',
@@ -30,28 +32,39 @@ function App() {
     console.log('Filters updated:', newFilters);
   };
 
+  // Hide filters for Store PID Allotment page
+  const hideFilters = location.pathname === '/store-pid-allotment';
+
+  return (
+    <div className="app-layout">
+      <Sidebar />
+      <div className="main-container">
+        <GlobalHeader
+          lastRefreshed={lastRefreshed}
+          onRefresh={handleRefresh}
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          hideFilters={hideFilters}
+        />
+        <main className="content-area">
+          <Routes>
+            <Route path="/" element={<StoreCoverage filters={filters} />} />
+            <Route path="/live-audit" element={<LiveAuditSchedule filters={filters} />} />
+            <Route path="/auditor-performance" element={<AuditorPerformance filters={filters} />} />
+            <Route path="/supervisor-approvals" element={<SupervisorApprovals filters={filters} />} />
+            <Route path="/store-pid-allotment" element={<StorePIDAllotment />} />
+            <Route path="/details" element={<DetailsPage filters={filters} />} />
+          </Routes>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function App() {
   return (
     <Router>
-      <div className="app-layout">
-        <Sidebar />
-        <div className="main-container">
-          <GlobalHeader
-            lastRefreshed={lastRefreshed}
-            onRefresh={handleRefresh}
-            filters={filters}
-            onFilterChange={handleFilterChange}
-          />
-          <main className="content-area">
-            <Routes>
-              <Route path="/" element={<StoreCoverage filters={filters} />} />
-              <Route path="/live-audit" element={<LiveAuditSchedule filters={filters} />} />
-              <Route path="/auditor-performance" element={<AuditorPerformance filters={filters} />} />
-              <Route path="/supervisor-approvals" element={<SupervisorApprovals filters={filters} />} />
-              <Route path="/details" element={<DetailsPage filters={filters} />} />
-            </Routes>
-          </main>
-        </div>
-      </div>
+      <AppContent />
     </Router>
   );
 }

@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Button, Badge } from 'react-bootstrap';
 import './GlobalHeader.css';
 import medplusIcon from '../assets/Group 1420.png';
 
-const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh }) => {
+const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideFilters = false }) => {
   // Use filters from props instead of local state
 
   const handleFilterChange = (key, value) => {
@@ -51,8 +51,10 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh }) => 
           </Col>
         </Row>
 
-        {/* Filters Section */}
-        <Row className="g-3 mb-2">
+        {/* Filters Section - Conditionally rendered */}
+        {!hideFilters && (
+          <>
+            <Row className="g-3 mb-2">
           <Col md={2}>
             <Form.Group>
               <Form.Label className="small fw-semibold mb-1">
@@ -159,6 +161,8 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh }) => 
             </Form.Group>
           </Col>
         </Row>
+          </>
+        )}
       </Container>
     </div>
   );

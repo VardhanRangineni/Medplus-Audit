@@ -235,7 +235,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
   // Calculate workflow stats from filtered data
   const workflowStats = useMemo(() => {
     const stats = {
-      created: transformedAuditData.filter(a => a.status === 'created').length,
+      created: transformedAuditData.filter(a => ['pending', 'in-progress', 'completed'].includes(a.status)).length,
       inProgress: transformedAuditData.filter(a => a.status === 'in-progress').length,
       pending: transformedAuditData.filter(a => a.status === 'pending').length,
       completed: transformedAuditData.filter(a => a.status === 'completed').length
@@ -244,7 +244,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
   }, [transformedAuditData]);
 
   const allAuditData = useMemo(() => ({
-    created: transformedAuditData,
+    created: transformedAuditData.filter(audit => ['pending', 'in-progress', 'completed'].includes(audit.status)),
     'in-progress': transformedAuditData.filter(audit => audit.status === 'in-progress'),
     pending: transformedAuditData.filter(audit => audit.status === 'pending'),
     completed: transformedAuditData.filter(audit => audit.status === 'completed')
@@ -368,7 +368,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
 
     // Title
     doc.setFontSize(16);
-    const statusTitle = selectedStatus === 'created' ? 'Created' :
+    const statusTitle = selectedStatus === 'created' ? 'Total' :
       selectedStatus === 'in-progress' ? 'In Progress' :
         selectedStatus === 'pending' ? 'Pending' : 'Completed';
     doc.text(`Live Audit Schedule - ${statusTitle}`, 14, 20);
@@ -467,9 +467,9 @@ const LiveAuditSchedule = ({ filters = {} }) => {
       <Row className="g-3 mb-4">
         <Col md={3}>
           <KPICard
-            title="Created"
+            title="Total"
             value={workflowStats.created}
-            subtitle="Not started"
+            subtitle="All Audits"
             icon="fas fa-file-alt"
             color={selectedStatus === 'created' ? 'secondary' : 'secondary'}
             onClick={() => showWorkflowDetails('Created')}
@@ -536,7 +536,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                 <div>
                   <h5 className="mb-0 fw-bold">
                     <i className="fas fa-table me-2 text-primary"></i>
-                    Live Audit Schedule - {selectedStatus === 'created' ? 'Created' : selectedStatus === 'in-progress' ? 'In Progress' : selectedStatus === 'pending' ? 'Pending' : 'Completed'}
+                    Live Audit Schedule - {selectedStatus === 'created' ? 'Total' : selectedStatus === 'in-progress' ? 'In Progress' : selectedStatus === 'pending' ? 'Pending' : 'Completed'}
                   </h5>
                   <small className="text-muted">Click on any row to view auditor-wise allocation and real-time progress</small>
                 </div>

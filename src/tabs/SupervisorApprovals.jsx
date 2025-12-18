@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Table, Badge, ProgressBar, Alert, Dropdown, 
 import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { formatIndianCurrency, formatIndianNumber } from '../utils/formatters';
 
 import KPICard from '../components/KPICard';
 import SupervisorDetailModal from '../components/SupervisorDetailModal';
@@ -26,13 +27,7 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
     return 'danger';
   };
 
-  const formatIndianCurrency = (value) => {
-    if (value === undefined || value === null) return '0';
-    const val = Number(value);
-    if (val >= 10000000) return (val / 10000000).toFixed(2) + ' Cr';
-    if (val >= 100000) return (val / 100000).toFixed(2) + ' L';
-    return val.toLocaleString('en-IN');
-  };
+
 
   return (
     <Table hover className="mb-0 supervisor-table align-middle">
@@ -97,8 +92,8 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
             <td className="fw-semibold">{sup.totalAudits}</td>
             <td className="fw-semibold">{sup.daysSupervised}</td>
             <td className="fw-semibold">{sup.auditorsSupervised}</td>
-            <td className="fw-semibold">{formatIndianCurrency(sup.totalSKUs)}</td>
-            <td className="fw-semibold">₹{formatIndianCurrency(sup.totalValue)}</td>
+            <td className="fw-semibold">{formatIndianNumber(sup.totalSKUs, true)}</td>
+            <td className="fw-semibold">{formatIndianCurrency(sup.totalValue)}</td>
             <td>
               <i className="fas fa-chevron-right text-primary"></i>
             </td>
@@ -120,13 +115,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
   const hasActiveFilters =
     filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
 
-  const formatIndianCurrency = (value) => {
-    if (value === undefined || value === null) return '0';
-    const val = Number(value);
-    if (val >= 10000000) return (val / 10000000).toFixed(2) + ' Cr';
-    if (val >= 100000) return (val / 100000).toFixed(2) + ' L';
-    return val.toLocaleString('en-IN');
-  };
+
 
   const { supervisorData, overallMetrics } = useMemo(() => {
     const supervisorMap = {};
@@ -335,13 +324,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
         <Col md={3}><KPICard title="Total Supervisors" value={supervisorData.length} /></Col>
         <Col md={3}><KPICard title="Total Stores Managed" value={overallMetrics.totalStores} /></Col>
         <Col md={3}><KPICard title="Total Audits" value={overallMetrics.totalAudits?.toLocaleString()} /></Col>
-        <Col md={3}><KPICard title="Total Value" value={`₹${(function (value) {
-          if (value === undefined || value === null) return '0';
-          const val = Number(value);
-          if (val >= 10000000) return (val / 10000000).toFixed(2) + ' Cr';
-          if (val >= 100000) return (val / 100000).toFixed(2) + ' L';
-          return val.toLocaleString('en-IN');
-        })(overallMetrics.totalValue)}`} /></Col>
+        <Col md={3}><KPICard title="Total Value" value={formatIndianCurrency(overallMetrics.totalValue)} /></Col>
       </Row>
 
       <Card className="border-0 shadow-sm">

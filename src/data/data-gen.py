@@ -145,20 +145,63 @@ for _ in range(TOTAL_AUDITS):
         avg_time_sku = round(avg_time_sku, 2)
         avg_time_pid = round(avg_time_pid, 2)
 
-        # ---------- SAMPLING / DEVIATION ----------
-        # Logic update: Qty should be > SKUs and < Value
-        # Assuming avg quantity per SKU is between 8 and 25
-        appeared_qty = int(asku * random.uniform(8, 25))
-        
-        match_ratio = random.uniform(0.85, 0.97)
+        # Completed logic
+        completed_skus = int(asku * random.uniform(0.9, 1.0)) if status == "Completed" else int(asku * random.uniform(0.1, 0.7))
+        completion_percent = round((completed_skus / asku) * 100, 1) if asku > 0 else 0
 
-        matched_qty = int(appeared_qty * match_ratio)
-        revised_qty = appeared_qty - matched_qty
-
-        appeared_value = random.randint(25_000, 75_000)
-        matched_value = int(appeared_value * match_ratio)
-        revised_value = appeared_value - matched_value
+        # ---------- APPEARED / MATCHED / REVISED LOGIC ----------
+        # Logic update per request:
+        # AppearedSKU's is much less than CompletedSkus
+        # AppearedValue is much less than AuditorAuditedValue
+        # Appeared = Matched + Revised
+        # Matched is high (most of Appeared)
         
+        # 1. Appeared SKUs
+        # Much less than CompletedSKUs (e.g., 5% to 15%)
+        # Ensure at least some if CompletedSKUs is high enough
+        if completed_skus > 10:
+             appeared_skus = int(completed_skus * random.uniform(0.05, 0.15))
+        else:
+             appeared_skus = 0
+             
+        # 2. Matched SKUs (High portion of Appeared, e.g., 90-98%)
+        if appeared_skus > 0:
+            match_ratio_skus = random.uniform(0.90, 0.98)
+            matched_skus = int(appeared_skus * match_ratio_skus)
+            revised_skus = appeared_skus - matched_skus
+        else:
+            matched_skus = 0
+            revised_skus = 0
+            
+        # 3. Appeared Value
+        # Much less than AuditorAuditedValue (e.g., 2% to 8%)
+        if aval > 1000:
+             appeared_value = int(aval * random.uniform(0.02, 0.08))
+        else:
+             appeared_value = 0
+             
+        # 4. Matched/Revised Value
+        if appeared_value > 0:
+            match_ratio_val = random.uniform(0.90, 0.98) 
+            matched_value = int(appeared_value * match_ratio_val)
+            revised_value = appeared_value - matched_value
+        else:
+            matched_value = 0
+            revised_value = 0
+
+        # 5. Qty (keeping consistent with value/sku roughly or just generating)
+        # AppearedQty should be related to AppearedSKUs. Avg qty/sku ~ 8-25
+        if appeared_skus > 0:
+            appeared_qty = int(appeared_skus * random.uniform(8, 25))
+            # Matched Qty high portion
+            match_ratio_qty = random.uniform(0.90, 0.98)
+            matched_qty = int(appeared_qty * match_ratio_qty)
+            revised_qty = appeared_qty - matched_qty
+        else:
+            appeared_qty = 0
+            matched_qty = 0
+            revised_qty = 0
+            
         # Pending logic per auditor
         pending_count = 0 
         pending_qty = 0
@@ -170,10 +213,6 @@ for _ in range(TOTAL_AUDITS):
             if pending_count > 0:
                  pending_qty = pending_count * random.randint(1, 5)
                  pending_val = pending_qty * random.randint(100, 500)
-
-        # Completed logic
-        completed_skus = int(asku * random.uniform(0.9, 1.0)) if status == "Completed" else int(asku * random.uniform(0.1, 0.7))
-        completion_percent = round((completed_skus / asku) * 100, 1) if asku > 0 else 0
 
         day_summary = generate_day_wise_summary(
             audit_start, audit_end, ap, asku, aval
@@ -206,6 +245,10 @@ for _ in range(TOTAL_AUDITS):
 
             "AvgTimePerSKU": avg_time_sku,
             "AvgTimePerPID": avg_time_pid,
+
+            "AppearedSKUs": appeared_skus,
+            "MatchedSKUs": matched_skus,
+            "RevisedSKUs": revised_skus,
 
             "AppearedQty": appeared_qty,
             "MatchedQty": matched_qty,

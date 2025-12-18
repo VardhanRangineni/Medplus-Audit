@@ -3,6 +3,7 @@ import { Modal, Card, Badge, Table, Button, Dropdown } from 'react-bootstrap';
 import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { formatIndianCurrency, formatIndianNumber } from '../utils/formatters';
 
 const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
     const [expandedAuditor, setExpandedAuditor] = useState(null);
@@ -12,13 +13,6 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
     const formatDate = (timestamp) => {
         if (!timestamp) return '-';
         return new Date(timestamp).toLocaleDateString('en-GB');
-    };
-    const formatIndianCurrency = (value) => {
-        if (value === undefined || value === null) return '0';
-        const val = Number(value);
-        if (val >= 10000000) return (val / 10000000).toFixed(2) + ' Cr';
-        if (val >= 100000) return (val / 100000).toFixed(2) + ' L';
-        return val.toLocaleString('en-IN');
     };
 
     const getStatusBadge = (status) => {
@@ -39,38 +33,47 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
         acc.appearedCount += (r.AppearedCount || 0);
         acc.appearedQty += (r.AppearedQty || 0);
         acc.appearedValue += (r.AppearedValue || 0);
+        acc.appearedSKUs += (r.AppearedSKUs || 0);
+
         acc.matchedCount += (r.MatchedCount || 0);
         acc.matchedQty += (r.MatchedQty || 0);
         acc.matchedValue += (r.MatchedValue || 0);
+        acc.matchedSKUs += (r.MatchedSKUs || 0);
+
         acc.revisedCount += (r.RevisedCount || 0);
         acc.revisedQty += (r.RevisedQty || 0);
         acc.revisedValue += (r.RevisedValue || 0);
+        acc.revisedSKUs += (r.RevisedSKUs || 0);
+
         acc.totalPIDs += (r.AuditorAllottedPIDs || 0);
         acc.totalSKUs += (r.AuditorAllottedSKUs || 0);
         return acc;
     }, {
-        appearedCount: 0, appearedQty: 0, appearedValue: 0,
-        matchedCount: 0, matchedQty: 0, matchedValue: 0,
-        revisedCount: 0, revisedQty: 0, revisedValue: 0,
+        appearedCount: 0, appearedQty: 0, appearedValue: 0, appearedSKUs: 0,
+        matchedCount: 0, matchedQty: 0, matchedValue: 0, matchedSKUs: 0,
+        revisedCount: 0, revisedQty: 0, revisedValue: 0, revisedSKUs: 0,
         totalPIDs: 0, totalSKUs: 0
     });
 
     const appeared = {
         count: aggregatedMetrics.appearedCount,
         qty: aggregatedMetrics.appearedQty,
-        value: aggregatedMetrics.appearedValue
+        value: aggregatedMetrics.appearedValue,
+        skus: aggregatedMetrics.appearedSKUs
     };
 
     const matched = {
         count: aggregatedMetrics.matchedCount,
         qty: aggregatedMetrics.matchedQty,
-        value: aggregatedMetrics.matchedValue
+        value: aggregatedMetrics.matchedValue,
+        skus: aggregatedMetrics.matchedSKUs
     };
 
     const revised = {
         count: aggregatedMetrics.revisedCount,
         qty: aggregatedMetrics.revisedQty,
-        value: aggregatedMetrics.revisedValue
+        value: aggregatedMetrics.revisedValue,
+        skus: aggregatedMetrics.revisedSKUs
     };
 
     const handleDownloadExcel = () => {
@@ -84,10 +87,10 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
             ["Start Date", formatDate(audit.AuditStartDate)],
             ["End Date", formatDate(audit.AuditEndDate)],
             [],
-            ["Re-Audit Category", "Qty", "Value"],
-            ["Appeared", appeared.qty, appeared.value],
-            ["Matched", matched.qty, matched.value],
-            ["Deviations", revised.qty, revised.value],
+            ["Re-Audit Category", "SKUs", "Qty", "Value"],
+            ["Appeared", appeared.skus, appeared.qty, appeared.value],
+            ["Matched", matched.skus, matched.qty, matched.value],
+            ["Deviations", revised.skus, revised.qty, revised.value],
             [],
             ["Participating Auditors"],
             ["ID", "Auditor Name", "PIDs", "SKUs", "Qty", "Audited Value (Rs.)"]
@@ -131,11 +134,11 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
         // Re-Audit Summary Table
         autoTable(doc, {
             startY: 52,
-            head: [['Re-Audit Category', 'Qty', 'Value (Rs.)']],
+            head: [['Re-Audit Category', 'SKUs', 'Qty', 'Value (Rs.)']],
             body: [
-                ['Appeared', appeared.qty.toLocaleString('en-IN'), appeared.value.toLocaleString('en-IN')],
-                ['Matched', matched.qty.toLocaleString('en-IN'), matched.value.toLocaleString('en-IN')],
-                ['Deviations', revised.qty.toLocaleString('en-IN'), revised.value.toLocaleString('en-IN')],
+                ['Appeared', appeared.skus.toLocaleString('en-IN'), appeared.qty.toLocaleString('en-IN'), appeared.value.toLocaleString('en-IN')],
+                ['Matched', matched.skus.toLocaleString('en-IN'), matched.qty.toLocaleString('en-IN'), matched.value.toLocaleString('en-IN')],
+                ['Deviations', revised.skus.toLocaleString('en-IN'), revised.qty.toLocaleString('en-IN'), revised.value.toLocaleString('en-IN')],
             ],
             theme: 'grid',
             headStyles: { fillColor: [41, 128, 185] }
@@ -253,7 +256,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                             <div className="text-end">
                                 <div className="text-muted small mb-1">Total Value</div>
                                 <h3 className="fw-bold mb-0" style={{ color: '#059669' }}>
-                                    ₹{formatIndianCurrency(audit.StoreAuditValue)}
+                                    {formatIndianCurrency(audit.StoreAuditValue)}
                                 </h3>
                             </div>
                         </div>
@@ -286,6 +289,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                             <thead style={{ backgroundColor: '#f1f5f9' }}>
                                 <tr>
                                     <th className="py-3 ps-4 border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>Category</th>
+                                    <th className="py-3 text-end border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>SKUs</th>
                                     <th className="py-3 text-end border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>Qty</th>
                                     <th className="py-3 text-end pe-4 border-0 text-uppercase small fw-bold" style={{ color: '#64748b', letterSpacing: '0.05em' }}>Value</th>
                                 </tr>
@@ -296,24 +300,27 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                         <Badge pill bg="primary" className="me-2" style={{ width: '8px', height: '8px', padding: 0 }}></Badge>
                                         <span className="fw-medium">Appeared</span>
                                     </td>
-                                    <td className="text-end py-3 fw-semibold">{appeared.qty?.toLocaleString()}</td>
-                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#0f172a' }}>₹{formatIndianCurrency(appeared.value)}</td>
+                                    <td className="text-end py-3 fw-semibold">{formatIndianNumber(appeared.skus, true)}</td>
+                                    <td className="text-end py-3 fw-semibold">{formatIndianNumber(appeared.qty, true)}</td>
+                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#0f172a' }}>{formatIndianCurrency(appeared.value)}</td>
                                 </tr>
                                 <tr style={{ borderBottom: '1px solid #e2e8f0' }}>
                                     <td className="ps-4 py-3">
                                         <Badge pill bg="success" className="me-2" style={{ width: '8px', height: '8px', padding: 0 }}></Badge>
                                         <span className="fw-medium">Matched</span>
                                     </td>
-                                    <td className="text-end py-3 fw-semibold">{matched.qty?.toLocaleString()}</td>
-                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#059669' }}>₹{formatIndianCurrency(matched.value)}</td>
+                                    <td className="text-end py-3 fw-semibold">{formatIndianNumber(matched.skus, true)}</td>
+                                    <td className="text-end py-3 fw-semibold">{formatIndianNumber(matched.qty, true)}</td>
+                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#059669' }}>{formatIndianCurrency(matched.value)}</td>
                                 </tr>
                                 <tr>
                                     <td className="ps-4 py-3">
                                         <Badge pill bg="warning" className="me-2" style={{ width: '8px', height: '8px', padding: 0 }}></Badge>
                                         <span className="fw-medium">Deviations</span>
                                     </td>
-                                    <td className="text-end py-3 fw-semibold">{revised.qty?.toLocaleString()}</td>
-                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#d97706' }}>₹{formatIndianCurrency(revised.value)}</td>
+                                    <td className="text-end py-3 fw-semibold">{formatIndianNumber(revised.skus, true)}</td>
+                                    <td className="text-end py-3 fw-semibold">{formatIndianNumber(revised.qty, true)}</td>
+                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#d97706' }}>{formatIndianCurrency(revised.value)}</td>
                                 </tr>
                             </tbody>
                         </Table>
@@ -378,7 +385,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                                     <td className="text-end py-3 font-monospace">{record.AuditorAllottedPIDs?.toLocaleString()}</td>
                                                     <td className="text-end py-3 font-monospace fw-medium">{record.AuditorAllottedSKUs?.toLocaleString()}</td>
                                                     <td className="text-end py-3 font-monospace">{record.AppearedQty?.toLocaleString()}</td>
-                                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#059669' }}>₹{formatIndianCurrency(record.AuditorAuditedValue)}</td>
+                                                    <td className="text-end pe-4 py-3 fw-bold" style={{ color: '#059669' }}>{formatIndianCurrency(record.AuditorAuditedValue)}</td>
                                                 </tr>
                                                 {expandedAuditor === idx && (
                                                     <tr>
@@ -392,6 +399,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                                                     <thead style={{ backgroundColor: '#e2e8f0' }}>
                                                                         <tr>
                                                                             <th className="py-2 ps-3 border-0 small fw-bold" style={{ color: '#64748b' }}>Category</th>
+                                                                            <th className="py-2 text-end border-0 small fw-bold" style={{ color: '#64748b' }}>SKUs</th>
                                                                             <th className="py-2 text-end border-0 small fw-bold" style={{ color: '#64748b' }}>Qty</th>
                                                                             <th className="py-2 text-end pe-3 border-0 small fw-bold" style={{ color: '#64748b' }}>Value</th>
                                                                         </tr>
@@ -402,24 +410,27 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                                                                 <Badge pill bg="primary" className="me-2" style={{ width: '6px', height: '6px', padding: 0 }}></Badge>
                                                                                 <span className="small">Appeared</span>
                                                                             </td>
-                                                                            <td className="text-end py-2 small fw-medium">{record.AppearedQty?.toLocaleString()}</td>
-                                                                            <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#0f172a' }}>₹{formatIndianCurrency(record.AppearedValue)}</td>
+                                                                            <td className="text-end py-2 small fw-medium">{formatIndianNumber(record.AppearedSKUs, true)}</td>
+                                                                            <td className="text-end py-2 small fw-medium">{formatIndianNumber(record.AppearedQty, true)}</td>
+                                                                            <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#0f172a' }}>{formatIndianCurrency(record.AppearedValue)}</td>
                                                                         </tr>
                                                                         <tr style={{ backgroundColor: 'white' }}>
                                                                             <td className="ps-3 py-2">
                                                                                 <Badge pill bg="success" className="me-2" style={{ width: '6px', height: '6px', padding: 0 }}></Badge>
                                                                                 <span className="small">Matched</span>
                                                                             </td>
-                                                                            <td className="text-end py-2 small fw-medium">{record.MatchedQty?.toLocaleString()}</td>
-                                                                            <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#059669' }}>₹{formatIndianCurrency(record.MatchedValue)}</td>
+                                                                            <td className="text-end py-2 small fw-medium">{formatIndianNumber(record.MatchedSKUs, true)}</td>
+                                                                            <td className="text-end py-2 small fw-medium">{formatIndianNumber(record.MatchedQty, true)}</td>
+                                                                            <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#059669' }}>{formatIndianCurrency(record.MatchedValue)}</td>
                                                                         </tr>
                                                                         <tr style={{ backgroundColor: 'white' }}>
                                                                             <td className="ps-3 py-2">
                                                                                 <Badge pill bg="warning" className="me-2" style={{ width: '6px', height: '6px', padding: 0 }}></Badge>
                                                                                 <span className="small">Deviations</span>
                                                                             </td>
-                                                                            <td className="text-end py-2 small fw-medium">{record.RevisedQty?.toLocaleString()}</td>
-                                                                            <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#d97706' }}>₹{formatIndianCurrency(record.RevisedValue)}</td>
+                                                                            <td className="text-end py-2 small fw-medium">{formatIndianNumber(record.RevisedSKUs, true)}</td>
+                                                                            <td className="text-end py-2 small fw-medium">{formatIndianNumber(record.RevisedQty, true)}</td>
+                                                                            <td className="text-end pe-3 py-2 small fw-bold" style={{ color: '#d97706' }}>{formatIndianCurrency(record.RevisedValue)}</td>
                                                                         </tr>
                                                                     </tbody>
                                                                 </Table>

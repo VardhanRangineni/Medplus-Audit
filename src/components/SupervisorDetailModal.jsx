@@ -126,6 +126,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             if (!auditMap[auditId]) {
                 auditMap[auditId] = {
                     AUDIT_ID: auditId,
+                    StoreID: record.StoreID,
                     StoreName: record.StoreName,
                     AuditStartDate: record.AuditStartDate,
                     AuditEndDate: record.AuditEndDate,
@@ -135,15 +136,27 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     AuditorAllottedPIDs: 0,
                     AuditorAllottedSKUs: 0,
                     AppearedValue: 0,
-                    AppearedQty: 0
+                    AppearedValue: 0,
+                    AppearedQty: 0,
+                    AuditorIDs: new Set(),
+                    SupervisedDates: new Set()
                 };
             }
             auditMap[auditId].AuditorAllottedPIDs += (record.AuditorAllottedPIDs || 0);
             auditMap[auditId].AuditorAllottedSKUs += (record.AuditorAllottedSKUs || 0);
             auditMap[auditId].AppearedValue += (record.AppearedValue || 0);
             auditMap[auditId].AppearedQty += (record.AppearedQty || 0);
+
+            if (record.AuditorID) auditMap[auditId].AuditorIDs.add(record.AuditorID);
+            if (record.DayWiseSummary) {
+                Object.keys(record.DayWiseSummary).forEach(d => auditMap[auditId].SupervisedDates.add(d));
+            }
         });
-        return Object.values(auditMap);
+        return Object.values(auditMap).map(a => ({
+            ...a,
+            AuditorCount: a.AuditorIDs.size,
+            DaysSupervisedCount: a.SupervisedDates.size || 1 // Fallback to 1 if no daily summary
+        }));
     }, [supervisorRecords]);
 
     const sortedRecords = useMemo(() => {
@@ -205,14 +218,19 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
 
         // Calculate Days Supervised
         const supervisedDates = new Set();
+        const auditors = new Set();
         supervisorRecords.forEach(r => {
             if (r.DayWiseSummary) {
                 Object.keys(r.DayWiseSummary).forEach(date => supervisedDates.add(date));
             }
+            if (r.AuditorID) {
+                auditors.add(r.AuditorID);
+            }
         });
         const daysSupervised = supervisedDates.size;
+        const totalAuditorsSupervised = auditors.size;
 
-        return { totalAudits, totalSKUs, totalPIDs, daysSupervised, statusBreakdown, deviations };
+        return { totalAudits, totalSKUs, totalPIDs, daysSupervised, totalAuditorsSupervised, statusBreakdown, deviations };
     }, [supervisorRecords, aggregatedRecords]);
 
     // Format Date
@@ -242,6 +260,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             [],
             ["Metrics Summary"],
             ["Total Audits", metrics.totalAudits],
+            ["Total Auditors Supervised", metrics.totalAuditorsSupervised],
             ["Days Supervised", metrics.daysSupervised],
             ["Total PIDs", metrics.totalPIDs],
             ["Total SKUs", metrics.totalSKUs],
@@ -252,16 +271,18 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             ["Revised", metrics.deviations.revised.qty, metrics.deviations.revised.value],
             [],
             ["Audit History"],
-            ["Audit ID", "Store Name", "Date", "Job Type", "PIDs", "SKUs", "Quantity", "Value (Rs.)"]
+            ["Store ID", "Store Name", "Date", "Job Type", "Auditors", "Days", "PIDs", "SKUs", "Quantity", "Value (Rs.)"]
         ];
 
         // Append Audit History Rows
         sortedRecords.forEach(r => {
             summaryData.push([
-                r.AUDIT_ID,
+                r.StoreID,
                 r.StoreName,
                 formatDate(r.AuditStartDate),
                 r.AuditJobType,
+                r.AuditorCount,
+                r.DaysSupervisedCount,
                 r.AuditorAllottedPIDs,
                 r.AuditorAllottedSKUs,
                 r.AppearedQty || 0,
@@ -271,8 +292,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
 
         const wsSummary = utils.aoa_to_sheet(summaryData);
         wsSummary['!cols'] = [
-            { wch: 25 }, { wch: 25 }, { wch: 20 }, { wch: 15 },
-            { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 15 }
+            { wch: 20 }, { wch: 25 }, { wch: 15 }, { wch: 15 },
+            { wch: 10 }, { wch: 8 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 15 }
         ];
         utils.book_append_sheet(wb, wsSummary, "Supervisor Summary");
 
@@ -296,6 +317,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             head: [['Metric', 'Value']],
             body: [
                 ['Total Audits', metrics.totalAudits],
+                ['Total Auditors Supervised', metrics.totalAuditorsSupervised],
                 ['Days Supervised', metrics.daysSupervised],
                 ['Total PIDs', metrics.totalPIDs.toLocaleString('en-IN')],
                 ['Total SKUs', metrics.totalSKUs.toLocaleString('en-IN')]
@@ -321,12 +343,14 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         if (sortedRecords.length > 0) {
             autoTable(doc, {
                 startY: doc.lastAutoTable.finalY + 15,
-                head: [['Audit ID', 'Store', 'Date', 'Type', 'PIDs', 'SKUs', 'Qty', 'Value (Rs.)']],
+                head: [['Store ID', 'Store', 'Date', 'Type', 'Auditors', 'Days', 'PIDs', 'SKUs', 'Qty', 'Value (Rs.)']],
                 body: sortedRecords.map(r => [
-                    r.AUDIT_ID,
+                    r.StoreID,
                     r.StoreName,
                     formatDate(r.AuditStartDate),
                     r.AuditJobType,
+                    r.AuditorCount,
+                    r.DaysSupervisedCount,
                     (r.AuditorAllottedPIDs || 0).toLocaleString('en-IN'),
                     (r.AuditorAllottedSKUs || 0).toLocaleString('en-IN'),
                     (r.AppearedQty || 0).toLocaleString('en-IN'),
@@ -498,8 +522,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                 >
 
                                     <tr>
-                                        <th className="border-0 py-3 ps-4" onClick={() => requestSort('AUDIT_ID')} style={{ cursor: 'pointer' }}>
-                                            Audit ID {getSortIcon('AUDIT_ID')}
+                                        <th className="border-0 py-3 ps-4" onClick={() => requestSort('StoreID')} style={{ cursor: 'pointer' }}>
+                                            Store ID {getSortIcon('StoreID')}
                                         </th>
                                         <th className="border-0 py-3" onClick={() => requestSort('StoreName')} style={{ cursor: 'pointer' }}>
                                             Store {getSortIcon('StoreName')}
@@ -532,7 +556,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                             style={{ cursor: 'pointer' }}
                                             onClick={() => { setSelectedAudit(audit); setShowAuditDetail(true); }}
                                         >
-                                            <td className="ps-4 fw-bold text-primary">{audit.AUDIT_ID}</td>
+                                            <td className="ps-4 fw-bold text-primary">{audit.StoreID || audit.AUDIT_ID}</td>
                                             <td>{audit.StoreName}</td>
                                             <td>{formatDate(audit.AuditStartDate)}</td>
                                             <td>{audit.AuditJobType}</td>

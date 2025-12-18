@@ -23,11 +23,14 @@ auditors = {
     "A047": "Rakesh Kumar","A048": "Suman Reddy","A049": "Jagadeesh Rao","A050": "Gopi Krishna"
 }
 
+
 # ---------------- STORES ----------------
 stores = [
     "Hyd-Madhapur","Hyd-Kukatpally","Hyd-Ameerpet","Hyd-Begumpet","Hyd-Miyapur",
     "Hyd-Banjara Hills","Hyd-Secunderabad","Hyd-Dilsukhnagar","Hyd-Tarnaka","Hyd-Gachibowli"
 ]
+
+store_ids = {store: f"MP{i+1:04d}" for i, store in enumerate(stores)}
 
 audit_job_types = ["Full Audit", "Partial Audit", "Select SKUs"]
 
@@ -85,6 +88,7 @@ for _ in range(TOTAL_AUDITS):
     audit_counter += 1
 
     store = random.choice(stores)
+    store_id = store_ids[store]
     audit_job_type = random.choice(audit_job_types)
 
     supervisor_id = random.choice(list(supervisors))
@@ -143,6 +147,7 @@ for _ in range(TOTAL_AUDITS):
 
         rows.append({
             "AUDIT_ID": audit_id,
+            "StoreID": store_id,
             "StoreName": store,
             "AuditJobType": audit_job_type,
             "AuditStartDate": audit_start.isoformat(),

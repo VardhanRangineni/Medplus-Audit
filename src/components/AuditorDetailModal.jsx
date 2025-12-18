@@ -213,7 +213,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
         // 2. Detailed Data Sheet
         const detailedData = auditorRecords.map(r => ({
-            "Audit ID": r.AUDIT_ID,
+            "Store ID": r.StoreID,
             "Store Name": r.StoreName,
             "Date": new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
             "Job Type": r.AuditJobType,
@@ -283,9 +283,9 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
         autoTable(doc, {
             startY: doc.lastAutoTable.finalY + 10,
-            head: [['Audit ID', 'Store', 'Date', 'Job Type', 'PIDs', 'SKUs', 'Qty', 'Audited Value (Rs.)']],
+            head: [['Store ID', 'Store', 'Date', 'Job Type', 'PIDs', 'SKUs', 'Qty', 'Audited Value (Rs.)']],
             body: auditorRecords.map(r => [
-                r.AUDIT_ID,
+                r.StoreID,
                 r.StoreName,
                 new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
                 r.AuditJobType,
@@ -466,8 +466,8 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Table hover responsive className="mb-0 hover-scale-row">
                                 <thead className="bg-light text-muted small text-uppercase">
                                     <tr>
-                                        <th className="border-0 py-3 ps-4" onClick={() => requestSort('AUDIT_ID')} style={{ cursor: 'pointer' }}>
-                                            Audit ID {getSortIcon('AUDIT_ID')}
+                                        <th className="border-0 py-3 ps-4" onClick={() => requestSort('StoreID')} style={{ cursor: 'pointer' }}>
+                                            Store ID {getSortIcon('StoreID')}
                                         </th>
                                         <th className="border-0 py-3" onClick={() => requestSort('StoreName')} style={{ cursor: 'pointer' }}>
                                             Store {getSortIcon('StoreName')}
@@ -500,7 +500,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                             style={{ cursor: 'pointer' }}
                                             onClick={() => { setSelectedAudit(audit); setShowAuditDetail(true); }}
                                         >
-                                            <td className="ps-4 fw-bold text-primary">{audit.AUDIT_ID}</td>
+                                            <td className="ps-4 fw-bold text-primary">{audit.StoreID || audit.AUDIT_ID}</td>
                                             <td>{audit.StoreName}</td>
                                             <td>{formatDate(audit.AuditStartDate)}</td>
                                             <td>{audit.AuditJobType}</td>

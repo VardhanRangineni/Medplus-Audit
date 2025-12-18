@@ -78,7 +78,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
 
         // 1. Summary Sheet
         const summaryData = [
-            ["Audit ID", audit.AUDIT_ID],
+            ["Store ID", audit.StoreID || audit.AUDIT_ID],
             ["Store Name", audit.StoreName],
             ["Total Value (₹)", audit.StoreAuditValue],
             ["Start Date", formatDate(audit.AuditStartDate)],
@@ -111,7 +111,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
         ];
         utils.book_append_sheet(wb, wsSummary, "Audit Summary");
 
-        const fileName = `Audit_${audit.AUDIT_ID}_Report.xlsx`;
+        const fileName = `Audit_${audit.StoreID || audit.AUDIT_ID}_Report.xlsx`;
         writeFile(wb, fileName);
     };
 
@@ -120,7 +120,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
 
         // Title
         doc.setFontSize(16);
-        doc.text(`Audit Details: ${audit.AUDIT_ID}`, 14, 20);
+        doc.text(`Audit Details: ${audit.StoreID || audit.AUDIT_ID}`, 14, 20);
 
         doc.text(`Store: ${audit.StoreName}`, 14, 28);
         doc.text(`Total Value: Rs. ${(audit.StoreAuditValue || 0).toLocaleString('en-IN')}`, 14, 34);
@@ -159,7 +159,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
             });
         }
 
-        const pdfFileName = `Audit_${audit.AUDIT_ID}_Report.pdf`;
+        const pdfFileName = `Audit_${audit.StoreID || audit.AUDIT_ID}_Report.pdf`;
         doc.save(pdfFileName);
     };
 
@@ -229,8 +229,9 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                     >
                                         <i className="fas fa-file-invoice fa-lg"></i>
                                     </div>
+
                                     <div>
-                                        <h4 className="fw-bold mb-0" style={{ color: '#1e293b' }}>{audit.AUDIT_ID}</h4>
+                                        <h4 className="fw-bold mb-0" style={{ color: '#1e293b' }}>{audit.StoreID || audit.AUDIT_ID}</h4>
                                         <span className="text-muted small">{audit.AuditJobType}</span>
                                     </div>
                                 </div>
@@ -445,7 +446,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                     Close
                 </Button>
             </Modal.Footer>
-        </Modal>
+        </Modal >
     );
 };
 

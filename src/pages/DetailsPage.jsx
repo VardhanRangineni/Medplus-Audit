@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Container, Row, Col, Card, Form, InputGroup, Table, Button, Badge, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, InputGroup, Table, Button, Badge, Alert, Dropdown } from 'react-bootstrap';
+import { utils, writeFile } from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import StoreDetailModal from '../components/StoreDetailModal';
 import { mockDataService } from '../services/mockDataService';
 
@@ -9,10 +12,10 @@ const DetailsPage = ({ filters = {} }) => {
   const [searchParams] = useSearchParams();
   const title = searchParams.get('title') || 'Details';
   const type = searchParams.get('type') || '';
-  
+
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
-  
+
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStore, setFilterStore] = useState('');
   const [filterState, setFilterState] = useState('');
@@ -107,17 +110,17 @@ const DetailsPage = ({ filters = {} }) => {
       ];
     } else if (type === 'audit-completed') {
       return [
-        { 
-          storeId: 'MP006', 
-          storeName: 'Delhi NCR', 
-          state: 'DL', 
-          supervisor: 'Amit Verma', 
-          noOfAuditors: 3, 
-          startDate: '2024-11-20', 
-          endDate: '2024-11-28', 
-          totalPIDs: 1850, 
-          totalSKUs: 4500, 
-          duration: 192, 
+        {
+          storeId: 'MP006',
+          storeName: 'Delhi NCR',
+          state: 'DL',
+          supervisor: 'Amit Verma',
+          noOfAuditors: 3,
+          startDate: '2024-11-20',
+          endDate: '2024-11-28',
+          totalPIDs: 1850,
+          totalSKUs: 4500,
+          duration: 192,
           mismatch: 12,
           mismatchDetails: [
             { productId: 'PID001', sku: 'SKU12345', productName: 'Paracetamol 500mg', type: 'Short', systemQty: 100, physicalQty: 95, difference: -5 },
@@ -126,20 +129,20 @@ const DetailsPage = ({ filters = {} }) => {
             { productId: 'PID004', sku: 'SKU12348', productName: 'Vitamin C Tablets', type: 'Contra Excess', systemQty: 120, physicalQty: 122, difference: 2 },
             { productId: 'PID005', sku: 'SKU12349', productName: 'Calcium Supplements', type: 'Short', systemQty: 60, physicalQty: 57, difference: -3 }
           ],
-          auditJobType: 'Full Audit', 
-          processType: 'Product Audit' 
+          auditJobType: 'Full Audit',
+          processType: 'Product Audit'
         },
-        { 
-          storeId: 'MP008', 
-          storeName: 'Kolkata East', 
-          state: 'WB', 
-          supervisor: 'Sourav Das', 
-          noOfAuditors: 2, 
-          startDate: '2024-11-22', 
-          endDate: '2024-11-30', 
-          totalPIDs: 1650, 
-          totalSKUs: 3800, 
-          duration: 192, 
+        {
+          storeId: 'MP008',
+          storeName: 'Kolkata East',
+          state: 'WB',
+          supervisor: 'Sourav Das',
+          noOfAuditors: 2,
+          startDate: '2024-11-22',
+          endDate: '2024-11-30',
+          totalPIDs: 1650,
+          totalSKUs: 3800,
+          duration: 192,
           mismatch: 18,
           mismatchDetails: [
             { productId: 'PID006', sku: 'SKU22345', productName: 'Metformin 500mg', type: 'Short', systemQty: 200, physicalQty: 192, difference: -8 },
@@ -147,40 +150,40 @@ const DetailsPage = ({ filters = {} }) => {
             { productId: 'PID008', sku: 'SKU22347', productName: 'Atorvastatin 10mg', type: 'Contra Short', systemQty: 90, physicalQty: 87, difference: -3 },
             { productId: 'PID009', sku: 'SKU22348', productName: 'Losartan 50mg', type: 'Contra Excess', systemQty: 110, physicalQty: 113, difference: 3 }
           ],
-          auditJobType: 'Partial/Random Audit', 
-          processType: 'Batch Audit' 
+          auditJobType: 'Partial/Random Audit',
+          processType: 'Batch Audit'
         },
-        { 
-          storeId: 'MP009', 
-          storeName: 'Nagpur Central', 
-          state: 'MH', 
-          supervisor: 'Pooja Deshmukh', 
-          noOfAuditors: 2, 
-          startDate: '2024-11-25', 
-          endDate: '2024-12-02', 
-          totalPIDs: 1420, 
-          totalSKUs: 3200, 
-          duration: 168, 
+        {
+          storeId: 'MP009',
+          storeName: 'Nagpur Central',
+          state: 'MH',
+          supervisor: 'Pooja Deshmukh',
+          noOfAuditors: 2,
+          startDate: '2024-11-25',
+          endDate: '2024-12-02',
+          totalPIDs: 1420,
+          totalSKUs: 3200,
+          duration: 168,
           mismatch: 8,
           mismatchDetails: [
             { productId: 'PID010', sku: 'SKU32345', productName: 'Omeprazole 20mg', type: 'Short', systemQty: 150, physicalQty: 147, difference: -3 },
             { productId: 'PID011', sku: 'SKU32346', productName: 'Pantoprazole 40mg', type: 'Excess', systemQty: 85, physicalQty: 87, difference: 2 },
             { productId: 'PID012', sku: 'SKU32347', productName: 'Ranitidine 150mg', type: 'Contra Short', systemQty: 70, physicalQty: 68, difference: -2 }
           ],
-          auditJobType: 'Full Audit', 
-          processType: 'Product Audit' 
+          auditJobType: 'Full Audit',
+          processType: 'Product Audit'
         },
-        { 
-          storeId: 'MP010', 
-          storeName: 'Bhopal Main', 
-          state: 'MP', 
-          supervisor: 'Anil Shukla', 
-          noOfAuditors: 3, 
-          startDate: '2024-11-26', 
-          endDate: '2024-12-03', 
-          totalPIDs: 1280, 
-          totalSKUs: 2900, 
-          duration: 168, 
+        {
+          storeId: 'MP010',
+          storeName: 'Bhopal Main',
+          state: 'MP',
+          supervisor: 'Anil Shukla',
+          noOfAuditors: 3,
+          startDate: '2024-11-26',
+          endDate: '2024-12-03',
+          totalPIDs: 1280,
+          totalSKUs: 2900,
+          duration: 168,
           mismatch: 15,
           mismatchDetails: [
             { productId: 'PID013', sku: 'SKU42345', productName: 'Azithromycin 500mg', type: 'Short', systemQty: 130, physicalQty: 124, difference: -6 },
@@ -188,8 +191,8 @@ const DetailsPage = ({ filters = {} }) => {
             { productId: 'PID015', sku: 'SKU42347', productName: 'Ciprofloxacin 500mg', type: 'Contra Short', systemQty: 80, physicalQty: 78, difference: -2 },
             { productId: 'PID016', sku: 'SKU42348', productName: 'Doxycycline 100mg', type: 'Contra Excess', systemQty: 60, physicalQty: 62, difference: 2 }
           ],
-          auditJobType: 'Select SKUs', 
-          processType: 'Batch Audit' 
+          auditJobType: 'Select SKUs',
+          processType: 'Batch Audit'
         }
       ];
     } else if (type === 'audit-progress') {
@@ -271,9 +274,9 @@ const DetailsPage = ({ filters = {} }) => {
   };
 
   const data = getData();
-  
+
   const filteredData = data.filter(item => {
-    const matchesSearch = Object.values(item).some(val => 
+    const matchesSearch = Object.values(item).some(val =>
       String(val).toLowerCase().includes(searchTerm.toLowerCase())
     );
     const matchesStore = !filterStore || item.storeName?.includes(filterStore);
@@ -287,9 +290,155 @@ const DetailsPage = ({ filters = {} }) => {
   const auditJobTypes = [...new Set(data.map(item => item.auditJobType).filter(Boolean))];
   const processTypes = [...new Set(data.map(item => item.processType).filter(Boolean))];
 
-  const exportToExcel = () => {
-    console.log('Exporting to Excel...', filteredData);
-    alert('Export functionality would download Excel file here');
+  const handleDownloadExcel = () => {
+    const wb = utils.book_new();
+    const headers = [
+      "STORE ID", "STORE NAME", "STATE", "STORE TYPE", "BOX TYPE",
+      "STORE CREATED DATE", "LAST AUDITED DATE", "CYCLE", "SKUS (count)",
+      "QUANTITY (units)", "MISMATCH", "DEVIATION",
+      "SHORT", "VALUE", "EXCESS", "VALUE",
+      "CONTRA EXCESS", "VALUE", "CONTRA SHORT", "VALUE"
+    ];
+
+    const dataToExport = filteredData.map(row => {
+      // Logic for Covered Stores specific headers
+      if (type === 'covered-stores') {
+        // Synthesize breakdown data since it's not in the simple mock model
+        const totalDev = row.deviation || 0;
+        // Distribute approximately: Short 40%, Excess 30%, CE 20%, CS 10%
+        const short = Math.ceil(totalDev * 0.4);
+        const excess = Math.ceil(totalDev * 0.3);
+        const contraExcess = Math.ceil(totalDev * 0.2);
+        const contraShort = Math.max(0, totalDev - short - excess - contraExcess);
+
+        return {
+          "STORE ID": row.storeId,
+          "STORE NAME": row.storeName,
+          "STATE": row.state,
+          "STORE TYPE": row.storeType,
+          "BOX TYPE": row.boxType,
+          "STORE CREATED DATE": row.storeCreatedDate,
+          "LAST AUDITED DATE": row.lastAuditedDate,
+          "CYCLE": row.cycle,
+          "SKUS (count)": row.skus,
+          "QUANTITY (units)": row.quantity,
+          "MISMATCH": row.mismatch,
+          "DEVIATION": row.deviation,
+          "SHORT": short,
+          "VALUE_SHORT": short * 1500, // Dummy value
+          "EXCESS": excess,
+          "VALUE_EXCESS": excess * 1200,
+          "CONTRA EXCESS": contraExcess,
+          "VALUE_CE": contraExcess * 2000,
+          "CONTRA SHORT": contraShort,
+          "VALUE_CS": contraShort * 1800
+        };
+      } else {
+        // Default generic export for other views
+        const newRow = {};
+        Object.entries(row).forEach(([key, value]) => {
+          if (key !== 'mismatchDetails') {
+            newRow[formatColumnHeader(key)] = value;
+          }
+        });
+        return newRow;
+      }
+    });
+
+    // Rename keys to match specific requested headers with duplicate "VALUE" names strictly for Excel
+    // Note: JS Objects keys must be unique. `xlsx` handles array of arrays better for duplicate headers.
+
+    let ws;
+    if (type === 'covered-stores') {
+      const aoaData = [headers];
+      dataToExport.forEach(r => {
+        aoaData.push([
+          r["STORE ID"], r["STORE NAME"], r["STATE"], r["STORE TYPE"], r["BOX TYPE"],
+          r["STORE CREATED DATE"], r["LAST AUDITED DATE"], r["CYCLE"], r["SKUS (count)"],
+          r["QUANTITY (units)"], r["MISMATCH"], r["DEVIATION"],
+          r["SHORT"], r["VALUE_SHORT"],
+          r["EXCESS"], r["VALUE_EXCESS"],
+          r["CONTRA EXCESS"], r["VALUE_CE"],
+          r["CONTRA SHORT"], r["VALUE_CS"]
+        ]);
+      });
+      ws = utils.aoa_to_sheet(aoaData);
+    } else {
+      ws = utils.json_to_sheet(dataToExport);
+    }
+
+    utils.book_append_sheet(wb, ws, title.substring(0, 31));
+    writeFile(wb, `${title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`);
+  };
+
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF('l', 'mm', 'a4'); // Landscape for more columns
+    doc.setFontSize(16);
+    doc.text(title, 14, 20);
+    doc.setFontSize(10);
+    doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
+
+    let headers = [];
+    let tableData = [];
+
+    if (type === 'covered-stores') {
+      // Use abbreviated headers for PDF to fit
+      headers = [
+        "ID", "Store", "State", "Type", "Box",
+        "Created", "Audited", "Cycle", "SKUs",
+        "Qty", "Mis", "Dev",
+        "Sh", "Val", "Ex", "Val",
+        "CE", "Val", "CS", "Val"
+      ];
+
+      tableData = filteredData.map(row => {
+        const totalDev = row.deviation || 0;
+        const short = Math.ceil(totalDev * 0.4);
+        const excess = Math.ceil(totalDev * 0.3);
+        const contraExcess = Math.ceil(totalDev * 0.2);
+        const contraShort = Math.max(0, totalDev - short - excess - contraExcess);
+
+        return [
+          row.storeId, row.storeName, row.state, row.storeType, row.boxType,
+          row.storeCreatedDate, row.lastAuditedDate, row.cycle, row.skus,
+          row.quantity, row.mismatch, row.deviation,
+          short, (short * 1500).toLocaleString('en-IN'),
+          excess, (excess * 1200).toLocaleString('en-IN'),
+          contraExcess, (contraExcess * 2000).toLocaleString('en-IN'),
+          contraShort, (contraShort * 1800).toLocaleString('en-IN')
+        ];
+      });
+
+    } else {
+      headers = Object.keys(filteredData[0] || {})
+        .filter(key => key !== 'mismatchDetails')
+        .map(key => formatColumnHeader(key));
+
+      tableData = filteredData.map(row =>
+        Object.entries(row)
+          .filter(([key]) => key !== 'mismatchDetails')
+          .map(([key, value]) => {
+            if (typeof value === 'number') return value.toLocaleString('en-IN');
+            return value;
+          })
+      );
+    }
+
+    autoTable(doc, {
+      startY: 35,
+      head: [headers],
+      body: tableData,
+      theme: 'striped',
+      headStyles: { fillColor: [41, 128, 185] },
+      styles: { fontSize: 7, cellPadding: 1, overflow: 'linebreak' },
+      columnStyles: {
+        0: { cellWidth: 12 }, // ID column
+        1: { cellWidth: 20 }, // Store name
+        // Compact columns for values
+      }
+    });
+
+    doc.save(`${title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
   const resetFilters = () => {
@@ -327,12 +476,12 @@ const DetailsPage = ({ filters = {} }) => {
 
     return details.filter(detail => {
       const matchesFilter = !filter || detail.type === filter;
-      const matchesSearch = !search || 
+      const matchesSearch = !search ||
         detail.productId.toLowerCase().includes(search) ||
         detail.sku.toLowerCase().includes(search) ||
         detail.productName.toLowerCase().includes(search) ||
         detail.type.toLowerCase().includes(search);
-      
+
       return matchesFilter && matchesSearch;
     });
   };
@@ -351,7 +500,7 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'inventoryValueMRP') return 'INVENTORY VALUE MRP (₹)';
     if (key === 'mismatch') return 'MISMATCH';
     if (key === 'deviation') return 'DEVIATION';
-    
+
     // First, handle the splitting while preserving common acronyms
     let label = key
       // Replace camelCase with spaces, but preserve consecutive capitals (acronyms)
@@ -360,7 +509,7 @@ const DetailsPage = ({ filters = {} }) => {
       .replace(/([A-Z])([A-Z][a-z])/g, '$1$2')
       .toUpperCase()
       .trim();
-    
+
     // Add units based on field names
     if (key.includes('value') || key.includes('Value')) return label + ' (₹)';
     if (key.includes('quantity') || key.includes('Quantity') || key.includes('Qty')) return label + ' (units)';
@@ -370,7 +519,7 @@ const DetailsPage = ({ filters = {} }) => {
     if (key.includes('age') || key.includes('Age') || key.includes('days') || key.includes('Days')) return label + ' (days)';
     if (key.includes('count') || key.includes('Count')) return label + ' (items)';
     if (key.includes('sku') || key.includes('SKU') || key.includes('PID')) return label + ' (count)';
-    
+
     return label;
   };
 
@@ -387,12 +536,12 @@ const DetailsPage = ({ filters = {} }) => {
     console.log('Row clicked:', row);
     console.log('Is clickable:', isStoreClickable);
     console.log('Store ID:', row.storeId);
-    
+
     if (!isStoreClickable || !row.storeId) {
       console.log('Click ignored - not clickable or no storeId');
       return;
     }
-    
+
     try {
       console.log('Fetching store data for:', row.storeId);
       const storeData = await mockDataService.getStoreDetailedInfo(row.storeId);
@@ -441,9 +590,20 @@ const DetailsPage = ({ filters = {} }) => {
                 )}
               </p>
             </div>
-            <Button variant="success" onClick={exportToExcel}>
-              <i className="fas fa-file-excel me-2"></i>Export to Excel
-            </Button>
+            <Dropdown>
+              <Dropdown.Toggle variant="success" id="dropdown-basic">
+                <i className="fas fa-download me-2"></i>Export Report
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={handleDownloadExcel}>
+                  <i className="fas fa-file-excel text-success me-2"></i>Export as Excel
+                </Dropdown.Item>
+                <Dropdown.Item onClick={handleDownloadPDF}>
+                  <i className="fas fa-file-pdf text-danger me-2"></i>Export as PDF
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
         </Col>
       </Row>
@@ -522,9 +682,9 @@ const DetailsPage = ({ filters = {} }) => {
                 {filteredData.length > 0 ? (
                   filteredData.map((row, idx) => (
                     <>
-                      <tr 
+                      <tr
                         key={idx}
-                        style={{ 
+                        style={{
                           cursor: isStoreClickable && row.storeId ? 'pointer' : 'default',
                           transition: 'background-color 0.2s'
                         }}
@@ -538,7 +698,7 @@ const DetailsPage = ({ filters = {} }) => {
                         }}
                       >
                         {Object.entries(row).filter(([key]) => key !== 'mismatchDetails').map(([key, value], i) => (
-                          <td 
+                          <td
                             key={i}
                             onClick={(e) => {
                               if (key === 'mismatch' && row.mismatchDetails) {
@@ -578,8 +738,8 @@ const DetailsPage = ({ filters = {} }) => {
                                   Product Level Mismatch Details
                                 </h6>
                                 <div className="d-flex gap-2">
-                                  <Form.Select 
-                                    size="sm" 
+                                  <Form.Select
+                                    size="sm"
                                     style={{ width: '200px' }}
                                     value={mismatchFilters[row.storeId] || ''}
                                     onChange={(e) => handleMismatchFilterChange(row.storeId, e.target.value)}
@@ -623,10 +783,10 @@ const DetailsPage = ({ filters = {} }) => {
                                         <td>{detail.sku}</td>
                                         <td>{detail.productName}</td>
                                         <td>
-                                          <Badge 
+                                          <Badge
                                             bg={
-                                              detail.type === 'Short' || detail.type === 'Contra Short' 
-                                                ? 'danger' 
+                                              detail.type === 'Short' || detail.type === 'Contra Short'
+                                                ? 'danger'
                                                 : 'warning'
                                             }
                                           >
@@ -635,7 +795,7 @@ const DetailsPage = ({ filters = {} }) => {
                                         </td>
                                         <td>{detail.systemQty}</td>
                                         <td>{detail.physicalQty}</td>
-                                        <td style={{ 
+                                        <td style={{
                                           color: detail.difference < 0 ? '#dc3545' : '#198754',
                                           fontWeight: '600'
                                         }}>
@@ -674,7 +834,7 @@ const DetailsPage = ({ filters = {} }) => {
       </Card>
 
       {/* Store Detail Modal */}
-      <StoreDetailModal 
+      <StoreDetailModal
         show={showStoreDetail}
         onHide={() => setShowStoreDetail(false)}
         storeData={selectedStoreData}

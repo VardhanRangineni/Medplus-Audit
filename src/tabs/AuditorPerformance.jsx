@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react';
-import { Container, Row, Col, Card, Table, ProgressBar, Badge, Alert, Dropdown, Form, InputGroup } from 'react-bootstrap';
+import { Container, Row, Col, Card, Table, ProgressBar, Badge, Alert, Dropdown, Form, InputGroup, Button } from 'react-bootstrap';
 import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import KPICard from '../components/KPICard';
 import AuditorDetailModal from '../components/AuditorDetailModal';
+import PerformersListModal from '../components/PerformersListModal';
 import auditData from '../data/audit_dataset.json';
 import './AuditorPerformance.css';
 
@@ -98,7 +99,11 @@ const AuditorPerformance = ({ filters = {} }) => {
       auditor.totalAppearedQty += (record.AppearedQty || 0);
       auditor.totalMatchedQty += (record.MatchedQty || 0);
       auditor.totalRevisedQty += (record.RevisedQty || 0);
+
       auditor.totalValue += (record.AppearedValue || 0);
+      auditor.totalMatchedValue += (record.MatchedValue || 0);
+      auditor.totalRevisedValue += (record.RevisedValue || 0);
+
       auditor.count += 1;
     });
 
@@ -138,7 +143,11 @@ const AuditorPerformance = ({ filters = {} }) => {
         matchRate: parseFloat(matchRate.toFixed(1)),
         editRate: parseFloat(editRate.toFixed(1)),
         totalValue: auditor.totalValue,
+        totalMatchedValue: auditor.totalMatchedValue,
+        totalRevisedValue: auditor.totalRevisedValue,
         totalAppearedQty: auditor.totalAppearedQty,
+        totalMatchedQty: auditor.totalMatchedQty,
+        totalRevisedQty: auditor.totalRevisedQty,
         totalAudits: auditor.count
       };
     });
@@ -165,23 +174,72 @@ const AuditorPerformance = ({ filters = {} }) => {
 
   // Calculate overall performance metrics for cards
   const performanceMetrics = useMemo(() => {
-    if (auditorData.length === 0) return { avgTimePerSKU: '0 min', matchRate: 0, editRate: 0 };
+    const defaultMetrics = {
+      avgTimePerSKU: '0 min',
+      avgTimePerPID: '0 min',
+      matchRate: 0,
+      editRate: 0,
+      deviations: {
+        appeared: { qty: 0, value: 0 },
+        matched: { qty: 0, value: 0 },
+        revised: { qty: 0, value: 0 }
+      }
+    };
+
+    if (auditorData.length === 0) return defaultMetrics;
 
     const totalAvgTime = auditorData.reduce((sum, a) => sum + a.avgTime, 0);
-    const totalMatchRate = auditorData.reduce((sum, a) => sum + a.matchRate, 0);
-    const totalEditRate = auditorData.reduce((sum, a) => sum + a.editRate, 0);
     const count = auditorData.length;
+
+    // Aggregating deviations
+    const deviations = auditorData.reduce((acc, a) => {
+      acc.appeared.qty += a.totalAppearedQty;
+      acc.appeared.value += a.totalValue;
+      acc.matched.qty += a.totalMatchedQty;
+      acc.matched.value += a.totalMatchedValue;
+      acc.revised.qty += a.totalRevisedQty;
+      acc.revised.value += a.totalRevisedValue;
+      return acc;
+    }, {
+      appeared: { qty: 0, value: 0 },
+      matched: { qty: 0, value: 0 },
+      revised: { qty: 0, value: 0 }
+    });
 
     return {
       avgTimePerSKU: `${(totalAvgTime / count).toFixed(1)} min`,
       avgTimePerPID: `${(auditorData.reduce((sum, a) => sum + a.avgTimePID, 0) / count).toFixed(1)} min`,
-      matchRate: (totalMatchRate / count).toFixed(1),
-      editRate: (totalEditRate / count).toFixed(1)
+      deviations
     };
   }, [auditorData]);
 
   const [showAuditorDetail, setShowAuditorDetail] = useState(false);
   const [selectedAuditorId, setSelectedAuditorId] = useState(null);
+  const [showPerformersModal, setShowPerformersModal] = useState(false);
+  const [performersModalData, setPerformersModalData] = useState({ title: '', items: [], variant: '', metric: '' });
+
+  const handleShowMorePerformers = (type) => {
+    if (type === 'top') {
+      const items = [...auditorData].sort((a, b) => b.matchRate - a.matchRate).map(a => ({ name: a.auditorName, value: a.matchRate }));
+      setPerformersModalData({
+        title: 'Top Performers (Match Rate)',
+        items: items,
+        variant: 'success',
+        metricLabel: 'Match Rate',
+        metricKey: 'matchRate'
+      });
+    } else {
+      const items = [...auditorData].sort((a, b) => a.matchRate - b.matchRate).map(a => ({ name: a.auditorName, value: a.matchRate }));
+      setPerformersModalData({
+        title: 'Needs Attention (Low Match Rate)',
+        items: items,
+        variant: 'warning',
+        metricLabel: 'Match Rate',
+        metricKey: 'matchRate'
+      });
+    }
+    setShowPerformersModal(true);
+  };
 
   const handleAuditorClick = (auditor) => {
     setSelectedAuditorId(auditor.auditorId);
@@ -224,6 +282,23 @@ const AuditorPerformance = ({ filters = {} }) => {
     ];
     utils.book_append_sheet(wb, wsDetails, "Auditor Details");
 
+    // Summary Sheet
+    const summaryData = [
+      ["Productivity Summary"],
+      ["Metric", "Value"],
+      ["Total Auditors", auditorData.length],
+      ["Avg Time/PID", performanceMetrics.avgTimePerPID],
+      ["Avg Time/SKU", performanceMetrics.avgTimePerSKU],
+      [],
+      ["Deviation Summary", "Qty", "Value"],
+      ["Appeared", performanceMetrics.deviations.appeared.qty, performanceMetrics.deviations.appeared.value],
+      ["Matched", performanceMetrics.deviations.matched.qty, performanceMetrics.deviations.matched.value],
+      ["Revised", performanceMetrics.deviations.revised.qty, performanceMetrics.deviations.revised.value]
+    ];
+    const wsSummary = utils.aoa_to_sheet(summaryData);
+    wsSummary['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 20 }];
+    utils.book_append_sheet(wb, wsSummary, "Summary");
+
     writeFile(wb, `Auditor_Productivity_Summary_${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
@@ -243,14 +318,25 @@ const AuditorPerformance = ({ filters = {} }) => {
       startY: 42,
       head: [['Metric', 'Value']],
       body: [
+        ['Total Auditors', auditorData.length],
         ['Avg Time per PID', performanceMetrics.avgTimePerPID],
         ['Avg Time per SKU', performanceMetrics.avgTimePerSKU],
-        ['Match Rate', `${performanceMetrics.matchRate}%`],
-        ['Edit Rate', `${performanceMetrics.editRate}%`],
-        ['Total Auditors', auditorData.length],
       ],
       theme: 'striped',
       headStyles: { fillColor: [41, 128, 185] }
+    });
+
+    // Deviation Summary Table
+    autoTable(doc, {
+      startY: doc.lastAutoTable.finalY + 10,
+      head: [['Deviation Category', 'Qty', 'Value (Rs.)']],
+      body: [
+        ['Appeared', performanceMetrics.deviations.appeared.qty.toLocaleString('en-IN'), formatIndianCurrency(performanceMetrics.deviations.appeared.value)],
+        ['Matched', performanceMetrics.deviations.matched.qty.toLocaleString('en-IN'), formatIndianCurrency(performanceMetrics.deviations.matched.value)],
+        ['Revised', performanceMetrics.deviations.revised.qty.toLocaleString('en-IN'), formatIndianCurrency(performanceMetrics.deviations.revised.value)],
+      ],
+      theme: 'striped',
+      headStyles: { fillColor: [243, 156, 18] }
     });
 
     // Auditor Details Table
@@ -452,23 +538,55 @@ const AuditorPerformance = ({ filters = {} }) => {
             color="primary"
           />
         </Col>
+      </Row>
+
+      {/* Deviation Summary */}
+      <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>DEVIATION SUMMARY</h6>
+      <Row className="g-3 mb-4">
         <Col md={3}>
-          <KPICard
-            title="Match Rate"
-            value={`${performanceMetrics.matchRate}%`}
-            subtitle="Accuracy vs re-audit"
-            icon="fas fa-bullseye"
-            color="success"
-          />
+          <Card className="border-0 shadow-sm border-start border-4 border-primary">
+            <Card.Body>
+              <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED DEVIATIONS</h6>
+              <div className="d-flex justify-content-between mb-1 text-muted small">
+                <span>Qty</span>
+                <span className="fw-bold text-dark">{performanceMetrics.deviations.appeared.qty.toLocaleString('en-IN')}</span>
+              </div>
+              <div className="d-flex justify-content-between text-muted small">
+                <span>Value</span>
+                <span className="fw-bold text-dark">₹{formatIndianCurrency(performanceMetrics.deviations.appeared.value)}</span>
+              </div>
+            </Card.Body>
+          </Card>
         </Col>
         <Col md={3}>
-          <KPICard
-            title="Edit Rate"
-            value={`${performanceMetrics.editRate}%`}
-            subtitle="Quality indicator"
-            icon="fas fa-edit"
-            color="warning"
-          />
+          <Card className="border-0 shadow-sm border-start border-4 border-success">
+            <Card.Body>
+              <h6 className="text-success fw-bold text-uppercase mb-3">MATCHED DEVIATIONS</h6>
+              <div className="d-flex justify-content-between mb-1 text-muted small">
+                <span>Qty</span>
+                <span className="fw-bold text-dark">{performanceMetrics.deviations.matched.qty.toLocaleString('en-IN')}</span>
+              </div>
+              <div className="d-flex justify-content-between text-muted small">
+                <span>Value</span>
+                <span className="fw-bold text-dark">₹{formatIndianCurrency(performanceMetrics.deviations.matched.value)}</span>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={3}>
+          <Card className="border-0 shadow-sm border-start border-4 border-warning">
+            <Card.Body>
+              <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED DEVIATIONS</h6>
+              <div className="d-flex justify-content-between mb-1 text-muted small">
+                <span>Qty</span>
+                <span className="fw-bold text-dark">{performanceMetrics.deviations.revised.qty.toLocaleString('en-IN')}</span>
+              </div>
+              <div className="d-flex justify-content-between text-muted small">
+                <span>Value</span>
+                <span className="fw-bold text-dark">₹{formatIndianCurrency(performanceMetrics.deviations.revised.value)}</span>
+              </div>
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
 
@@ -476,11 +594,14 @@ const AuditorPerformance = ({ filters = {} }) => {
       <Row className="mb-4">
         <Col md={6}>
           <Card className="border-0 shadow-sm">
-            <Card.Header className="bg-white border-0 py-3">
+            <Card.Header className="bg-white border-0 py-3 d-flex justify-content-between align-items-center">
               <h6 className="mb-0 fw-bold text-success">
                 <i className="fas fa-trophy me-2"></i>
                 Top Performers
               </h6>
+              <Button variant="link" className="p-0 text-success small text-decoration-none fw-bold" onClick={() => handleShowMorePerformers('top')}>
+                View More <i className="fas fa-arrow-right ms-1"></i>
+              </Button>
             </Card.Header>
             <Card.Body>
               <div className="performance-list">
@@ -503,11 +624,14 @@ const AuditorPerformance = ({ filters = {} }) => {
 
         <Col md={6}>
           <Card className="border-0 shadow-sm">
-            <Card.Header className="bg-white border-0 py-3">
+            <Card.Header className="bg-white border-0 py-3 d-flex justify-content-between align-items-center">
               <h6 className="mb-0 fw-bold text-warning">
                 <i className="fas fa-exclamation-triangle me-2"></i>
                 Needs Attention
               </h6>
+              <Button variant="link" className="p-0 text-warning small text-decoration-none fw-bold" onClick={() => handleShowMorePerformers('low')}>
+                View More <i className="fas fa-arrow-right ms-1"></i>
+              </Button>
             </Card.Header>
             <Card.Body>
               <div className="performance-list">
@@ -587,6 +711,15 @@ const AuditorPerformance = ({ filters = {} }) => {
         onHide={() => setShowAuditorDetail(false)}
         auditorId={selectedAuditorId}
         allData={auditData}
+      />
+
+      <PerformersListModal
+        show={showPerformersModal}
+        onHide={() => setShowPerformersModal(false)}
+        title={performersModalData.title}
+        items={performersModalData.items}
+        variant={performersModalData.variant}
+        metricLabel={performersModalData.metricLabel}
       />
     </Container >
   );

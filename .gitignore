@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Documentation screenshots (generated from running app)
+docs/screenshots/

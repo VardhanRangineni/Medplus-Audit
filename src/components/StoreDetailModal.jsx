@@ -666,19 +666,57 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     }));
   };
 
-  // Generate PID data for each auditor
+  // Generate PID data for each auditor with all details
   const generateAuditorDetails = (auditor, auditorIndex) => {
     const pidCount = Math.floor((auditor.assignedSKUs || 0) / 3); // Average 3 SKUs per PID
     const pids = [];
+    const completionRate = auditor.completionRate || 0;
 
     for (let i = 0; i < pidCount; i++) {
       const skuCountForPID = Math.floor(Math.random() * 4) + 2; // 2-5 SKUs per PID
-      const completedSKUs = Math.floor(skuCountForPID * ((auditor.completionRate || 0) / 100));
+      
+      // Determine status based on completion rate and random distribution
+      let status;
+      const randomValue = Math.random() * 100;
+      if (randomValue < completionRate) {
+        status = 'Completed';
+      } else if (randomValue < completionRate + 20) {
+        status = 'In Progress';
+      } else {
+        status = 'Created';
+      }
+
+      // Generate start time (between 8 AM and 5 PM)
+      const startHour = Math.floor(Math.random() * 9) + 8; // 8-16
+      const startMinute = Math.floor(Math.random() * 60);
+      const startTime = `${String(startHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
+
+      // Generate end time and duration based on status
+      let endTime = 'N/A';
+      let duration = 'N/A';
+
+      if (status === 'Completed') {
+        // Calculate duration (15-45 minutes per PID)
+        const durationMinutes = Math.floor(Math.random() * 30) + 15;
+        const endHour = startHour + Math.floor((startMinute + durationMinutes) / 60);
+        const endMinute = (startMinute + durationMinutes) % 60;
+        endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
+        
+        const hours = Math.floor(durationMinutes / 60);
+        const minutes = durationMinutes % 60;
+        duration = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+      } else if (status === 'In Progress') {
+        // For in-progress, show start time but no end time
+        duration = 'Ongoing';
+      }
 
       pids.push({
         pid: `PID${(auditorIndex + 1) * 1000 + i + 1}`,
         skuCount: skuCountForPID,
-        completedSKUs: completedSKUs
+        status: status,
+        startTime: status !== 'Created' ? startTime : 'N/A',
+        endTime: endTime,
+        duration: duration
       });
     }
 
@@ -1039,9 +1077,26 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                             </td>
                             {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
                               <>
-                                <td><Badge bg="info">{pid.skuCount} SKUs</Badge></td>
-                                <td><Badge bg="success">{pid.completedSKUs} Completed</Badge></td>
-                                <td colSpan="2"></td>
+                                <td>
+                                  <Badge bg="info">{pid.skuCount} SKUs</Badge>
+                                </td>
+                                <td>
+                                  <Badge bg={pid.status === 'Completed' ? 'success' : pid.status === 'In Progress' ? 'warning' : 'secondary'}>
+                                    {pid.status}
+                                  </Badge>
+                                  <div className="text-muted small mt-1">
+                                    <i className="far fa-clock me-1"></i>Start: {pid.startTime}
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="text-muted small">
+                                    <i className="far fa-clock me-1 text-danger"></i>End: {pid.endTime}
+                                  </div>
+                                  <div className="fw-semibold small mt-1">
+                                    <i className="fas fa-hourglass-half me-1 text-warning"></i>{pid.duration}
+                                  </div>
+                                </td>
+                                <td></td>
                               </>
                             )}
                           </tr>

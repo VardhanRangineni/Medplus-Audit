@@ -812,7 +812,7 @@ const StoreCoverage = ({ filters = {} }) => {
                   </small>
                 </div>
                 <div className="d-flex gap-2">
-                  <Dropdown>
+                  {/* <Dropdown>
                     <Dropdown.Toggle
                       size="sm"
                       variant="success"
@@ -831,7 +831,7 @@ const StoreCoverage = ({ filters = {} }) => {
                         Export as PDF
                       </Dropdown.Item>
                     </Dropdown.Menu>
-                  </Dropdown>
+                  </Dropdown> */}
                   {selectedDeviation && (
                     <Button
                       size="sm"

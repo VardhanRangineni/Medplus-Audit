@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recha
 import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { formatIndianCurrency, formatIndianNumber } from '../utils/formatters';
 import './StoreDetailModal.css';
 
 const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
@@ -44,7 +45,10 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     auditProgress = {},
     inventorySummary = {},
     auditors = [],
-    productFormData: passedProductFormData = {}
+    productFormData: passedProductFormData = {},
+    AppearedSKUs = 0, MatchedSKUs = 0, RevisedSKUs = 0,
+    AppearedQty = 0, MatchedQty = 0, RevisedQty = 0,
+    AppearedValue = 0, MatchedValue = 0, RevisedValue = 0
   } = storeData;
 
   // Calculate total deviation value
@@ -740,51 +744,91 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
   const RADIAN = Math.PI / 180;
 
-  // Pre-calculate label positions with collision detection
-  // We use an IIFE here to compute this once per render
-  // Ideally this should be memoized with useMemo, but since this component re-renders
-  // mainly on interaction, computing this here is acceptable for performance.
-  const labelLayout = (() => {
-    // Calculate Total Value
+  // --- Layout & Renderer for Product Form Chart ---
+  const productLabelLayout = (() => {
     const totalValue = activeData.reduce((sum, item) => sum + item.value, 0);
-
     let currentAngle = 0;
     const slices = activeData.map((item, index) => {
       const value = item.value;
       const angleSpan = (value / totalValue) * 360;
       const midAngle = currentAngle + angleSpan / 2;
       currentAngle += angleSpan;
-
-      const r = 100 + 30; // outerRadius(100) + 30 (mx distance approximation)
-      // Ideal Y based on midAngle. Note: Recharts midAngle 0 is at 3 o'clock.
-      // Math.sin(-midAngle) gives standard Cartesian Y (positive up, negative down).
-      // SVG Y increases DOWN. So we need -(-Math.sin) = Math.sin.
-      // Let's stick to the formula used in renderCustomizedLabel: y = cy + r * Math.sin(-midAngle * RADIAN)
-      // which implies standard conversion.
+      const r = 100 + 30;
       const idealY = Math.sin(-midAngle * RADIAN) * r;
-
-      return {
-        index,
-        midAngle,
-        idealY,
-        value,
-        isRightSide: Math.cos(-midAngle * RADIAN) >= 0
-      };
+      return { index, midAngle, idealY, value, isRightSide: Math.cos(-midAngle * RADIAN) >= 0 };
     });
 
-    // Helper to resolve collisions
     const resolveSide = (items) => {
-      // Sort by ideal Y (ascending) -> roughly Top to Bottom in visual terms if Y increases down?
-      // Wait, Math.sin(-angle):
-      // 0 deg (3 o'clock) -> sin(0) = 0
-      // 90 deg (12 o'clock) -> sin(-90) = -1 (Top)
-      // 270 deg (6 o'clock) -> sin(-270) = 1 (Bottom)
-      // So smaller Y is Top, Larger Y is Bottom.
-      // Sort Ascending = Top to Bottom.
       items.sort((a, b) => a.idealY - b.idealY);
+      const minSpacing = 30;
+      for (let i = 1; i < items.length; i++) {
+        if (items[i].idealY < items[i - 1].idealY + minSpacing) {
+          items[i].idealY = items[i - 1].idealY + minSpacing;
+        }
+      }
+      return items;
+    };
+    const leftItems = resolveSide(slices.filter(s => !s.isRightSide));
+    const rightItems = resolveSide(slices.filter(s => s.isRightSide));
+    const layoutMap = {};
+    [...leftItems, ...rightItems].forEach(item => { layoutMap[item.index] = item.idealY; });
+    return layoutMap;
+  })();
 
-      const minSpacing = 30; // Minimum vertical distance between labels
+  const renderProductLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name, value, fill }) => {
+    const cos = Math.cos(-midAngle * RADIAN);
+    const sin = Math.sin(-midAngle * RADIAN);
+    const sx = cx + (outerRadius + 10) * cos;
+    const sy = cy + (outerRadius + 10) * sin;
 
+    const adjustedDy = productLabelLayout[index] !== undefined ? productLabelLayout[index] : (outerRadius + 30) * sin;
+    const my = cy + adjustedDy;
+    const mx = cx + (outerRadius + 40) * (cos >= 0 ? 1 : -1);
+
+    // Fixed endpoint X
+    const fixedOffset = outerRadius + 80;
+    const ex = cx + (cos >= 0 ? 1 : -1) * fixedOffset;
+    const ey = my;
+    const textAnchor = cos >= 0 ? 'start' : 'end';
+
+    return (
+      <g>
+        <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+        <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={-10} textAnchor={textAnchor} fill="#333" fontSize="12" fontWeight="bold">
+          {name}
+        </text>
+        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={8} textAnchor={textAnchor} fill="#999" fontSize="11">
+          {`${(percent * 100).toFixed(1)}%`}
+        </text>
+      </g>
+    );
+  };
+
+  // --- Layout & Renderer for Deviation Chart ---
+  const deviationLabelLayout = (() => {
+    // Only compute if deviationChartData exists and has items
+    if (!deviationChartData || deviationChartData.length === 0) return {};
+
+    const totalValue = deviationChartData.reduce((sum, item) => sum + item.value, 0);
+    let currentAngle = 0;
+    const slices = deviationChartData.map((item, index) => {
+      const value = item.value;
+      const angleSpan = totalValue ? (value / totalValue) * 360 : 0;
+      const midAngle = currentAngle + angleSpan / 2;
+      currentAngle += angleSpan;
+
+      const r = 70 + 30; // outerRadius is 70 for deviation chart + 30
+      // Assuming outerRadius 70 for calculation.
+      const calcOuterRadius = 70;
+
+      const idealY = Math.sin(-midAngle * RADIAN) * (calcOuterRadius + 30);
+      return { index, midAngle, idealY, value, isRightSide: Math.cos(-midAngle * RADIAN) >= 0 };
+    });
+
+    const resolveSide = (items) => {
+      items.sort((a, b) => a.idealY - b.idealY);
+      const minSpacing = 30;
       for (let i = 1; i < items.length; i++) {
         if (items[i].idealY < items[i - 1].idealY + minSpacing) {
           items[i].idealY = items[i - 1].idealY + minSpacing;
@@ -795,38 +839,27 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
     const leftItems = resolveSide(slices.filter(s => !s.isRightSide));
     const rightItems = resolveSide(slices.filter(s => s.isRightSide));
-
     const layoutMap = {};
-    [...leftItems, ...rightItems].forEach(item => {
-      layoutMap[item.index] = item.idealY;
-    });
-
+    [...leftItems, ...rightItems].forEach(item => { layoutMap[item.index] = item.idealY; });
     return layoutMap;
   })();
 
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name, value, fill }) => {
+  const renderDeviationLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name, value, fill }) => {
     const cos = Math.cos(-midAngle * RADIAN);
     const sin = Math.sin(-midAngle * RADIAN);
     const sx = cx + (outerRadius + 10) * cos;
     const sy = cy + (outerRadius + 10) * sin;
 
-    // Retrieve adjusted Y from pre-calculation
-    const adjustedDy = labelLayout[index] !== undefined ? labelLayout[index] : (outerRadius + 30) * sin;
+    // Use deviationLabelLayout
+    const adjustedDy = deviationLabelLayout[index] !== undefined ? deviationLabelLayout[index] : (outerRadius + 30) * sin;
     const my = cy + adjustedDy;
 
-    // Elbow X: keep it relative to original angle for the 'break'
-    // But maybe align it roughly with adjusted Y? 
-    // Let's keep elbow X simple: slightly out from center direction, but we might stretch the line.
-    // Actually, a simple dogleg: sx,sy -> mx,my -> ex,ey
-    // if my is very different from sy, the first segment might cross chart.
-    // Let's keep standard elbow X calculation for now.
     const mx = cx + (outerRadius + 40) * (cos >= 0 ? 1 : -1);
 
     // Fixed endpoint X
     const fixedOffset = outerRadius + 80;
     const ex = cx + (cos >= 0 ? 1 : -1) * fixedOffset;
     const ey = my;
-
     const textAnchor = cos >= 0 ? 'start' : 'end';
 
     return (
@@ -973,6 +1006,72 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
               </Col>
             </>
           )}
+
+          {/* New Deviation Summary Row (Appeared/Matched/Revised) */}
+          {auditStatus === 'completed' && (
+            <>
+              <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>DEVIATION SUMMARY</h6>
+              <Row className="g-3 mb-4">
+                <Col md={3}>
+                  <Card className="border-0 shadow-sm border-start border-4 border-primary">
+                    <Card.Body>
+                      <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED DEVIATIONS</h6>
+                      <div className="d-flex justify-content-between mb-1 text-muted small">
+                        <span>SKUs</span>
+                        <span className="fw-bold text-dark">{formatIndianNumber(storeData.AppearedSKUs || 0, true)}</span>
+                      </div>
+                      <div className="d-flex justify-content-between mb-1 text-muted small">
+                        <span>Qty</span>
+                        <span className="fw-bold text-dark">{formatIndianNumber(storeData.AppearedQty || 0, true)}</span>
+                      </div>
+                      <div className="d-flex justify-content-between text-muted small">
+                        <span>Value</span>
+                        <span className="fw-bold text-dark">{formatIndianCurrency(storeData.AppearedValue || 0)}</span>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={3}>
+                  <Card className="border-0 shadow-sm border-start border-4 border-success">
+                    <Card.Body>
+                      <h6 className="text-success fw-bold text-uppercase mb-3">MATCHED DEVIATIONS</h6>
+                      <div className="d-flex justify-content-between mb-1 text-muted small">
+                        <span>SKUs</span>
+                        <span className="fw-bold text-dark">{formatIndianNumber(storeData.MatchedSKUs || 0, true)}</span>
+                      </div>
+                      <div className="d-flex justify-content-between mb-1 text-muted small">
+                        <span>Qty</span>
+                        <span className="fw-bold text-dark">{formatIndianNumber(storeData.MatchedQty || 0, true)}</span>
+                      </div>
+                      <div className="d-flex justify-content-between text-muted small">
+                        <span>Value</span>
+                        <span className="fw-bold text-dark">{formatIndianCurrency(storeData.MatchedValue || 0)}</span>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={3}>
+                  <Card className="border-0 shadow-sm border-start border-4 border-warning">
+                    <Card.Body>
+                      <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED DEVIATIONS</h6>
+                      <div className="d-flex justify-content-between mb-1 text-muted small">
+                        <span>SKUs</span>
+                        <span className="fw-bold text-dark">{formatIndianNumber(storeData.RevisedSKUs || 0, true)}</span>
+                      </div>
+                      <div className="d-flex justify-content-between mb-1 text-muted small">
+                        <span>Qty</span>
+                        <span className="fw-bold text-dark">{formatIndianNumber(storeData.RevisedQty || 0, true)}</span>
+                      </div>
+                      <div className="d-flex justify-content-between text-muted small">
+                        <span>Value</span>
+                        <span className="fw-bold text-dark">{formatIndianCurrency(storeData.RevisedValue || 0)}</span>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+            </>
+          )}
         </Row>
 
         {/* PIDs, Mismatches, Deviations Summary - Show for in-progress */}
@@ -990,7 +1089,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                       <div className="p-3 bg-light rounded">
                         <div className="text-muted small mb-1">Total PIDs</div>
                         <h5 className="mb-0 fw-bold">
-                          {inventorySummary.totalPIDs?.toLocaleString() || '0'}
+                          {formatIndianNumber(inventorySummary.totalPIDs, true)}
                         </h5>
                       </div>
                     </Col>
@@ -998,7 +1097,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                       <div className="p-3 bg-light rounded">
                         <div className="text-muted small mb-1">Pending PIDs</div>
                         <h5 className="mb-0 fw-bold text-warning">
-                          {((inventorySummary.totalPIDs || 0) - Math.floor((inventorySummary.totalPIDs || 0) * ((auditProgress.percentage || 0) / 100))).toLocaleString()}
+                          {formatIndianNumber(((inventorySummary.totalPIDs || 0) - Math.floor((inventorySummary.totalPIDs || 0) * ((auditProgress.percentage || 0) / 100))), true)}
                         </h5>
                       </div>
                     </Col>
@@ -1006,7 +1105,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                       <div className="p-3 bg-light rounded">
                         <div className="text-muted small mb-1">Total SKUs</div>
                         <h5 className="mb-0 fw-bold">
-                          {inventorySummary.totalSKUs?.toLocaleString() || '0'}
+                          {formatIndianNumber(inventorySummary.totalSKUs, true)}
                         </h5>
                       </div>
                     </Col>
@@ -1014,7 +1113,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                       <div className="p-3 bg-light rounded">
                         <div className="text-muted small mb-1">Pending SKUs</div>
                         <h5 className="mb-0 fw-bold text-warning">
-                          {((inventorySummary.totalSKUs || 0) - (auditProgress.completedSKUs || 0)).toLocaleString()}
+                          {formatIndianNumber(((inventorySummary.totalSKUs || 0) - (auditProgress.completedSKUs || 0)), true)}
                         </h5>
                       </div>
                     </Col>
@@ -1035,7 +1134,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                       <div className="p-3 bg-light rounded">
                         <div className="text-muted small mb-1">Total Mismatches</div>
                         <h5 className="mb-0 fw-bold">
-                          {deviations.filter(d => d.type === 'Contra Short' || d.type === 'Contra Excess').reduce((sum, d) => sum + (d.count || 0), 0).toLocaleString()}
+                          {formatIndianNumber(deviations.filter(d => d.type === 'Contra Short' || d.type === 'Contra Excess').reduce((sum, d) => sum + (d.count || 0), 0), true)}
                         </h5>
                       </div>
                     </Col>
@@ -1046,7 +1145,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                           {(() => {
                             const totalMismatch = deviations.filter(d => d.type === 'Contra Short' || d.type === 'Contra Excess').reduce((sum, d) => sum + (d.count || 0), 0);
                             const completionRate = (auditProgress.percentage || 0) / 100;
-                            return Math.ceil(totalMismatch * (1 - completionRate * 0.7)).toLocaleString();
+                            return formatIndianNumber(Math.ceil(totalMismatch * (1 - completionRate * 0.7)), true);
                           })()}
                         </h5>
                       </div>
@@ -1058,7 +1157,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                           {(() => {
                             const totalMismatch = deviations.filter(d => d.type === 'Contra Short' || d.type === 'Contra Excess').reduce((sum, d) => sum + (d.count || 0), 0);
                             const completionRate = (auditProgress.percentage || 0) / 100;
-                            return Math.floor(totalMismatch * completionRate * 0.7).toLocaleString();
+                            return formatIndianNumber(Math.floor(totalMismatch * completionRate * 0.7), true);
                           })()}
                         </h5>
                       </div>
@@ -1249,17 +1348,19 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                   {deviations.length > 0 ? (
                     <>
                       {/* Deviation Chart */}
-                      <ResponsiveContainer width="100%" height={200}>
+                      <ResponsiveContainer width="100%" height={350}>
                         <PieChart>
                           <Pie
                             data={deviationChartData}
                             cx="50%"
                             cy="50%"
-                            labelLine={false}
-                            label={(entry) => `${entry.count}`}
+                            innerRadius={50}
                             outerRadius={70}
+                            labelLine={false}
+                            label={renderDeviationLabel}
                             fill="#8884d8"
                             dataKey="value"
+                            nameKey="name"
                             onClick={(data) => handleDeviationClick(data.name)}
                             style={{ cursor: 'pointer' }}
                           >
@@ -1271,8 +1372,13 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                               />
                             ))}
                           </Pie>
+                          <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle">
+                            <tspan x="50%" dy="-1em" fontSize="12" fill="#666">Total</tspan>
+                            <tspan x="50%" dy="1.5em" fontSize="16" fontWeight="bold" fill="#333">
+                              {`₹${(deviationChartData.reduce((sum, item) => sum + (item.value || 0), 0) / 1000).toFixed(1)}k`}
+                            </tspan>
+                          </text>
                           <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                          <Legend />
                         </PieChart>
                       </ResponsiveContainer>
 
@@ -1380,7 +1486,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                             innerRadius={70}
                             outerRadius={100}
                             labelLine={false}
-                            label={renderCustomizedLabel}
+                            label={renderProductLabel}
                             fill="#8884d8"
                             dataKey="value"
                             nameKey="form"
@@ -1442,7 +1548,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                             innerRadius={70}
                             outerRadius={100}
                             labelLine={false}
-                            label={renderCustomizedLabel}
+                            label={renderProductLabel}
                             fill="#8884d8"
                             dataKey="value"
                             nameKey="form"

@@ -6,14 +6,10 @@ import autoTable from 'jspdf-autotable';
 import AuditSpecificDetailModal from './AuditSpecificDetailModal';
 import ModernDatePicker from './ModernDatePicker';
 
+import { formatIndianCurrency, formatIndianNumber } from '../utils/formatters';
+
 const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
-    const formatIndianCurrency = (value) => {
-        if (value === undefined || value === null) return '0';
-        const val = Number(value);
-        if (val >= 10000000) return (val / 10000000).toFixed(2) + ' Cr';
-        if (val >= 100000) return (val / 100000).toFixed(2) + ' L';
-        return val.toLocaleString('en-IN');
-    };
+    // Removed local formatIndianCurrency to use shared utility
     // State for Date Selection
     // State for Date Selection
     // Initialize defaults: 1 year ago to today
@@ -151,21 +147,24 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
         const deviations = auditorRecords.reduce((acc, r) => {
             acc.appeared.qty += (r.AppearedQty || 0);
             acc.appeared.value += (r.AppearedValue || 0);
+            acc.appeared.skus += (r.AppearedSKUs || 0);
 
             acc.matched.qty += (r.MatchedQty || 0);
             acc.matched.value += (r.MatchedValue || 0);
+            acc.matched.skus += (r.MatchedSKUs || 0);
 
             acc.revised.qty += (r.RevisedQty || 0);
             acc.revised.value += (r.RevisedValue || 0);
+            acc.revised.skus += (r.RevisedSKUs || 0);
 
             acc.pending.qty += (r.PendingQty || 0);
             acc.pending.value += (r.PendingValue || 0);
 
             return acc;
         }, {
-            appeared: { qty: 0, value: 0 },
-            matched: { qty: 0, value: 0 },
-            revised: { qty: 0, value: 0 },
+            appeared: { qty: 0, value: 0, skus: 0 },
+            matched: { qty: 0, value: 0, skus: 0 },
+            revised: { qty: 0, value: 0, skus: 0 },
             pending: { qty: 0, value: 0 }
         });
 
@@ -418,7 +417,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL PIDS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianCurrency(metrics.totalPIDs)}</h2>
+                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianNumber(metrics.totalPIDs, true)}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -426,7 +425,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL SKUS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianCurrency(metrics.totalSKUs)}</h2>
+                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianNumber(metrics.totalSKUs, true)}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -440,12 +439,16 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                 <Card.Body>
                                     <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED DEVIATIONS</h6>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
+                                        <span>SKUs</span>
+                                        <span className="fw-bold text-dark">{formatIndianNumber(metrics.deviations.appeared.skus, true)}</span>
+                                    </div>
+                                    <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
-                                        <span className="fw-bold text-dark">{formatIndianCurrency(metrics.deviations.appeared.qty)}</span>
+                                        <span className="fw-bold text-dark">{formatIndianNumber(metrics.deviations.appeared.qty, true)}</span>
                                     </div>
                                     <div className="d-flex justify-content-between text-muted small">
                                         <span>Value</span>
-                                        <span className="fw-bold text-dark">₹{formatIndianCurrency(metrics.deviations.appeared.value)}</span>
+                                        <span className="fw-bold text-dark">{formatIndianCurrency(metrics.deviations.appeared.value)}</span>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -455,12 +458,16 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                 <Card.Body>
                                     <h6 className="text-success fw-bold text-uppercase mb-3">MATCHED DEVIATIONS</h6>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
+                                        <span>SKUs</span>
+                                        <span className="fw-bold text-dark">{formatIndianNumber(metrics.deviations.matched.skus, true)}</span>
+                                    </div>
+                                    <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
-                                        <span className="fw-bold text-dark">{formatIndianCurrency(metrics.deviations.matched.qty)}</span>
+                                        <span className="fw-bold text-dark">{formatIndianNumber(metrics.deviations.matched.qty, true)}</span>
                                     </div>
                                     <div className="d-flex justify-content-between text-muted small">
                                         <span>Value</span>
-                                        <span className="fw-bold text-dark">₹{formatIndianCurrency(metrics.deviations.matched.value)}</span>
+                                        <span className="fw-bold text-dark">{formatIndianCurrency(metrics.deviations.matched.value)}</span>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -470,12 +477,16 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                 <Card.Body>
                                     <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED DEVIATIONS</h6>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
+                                        <span>SKUs</span>
+                                        <span className="fw-bold text-dark">{formatIndianNumber(metrics.deviations.revised.skus, true)}</span>
+                                    </div>
+                                    <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
-                                        <span className="fw-bold text-dark">{formatIndianCurrency(metrics.deviations.revised.qty)}</span>
+                                        <span className="fw-bold text-dark">{formatIndianNumber(metrics.deviations.revised.qty, true)}</span>
                                     </div>
                                     <div className="d-flex justify-content-between text-muted small">
                                         <span>Value</span>
-                                        <span className="fw-bold text-dark">₹{formatIndianCurrency(metrics.deviations.revised.value)}</span>
+                                        <span className="fw-bold text-dark">{formatIndianCurrency(metrics.deviations.revised.value)}</span>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -527,10 +538,10 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                             <td>{audit.StoreName}</td>
                                             <td>{formatDate(audit.AuditStartDate)}</td>
                                             <td>{audit.AuditJobType}</td>
-                                            <td className="text-end font-monospace">{formatIndianCurrency(audit.AuditorAllottedPIDs)}</td>
-                                            <td className="text-end fw-bold">{formatIndianCurrency(audit.AuditorAllottedSKUs)}</td>
-                                            <td className="text-end fw-bold">{formatIndianCurrency(audit.AppearedQty)}</td>
-                                            <td className="text-end pe-4 fw-bold">₹{formatIndianCurrency(audit.AuditorAuditedValue)}</td>
+                                            <td className="text-end font-monospace">{formatIndianNumber(audit.AuditorAllottedPIDs, true)}</td>
+                                            <td className="text-end fw-bold">{formatIndianNumber(audit.AuditorAllottedSKUs, true)}</td>
+                                            <td className="text-end fw-bold">{formatIndianNumber(audit.AppearedQty, true)}</td>
+                                            <td className="text-end pe-4 fw-bold">{formatIndianCurrency(audit.AuditorAuditedValue)}</td>
                                         </tr>
                                     ))}
                                 </tbody>

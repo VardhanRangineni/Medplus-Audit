@@ -3,6 +3,7 @@ import { Container, Row, Col, Card, Table, ProgressBar, Badge, Alert, Dropdown, 
 import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { formatIndianCurrency, formatIndianNumber } from '../utils/formatters';
 import KPICard from '../components/KPICard';
 import AuditorDetailModal from '../components/AuditorDetailModal';
 import PerformersListModal from '../components/PerformersListModal';
@@ -28,13 +29,7 @@ const AuditorPerformance = ({ filters = {} }) => {
       : <i className="fas fa-sort-down text-primary ms-1 small"></i>;
   };
 
-  const formatIndianCurrency = (value) => {
-    if (value === undefined || value === null) return '0';
-    const val = Number(value);
-    if (val >= 10000000) return (val / 10000000).toFixed(2) + ' Cr';
-    if (val >= 100000) return (val / 100000).toFixed(2) + ' L';
-    return val.toLocaleString('en-IN');
-  };
+
 
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
@@ -83,7 +78,11 @@ const AuditorPerformance = ({ filters = {} }) => {
           totalRevisedQty: 0,
           totalValue: 0,
           totalMatchedValue: 0,
+          totalMatchedValue: 0,
           totalRevisedValue: 0,
+          totalAppearedSKUs: 0,
+          totalMatchedSKUs: 0,
+          totalRevisedSKUs: 0,
           count: 0
         };
       }
@@ -101,6 +100,10 @@ const AuditorPerformance = ({ filters = {} }) => {
       auditor.totalAppearedQty += (record.AppearedQty || 0);
       auditor.totalMatchedQty += (record.MatchedQty || 0);
       auditor.totalRevisedQty += (record.RevisedQty || 0);
+
+      auditor.totalAppearedSKUs += (record.AppearedSKUs || 0);
+      auditor.totalMatchedSKUs += (record.MatchedSKUs || 0);
+      auditor.totalRevisedSKUs += (record.RevisedSKUs || 0);
 
       auditor.totalValue += (record.AppearedValue || 0);
       auditor.totalMatchedValue += (record.MatchedValue || 0);
@@ -150,6 +153,9 @@ const AuditorPerformance = ({ filters = {} }) => {
         totalAppearedQty: auditor.totalAppearedQty,
         totalMatchedQty: auditor.totalMatchedQty,
         totalRevisedQty: auditor.totalRevisedQty,
+        totalAppearedSKUs: auditor.totalAppearedSKUs,
+        totalMatchedSKUs: auditor.totalMatchedSKUs,
+        totalRevisedSKUs: auditor.totalRevisedSKUs,
         totalAudits: auditor.count
       };
     });
@@ -197,15 +203,21 @@ const AuditorPerformance = ({ filters = {} }) => {
     const deviations = auditorData.reduce((acc, a) => {
       acc.appeared.qty += a.totalAppearedQty;
       acc.appeared.value += a.totalValue;
+      acc.appeared.skus += (a.totalAppearedSKUs || 0);
+
       acc.matched.qty += a.totalMatchedQty;
       acc.matched.value += a.totalMatchedValue;
+      acc.matched.skus += (a.totalMatchedSKUs || 0);
+
       acc.revised.qty += a.totalRevisedQty;
       acc.revised.value += a.totalRevisedValue;
+      acc.revised.skus += (a.totalRevisedSKUs || 0);
+
       return acc;
     }, {
-      appeared: { qty: 0, value: 0 },
-      matched: { qty: 0, value: 0 },
-      revised: { qty: 0, value: 0 }
+      appeared: { qty: 0, value: 0, skus: 0 },
+      matched: { qty: 0, value: 0, skus: 0 },
+      revised: { qty: 0, value: 0, skus: 0 }
     });
 
     return {
@@ -448,9 +460,9 @@ const AuditorPerformance = ({ filters = {} }) => {
               {auditor.auditorName}
             </td>
             <td className="text-center">{auditor.totalAudits}</td>
-            <td>{formatIndianCurrency(auditor.allottedPIDs)}</td>
-            <td>{formatIndianCurrency(auditor.allottedSKUs)}</td>
-            <td>{formatIndianCurrency(auditor.totalAppearedQty)}</td>
+            <td>{formatIndianNumber(auditor.allottedPIDs, true)}</td>
+            <td>{formatIndianNumber(auditor.allottedSKUs, true)}</td>
+            <td>{formatIndianNumber(auditor.totalAppearedQty, true)}</td>
             <td>
               {auditor.avgTimePID} min
             </td>
@@ -464,7 +476,7 @@ const AuditorPerformance = ({ filters = {} }) => {
               {auditor.editRate.toFixed(1)}%
             </td>
 
-            <td className="fw-semibold">₹{formatIndianCurrency(auditor.totalValue)}</td>
+            <td className="fw-semibold">{formatIndianCurrency(auditor.totalValue)}</td>
             <td>
               <i className="fas fa-chevron-right text-primary"></i>
             </td>
@@ -550,12 +562,16 @@ const AuditorPerformance = ({ filters = {} }) => {
             <Card.Body>
               <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED DEVIATIONS</h6>
               <div className="d-flex justify-content-between mb-1 text-muted small">
+                <span>SKUs</span>
+                <span className="fw-bold text-dark">{formatIndianNumber(performanceMetrics.deviations.appeared.skus, true)}</span>
+              </div>
+              <div className="d-flex justify-content-between mb-1 text-muted small">
                 <span>Qty</span>
-                <span className="fw-bold text-dark">{performanceMetrics.deviations.appeared.qty.toLocaleString('en-IN')}</span>
+                <span className="fw-bold text-dark">{formatIndianNumber(performanceMetrics.deviations.appeared.qty, true)}</span>
               </div>
               <div className="d-flex justify-content-between text-muted small">
                 <span>Value</span>
-                <span className="fw-bold text-dark">₹{formatIndianCurrency(performanceMetrics.deviations.appeared.value)}</span>
+                <span className="fw-bold text-dark">{formatIndianCurrency(performanceMetrics.deviations.appeared.value)}</span>
               </div>
             </Card.Body>
           </Card>
@@ -565,12 +581,16 @@ const AuditorPerformance = ({ filters = {} }) => {
             <Card.Body>
               <h6 className="text-success fw-bold text-uppercase mb-3">MATCHED DEVIATIONS</h6>
               <div className="d-flex justify-content-between mb-1 text-muted small">
+                <span>SKUs</span>
+                <span className="fw-bold text-dark">{formatIndianNumber(performanceMetrics.deviations.matched.skus, true)}</span>
+              </div>
+              <div className="d-flex justify-content-between mb-1 text-muted small">
                 <span>Qty</span>
-                <span className="fw-bold text-dark">{performanceMetrics.deviations.matched.qty.toLocaleString('en-IN')}</span>
+                <span className="fw-bold text-dark">{formatIndianNumber(performanceMetrics.deviations.matched.qty, true)}</span>
               </div>
               <div className="d-flex justify-content-between text-muted small">
                 <span>Value</span>
-                <span className="fw-bold text-dark">₹{formatIndianCurrency(performanceMetrics.deviations.matched.value)}</span>
+                <span className="fw-bold text-dark">{formatIndianCurrency(performanceMetrics.deviations.matched.value)}</span>
               </div>
             </Card.Body>
           </Card>
@@ -580,12 +600,16 @@ const AuditorPerformance = ({ filters = {} }) => {
             <Card.Body>
               <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED DEVIATIONS</h6>
               <div className="d-flex justify-content-between mb-1 text-muted small">
+                <span>SKUs</span>
+                <span className="fw-bold text-dark">{formatIndianNumber(performanceMetrics.deviations.revised.skus, true)}</span>
+              </div>
+              <div className="d-flex justify-content-between mb-1 text-muted small">
                 <span>Qty</span>
-                <span className="fw-bold text-dark">{performanceMetrics.deviations.revised.qty.toLocaleString('en-IN')}</span>
+                <span className="fw-bold text-dark">{formatIndianNumber(performanceMetrics.deviations.revised.qty, true)}</span>
               </div>
               <div className="d-flex justify-content-between text-muted small">
                 <span>Value</span>
-                <span className="fw-bold text-dark">₹{formatIndianCurrency(performanceMetrics.deviations.revised.value)}</span>
+                <span className="fw-bold text-dark">{formatIndianCurrency(performanceMetrics.deviations.revised.value)}</span>
               </div>
             </Card.Body>
           </Card>

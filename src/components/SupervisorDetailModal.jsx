@@ -470,7 +470,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                     <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED DEVIATIONS</h6>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.appeared.qty.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">{formatIndianCurrency(metrics.deviations.appeared.qty)}</span>
                                     </div>
                                     <div className="d-flex justify-content-between text-muted small">
                                         <span>Value</span>
@@ -485,7 +485,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                     <h6 className="text-success fw-bold text-uppercase mb-3">MATCHED DEVIATIONS</h6>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.matched.qty.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">{formatIndianCurrency(metrics.deviations.matched.qty)}</span>
                                     </div>
                                     <div className="d-flex justify-content-between text-muted small">
                                         <span>Value</span>
@@ -500,7 +500,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                     <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED DEVIATIONS</h6>
                                     <div className="d-flex justify-content-between mb-1 text-muted small">
                                         <span>Qty</span>
-                                        <span className="fw-bold text-dark">{metrics.deviations.revised.qty.toLocaleString()}</span>
+                                        <span className="fw-bold text-dark">{formatIndianCurrency(metrics.deviations.revised.qty)}</span>
                                     </div>
                                     <div className="d-flex justify-content-between text-muted small">
                                         <span>Value</span>
@@ -560,9 +560,9 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                             <td>{audit.StoreName}</td>
                                             <td>{formatDate(audit.AuditStartDate)}</td>
                                             <td>{audit.AuditJobType}</td>
-                                            <td className="text-end font-monospace">{audit.AuditorAllottedPIDs?.toLocaleString('en-IN')}</td>
-                                            <td className="text-end fw-bold">{audit.AuditorAllottedSKUs?.toLocaleString('en-IN')}</td>
-                                            <td className="text-end fw-bold">{audit.AppearedQty?.toLocaleString('en-IN')}</td>
+                                            <td className="text-end font-monospace">{formatIndianCurrency(audit.AuditorAllottedPIDs)}</td>
+                                            <td className="text-end fw-bold">{formatIndianCurrency(audit.AuditorAllottedSKUs)}</td>
+                                            <td className="text-end fw-bold">{formatIndianCurrency(audit.AppearedQty)}</td>
                                             <td className="text-end pe-4 fw-bold">₹{formatIndianCurrency(audit.AppearedValue)}</td>
                                         </tr>
                                     ))}
@@ -572,7 +572,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     </Card>
 
                 </Modal.Body>
-            </Modal>
+            </Modal >
 
             <AuditSpecificDetailModal
                 show={showAuditDetail}

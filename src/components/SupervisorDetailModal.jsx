@@ -246,34 +246,35 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             ["Total PIDs", metrics.totalPIDs],
             ["Total SKUs", metrics.totalSKUs],
             [],
-            ["Status Breakdown"],
-            ["Completed", metrics.statusBreakdown.Completed],
-            ["In-Progress", metrics.statusBreakdown.InProgress],
-            ["Pending/Created", metrics.statusBreakdown.Pending + metrics.statusBreakdown.Created],
-            [],
             ["Deviation Summary", "Qty", "Value"],
             ["Appeared", metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
             ["Matched", metrics.deviations.matched.qty, metrics.deviations.matched.value],
             ["Revised", metrics.deviations.revised.qty, metrics.deviations.revised.value],
+            [],
+            ["Audit History"],
+            ["Audit ID", "Store Name", "Date", "Job Type", "PIDs", "SKUs", "Quantity", "Value (Rs.)"]
         ];
-        const wsSummary = utils.aoa_to_sheet(summaryData);
-        wsSummary['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 20 }];
-        utils.book_append_sheet(wb, wsSummary, "Supervisor Summary");
 
-        // 2. Audit History Sheet
-        const historyData = sortedRecords.map(r => ({
-            "Audit ID": r.AUDIT_ID,
-            "Store Name": r.StoreName,
-            "Date": formatDate(r.AuditStartDate),
-            "Job Type": r.AuditJobType,
-            "PIDs": r.AuditorAllottedPIDs,
-            "SKUs": r.AuditorAllottedSKUs,
-            "Quantity": r.AppearedQty || 0,
-            "Value (Rs.)": r.AppearedValue || 0
-        }));
-        const wsHistory = utils.json_to_sheet(historyData);
-        wsHistory['!cols'] = [{ wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 15 }];
-        utils.book_append_sheet(wb, wsHistory, "Audit History");
+        // Append Audit History Rows
+        sortedRecords.forEach(r => {
+            summaryData.push([
+                r.AUDIT_ID,
+                r.StoreName,
+                formatDate(r.AuditStartDate),
+                r.AuditJobType,
+                r.AuditorAllottedPIDs,
+                r.AuditorAllottedSKUs,
+                r.AppearedQty || 0,
+                r.AppearedValue || 0
+            ]);
+        });
+
+        const wsSummary = utils.aoa_to_sheet(summaryData);
+        wsSummary['!cols'] = [
+            { wch: 25 }, { wch: 25 }, { wch: 20 }, { wch: 15 },
+            { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 15 }
+        ];
+        utils.book_append_sheet(wb, wsSummary, "Supervisor Summary");
 
         writeFile(wb, `Supervisor_${supervisorId}_Report.xlsx`);
     };
@@ -297,9 +298,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                 ['Total Audits', metrics.totalAudits],
                 ['Days Supervised', metrics.daysSupervised],
                 ['Total PIDs', metrics.totalPIDs.toLocaleString('en-IN')],
-                ['Total SKUs', metrics.totalSKUs.toLocaleString('en-IN')],
-                ['Completed', metrics.statusBreakdown.Completed],
-                ['In-Progress', metrics.statusBreakdown.InProgress]
+                ['Total SKUs', metrics.totalSKUs.toLocaleString('en-IN')]
             ],
             theme: 'grid',
             headStyles: { fillColor: [78, 84, 200] } // Matches the primary card gradient roughly

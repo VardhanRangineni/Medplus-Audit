@@ -414,22 +414,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
       utils.book_append_sheet(wb, wsDeviations, "Deviations");
     }
 
-    // 4. Contra Items Sheet
-    if (contra && contra.length > 0) {
-      const contraData = contra.map(c => ({
-        "SKU Code": c.skuCode,
-        "Product Name": c.productName,
-        "Type": c.type,
-        "Quantity": c.quantity || 0,
-        "Value (₹)": c.value || 0,
-        "Status": c.status || 'Pending'
-      }));
-      const wsContra = utils.json_to_sheet(contraData);
-      wsContra['!cols'] = [{ wch: 15 }, { wch: 30 }, { wch: 18 }, { wch: 12 }, { wch: 15 }, { wch: 12 }];
-      utils.book_append_sheet(wb, wsContra, "Contra Items");
-    }
-
-    // 5. Product-Level Details Sheets (by Deviation Type and Product Form)
+    // 4. Product-Level Details Sheets (by Deviation Type and Product Form)
     Object.keys(detailedProductData).forEach(deviationType => {
       const deviationData = detailedProductData[deviationType];
       const productDetails = [];

@@ -30,6 +30,13 @@ const Sidebar = () => {
       icon: 'fas fa-user-shield',
       label: 'Supervisor',
       description: 'Approvals & Workload'
+    },
+    {
+      path: '/store-pid-allotment',
+      icon: 'fas fa-tasks',
+      label: 'Store PID Allotment',
+      description: 'Assign PIDs to Auditors',
+      supervisorOnly: true
     }
   ];
 

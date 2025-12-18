@@ -1,0 +1,124 @@
+.store-pid-allotment {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.store-pid-allotment .card {
+  border-radius: 8px;
+  border: none;
+}
+
+.store-pid-allotment .card-header {
+  border-radius: 8px 8px 0 0 !important;
+  padding: 1rem 1.5rem;
+}
+
+.store-pid-allotment .form-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.store-pid-allotment .form-control,
+.store-pid-allotment .form-select {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  padding: 0.625rem 0.875rem;
+}
+
+.store-pid-allotment .form-control:focus,
+.store-pid-allotment .form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.store-pid-allotment .btn {
+  border-radius: 6px;
+  padding: 0.625rem 1.25rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.store-pid-allotment .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.store-pid-allotment .table {
+  font-size: 0.9rem;
+}
+
+.store-pid-allotment .table thead th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  border-bottom: 2px solid #dee2e6;
+  padding: 0.875rem 0.75rem;
+}
+
+.store-pid-allotment .table tbody td {
+  padding: 0.875rem 0.75rem;
+  vertical-align: middle;
+}
+
+.store-pid-allotment .table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.store-pid-allotment .badge {
+  padding: 0.375rem 0.625rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.store-pid-allotment .list-group-item {
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.store-pid-allotment .list-group-item:hover:not(.disabled) {
+  background-color: #e7f3ff;
+  transform: translateX(4px);
+}
+
+.store-pid-allotment .list-group-item.disabled {
+  opacity: 0.6;
+  background-color: #f8f9fa;
+}
+
+.store-pid-allotment .modal-header {
+  background-color: #0d6efd;
+  color: white;
+  border-radius: 8px 8px 0 0;
+}
+
+.store-pid-allotment .modal-header .btn-close {
+  filter: invert(1);
+}
+
+.store-pid-allotment .alert {
+  border-radius: 6px;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.store-pid-allotment .text-danger {
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .store-pid-allotment h2 {
+    font-size: 1.5rem;
+  }
+
+  .store-pid-allotment .table {
+    font-size: 0.8rem;
+  }
+
+  .store-pid-allotment .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}

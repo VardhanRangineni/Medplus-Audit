@@ -2034,7 +2034,7 @@
         "Value": 6174.28
       }
     ],
-    "DeviationCount": 5,
+    "DeviationCount": 18,
     "Auditors": [
       {
         "AuditorID": "A004",
@@ -2735,7 +2735,7 @@
         "Value": 6221.0
       }
     ],
-    "DeviationCount": 5,
+    "DeviationCount": 6,
     "Auditors": [
       {
         "AuditorID": "A014",

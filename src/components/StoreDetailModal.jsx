@@ -1031,16 +1031,19 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                 <tbody>
                   {auditors.map((auditor, auditorIdx) => {
                     const isExpanded = expandedAuditors[auditorIdx];
-                    const pidData = isExpanded ? generateAuditorDetails(auditor, auditorIdx) : [];
+                    // Only generate PID data for in-progress audits
+                    const pidData = (isExpanded && auditStatus === 'in-progress') ? generateAuditorDetails(auditor, auditorIdx) : [];
 
                     return (
                       <>
                         {/* Main Auditor Row */}
-                        <tr key={auditorIdx} style={{ cursor: 'pointer' }}>
-                          <td onClick={() => toggleAuditor(auditorIdx)}>
-                            <i className={`fas fa-chevron-${isExpanded ? 'down' : 'right'} text-primary`}></i>
+                        <tr key={auditorIdx} style={{ cursor: auditStatus === 'in-progress' ? 'pointer' : 'default' }}>
+                          <td onClick={() => auditStatus === 'in-progress' && toggleAuditor(auditorIdx)}>
+                            {auditStatus === 'in-progress' && (
+                              <i className={`fas fa-chevron-${isExpanded ? 'down' : 'right'} text-primary`}></i>
+                            )}
                           </td>
-                          <td className="fw-semibold" onClick={() => toggleAuditor(auditorIdx)}>
+                          <td className="fw-semibold" onClick={() => auditStatus === 'in-progress' && toggleAuditor(auditorIdx)}>
                             {auditor.name}
                           </td>
                           {(auditStatus === 'in-progress' || auditStatus === 'completed') && (

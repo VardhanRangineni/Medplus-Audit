@@ -1,6 +1,8 @@
 // Mock Data Service - Replace with actual API calls
 // src/services/mockDataService.js
 
+import storeCoverageData from '../data/store_coverage_data.json';
+
 export const mockDataService = {
   // Store Coverage Data
   getStoreCoverageStats: async (_filters) => {
@@ -210,6 +212,119 @@ export const mockDataService = {
   // Store-Specific Details for Nested Drill-down
   getStoreDetailedInfo: async (storeId, _filters) => {
     // Replace with: return await api.get(`/api/stores/${storeId}/details`, { params: filters })
+    
+    // Normalize store ID format (handle both MP001 and MP0001 formats)
+    const normalizedStoreId = storeId.startsWith('MP') && storeId.length === 5 
+      ? storeId.replace('MP', 'MP0') 
+      : storeId;
+    
+    // Find store in actual data - try both formats
+    let store = storeCoverageData.find(s => s.StoreID === storeId);
+    if (!store && normalizedStoreId !== storeId) {
+      store = storeCoverageData.find(s => s.StoreID === normalizedStoreId);
+    }
+    
+    console.log('getStoreDetailedInfo called with storeId:', storeId);
+    console.log('Normalized storeId:', normalizedStoreId);
+    console.log('Found store:', store ? store.StoreID : 'Not found');
+    
+    if (store && store.IsCovered) {
+      // Generate realistic supervisor names based on state
+      const supervisorNames = {
+        'TN': ['Rajesh Kumar', 'Ramesh Babu', 'Venkat Subramanian'],
+        'KA': ['Lakshmi Iyer', 'Suresh Reddy', 'Prakash Rao'],
+        'TS': ['Mohammed Ali', 'Srinivas Rao', 'Anjali Devi'],
+        'MH': ['Pradeep Singh', 'Neha Sharma', 'Pooja Deshmukh'],
+        'DL': ['Amit Verma', 'Meera Kapoor', 'Rajiv Gupta'],
+        'GJ': ['Kiran Patel', 'Dipak Shah', 'Hitesh Modi'],
+        'WB': ['Sourav Das', 'Tanmoy Sen', 'Debashis Roy'],
+        'MP': ['Anil Shukla', 'Rahul Joshi', 'Kavita Singh'],
+        'RJ': ['Vikram Singh', 'Priyanka Sharma', 'Arun Rathore'],
+        'UP': ['Sanjay Gupta', 'Rakesh Verma', 'Anjali Mishra'],
+        'PB': ['Meera Kapoor', 'Harpreet Singh', 'Simran Kaur']
+      };
+      
+      // Generate realistic auditor names
+      const auditorNames = [
+        'Amit Singh', 'Priya Reddy', 'Suresh Kumar', 'Deepak Sharma', 'Anitha Rao',
+        'Ravi Teja', 'Sneha Reddy', 'Karthik Kumar', 'Meena Iyer', 'Vijay Patil',
+        'Pooja Desai', 'Arun Mehta', 'Divya Shah', 'Ramesh Gupta', 'Sachin Bhosale',
+        'Madhuri Joshi', 'Rajat Tiwari', 'Kavita Singh', 'Kumar Raja', 'Lakshmi Priya'
+      ];
+      
+      // Determine supervisor based on state
+      const supervisors = supervisorNames[store.State] || ['Supervisor Name'];
+      const supervisor = supervisors[Math.floor(Math.random() * supervisors.length)];
+      
+      // For covered stores, audit should be 100% complete
+      const completionRate = 100;
+      const completedSKUs = store.TotalSKUs;
+      
+      // Generate auditors (2-4 auditors per store)
+      const numAuditors = Math.floor(Math.random() * 3) + 2;
+      const skusPerAuditor = Math.floor(store.TotalSKUs / numAuditors);
+      const auditors = [];
+      
+      for (let i = 0; i < numAuditors; i++) {
+        const auditorName = auditorNames[Math.floor(Math.random() * auditorNames.length)];
+        const assigned = i === numAuditors - 1 
+          ? store.TotalSKUs - (skusPerAuditor * i) 
+          : skusPerAuditor;
+        const matchRate = 90 + Math.random() * 8; // 90-98%
+        
+        auditors.push({
+          name: auditorName,
+          assignedSKUs: assigned,
+          completedSKUs: assigned, // 100% completed for covered stores
+          completionRate: 100,
+          matchRate: parseFloat(matchRate.toFixed(1))
+        });
+      }
+      
+      // Transform deviations to expected format
+      const deviations = (store.Deviations || []).map(dev => ({
+        type: dev.DeviationType,
+        count: dev.Count,
+        value: Math.round(dev.Value)
+      }));
+      
+      // Generate product form data from deviations
+      const productFormData = {};
+      (store.Deviations || []).forEach(dev => {
+        if (dev.ProductForms && dev.ProductForms.length > 0) {
+          productFormData[dev.DeviationType] = dev.ProductForms.map(pf => ({
+            form: pf.ProductForm,
+            value: Math.round(pf.Value),
+            count: pf.Count
+          })).sort((a, b) => b.value - a.value);
+        }
+      });
+      
+      return {
+        storeId: store.StoreID,
+        storeName: store.StoreName,
+        state: store.State,
+        supervisor: supervisor,
+        auditProgress: {
+          percentage: 100,
+          completedSKUs: store.TotalSKUs,
+          totalSKUs: store.TotalSKUs
+        },
+        inventorySummary: {
+          totalSKUs: store.TotalSKUs,
+          totalPIDs: store.TotalPIDs,
+          auditedSKUs: store.TotalSKUs,
+          totalValue: Math.round(store.InventoryValue),
+          totalQuantity: store.TotalQuantity
+        },
+        auditors: auditors,
+        deviations: deviations,
+        productFormData: productFormData,
+        contra: [] // This would come from a separate API in production
+      };
+    }
+    
+    // Fallback to hardcoded data if store not found in JSON
     const storeDataMap = {
       'MP001': {
         storeId: 'MP001',

@@ -379,7 +379,8 @@ const DetailsPage = ({ filters = {} }) => {
     'audit-created',
     'audit-in-progress',
     'audit-pending',
-    'audit-completed'
+    'audit-completed',
+    'covered-stores'
   ].includes(type);
 
   const handleRowClick = async (row) => {
@@ -677,6 +678,7 @@ const DetailsPage = ({ filters = {} }) => {
         show={showStoreDetail}
         onHide={() => setShowStoreDetail(false)}
         storeData={selectedStoreData}
+        auditStatus="completed"
       />
     </Container>
   );

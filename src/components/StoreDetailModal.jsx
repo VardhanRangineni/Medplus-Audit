@@ -659,7 +659,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
     for (let i = 0; i < pidCount; i++) {
       const skuCountForPID = Math.floor(Math.random() * 4) + 2; // 2-5 SKUs per PID
-      
+
       // Determine status based on completion rate and random distribution
       let status;
       const randomValue = Math.random() * 100;
@@ -686,7 +686,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         const endHour = startHour + Math.floor((startMinute + durationMinutes) / 60);
         const endMinute = (startMinute + durationMinutes) % 60;
         endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
-        
+
         const hours = Math.floor(durationMinutes / 60);
         const minutes = durationMinutes % 60;
         duration = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
@@ -706,6 +706,127 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     }
 
     return pids;
+  };
+
+  // Determine active data for the chart
+  const activeData = selectedDeviationType && productFormData[selectedDeviationType]
+    ? productFormData[selectedDeviationType]
+    : [
+      { form: 'Tablets', value: 94000, count: 533 },
+      { form: 'Liquids', value: 70000, count: 377 },
+      { form: 'Injection', value: 57500, count: 237 },
+      { form: 'Ointments', value: 38500, count: 197 },
+      { form: 'Powders', value: 31200, count: 160 },
+      { form: 'Drops', value: 23200, count: 123 },
+      { form: 'Inhalers', value: 21100, count: 105 },
+      { form: 'Containers', value: 46000, count: 256 },
+      { form: 'General', value: 35000, count: 142 },
+      { form: 'Surgicals', value: 28800, count: 131 }
+    ];
+
+  const RADIAN = Math.PI / 180;
+
+  // Pre-calculate label positions with collision detection
+  // We use an IIFE here to compute this once per render
+  // Ideally this should be memoized with useMemo, but since this component re-renders
+  // mainly on interaction, computing this here is acceptable for performance.
+  const labelLayout = (() => {
+    // Calculate Total Value
+    const totalValue = activeData.reduce((sum, item) => sum + item.value, 0);
+
+    let currentAngle = 0;
+    const slices = activeData.map((item, index) => {
+      const value = item.value;
+      const angleSpan = (value / totalValue) * 360;
+      const midAngle = currentAngle + angleSpan / 2;
+      currentAngle += angleSpan;
+
+      const r = 100 + 30; // outerRadius(100) + 30 (mx distance approximation)
+      // Ideal Y based on midAngle. Note: Recharts midAngle 0 is at 3 o'clock.
+      // Math.sin(-midAngle) gives standard Cartesian Y (positive up, negative down).
+      // SVG Y increases DOWN. So we need -(-Math.sin) = Math.sin.
+      // Let's stick to the formula used in renderCustomizedLabel: y = cy + r * Math.sin(-midAngle * RADIAN)
+      // which implies standard conversion.
+      const idealY = Math.sin(-midAngle * RADIAN) * r;
+
+      return {
+        index,
+        midAngle,
+        idealY,
+        value,
+        isRightSide: Math.cos(-midAngle * RADIAN) >= 0
+      };
+    });
+
+    // Helper to resolve collisions
+    const resolveSide = (items) => {
+      // Sort by ideal Y (ascending) -> roughly Top to Bottom in visual terms if Y increases down?
+      // Wait, Math.sin(-angle):
+      // 0 deg (3 o'clock) -> sin(0) = 0
+      // 90 deg (12 o'clock) -> sin(-90) = -1 (Top)
+      // 270 deg (6 o'clock) -> sin(-270) = 1 (Bottom)
+      // So smaller Y is Top, Larger Y is Bottom.
+      // Sort Ascending = Top to Bottom.
+      items.sort((a, b) => a.idealY - b.idealY);
+
+      const minSpacing = 30; // Minimum vertical distance between labels
+
+      for (let i = 1; i < items.length; i++) {
+        if (items[i].idealY < items[i - 1].idealY + minSpacing) {
+          items[i].idealY = items[i - 1].idealY + minSpacing;
+        }
+      }
+      return items;
+    };
+
+    const leftItems = resolveSide(slices.filter(s => !s.isRightSide));
+    const rightItems = resolveSide(slices.filter(s => s.isRightSide));
+
+    const layoutMap = {};
+    [...leftItems, ...rightItems].forEach(item => {
+      layoutMap[item.index] = item.idealY;
+    });
+
+    return layoutMap;
+  })();
+
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index, name, value, fill }) => {
+    const cos = Math.cos(-midAngle * RADIAN);
+    const sin = Math.sin(-midAngle * RADIAN);
+    const sx = cx + (outerRadius + 10) * cos;
+    const sy = cy + (outerRadius + 10) * sin;
+
+    // Retrieve adjusted Y from pre-calculation
+    const adjustedDy = labelLayout[index] !== undefined ? labelLayout[index] : (outerRadius + 30) * sin;
+    const my = cy + adjustedDy;
+
+    // Elbow X: keep it relative to original angle for the 'break'
+    // But maybe align it roughly with adjusted Y? 
+    // Let's keep elbow X simple: slightly out from center direction, but we might stretch the line.
+    // Actually, a simple dogleg: sx,sy -> mx,my -> ex,ey
+    // if my is very different from sy, the first segment might cross chart.
+    // Let's keep standard elbow X calculation for now.
+    const mx = cx + (outerRadius + 40) * (cos >= 0 ? 1 : -1);
+
+    // Fixed endpoint X
+    const fixedOffset = outerRadius + 80;
+    const ex = cx + (cos >= 0 ? 1 : -1) * fixedOffset;
+    const ey = my;
+
+    const textAnchor = cos >= 0 ? 'start' : 'end';
+
+    return (
+      <g>
+        <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
+        <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={-10} textAnchor={textAnchor} fill="#333" fontSize="12" fontWeight="bold">
+          {name}
+        </text>
+        <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={8} textAnchor={textAnchor} fill="#999" fontSize="11">
+          {`${(percent * 100).toFixed(1)}%`}
+        </text>
+      </g>
+    );
   };
 
   return (
@@ -1235,28 +1356,37 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                           return selectedDev ? `Total: ₹${selectedDev.value.toLocaleString()} | ${selectedDev.count} items` : '';
                         })()}
                       </div>
-                      <ResponsiveContainer width="100%" height={240}>
+
+                      <ResponsiveContainer width="100%" height={350}>
                         <PieChart>
                           <Pie
-                            data={productFormData[selectedDeviationType]}
+                            data={activeData}
                             cx="50%"
                             cy="50%"
-                            innerRadius={60}
+                            innerRadius={70}
                             outerRadius={100}
                             labelLine={false}
+                            label={renderCustomizedLabel}
                             fill="#8884d8"
                             dataKey="value"
                             nameKey="form"
                           >
-                            {productFormData[selectedDeviationType].map((entry, index) => (
+                            {activeData.map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
                             ))}
                           </Pie>
+                          <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle">
+                            <tspan x="50%" dy="-1em" fontSize="14" fill="#666">Total</tspan>
+                            <tspan x="50%" dy="1.5em" fontSize="20" fontWeight="bold" fill="#333">
+                              {`₹${(activeData.reduce((sum, item) => sum + item.value, 0) / 1000).toFixed(1)}k`}
+                            </tspan>
+                          </text>
                           <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
                         </PieChart>
                       </ResponsiveContainer>
+
                       <div className="mt-3">
-                        {productFormData[selectedDeviationType].map((form, idx) => (
+                        {activeData.map((form, idx) => (
                           <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
                             <div className="d-flex align-items-center">
                               <div
@@ -1289,61 +1419,35 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                           Across all deviation types
                         </div>
                       </div>
-                      <ResponsiveContainer width="100%" height={240}>
+                      <ResponsiveContainer width="100%" height={350}>
                         <PieChart>
                           <Pie
-                            data={[
-                              { form: 'Tablets', value: 94000, count: 533 },
-                              { form: 'Liquids', value: 70000, count: 377 },
-                              { form: 'Injection', value: 57500, count: 237 },
-                              { form: 'Ointments', value: 38500, count: 197 },
-                              { form: 'Powders', value: 31200, count: 160 },
-                              { form: 'Drops', value: 23200, count: 123 },
-                              { form: 'Inhalers', value: 21100, count: 105 },
-                              { form: 'Containers', value: 46000, count: 256 },
-                              { form: 'General', value: 35000, count: 142 },
-                              { form: 'Surgicals', value: 28800, count: 131 }
-                            ]}
+                            data={activeData}
                             cx="50%"
                             cy="50%"
-                            innerRadius={60}
+                            innerRadius={70}
                             outerRadius={100}
                             labelLine={false}
+                            label={renderCustomizedLabel}
                             fill="#8884d8"
                             dataKey="value"
                             nameKey="form"
                           >
-                            {[
-                              { form: 'Tablets', value: 94000, count: 533 },
-                              { form: 'Liquids', value: 70000, count: 377 },
-                              { form: 'Injection', value: 57500, count: 237 },
-                              { form: 'Ointments', value: 38500, count: 197 },
-                              { form: 'Powders', value: 31200, count: 160 },
-                              { form: 'Drops', value: 23200, count: 123 },
-                              { form: 'Inhalers', value: 21100, count: 105 },
-                              { form: 'Containers', value: 46000, count: 256 },
-                              { form: 'General', value: 35000, count: 142 },
-                              { form: 'Surgicals', value: 28800, count: 131 }
-                            ].map((entry, index) => (
+                            {activeData.map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
                             ))}
                           </Pie>
+                          <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle">
+                            <tspan x="50%" dy="-1em" fontSize="14" fill="#666">Total</tspan>
+                            <tspan x="50%" dy="1.5em" fontSize="20" fontWeight="bold" fill="#333">
+                              {`₹${(activeData.reduce((sum, item) => sum + item.value, 0) / 1000).toFixed(1)}k`}
+                            </tspan>
+                          </text>
                           <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
                         </PieChart>
                       </ResponsiveContainer>
                       <div className="mt-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
-                        {[
-                          { form: 'Tablets', value: 94000, count: 533 },
-                          { form: 'Liquids', value: 70000, count: 377 },
-                          { form: 'Injection', value: 57500, count: 237 },
-                          { form: 'Ointments', value: 38500, count: 197 },
-                          { form: 'Powders', value: 31200, count: 160 },
-                          { form: 'Drops', value: 23200, count: 123 },
-                          { form: 'Inhalers', value: 21100, count: 105 },
-                          { form: 'Containers', value: 46000, count: 256 },
-                          { form: 'General', value: 35000, count: 142 },
-                          { form: 'Surgicals', value: 28800, count: 131 }
-                        ].map((form, idx) => (
+                        {activeData.map((form, idx) => (
                           <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
                             <div className="d-flex align-items-center">
                               <div
@@ -1379,7 +1483,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
       <Modal.Footer className="bg-light">
         <Button variant="secondary" onClick={onHide}>Close</Button>
       </Modal.Footer>
-    </Modal>
+    </Modal >
   );
 };
 

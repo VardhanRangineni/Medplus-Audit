@@ -138,6 +138,7 @@ const AuditorPerformance = ({ filters = {} }) => {
         matchRate: parseFloat(matchRate.toFixed(1)),
         editRate: parseFloat(editRate.toFixed(1)),
         totalValue: auditor.totalValue,
+        totalAppearedQty: auditor.totalAppearedQty,
         totalAudits: auditor.count
       };
     });
@@ -207,8 +208,9 @@ const AuditorPerformance = ({ filters = {} }) => {
       "Auditor ID": a.auditorId,
       "Auditor Name": a.auditorName,
       "Total Audits": a.totalAudits,
-      "Allotted PIDs": a.allottedPIDs,
-      "Allotted SKUs": a.allottedSKUs,
+      "Allotted PIDs": a.allottedPIDs.toLocaleString('en-IN'),
+      "Allotted SKUs": a.allottedSKUs.toLocaleString('en-IN'),
+      "Allotted Qty": a.totalAppearedQty.toLocaleString('en-IN'),
       "Avg Time/PID (min)": a.avgTimePID,
       "Avg Time/SKU (min)": a.avgTime,
       "Match Rate %": a.matchRate,
@@ -218,7 +220,7 @@ const AuditorPerformance = ({ filters = {} }) => {
     const wsDetails = utils.json_to_sheet(detailedData);
     wsDetails['!cols'] = [
       { wch: 15 }, { wch: 25 }, { wch: 15 },
-      { wch: 18 }, { wch: 18 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 18 }
+      { wch: 18 }, { wch: 18 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 18 }
     ];
     utils.book_append_sheet(wb, wsDetails, "Auditor Details");
 
@@ -254,15 +256,16 @@ const AuditorPerformance = ({ filters = {} }) => {
     // Auditor Details Table
     autoTable(doc, {
       startY: doc.lastAutoTable.finalY + 10,
-      head: [['ID', 'Name', 'Audits', 'Allotted PIDs', 'Allotted SKUs', 'Avg Time/PID', 'Avg Time/SKU', 'Match %', 'Edit %', 'Value (Rs.)']],
+      head: [['ID', 'Name', 'Audits', 'Allotted PIDs', 'Allotted SKUs', 'Allotted Qty', 'Avg Time/PID', 'Avg Time/SKU', 'Match %', 'Edit %', 'Value (Rs.)']],
       body: (searchQuery
         ? auditorData.filter(a => a.auditorName.toLowerCase().includes(searchQuery.toLowerCase()))
         : auditorData).map(a => [
           a.auditorId,
           a.auditorName,
           a.totalAudits,
-          a.allottedPIDs.toLocaleString(),
-          a.allottedSKUs.toLocaleString(),
+          a.allottedPIDs.toLocaleString('en-IN'),
+          a.allottedSKUs.toLocaleString('en-IN'),
+          a.totalAppearedQty.toLocaleString('en-IN'),
           `${a.avgTimePID} min`,
           `${a.avgTime} min`,
           `${a.matchRate}%`,
@@ -304,6 +307,11 @@ const AuditorPerformance = ({ filters = {} }) => {
           <th onClick={() => requestSort('allottedSKUs')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
               Allotted SKUs {getSortIcon('allottedSKUs')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('totalAppearedQty')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Allotted Qty {getSortIcon('totalAppearedQty')}
             </div>
           </th>
           <th onClick={() => requestSort('avgTimePID')} style={{ cursor: 'pointer' }}>
@@ -352,8 +360,9 @@ const AuditorPerformance = ({ filters = {} }) => {
               {auditor.auditorName}
             </td>
             <td className="text-center">{auditor.totalAudits}</td>
-            <td>{auditor.allottedPIDs.toLocaleString()}</td>
-            <td>{auditor.allottedSKUs.toLocaleString()}</td>
+            <td>{auditor.allottedPIDs.toLocaleString('en-IN')}</td>
+            <td>{auditor.allottedSKUs.toLocaleString('en-IN')}</td>
+            <td>{auditor.totalAppearedQty.toLocaleString('en-IN')}</td>
             <td>
               {auditor.avgTimePID} min
             </td>

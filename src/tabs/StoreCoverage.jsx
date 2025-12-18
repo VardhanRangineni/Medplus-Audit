@@ -82,8 +82,8 @@ const StoreCoverage = ({ filters = {} }) => {
   // Calculate store breakdown by type and box mapping
   const storeBreakdown = useMemo(() => {
     const breakdown = [
-      { storeType: 'HUB', boxType: 'Box Mapping', total: 0, covered: 0, uncovered: 0 },
-      { storeType: 'HUB', boxType: 'Non Box Mapping', total: 0, covered: 0, uncovered: 0 },
+      { storeType: 'STOCK HUB', boxType: 'Box Mapping', total: 0, covered: 0, uncovered: 0 },
+      { storeType: 'NO STOCK HUB', boxType: 'Non Box Mapping', total: 0, covered: 0, uncovered: 0 },
       { storeType: 'REGULAR', boxType: 'Box Mapping', total: 0, covered: 0, uncovered: 0 },
       { storeType: 'REGULAR', boxType: 'Non Box Mapping', total: 0, covered: 0, uncovered: 0 }
     ];

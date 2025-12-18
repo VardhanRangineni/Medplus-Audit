@@ -364,7 +364,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
   const handleDownloadExcel = () => {
     const wb = utils.book_new();
 
-    // 1. Store Summary Sheet
+    // ===== SHEET 1: Summary (Store Summary + Auditors) =====
     const summaryData = [
       ["Store Details Report"],
       ["Store ID", storeId],
@@ -384,93 +384,107 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
       ["Total Value (₹)", inventorySummary.totalValue || 0],
       ["Total Quantity", inventorySummary.totalQuantity || 0],
     ];
-    const wsSummary = utils.aoa_to_sheet(summaryData);
-    wsSummary['!cols'] = [{ wch: 25 }, { wch: 20 }];
-    utils.book_append_sheet(wb, wsSummary, "Store Summary");
 
-    // 2. Auditors Sheet
+    // Add Auditors section to Summary sheet
     if (auditors && auditors.length > 0) {
-      const auditorsData = auditors.map(a => ({
-        "Auditor Name": a.name,
-        "Assigned SKUs": a.assignedSKUs || 0,
-        "Completed SKUs": a.completedSKUs || 0,
-        "Completion Rate (%)": a.completionRate || 0,
-        "Match Rate (%)": a.matchRate || 0
-      }));
-      const wsAuditors = utils.json_to_sheet(auditorsData);
-      wsAuditors['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 15 }];
-      utils.book_append_sheet(wb, wsAuditors, "Auditors");
+      summaryData.push([]);
+      summaryData.push([]);
+      summaryData.push(["Auditors Information"]);
+      summaryData.push(["Auditor Name", "Assigned SKUs", "Completed SKUs", "Completion Rate (%)", "Match Rate (%)"]);
+      
+      auditors.forEach(a => {
+        summaryData.push([
+          a.name,
+          a.assignedSKUs || 0,
+          a.completedSKUs || 0,
+          a.completionRate || 0,
+          a.matchRate || 0
+        ]);
+      });
     }
 
-    // 3. Deviations Sheet
+    const wsSummary = utils.aoa_to_sheet(summaryData);
+    wsSummary['!cols'] = [{ wch: 25 }, { wch: 20 }, { wch: 15 }, { wch: 18 }, { wch: 15 }];
+    utils.book_append_sheet(wb, wsSummary, "Summary");
+
+    // ===== SHEET 2: Deviations (All deviation-related data) =====
+    const allDeviationsData = [];
+
+    // Add deviation summary section
     if (deviations && deviations.length > 0) {
-      const deviationsData = deviations.map(d => ({
-        "Deviation Type": d.type,
-        "Count": d.count || 0,
-        "Value (₹)": d.value || 0
-      }));
-      const wsDeviations = utils.json_to_sheet(deviationsData);
-      wsDeviations['!cols'] = [{ wch: 20 }, { wch: 12 }, { wch: 15 }];
-      utils.book_append_sheet(wb, wsDeviations, "Deviations");
+      allDeviationsData.push(["Deviation Summary"]);
+      allDeviationsData.push(["Deviation Type", "Count", "Value (₹)"]);
+      deviations.forEach(d => {
+        allDeviationsData.push([d.type, d.count || 0, d.value || 0]);
+      });
+      allDeviationsData.push([]);
+      allDeviationsData.push([]);
     }
 
-    // 4. Product-Level Details Sheets (by Deviation Type and Product Form)
+    // Add detailed product-level deviations
     Object.keys(detailedProductData).forEach(deviationType => {
       const deviationData = detailedProductData[deviationType];
-      const productDetails = [];
+      
+      allDeviationsData.push([`${deviationType} - Detailed Products`]);
+      allDeviationsData.push([
+        "Deviation Type", "Product Form", "Product ID", "SKU", "Product Name",
+        "Batch No", "System Qty", "Physical Qty", "Difference", "Unit Price (₹)",
+        "Total Value (₹)", "Expiry Date"
+      ]);
 
       if (typeof deviationData === 'object' && !Array.isArray(deviationData)) {
         // Has product forms (like Invoiced, Contra Short)
         Object.keys(deviationData).forEach(productForm => {
           deviationData[productForm].forEach(product => {
-            productDetails.push({
-              "Deviation Type": deviationType,
-              "Product Form": productForm,
-              "Product ID": product.productId,
-              "SKU": product.sku,
-              "Product Name": product.productName,
-              "Batch No": product.batchNo,
-              "System Qty": product.systemQty,
-              "Physical Qty": product.physicalQty,
-              "Difference": product.difference || 0,
-              "Unit Price (₹)": product.unitPrice,
-              "Total Value (₹)": product.totalValue,
-              "Expiry Date": product.expiryDate
-            });
+            allDeviationsData.push([
+              deviationType,
+              productForm,
+              product.productId,
+              product.sku,
+              product.productName,
+              product.batchNo,
+              product.systemQty,
+              product.physicalQty,
+              product.difference || 0,
+              product.unitPrice,
+              product.totalValue,
+              product.expiryDate
+            ]);
           });
         });
       } else if (Array.isArray(deviationData)) {
         // Direct array (like Contra Excess, Excess Submitted)
         deviationData.forEach(product => {
-          productDetails.push({
-            "Deviation Type": deviationType,
-            "Product Form": "N/A",
-            "Product ID": product.productId,
-            "SKU": product.sku,
-            "Product Name": product.productName,
-            "Batch No": product.batchNo,
-            "System Qty": product.systemQty,
-            "Physical Qty": product.physicalQty,
-            "Difference": product.difference || 0,
-            "Unit Price (₹)": product.unitPrice,
-            "Total Value (₹)": product.totalValue,
-            "Expiry Date": product.expiryDate
-          });
+          allDeviationsData.push([
+            deviationType,
+            "N/A",
+            product.productId,
+            product.sku,
+            product.productName,
+            product.batchNo,
+            product.systemQty,
+            product.physicalQty,
+            product.difference || 0,
+            product.unitPrice,
+            product.totalValue,
+            product.expiryDate
+          ]);
         });
       }
 
-      if (productDetails.length > 0) {
-        const wsProducts = utils.json_to_sheet(productDetails);
-        wsProducts['!cols'] = [
-          { wch: 18 }, { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 30 },
-          { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 },
-          { wch: 15 }, { wch: 12 }
-        ];
-        // Truncate sheet name to 31 characters (Excel limit)
-        const sheetName = deviationType.length > 31 ? deviationType.substring(0, 28) + '...' : deviationType;
-        utils.book_append_sheet(wb, wsProducts, sheetName);
-      }
+      allDeviationsData.push([]);
+      allDeviationsData.push([]);
     });
+
+    if (allDeviationsData.length > 0) {
+      const wsDeviations = utils.aoa_to_sheet(allDeviationsData);
+      wsDeviations['!cols'] = [
+        { wch: 20 }, { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 30 },
+        { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 },
+        { wch: 15 }, { wch: 12 }
+      ];
+      utils.book_append_sheet(wb, wsDeviations, "Deviations");
+    }
 
     writeFile(wb, `Store_${storeId}_${storeName.replace(/\s+/g, '_')}_Report.xlsx`);
   };

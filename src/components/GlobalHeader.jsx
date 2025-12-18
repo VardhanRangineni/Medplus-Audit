@@ -104,7 +104,8 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideF
                 className="filter-select"
               >
                 <option value="">All Stores</option>
-                <option value="HUB">HUB</option>
+                <option value="STOCK HUB">Stock Hub</option>
+                <option value="NO STOCK HUB">No Stock Hub</option>
                 <option value="REGULAR">Regular</option>
               </Form.Select>
             </Form.Group>

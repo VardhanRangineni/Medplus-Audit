@@ -1,4 +1,4 @@
-# Supervisor Approvals Screen
+# Supervisor Performance Screen
 
 ## When This Screen Appears
 
@@ -7,7 +7,7 @@ This screen appears when:
 - Management needs to review supervisor performance and workload
 - Users want to see which supervisors are managing which stores and audits
 
-![Supervisor Approvals Screen](screenshots/supervisor-approvals.png)
+![Supervisor Performance Screen](screenshots/supervisor-approvals-screen.png)
 *Supervisor performance dashboard showing workload and management metrics*
 
 ## Complete UI Breakdown

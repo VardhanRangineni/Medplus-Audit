@@ -15,12 +15,19 @@ This directory contains comprehensive functional documentation for the MedPlus A
 
 - **sidebar-navigation-component.md** - Left sidebar navigation menu present on all screens
 - **global-header-component.md** - Top header with filters and refresh controls present on all screens
+
+### Modals
+
 - **store-detail-modal.md** - Pop-up modal showing comprehensive audit details for a selected store
+- **supervisor-details-modal.md** - Pop-up modal showing detailed performance metrics for an individual supervisor
+- **auditor-details-modal.md** - Pop-up modal showing detailed performance metrics for an individual auditor
+- **audit-specific-details-modal.md** - Pop-up modal showing complete details about a specific audit including re-audit summary and participating auditors
 
 ### Additional Screens
 
-- **auditor-performance-screen.md** - Screen for reviewing individual auditor productivity and quality metrics
-- **supervisor-approvals-screen.md** - Screen for supervisor review and approval workflows
+- **auditor-performance-screen.md** - Screen for reviewing individual auditor productivity and quality metrics  
+- **supervisor-performance-screen.md** - Screen for supervisor performance and workload management
+- **uncovered-stores-details-screen.md** - Screen showing stores that have never been audited
 
 ### Screenshots
 
@@ -31,6 +38,12 @@ All screenshots are stored in the `screenshots/` directory and are embedded in t
 - `covered-stores-details.png` - Covered stores table with audit columns
 - `store-detail-modal-completed.png` - Modal showing completed audit details
 - `live-audit-schedule.png` - Live audit screen with in-progress audits
+- `uncovered-stores-details.png` - Uncovered stores table view
+- `auditor-performance-screen.png` - Auditor performance metrics screen
+- `supervisor-approvals-screen.png` - Supervisor performance screen (renamed from supervisor-approvals)
+- `supervisor-details-modal.png` - Individual supervisor details modal
+- `auditor-details-modal.png` - Individual auditor details modal
+- `audit-details-modal.png` - Specific audit details modal
 
 ## How to Use This Documentation
 

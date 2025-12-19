@@ -43,51 +43,65 @@ The Supervisor Summary provides a comprehensive view of a supervisor's audit ove
 ### Header Section
 
 **Supervisor Information:**
-- **Supervisor Name**: Display name of the supervisor
-- **Supervisor ID**: Unique identifier (e.g., SUP001)
+- **Supervisor Name**: Display name of the supervisor (e.g., "Aditya Reddy")
+- **Supervisor ID**: Unique identifier (e.g., "S001")
 - **Download Report Button**: Dropdown menu with Excel and PDF export options
 - **Date Range Filters**: 
-  - "From" date picker (default: 1 year ago)
-  - "To" date picker (default: today)
+  - "From" date picker (default: 1 year ago, e.g., 2024-12-19)
+  - "To" date picker (default: today, e.g., 2025-12-19)
   - Date range cannot exceed 1 year
   - Validation prevents "From" date being after "To" date
 
 ### Key Performance Metrics (Top Cards)
 
-Four primary KPI cards displaying:
+Six primary KPI cards displaying:
 
 1. **Total Audits**
-   - Count of unique audits supervised within the selected date range
+   - Count: 15 (unique audits supervised within the selected date range)
    - Displayed with a gradient blue background
    - Icon: Clipboard list
 
-2. **Days Supervised**
-   - Number of distinct days the supervisor was actively overseeing audits
+2. **Auditors Supervised**
+   - Count: 27 (number of auditors overseen)
+   - Shows supervisor's team size
+
+3. **Days Supervised**
+   - Count: 60 (distinct days actively overseeing audits)
    - Calculated from day-wise summary data
 
-3. **Total PIDs**
-   - Aggregate count of Product IDs/Batch IDs across all supervised audits
-   - Formatted with Indian number notation (e.g., "1.5 L" for lakhs, "2.3 Cr" for crores)
+4. **Total PIDs**
+   - Count: 70,251 (Product IDs/Batch IDs across all supervised audits)
+   - Formatted with comma separators
 
-4. **Total SKUs**
-   - Total Stock Keeping Units supervised
-   - Formatted with Indian number notation
+5. **Total SKUs**
+   - Count: 3.40 L (Stock Keeping Units supervised)
+   - Formatted with Indian number notation (Lakhs)
+
+6. **Total Value**
+   - Value: ₹44.50 Cr (Total audited value in Indian Rupees)
+   - Formatted with Indian number notation (Crores)
 
 ### Deviation Summary Section
 
 Displays aggregated deviation metrics across all supervised audits:
 
 **Appeared Deviations (Blue Border)**
-- Quantity: Total count of items with appeared deviations
-- Value: Monetary value of appeared deviations (₹)
+- SKUs: 32,149
+- Qty: 5.73 L
+- Value: ₹2.13 Cr
+- Total count of items with appeared deviations
 
 **Matched Deviations (Green Border)**
-- Quantity: Items where initial deviation was confirmed as correct
-- Value: Monetary value of matched deviations (₹)
+- SKUs: 29,953
+- Qty: 5.34 L
+- Value: ₹1.98 Cr
+- Items where initial deviation was confirmed as correct
 
 **Revised Deviations (Yellow Border)**
-- Quantity: Items that required correction by supervisor
-- Value: Monetary value of revised deviations (₹)
+- SKUs: 2,196
+- Qty: 38,456
+- Value: ₹14.90 L
+- Items that required correction by supervisor
 
 ### Audit History Table
 

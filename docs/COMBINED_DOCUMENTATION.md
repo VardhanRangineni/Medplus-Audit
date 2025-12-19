@@ -42,8 +42,8 @@ This modal appears when:
 ### Modal Header
 
 **Auditor Identification**
-- Auditor name prominently displayed (e.g., "Abhinay Naidu")
-- Auditor ID shown below name (e.g., "ID: A046")
+- Auditor name prominently displayed (e.g., "Srikanth Rao")
+- Auditor ID shown below name (e.g., "ID: A039")
 
 **Actions (Top Right)**
 - Download Report button with dropdown for format selection
@@ -52,38 +52,42 @@ This modal appears when:
 
 ### Performance Summary Cards
 
-Three cards showing aggregate metrics:
+Four cards showing aggregate metrics:
 
 **Total Audits**
-- Number: 37 (total audits completed by this auditor)
+- Number: 26 (total audits completed by this auditor)
+- Displayed with gradient blue background
 
 **Total PIDs**
-- Number: 45,389 (Physical Inventory Displays audited)
+- Number: 31,414 (Physical Inventory Displays audited)
 
 **Total SKUs**
-- Number: 1.81 L (181,000 Stock Keeping Units audited)
+- Number: 1.29 L (Stock Keeping Units audited)
+
+**Total Value**
+- Value: ₹22.04 Cr (Total audited value in Indian Rupees)
 
 ### Deviation Summary Section
 
 Shows this auditor's deviation statistics in three panels:
 
-**Appeared Deviations**
-- SKUs: 13,081
-- Qty: 2.05 L
-- Value: ₹1.33 Cr
+**Appeared Deviations (Blue Border)**
+- SKUs: 10,017
+- Qty: 1.52 L
+- Value: ₹1.09 Cr
 - All discrepancies found by this auditor
 
-**Matched Deviations**
-- SKUs: 12,221
-- Qty: 1.92 L
-- Value: ₹1.25 Cr
-- Successfully resolved
+**Matched Deviations (Green Border)**
+- SKUs: 9,345
+- Qty: 1.42 L
+- Value: ₹1.03 Cr
+- Successfully resolved and confirmed as correct
 
-**Revised Deviations**
-- SKUs: 860
-- Qty: 13,615
-- Value: ₹8.51 L
-- Required correction
+**Revised Deviations (Yellow Border)**
+- SKUs: 672
+- Qty: 9,770
+- Value: ₹6.53 L
+- Required correction after auditor's initial submission
 
 ### Audit History Table
 
@@ -4970,51 +4974,65 @@ The Supervisor Summary provides a comprehensive view of a supervisor's audit ove
 ### Header Section
 
 **Supervisor Information:**
-- **Supervisor Name**: Display name of the supervisor
-- **Supervisor ID**: Unique identifier (e.g., SUP001)
+- **Supervisor Name**: Display name of the supervisor (e.g., "Aditya Reddy")
+- **Supervisor ID**: Unique identifier (e.g., "S001")
 - **Download Report Button**: Dropdown menu with Excel and PDF export options
 - **Date Range Filters**: 
-  - "From" date picker (default: 1 year ago)
-  - "To" date picker (default: today)
+  - "From" date picker (default: 1 year ago, e.g., 2024-12-19)
+  - "To" date picker (default: today, e.g., 2025-12-19)
   - Date range cannot exceed 1 year
   - Validation prevents "From" date being after "To" date
 
 ### Key Performance Metrics (Top Cards)
 
-Four primary KPI cards displaying:
+Six primary KPI cards displaying:
 
 1. **Total Audits**
-   - Count of unique audits supervised within the selected date range
+   - Count: 15 (unique audits supervised within the selected date range)
    - Displayed with a gradient blue background
    - Icon: Clipboard list
 
-2. **Days Supervised**
-   - Number of distinct days the supervisor was actively overseeing audits
+2. **Auditors Supervised**
+   - Count: 27 (number of auditors overseen)
+   - Shows supervisor's team size
+
+3. **Days Supervised**
+   - Count: 60 (distinct days actively overseeing audits)
    - Calculated from day-wise summary data
 
-3. **Total PIDs**
-   - Aggregate count of Product IDs/Batch IDs across all supervised audits
-   - Formatted with Indian number notation (e.g., "1.5 L" for lakhs, "2.3 Cr" for crores)
+4. **Total PIDs**
+   - Count: 70,251 (Product IDs/Batch IDs across all supervised audits)
+   - Formatted with comma separators
 
-4. **Total SKUs**
-   - Total Stock Keeping Units supervised
-   - Formatted with Indian number notation
+5. **Total SKUs**
+   - Count: 3.40 L (Stock Keeping Units supervised)
+   - Formatted with Indian number notation (Lakhs)
+
+6. **Total Value**
+   - Value: ₹44.50 Cr (Total audited value in Indian Rupees)
+   - Formatted with Indian number notation (Crores)
 
 ### Deviation Summary Section
 
 Displays aggregated deviation metrics across all supervised audits:
 
 **Appeared Deviations (Blue Border)**
-- Quantity: Total count of items with appeared deviations
-- Value: Monetary value of appeared deviations (₹)
+- SKUs: 32,149
+- Qty: 5.73 L
+- Value: ₹2.13 Cr
+- Total count of items with appeared deviations
 
 **Matched Deviations (Green Border)**
-- Quantity: Items where initial deviation was confirmed as correct
-- Value: Monetary value of matched deviations (₹)
+- SKUs: 29,953
+- Qty: 5.34 L
+- Value: ₹1.98 Cr
+- Items where initial deviation was confirmed as correct
 
 **Revised Deviations (Yellow Border)**
-- Quantity: Items that required correction by supervisor
-- Value: Monetary value of revised deviations (₹)
+- SKUs: 2,196
+- Qty: 38,456
+- Value: ₹14.90 L
+- Items that required correction by supervisor
 
 ### Audit History Table
 

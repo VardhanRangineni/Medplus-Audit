@@ -33,8 +33,8 @@ This modal appears when:
 ### Modal Header
 
 **Auditor Identification**
-- Auditor name prominently displayed (e.g., "Abhinay Naidu")
-- Auditor ID shown below name (e.g., "ID: A046")
+- Auditor name prominently displayed (e.g., "Srikanth Rao")
+- Auditor ID shown below name (e.g., "ID: A039")
 
 **Actions (Top Right)**
 - Download Report button with dropdown for format selection
@@ -43,38 +43,42 @@ This modal appears when:
 
 ### Performance Summary Cards
 
-Three cards showing aggregate metrics:
+Four cards showing aggregate metrics:
 
 **Total Audits**
-- Number: 37 (total audits completed by this auditor)
+- Number: 26 (total audits completed by this auditor)
+- Displayed with gradient blue background
 
 **Total PIDs**
-- Number: 45,389 (Physical Inventory Displays audited)
+- Number: 31,414 (Physical Inventory Displays audited)
 
 **Total SKUs**
-- Number: 1.81 L (181,000 Stock Keeping Units audited)
+- Number: 1.29 L (Stock Keeping Units audited)
+
+**Total Value**
+- Value: ₹22.04 Cr (Total audited value in Indian Rupees)
 
 ### Deviation Summary Section
 
 Shows this auditor's deviation statistics in three panels:
 
-**Appeared Deviations**
-- SKUs: 13,081
-- Qty: 2.05 L
-- Value: ₹1.33 Cr
+**Appeared Deviations (Blue Border)**
+- SKUs: 10,017
+- Qty: 1.52 L
+- Value: ₹1.09 Cr
 - All discrepancies found by this auditor
 
-**Matched Deviations**
-- SKUs: 12,221
-- Qty: 1.92 L
-- Value: ₹1.25 Cr
-- Successfully resolved
+**Matched Deviations (Green Border)**
+- SKUs: 9,345
+- Qty: 1.42 L
+- Value: ₹1.03 Cr
+- Successfully resolved and confirmed as correct
 
-**Revised Deviations**
-- SKUs: 860
-- Qty: 13,615
-- Value: ₹8.51 L
-- Required correction
+**Revised Deviations (Yellow Border)**
+- SKUs: 672
+- Qty: 9,770
+- Value: ₹6.53 L
+- Required correction after auditor's initial submission
 
 ### Audit History Table
 
@@ -91,9 +95,8 @@ Shows this auditor's deviation statistics in three panels:
 8. Audited Value (monetary value)
 
 **Sample Rows:**
-- MP0011, Hyd-Jubilee Hills, 06/12/2025, Select SKUs, 2,719 PIDs, 8,156 SKUs, 10,461 qty, ₹2.15 Cr
-- MP0009, Hyd-Tarnaka, 04/12/2025, Select SKUs, 4,685 PIDs, 14,052 SKUs, 11,323 qty, ₹2.14 Cr
-- MP0014, Hyd-Manikonda, 29/11/2025, Full Audit, 730 PIDs, 2,922 SKUs, 791 qty, ₹19.32 L
+- MP0023, Hyd-Nampally, 12/12/2025, Full Audit, 1,759 PIDs, 7,039 SKUs, 8,464 qty, ₹57.23 L
+- MP0021, Hyd-Amberpet, 05/12/2025, Select SKUs, 755 PIDs, 2,262 SKUs, 4,524 qty, ₹75.92 L
 
 **Table Features:**
 - Scrollable to show complete history

@@ -448,13 +448,21 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
 
                 <Modal.Body className="bg-light p-4" style={{ maxHeight: '80vh', overflowY: 'auto' }}>
                     {/* Top Cards */}
-                    <Row className="g-3 mb-4 row-cols-2 row-cols-md-5">
+                    <Row className="g-3 mb-4 row-cols-2 row-cols-md-3">
                         <Col>
                             <Card className="h-100 text-white bg-primary border-0 shadow-sm" style={{ background: 'linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%)' }}>
                                 <Card.Body>
                                     <h6 className="text-white-50 text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL AUDITS</h6>
                                     <h2 className="display-6 fw-bold mb-0">{metrics.totalAudits}</h2>
                                     <i className="fas fa-clipboard-list position-absolute top-0 end-0 m-3 opacity-25 fa-2x"></i>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col>
+                            <Card className="h-100 border-0 shadow-sm">
+                                <Card.Body>
+                                    <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>AUDITORS SUPERVISED</h6>
+                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalAuditorsSupervised}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>

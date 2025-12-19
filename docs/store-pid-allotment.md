@@ -254,6 +254,6 @@ This screen appears when:
 
 ## Visual Documentation
 
-![Store PID Allotment Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/store-pid-allotment.png)
+![Store PID Allotment Screen](./screenshots/store-pid-allotment.png)
 
 *The Store PID Allotment screen showing PID assignments, status tracking, and auditor allocation for a specific store's physical inventory locations.*

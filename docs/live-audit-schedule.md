@@ -419,6 +419,6 @@ The table displays currently active audits with the following columns:
 
 ## Visual Documentation
 
-![Live Audit Schedule Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/live-audit-schedule.png)
+![Live Audit Schedule Screen](./screenshots/live-audit-schedule.png)
 
 *The Live Audit Schedule screen showing audits currently in progress with real-time completion tracking and auditor assignments.*

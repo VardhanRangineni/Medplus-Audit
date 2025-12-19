@@ -273,3 +273,7 @@ Click the **"Download Report"** button in the modal header to reveal two export 
 - See **audit-modal.md** for detailed audit breakdowns
 - See **auditor-modal.md** for auditor performance metrics
 - See **USER_GUIDE.md** (Tab 4 section) for complete supervisor approval workflows
+
+## Visual Documentation
+
+*Note: This modal appears when clicking on supervisor rows in the Supervisor Approvals screen. Screenshots are available in the supervisor-approvals.md documentation file.*

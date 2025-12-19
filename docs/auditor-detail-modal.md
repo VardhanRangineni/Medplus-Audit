@@ -154,6 +154,6 @@ Shows this auditor's deviation statistics in three panels:
 
 ## Visual Documentation
 
-![Auditor Detail Modal](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/auditor-detail-modal.png)
+![Auditor Detail Modal](./screenshots/auditor-detail-modal.png)
 
 *The Auditor Detail Modal showing complete performance history, deviation statistics, and detailed audit history for an individual auditor.*

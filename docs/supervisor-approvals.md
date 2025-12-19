@@ -124,6 +124,6 @@ Four cards displaying key metrics:
 
 ## Visual Documentation
 
-![Supervisor Approvals Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/supervisor-approvals.png)
+![Supervisor Approvals Screen](./screenshots/supervisor-approvals.png)
 
 *The Supervisor Approvals screen showing workload distribution, performance metrics, and oversight statistics for all supervisors.*

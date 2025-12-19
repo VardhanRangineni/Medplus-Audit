@@ -187,6 +187,6 @@ Lists bottom 3 auditors:
 
 ## Visual Documentation
 
-![Auditor Performance Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/auditor-performance.png)
+![Auditor Performance Screen](./screenshots/auditor-performance.png)
 
 *The Auditor Performance screen showing productivity metrics, accuracy ratings, and detailed performance data for all auditors.*

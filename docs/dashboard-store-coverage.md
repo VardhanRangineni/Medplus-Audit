@@ -455,6 +455,6 @@ Three cards displaying inventory statistics:
 
 ## Visual Documentation
 
-![Dashboard - Store Coverage Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/dashboard-main.png)
+![Dashboard - Store Coverage Screen](./screenshots/dashboard-main.png)
 
 *The main dashboard showing store coverage metrics, inventory statistics, and deviation analysis. This screen provides a comprehensive overview of the audit program status.*

@@ -438,6 +438,6 @@ The table shows stores including:
 
 ## Visual Documentation
 
-![Total Stores Details Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/total-stores-details.png)
+![Total Stores Details Screen](./screenshots/total-stores-details.png)
 
 *The detailed view showing all stores in a searchable, filterable table format. Each row represents a complete store record with key operational metrics.*

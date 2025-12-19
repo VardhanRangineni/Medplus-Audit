@@ -408,6 +408,12 @@ Tested and working on:
 - See **NESTED_DRILLDOWN_GUIDE.md** for detailed drill-down functionality
 - See **USER_GUIDE.md** for complete dashboard navigation
 
+## Visual Documentation
+
+![Store Detail Modal](./screenshots/store-detail-modal.png)
+
+*This modal displays detailed store audit information including store identification, audit progress, PID/SKU metrics, mismatches, deviations, and assigned auditor performance.*
+
 ## Future Enhancements
 
 Potential improvements planned:

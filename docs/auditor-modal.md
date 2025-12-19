@@ -357,3 +357,9 @@ A: Yes, this information is available in the main Auditor Performance tab table 
 - See **audit-modal.md** for individual audit breakdowns
 - See **store-modal.md** for store-level details
 - See **USER_GUIDE.md** (Tab 3 section) for complete auditor performance workflows
+
+## Visual Documentation
+
+![Auditor Details Modal](./screenshots/auditor-detail-modal.png)
+
+*This modal shows comprehensive auditor performance metrics including total audits, PIDs, SKUs audited, deviation summaries, and detailed audit history.*

@@ -428,6 +428,6 @@ Table displaying auditor-level details:
 
 ## Visual Documentation
 
-![Store Detail Modal](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/store-detail-modal.png)
+![Store Detail Modal](./screenshots/store-detail-modal.png)
 
 *The Store Detail Modal showing comprehensive audit progress including individual auditor performance, inventory metrics, and deviation tracking for a specific store.*

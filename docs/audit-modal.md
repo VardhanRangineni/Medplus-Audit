@@ -366,3 +366,7 @@ A: This summary shows aggregated metrics. Detailed item lists would need to be a
 - See **auditor-modal.md** for individual auditor performance tracking
 - See **store-modal.md** for store-level details
 - See **USER_GUIDE.md** for complete dashboard navigation
+
+## Visual Documentation
+
+*Note: This modal appears when clicking on audit rows in various sections of the dashboard. Screenshots are available in the related screen documentation files where this modal is triggered (supervisor-modal.md, auditor-modal.md, and live-audit-schedule.md).*

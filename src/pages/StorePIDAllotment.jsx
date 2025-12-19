@@ -83,6 +83,13 @@ const StorePIDAllotment = () => {
     return { total, assigned, notAssigned, inProgress, completed };
   }, [pids]);
 
+  // Calculate total SKU count for selected PIDs
+  const selectedSKUCount = useMemo(() => {
+    return pids
+      .filter(pid => selectedPIDs.includes(pid.pid))
+      .reduce((total, pid) => total + pid.skuCount, 0);
+  }, [selectedPIDs, pids]);
+
   const handleSelectPID = (pidId) => {
     setSelectedPIDs(prev => {
       if (prev.includes(pidId)) {
@@ -373,6 +380,24 @@ const StorePIDAllotment = () => {
                   </div>
                 </Col>
               </Row>
+              {selectedPIDs.length > 0 && (
+                <Row className="mt-3">
+                  <Col>
+                    <div className="selected-pids-summary">
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div>
+                          <i className="fas fa-check-circle text-success me-2"></i>
+                          <strong>{selectedPIDs.length}</strong> PID{selectedPIDs.length !== 1 ? 's' : ''} Selected
+                        </div>
+                        <div className="total-sku-count">
+                          <i className="fas fa-boxes me-2"></i>
+                          Total SKUs: <strong className="text-primary">{selectedSKUCount.toLocaleString()}</strong>
+                        </div>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              )}
             </Card.Header>
             <Card.Body className="p-0">
               <div style={{ maxHeight: '600px', overflowY: 'auto' }}>

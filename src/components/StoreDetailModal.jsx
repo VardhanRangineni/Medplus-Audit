@@ -1152,7 +1152,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                     </Col>
                     <Col xs={6}>
                       <div className="p-3 bg-light rounded">
-                        <div className="text-muted small mb-1">Matched</div>
+                        <div className="text-muted small mb-1">Revised</div>
                         <h5 className="mb-0 fw-bold text-success">
                           {(() => {
                             const totalMismatch = deviations.filter(d => d.type === 'Contra Short' || d.type === 'Contra Excess').reduce((sum, d) => sum + (d.count || 0), 0);

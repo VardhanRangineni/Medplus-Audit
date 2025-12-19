@@ -7,6 +7,83 @@ This document provides comprehensive, screen-level functional documentation of t
 **Document Organization:**
 This documentation follows the logical user journey through the application, starting from the main dashboard and drilling down into each functional area.
 
+## Table of Contents
+
+### Main Screens
+1. [Dashboard - Store Coverage Screen](#dashboard---store-coverage-screen)
+2. [Total Stores - Details Screen](#total-stores---details-screen)
+3. [Live Audit Schedule Screen](#live-audit-schedule-screen)
+4. [Auditor Performance Screen](#auditor-performance-screen)
+5. [Supervisor Approvals Screen](#supervisor-approvals-screen)
+6. [Store PID Allotment Screen](#store-pid-allotment-screen)
+
+### Modal Components
+7. [Store Detail Modal](#store-detail-modal)
+8. [Audit Detail Modal](#audit-detail-modal)
+9. [Auditor Detail Modal](#auditor-detail-modal)
+10. [Supervisor Detail Modal](#supervisor-detail-modal)
+
+### Key Features by Screen
+
+**Dashboard - Store Coverage:**
+- Summary metrics (Total/Covered/Uncovered stores)
+- Store Recency Analysis chart
+- Inventory metrics
+- Deviation distribution analysis
+- Product form distribution
+
+**Total Stores - Details:**
+- Complete store directory
+- Search and filter functionality
+- Export capabilities
+- Store status and inventory values
+
+**Live Audit Schedule:**
+- Real-time audit progress tracking
+- Status summary cards
+- Auditor assignments
+- Progress bars and completion metrics
+
+**Auditor Performance:**
+- Individual auditor productivity metrics
+- Match rates and edit rates
+- Top performers and attention needed lists
+- Comprehensive performance table
+
+**Supervisor Approvals:**
+- Supervisor workload monitoring
+- Audit oversight metrics
+- Performance tracking by supervisor
+- Value oversight and quality management
+
+**Store PID Allotment:**
+- PID assignment management
+- Audit task distribution
+- Status tracking (assigned/unassigned/in progress/completed)
+- Bulk assignment operations
+
+### Modal Deep Dives
+
+**Store Detail Modal:**
+- Opened from: Live Audit Schedule screen
+- Shows: Store-specific audit progress, PIDs, SKUs, deviations, assigned auditors
+- Actions: Download reports, view real-time progress
+
+**Audit Detail Modal:**
+- Opened from: Supervisor/Auditor detail modals, Live Audit Schedule
+- Shows: Complete audit breakdown, re-audit summary, participating auditors
+- Actions: Export data, expand auditor details
+
+**Auditor Detail Modal:**
+- Opened from: Auditor Performance screen
+- Shows: Individual auditor performance history, deviation metrics, audit history
+- Actions: Date filtering, download reports, view audit-specific details
+
+**Supervisor Detail Modal:**
+- Opened from: Supervisor Approvals screen
+- Shows: Supervisor performance, days supervised, deviation summary, audit history
+- Actions: Date range filtering, export reports, drill-down into specific audits
+
 ---
 
 # Dashboard - Store Coverage Screen
@@ -624,6 +701,367 @@ Data may auto-refresh while modal is open. Progress percentages and completed co
 
 ---
 
+# Audit Detail Modal
+
+## When This Modal Appears
+
+This modal appears when user clicks on any audit row from various locations in the dashboard:
+- From Supervisor Detail Modal: Click any row in the "Audit History" table
+- From Auditor Detail Modal: Click any row in the "Audit History" table
+- From Live Audit Schedule: Click any store/audit row showing audit progress
+
+This modal provides comprehensive breakdown of a single audit including store details, re-audit metrics, and individual auditor performance.
+
+## Complete UI Breakdown
+
+### Modal Header
+
+**Header Design:**
+- Purple gradient background (from indigo to purple)
+- White text on colored background
+- Rounded corners at top
+
+**Title Section:**
+- Icon: Clipboard list icon
+- Title: "Audit Details"
+- Export button dropdown (white semi-transparent button)
+
+**Actions:**
+- Export dropdown button with two options:
+  - Export as Excel
+  - Export as PDF
+- Close button (X) in top right corner
+
+### Hero Card (Main Audit Information)
+
+**Visual Design:**
+- Large white card with shadow and rounded corners
+- Purple gradient icon box (48x48 pixels)
+- File invoice icon inside
+
+**Primary Information:**
+- Audit ID displayed prominently in large bold text (e.g., "MP0002" or "AUD00691")
+- Audit Job Type subtitle (e.g., "Full Audit", "Select SKUs", "Partial Audit")
+
+**Store and Timeline Details:**
+
+Three pieces of information displayed horizontally with icons:
+
+**Store Information:**
+- Store icon (purple color)
+- Store name (e.g., "Coimbatore-Main")
+
+**Start Date:**
+- Green calendar icon
+- Label: "Start:"
+- Date in DD/MM/YYYY format (e.g., "15/12/2025")
+
+**End Date:**
+- Dark green calendar check icon
+- Label: "End:"
+- Date in DD/MM/YYYY format (e.g., "18/12/2025")
+- May show "-" if audit is still in progress
+
+**Total Value Display:**
+- Positioned in top right of card
+- Label: "Total Value" in small gray text
+- Large green bold text showing monetary value
+- Formatted in Indian currency notation (e.g., "Rs.3209K" or "Rs.2.15 Cr")
+- Represents total inventory value for this audit
+
+### Re-Audit Summary Section
+
+**Section Header:**
+- Decorative purple gradient bar (4px wide, 20px tall)
+- Title: "RE-AUDIT SUMMARY" in uppercase, small font
+- Subtitle: "Across all deviation types"
+
+**Summary Table:**
+
+Clean, modern table showing three categories of audit results:
+
+**Table Design:**
+- Light gray header background
+- White row backgrounds
+- Thin borders between rows
+- Color-coded badges for each category
+
+**Columns:**
+1. Category - Name with colored badge indicator
+2. SKUs - Number of unique products (right-aligned)
+3. Qty - Total quantity (right-aligned)
+4. Value - Monetary value in Rupees (right-aligned, bold)
+
+**Three Data Rows:**
+
+**1. Appeared (Blue Badge)**
+- Items initially identified with deviations during audit
+- Shows all discrepancies that required verification
+- SKUs, Qty, and Value displayed
+- Value shown in dark text
+- Example: 13,081 SKUs, 2.05 L qty, Rs.1.33 Cr
+
+**2. Matched (Green Badge)**
+- Items from "Appeared" that were verified as correct
+- Deviations confirmed to be accurate
+- High match rate indicates accurate initial audit
+- Value shown in green text (#059669)
+- Example: 12,221 SKUs, 1.92 L qty, Rs.1.25 Cr
+
+**3. Deviations (Yellow Badge)**
+- Items from "Appeared" that required corrections
+- Original audit finding was inaccurate
+- Lower is better - indicates quality audit work
+- Value shown in orange text (#d97706)
+- Example: 860 SKUs, 13,615 qty, Rs.8.51 L
+
+**Formula:** Appeared = Matched + Deviations
+
+### Participating Auditors Section
+
+**Section Header:**
+- Decorative green gradient bar (4px wide, 20px tall)
+- Title: "PARTICIPATING AUDITORS" in uppercase
+- Count badge showing total number of auditors (e.g., "4")
+
+**Auditors Table:**
+
+Comprehensive table showing all auditors who worked on this audit:
+
+**Table Design:**
+- Light gray header background
+- Hover effect on rows (slight highlight)
+- Expandable rows with chevron icons
+- Modern, clean styling with rounded corners
+
+**Columns:**
+1. ID - Auditor identifier with badge and chevron icon
+2. Auditor Name - Name in purple accent color
+3. PIDs - Physical Inventory Displays assigned (right-aligned)
+4. SKUs - Stock Keeping Units assigned (right-aligned)
+5. Qty - Quantity audited by this auditor (right-aligned)
+6. Audited Value - Monetary value audited (right-aligned, green bold text)
+
+**Sample Data:**
+- A039, Hitesh Shah, 675 PIDs, 1,350 SKUs, 1,125 qty, Rs.75.6 K
+- A012, Amit Singh, 673 PIDs, 1,346 SKUs, 1,117 qty, Rs.74.2 K
+- A028, Rohit Sharma, 913 PIDs, 1,826 SKUs, 1,522 qty, Rs.101.3 K
+- A045, Arun Nair, 1,056 PIDs, 2,112 SKUs, 1,760 qty, Rs.117.2 K
+
+**Interactive Features:**
+
+**Chevron Icons:**
+- Right-pointing arrow when row is collapsed
+- Down-pointing arrow when row is expanded
+- Small gray icon positioned before the ID badge
+
+**Row Click Behavior:**
+- Click any auditor row to expand/collapse
+- Only one row can be expanded at a time
+- Background changes to light gray when expanded
+- Smooth animation on expand/collapse
+
+**Expanded Auditor View:**
+
+When an auditor row is clicked, a nested panel expands showing:
+
+**Nested Section Header:**
+- Small purple gradient bar (3px wide, 16px tall)
+- Title: "RE-AUDIT SUMMARY" in uppercase, small font
+
+**Nested Re-Audit Table:**
+- Smaller, compact table (max-width 400px)
+- Light gray header background
+- White row backgrounds
+- Shows this specific auditor's re-audit metrics
+
+**Three Rows in Nested Table:**
+
+**1. Appeared (Blue Badge)**
+- SKUs, Qty, and Value specific to this auditor
+- Example: 3,270 SKUs, 51,250 qty, Rs.33.27 L
+
+**2. Matched (Green Badge)**
+- This auditor's verified correct items
+- Example: 3,055 SKUs, 47,925 qty, Rs.31.15 L
+
+**3. Deviations (Yellow Badge)**
+- This auditor's items needing correction
+- Example: 215 SKUs, 3,325 qty, Rs.2.12 L
+
+**Purpose of Nested View:**
+- Shows individual auditor accuracy
+- Identifies high/low performers
+- Supports targeted training decisions
+- Validates quality of work
+
+### Modal Footer
+
+**Simple footer with light gray background:**
+- Close button (outline style, secondary color)
+- Rounded corners
+- Padding for comfortable spacing
+
+## Interaction Behavior
+
+### Opening the Modal
+
+Modal opens with smooth animation overlay:
+- Semi-transparent dark backdrop dims background
+- Modal slides in from center
+- Backdrop prevents interaction with underlying content
+- Modal can be opened from nested context (modal over modal)
+
+### Export Functionality
+
+**Clicking Export Button:**
+- Dropdown menu appears with two options
+- Excel option (green Excel icon)
+- PDF option (red PDF icon)
+
+**Excel Export:**
+- File name: `Audit_{AuditID}_Report.xlsx`
+- Contains audit summary and participating auditors
+- Pre-formatted columns
+- Ready for further analysis
+
+**PDF Export:**
+- File name: `Audit_{AuditID}_Report.pdf`
+- Professional format with tables
+- Color-coded headers
+- All numeric values properly formatted
+
+### Auditor Row Expansion
+
+**Click any auditor row:**
+- Row expands smoothly with animation
+- Background changes to light gray
+- Nested re-audit summary table appears
+- Chevron icon rotates to point down
+
+**Click expanded row again:**
+- Row collapses with animation
+- Background returns to white
+- Nested table disappears
+- Chevron icon rotates to point right
+
+**Clicking different auditor:**
+- Previously expanded row collapses automatically
+- New row expands
+- Only one row expanded at a time
+
+### Scrolling Behavior
+
+**If content exceeds viewport:**
+- Vertical scrollbar appears
+- Header remains fixed at top
+- Smooth scrolling
+- Footer remains accessible
+
+### Closing the Modal
+
+**Three ways to close:**
+1. Click X button in header
+2. Click Close button in footer
+3. Click outside modal on dark backdrop
+
+**Closing behavior:**
+- Modal dismisses with fade-out animation
+- Returns to previous screen (Supervisor, Auditor, or Live Audit)
+- Backdrop fades out
+- No data is saved (modal is read-only)
+
+## Purpose of Every Action
+
+### Modal Display Purpose
+
+**Audit Verification:**
+- Review outcomes after audit completion
+- Verify all auditors completed assignments
+- Check data quality and accuracy
+
+**Issue Investigation:**
+- Drill down into specific problem audits
+- Identify which auditor contributed to issues
+- Understand deviation patterns
+
+**Performance Analysis:**
+- Compare auditor performance within same audit
+- Identify consistently strong/weak performers
+- Assess team coordination and collaboration
+
+**Store Analysis:**
+- Understand inventory accuracy at specific store
+- Identify patterns of deviation types
+- Plan corrective actions for future audits
+
+### Re-Audit Summary Purpose
+
+**Understanding Audit Quality:**
+- Appeared: Shows initial scope of discrepancies
+- Matched: Indicates accuracy of initial audit (higher is better)
+- Deviations: Shows errors in initial audit (lower is better)
+
+**Financial Impact:**
+- Value columns show monetary implications
+- High deviation values require investigation
+- Matched values show verified accuracy
+
+**Quality Metrics:**
+- Match rate = Matched / Appeared (as percentage)
+- High match rates (>90%) indicate quality work
+- Low match rates (<80%) indicate training needs
+
+### Auditor-Level Details Purpose
+
+**Individual Accountability:**
+- See exactly what each auditor worked on
+- PIDs and SKUs show workload distribution
+- Values show responsibility level
+
+**Performance Comparison:**
+- Compare auditors working on same audit
+- Identify efficiency differences
+- Recognize high performers
+
+**Workload Validation:**
+- Ensure fair distribution of work
+- Identify over/under allocation
+- Plan better for future audits
+
+**Quality Assessment:**
+- Expanded view shows individual accuracy
+- High deviations indicate need for retraining
+- Consistent accuracy shows expertise
+
+### Export Purpose
+
+**For Store Management:**
+- Share audit results with store managers
+- Provide evidence for inventory discrepancies
+- Document findings for follow-up
+
+**For Finance Team:**
+- High-value deviation documentation
+- Inventory value reconciliation
+- Financial reporting backup
+
+**For Audit Trail:**
+- Compliance documentation
+- Historical audit records
+- Quality assurance evidence
+
+**For Analysis:**
+- Import into BI tools
+- Create custom reports
+- Trend analysis across multiple audits
+
+## Visual Documentation
+
+![Audit Detail Modal](screenshots/audit-modal.png)
+
+---
+
 # Auditor Performance Screen
 
 ## When This Screen Appears
@@ -922,6 +1360,220 @@ Downloads complete supervisor performance data including all visible columns, re
 ## Visual Documentation
 
 ![Supervisor Approvals Screen](screenshots/supervisor-approvals.png)
+
+---
+
+# Supervisor Detail Modal
+
+## When This Modal Appears
+
+This modal appears when user clicks on any supervisor row in the Supervisor Performance Summary table. It provides comprehensive breakdown of a supervisor's performance, audit oversight activities, and workload over a selectable time period.
+
+## Complete UI Breakdown
+
+### Modal Header
+
+**Supervisor Identification**
+- Name prominently displayed (e.g., "Aditya Reddy")
+- ID shown below name (e.g., "ID: S001")
+
+**Actions:**
+- Download Report button with dropdown (Excel/PDF export options)
+- Date range filters:
+  - "From" date picker (default: 1 year ago)
+  - "To" date picker (default: today)
+  - Maximum range: 1 year (365 days)
+  - Validation prevents invalid date selections
+  - Warning message displays if dates are invalid
+- Close button (X)
+
+### Performance Summary Cards
+
+Four key metrics displayed in card format:
+
+**Total Audits Card**
+- Number of unique audits supervised within selected date range
+- Displayed with gradient blue background (purple to light blue)
+- Icon: Clipboard list icon
+- Example: "37" audits
+
+**Days Supervised Card**
+- Number of distinct days actively overseeing audits
+- Calculated from day-wise summary data
+- White background card
+- Example: "206" days
+
+**Total PIDs Card**
+- Aggregate count of Physical Inventory Displays supervised
+- White background card
+- Formatted with Indian number notation (L for lakhs, Cr for crores)
+- Example: "45,389" PIDs
+
+**Total SKUs Card**
+- Total Stock Keeping Units supervised across all audits
+- White background card
+- Formatted with Indian number notation
+- Example: "1.81 L" SKUs
+
+### Deviation Summary Section
+
+**Section Header:** "DEVIATION SUMMARY"
+
+Three deviation category cards with colored left borders:
+
+**Appeared Deviations (Blue Border)**
+- Shows initial discrepancies identified during audits
+- Three rows of data:
+  - SKUs: Count of unique products with deviations
+  - Qty: Total quantity of items with deviations
+  - Value: Monetary value in Rupees (formatted as Indian currency)
+- Example: SKUs: 13,081, Qty: 2.05 L, Value: Rs.1.33 Cr
+
+**Matched Deviations (Green Border)**
+- Shows deviations that were verified and confirmed as correct
+- Three rows of data:
+  - SKUs: Count verified
+  - Qty: Quantity verified
+  - Value: Monetary value
+- Higher match rates indicate accurate initial audits
+- Example: SKUs: 12,221, Qty: 1.92 L, Value: Rs.1.25 Cr
+
+**Revised Deviations (Yellow Border)**
+- Shows items that required supervisor correction
+- Three rows of data:
+  - SKUs: Count requiring revision
+  - Qty: Quantity revised
+  - Value: Monetary value
+- Lower values indicate better auditor accuracy
+- Example: SKUs: 860, Qty: 13,615, Value: Rs.8.51 L
+
+### Audit History Table
+
+**Section Header:** "AUDIT HISTORY"
+
+Comprehensive table showing all audits supervised within the date range:
+
+**Columns:**
+1. Store ID - Unique identifier (clickable, displayed in primary blue color)
+2. Store - Store name
+3. Date - Audit start date (DD/MM/YYYY format)
+4. Job Type - Type of audit (Full Audit, Select SKUs, Partial Audit)
+5. PIDs - Number of physical inventory displays
+6. SKUs - Number of stock keeping units
+7. QTY - Quantity of items audited
+8. Value - Total audited value (Indian currency format)
+
+**Table Features:**
+- Sortable columns: Click headers to sort ascending/descending
+- Sort indicators: Up/down arrows show current sort direction
+- Sticky header: Column headers remain visible while scrolling
+- Row hover effect: Rows highlight on hover
+- Clickable rows: Click any row to open Audit Detail Modal
+
+**Sample Data:**
+- MP0011, Hyd-Jubilee Hills, 06/12/2025, Select SKUs, 2,719 PIDs, 8,156 SKUs, 10,461 qty, Rs.2.15 Cr
+- MP0009, Hyd-Tarnaka, 04/12/2025, Select SKUs, 4,685 PIDs, 14,052 SKUs, 11,323 qty, Rs.2.14 Cr
+
+## Interaction Behavior
+
+### Date Range Filters
+
+**Selecting Dates:**
+- Click "From" date picker to select start date
+- Click "To" date picker to select end date
+- Table automatically filters to show audits within selected range
+
+**Date Validation:**
+- "From" date cannot be after "To" date
+- Date range cannot exceed 1 year (365 days)
+- Invalid selections show warning message for 2 seconds
+- Automatically reverts to last valid date range if validation fails
+
+### Download Report
+
+**Excel Export:**
+- File name format: `Supervisor_{SupervisorID}_Report.xlsx`
+- Contains two sections:
+  - Summary metrics (audits, days, PIDs, SKUs, deviations)
+  - Complete audit history table
+- Pre-formatted columns for readability
+
+**PDF Export:**
+- File name format: `Supervisor_{SupervisorID}_Report.pdf`
+- Landscape orientation for better table viewing
+- Contains:
+  - Header with supervisor name, ID, and date range
+  - Metrics summary table
+  - Deviation summary table
+  - Audit history table (on second page)
+
+### Table Sorting
+
+Click any column header to sort data:
+- First click: Ascending order
+- Second click: Descending order
+- Sort icon updates to show current direction
+- Useful for identifying highest/lowest values
+
+### Audit Row Click
+
+Clicking any audit row in the table opens the Audit Detail Modal showing:
+- Complete audit breakdown
+- Re-audit summary for that specific audit
+- List of participating auditors
+- Deviation details for that audit
+
+### Close Buttons
+
+X button in header or Close button dismisses modal and returns to Supervisor Approvals Screen.
+
+## Purpose of Every Action
+
+### Modal Display
+- Provides detailed oversight for managers
+- Enables performance evaluation of supervisors
+- Supports workload balancing decisions
+- Tracks audit quality and accuracy
+
+### Date Filtering
+- Review specific time periods
+- Quarterly or annual performance reviews
+- Identify improvement or decline trends
+- Focus on recent activity
+
+### Performance Metrics
+- Total Audits: Shows workload volume
+- Days Supervised: Indicates availability and engagement
+- PIDs/SKUs: Demonstrates scope of responsibility
+- Combined metrics help assess supervisor capacity
+
+### Deviation Analysis
+- Appeared Deviations: Shows all discrepancies found
+- Matched Deviations: Indicates audit accuracy
+- Revised Deviations: Highlights correction needs
+- Helps identify training requirements
+
+### Audit History
+- Complete audit trail for accountability
+- Validates experience and capability
+- Shows consistency over time
+- Supports promotion/compensation decisions
+
+### Export Functionality
+- Performance review documentation
+- Sharing with HR or management
+- Historical record keeping
+- Compliance documentation
+
+### Drill-Down Capability
+- Click audit rows to investigate specific audits
+- Understand context behind metrics
+- Identify patterns or problems
+- Make informed decisions
+
+## Visual Documentation
+
+![Supervisor Detail Modal](screenshots/supervisor-modal.png)
 
 ---
 

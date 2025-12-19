@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Temporary PDF generation scripts
+generate-complete-pdf.js

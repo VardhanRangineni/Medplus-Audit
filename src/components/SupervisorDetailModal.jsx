@@ -326,11 +326,14 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                 ['Days Supervised', metrics.daysSupervised],
                 ['Total PIDs', metrics.totalPIDs.toLocaleString('en-IN')],
                 ['Total SKUs', metrics.totalSKUs.toLocaleString('en-IN')],
-                ['Total Value', formatIndianCurrency(metrics.totalValue)]
+                ['Total Value', formatIndianCurrency(metrics.totalValue).replace('₹', 'Rs. ')]
             ],
             theme: 'grid',
             headStyles: { fillColor: [78, 84, 200] }, // Matches the primary card gradient roughly
-            margin: { left: 14 }
+            margin: { left: 14 },
+            columnStyles: {
+                1: { halign: 'right' }
+            }
         });
 
         // Deviation Summary Table
@@ -343,7 +346,9 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                 ['Revised', metrics.deviations.revised.qty.toLocaleString('en-IN'), metrics.deviations.revised.value.toLocaleString('en-IN')],
             ],
             theme: 'striped',
-            headStyles: { fillColor: [41, 128, 185] },
+            headStyles: { fillColor: [41, 128, 185], halign: 'center' },
+            bodyStyles: { halign: 'right' },
+            columnStyles: { 0: { halign: 'left' } },
             margin: { left: 14 }
         });
 
@@ -374,11 +379,14 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     (r.AppearedValue || 0).toLocaleString('en-IN')
                 ]),
                 theme: 'striped',
-                headStyles: { fillColor: [52, 73, 94] },
+                headStyles: { fillColor: [52, 73, 94], halign: 'center' },
+                bodyStyles: { halign: 'right' },
                 margin: { left: 14 },
                 columnStyles: {
-                    0: { cellWidth: 25 },
-                    1: { cellWidth: 40 },
+                    0: { cellWidth: 25, halign: 'left' },
+                    1: { cellWidth: 40, halign: 'left' },
+                    2: { halign: 'center' },
+                    3: { halign: 'left' }
                     // spread the rest
                 }
             });

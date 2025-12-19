@@ -36,7 +36,7 @@ for file in "${MD_FILES[@]}"; do
     if [ -f "$file" ]; then
         echo "Processing $file..."
         # Replace relative screenshot paths with global GitHub URLs
-        sed -i "s|screenshots/|${REPO_URL}/raw/main/docs/screenshots/|g" "$file"
+        sed -i "s|](screenshots/|](${REPO_URL}/raw/main/docs/screenshots/|g" "$file"
         echo "  ✓ Updated screenshot links in $file"
     fi
 done

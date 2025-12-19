@@ -105,6 +105,14 @@ const StorePIDAllotment = () => {
       .reduce((total, pid) => total + pid.skuCount, 0);
   }, [selectedPIDs, pids]);
 
+  // Calculate assignable and reassignable counts from selected PIDs
+  const selectedCounts = useMemo(() => {
+    const selectedPIDsData = pids.filter(p => selectedPIDs.includes(p.pid));
+    const assignable = selectedPIDsData.filter(p => p.assignStatus === 'Not Assigned').length;
+    const reassignable = selectedPIDsData.filter(p => p.assignStatus === 'Assigned' && p.auditStatus === 'Not Started').length;
+    return { assignable, reassignable };
+  }, [selectedPIDs, pids]);
+
   const handleSelectPID = (pidId) => {
     setSelectedPIDs(prev => {
       if (prev.includes(pidId)) {
@@ -119,10 +127,17 @@ const StorePIDAllotment = () => {
     if (e.target.checked) {
       let selectablePIDs;
       if (activeFilter === 'notAssigned') {
-        selectablePIDs = filteredPIDs.map(p => p.pid);
+        // For assign: only select PIDs with 'Not Assigned' status
+        selectablePIDs = filteredPIDs
+          .filter(p => p.assignStatus === 'Not Assigned')
+          .map(p => p.pid);
       } else if (activeFilter === 'reassign') {
-        selectablePIDs = filteredPIDs.map(p => p.pid);
+        // For reassign: only select PIDs that are 'Assigned' and 'Not Started'
+        selectablePIDs = filteredPIDs
+          .filter(p => p.assignStatus === 'Assigned' && p.auditStatus === 'Not Started')
+          .map(p => p.pid);
       } else {
+        // For all filter: select PIDs that can be assigned OR reassigned
         selectablePIDs = filteredPIDs
           .filter(p => p.assignStatus === 'Not Assigned' || (p.assignStatus === 'Assigned' && p.auditStatus === 'Not Started'))
           .map(p => p.pid);
@@ -138,6 +153,13 @@ const StorePIDAllotment = () => {
       showAlert('warning', 'Please select at least one PID to assign');
       return;
     }
+    
+    // Check if there are any assignable PIDs
+    if (selectedCounts.assignable === 0) {
+      showAlert('warning', 'None of the selected PIDs can be assigned. Only unassigned PIDs can be assigned.');
+      return;
+    }
+    
     setShowAssignModal(true);
   };
 
@@ -146,6 +168,13 @@ const StorePIDAllotment = () => {
       showAlert('warning', 'Please select at least one PID to reassign');
       return;
     }
+    
+    // Check if there are any reassignable PIDs
+    if (selectedCounts.reassignable === 0) {
+      showAlert('warning', 'None of the selected PIDs can be reassigned. Only assigned PIDs with "Not Started" status can be reassigned.');
+      return;
+    }
+    
     setShowBulkReassignModal(true);
   };
 
@@ -157,9 +186,12 @@ const StorePIDAllotment = () => {
 
     const auditor = availableAuditors.find(a => a.id === selectedAuditor);
     
+    // Filter to only assign PIDs that are not assigned
+    const assignablePIDs = pids.filter(p => selectedPIDs.includes(p.pid) && p.assignStatus === 'Not Assigned').map(p => p.pid);
+    
     setPids(prev =>
       prev.map(pid =>
-        selectedPIDs.includes(pid.pid)
+        assignablePIDs.includes(pid.pid)
           ? { 
               ...pid, 
               assignStatus: 'Assigned', 
@@ -171,7 +203,7 @@ const StorePIDAllotment = () => {
       )
     );
 
-    showAlert('success', `Successfully assigned ${selectedPIDs.length} PID(s) to ${auditor.name}`);
+    showAlert('success', `Successfully assigned ${assignablePIDs.length} PID(s) to ${auditor.name}`);
     setSelectedPIDs([]);
     setSelectedAuditor('');
     setShowAssignModal(false);
@@ -221,9 +253,16 @@ const StorePIDAllotment = () => {
 
     const auditor = availableAuditors.find(a => a.id === selectedAuditor);
     
+    // Filter to only reassign PIDs that are assigned and not started
+    const reassignablePIDs = pids.filter(p => 
+      selectedPIDs.includes(p.pid) && 
+      p.assignStatus === 'Assigned' && 
+      p.auditStatus === 'Not Started'
+    ).map(p => p.pid);
+    
     setPids(prev =>
       prev.map(pid =>
-        selectedPIDs.includes(pid.pid)
+        reassignablePIDs.includes(pid.pid)
           ? { 
               ...pid, 
               auditorId: selectedAuditor, 
@@ -234,7 +273,7 @@ const StorePIDAllotment = () => {
       )
     );
 
-    showAlert('success', `Successfully reassigned ${selectedPIDs.length} PID(s) to ${auditor.name}`);
+    showAlert('success', `Successfully reassigned ${reassignablePIDs.length} PID(s) to ${auditor.name}`);
     setSelectedPIDs([]);
     setSelectedAuditor('');
     setShowBulkReassignModal(false);
@@ -386,10 +425,10 @@ const StorePIDAllotment = () => {
                         variant="success"
                         size="sm"
                         onClick={openAssignModal}
-                        disabled={selectedPIDs.length === 0}
+                        disabled={selectedCounts.assignable === 0}
                       >
                         <i className="fas fa-user-plus me-1"></i>
-                        Assign ({selectedPIDs.length})
+                        Assign ({selectedCounts.assignable})
                       </Button>
                     )}
                     {(activeFilter === 'all' || activeFilter === 'reassign') && (
@@ -397,10 +436,10 @@ const StorePIDAllotment = () => {
                         variant="warning"
                         size="sm"
                         onClick={openBulkReassignModal}
-                        disabled={selectedPIDs.length === 0}
+                        disabled={selectedCounts.reassignable === 0}
                       >
                         <i className="fas fa-exchange-alt me-1"></i>
-                        Bulk Reassign ({selectedPIDs.length})
+                        Bulk Reassign ({selectedCounts.reassignable})
                       </Button>
                     )}
                   </div>
@@ -543,9 +582,9 @@ const StorePIDAllotment = () => {
         </Modal.Header>
         <Modal.Body>
           <Alert variant="info">
-            <strong>Selected PIDs:</strong> {selectedPIDs.length}
+            <strong>Selected PIDs for Assignment:</strong> {selectedCounts.assignable}
             <br />
-            <small className="text-muted">{selectedPIDs.join(', ')}</small>
+            <small className="text-muted">{pids.filter(p => selectedPIDs.includes(p.pid) && p.assignStatus === 'Not Assigned').map(p => p.pid).join(', ')}</small>
           </Alert>
           <Form.Group>
             <Form.Label>Select Auditor <span className="text-danger">*</span></Form.Label>
@@ -631,9 +670,9 @@ const StorePIDAllotment = () => {
         </Modal.Header>
         <Modal.Body>
           <Alert variant="warning">
-            <strong>Selected PIDs:</strong> {selectedPIDs.length}
+            <strong>Selected PIDs for Reassignment:</strong> {selectedCounts.reassignable}
             <br />
-            <small className="text-muted">{selectedPIDs.join(', ')}</small>
+            <small className="text-muted">{pids.filter(p => selectedPIDs.includes(p.pid) && p.assignStatus === 'Assigned' && p.auditStatus === 'Not Started').map(p => p.pid).join(', ')}</small>
           </Alert>
           <Form.Group>
             <Form.Label>Select New Auditor <span className="text-danger">*</span></Form.Label>

@@ -1,5 +1,32 @@
 # Store PID Allotment Screen
 
+## Table of Contents
+- [When This Screen Appears](#when-this-screen-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Store Header](#store-header)
+  - [PID Management Section](#pid-management-section)
+  - [PID Table](#pid-table)
+- [Interaction Behavior](#interaction-behavior)
+  - [Filter Buttons](#filter-buttons)
+  - [Checkboxes](#checkboxes)
+  - [Assign Button](#assign-button)
+  - [Reassign Button (Individual)](#reassign-button-individual)
+  - [Bulk Reassign Button](#bulk-reassign-button)
+  - [Search Field](#search-field)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [PID Management:](#pid-management)
+  - [Assignment:](#assignment)
+  - [Status Tracking:](#status-tracking)
+  - [Reassignment:](#reassignment)
+  - [Not Assigned Filter:](#not-assigned-filter)
+  - [Reassign Filter:](#reassign-filter)
+  - [SKU Count Purpose:](#sku-count-purpose)
+  - [Status Columns Purpose:](#status-columns-purpose)
+  - [Checkbox Disable Logic:](#checkbox-disable-logic)
+  - [Bulk Operations Purpose:](#bulk-operations-purpose)
+- [Visual Documentation](#visual-documentation)
+
+
 ## When This Screen Appears
 
 This screen appears when:
@@ -227,6 +254,6 @@ This screen appears when:
 
 ## Visual Documentation
 
-![Store PID Allotment Screen](screenshots/store-pid-allotment.png)
+![Store PID Allotment Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/store-pid-allotment.png)
 
 *The Store PID Allotment screen showing PID assignments, status tracking, and auditor allocation for a specific store's physical inventory locations.*

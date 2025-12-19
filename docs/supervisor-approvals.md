@@ -1,5 +1,24 @@
 # Supervisor Approvals Screen
 
+## Table of Contents
+- [When This Screen Appears](#when-this-screen-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Header and Filters](#header-and-filters)
+  - [Summary Metrics Cards](#summary-metrics-cards)
+  - [Supervisor Performance Summary Table](#supervisor-performance-summary-table)
+- [Interaction Behavior](#interaction-behavior)
+  - [Clicking supervisor rows:](#clicking-supervisor-rows)
+  - [Search field:](#search-field)
+  - [Column sorting:](#column-sorting)
+  - [Export Report:](#export-report)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Workload Monitoring:](#workload-monitoring)
+  - [Performance Tracking:](#performance-tracking)
+  - [Value Oversight:](#value-oversight)
+  - [Quality Management:](#quality-management)
+- [Visual Documentation](#visual-documentation)
+
+
 ## When This Screen Appears
 
 This screen appears when:
@@ -105,6 +124,6 @@ Four cards displaying key metrics:
 
 ## Visual Documentation
 
-![Supervisor Approvals Screen](screenshots/supervisor-approvals.png)
+![Supervisor Approvals Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/supervisor-approvals.png)
 
 *The Supervisor Approvals screen showing workload distribution, performance metrics, and oversight statistics for all supervisors.*

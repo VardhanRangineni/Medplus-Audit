@@ -1,5 +1,34 @@
 # Audit Details Modal Documentation
 
+## Table of Contents
+- [Overview](#overview)
+- [How to Access](#how-to-access)
+- [On-Screen Summary Components](#on-screen-summary-components)
+  - [Header Section (Hero Card)](#header-section-hero-card)
+  - [Re-Audit Summary Section](#re-audit-summary-section)
+  - [Participating Auditors Section](#participating-auditors-section)
+- [Download Functionality](#download-functionality)
+  - [Accessing Downloads](#accessing-downloads)
+  - [Excel Export](#excel-export)
+  - [PDF Export](#pdf-export)
+- [Data Interpretation](#data-interpretation)
+  - [Understanding Re-Audit Metrics](#understanding-re-audit-metrics)
+  - [Interpreting Auditor Performance](#interpreting-auditor-performance)
+- [Use Cases](#use-cases)
+  - [When to View Audit-Specific Summary](#when-to-view-audit-specific-summary)
+  - [When to Download](#when-to-download)
+- [Technical Notes](#technical-notes)
+  - [Data Aggregation](#data-aggregation)
+  - [Modal Behavior](#modal-behavior)
+  - [Styling Features](#styling-features)
+- [Best Practices](#best-practices)
+  - [For Audit Managers](#for-audit-managers)
+  - [For Supervisors](#for-supervisors)
+  - [For Store Managers](#for-store-managers)
+- [Common Questions](#common-questions)
+- [Related Documentation](#related-documentation)
+
+
 ## Overview
 
 The Audit-Specific Summary provides a comprehensive breakdown of a single audit, including store details, re-audit metrics, and participating auditor performance. This summary is accessible by clicking on any audit row from various locations in the dashboard, including the audit history tables in Supervisor and Auditor summaries.

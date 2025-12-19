@@ -22,9 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# Documentation screenshots (generated from running app)
-# Allow specific documentation screenshots
-docs/screenshots/
-!docs/screenshots/*.png
-!docs/screenshots/*.jpg

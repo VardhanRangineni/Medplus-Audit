@@ -514,11 +514,6 @@ const StorePIDAllotment = () => {
                                 Reassign
                               </Button>
                             )}
-                            {(pid.auditStatus === 'In Progress' || pid.auditStatus === 'Completed') && (
-                              <Badge bg="info">
-                                {pid.auditStatus === 'Completed' ? 'Completed' : 'In Progress'}
-                              </Badge>
-                            )}
                           </td>
                         </tr>
                       ))

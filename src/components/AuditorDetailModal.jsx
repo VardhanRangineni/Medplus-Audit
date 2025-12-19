@@ -250,7 +250,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
     };
 
     const handleDownloadPDF = () => {
-        const doc = new jsPDF();
+        const doc = new jsPDF({ orientation: 'landscape' });
 
         // Title
         doc.setFontSize(16);
@@ -273,7 +273,8 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                 ['In-Progress Audits', metrics.statusBreakdown.InProgress],
             ],
             theme: 'striped',
-            headStyles: { fillColor: [41, 128, 185] }
+            headStyles: { fillColor: [41, 128, 185] },
+            margin: { left: 14 }
         });
 
         // Deviation Summary Table
@@ -286,12 +287,17 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                 ['Revised', metrics.deviations.revised.qty.toLocaleString('en-IN'), metrics.deviations.revised.value.toLocaleString('en-IN')],
             ],
             theme: 'grid',
-            headStyles: { fillColor: [243, 156, 18] }
+            headStyles: { fillColor: [243, 156, 18] },
+            margin: { left: 14 }
         });
 
+        // Add new page for Audit History (document is already landscape)
+        doc.addPage();
+        doc.text("Audit History", 14, 15);
+
         autoTable(doc, {
-            startY: doc.lastAutoTable.finalY + 10,
-            head: [['Store ID', 'Store', 'Date', 'Type', 'App. Qty', 'App. Val', 'Mat. Qty', 'Mat. Val', 'Rev. Qty', 'Rev. Val', 'Match %', 'Edit %']],
+            startY: 20,
+            head: [['Store ID', 'Store Name', 'Date', 'Job Type', 'Appeared Qty', 'Appeared Value (Rs.)', 'Matched Qty', 'Matched Value (Rs.)', 'Revised Qty', 'Revised Value (Rs.)', 'Match Rate %', 'Edit Rate %']],
             body: auditorRecords.map(r => {
                 const appearedQty = r.AppearedQty || 0;
                 const matchedQty = r.MatchedQty || 0;
@@ -310,14 +316,15 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                     editRate + '%'
                 ]
             }),
-            theme: 'plain',
-            styles: { fontSize: 6, cellPadding: 1 },
-            headStyles: { fillColor: [52, 73, 94], textColor: 255 },
+            theme: 'grid',
+            styles: { fontSize: 8, cellPadding: 2, halign: 'center' },
+            headStyles: { fillColor: [52, 73, 94], textColor: 255, halign: 'center' },
             columnStyles: {
-                0: { cellWidth: 15 },
-                1: { cellWidth: 20 },
-                2: { cellWidth: 15 },
-                // Compact other columns
+                0: { cellWidth: 20 }, // Store ID
+                1: { cellWidth: 35 }, // Store Name
+                2: { cellWidth: 20 }, // Date
+                3: { cellWidth: 25 }, // Job Type
+                // Remaining columns auto-distributed
             }
         });
 

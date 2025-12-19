@@ -12,11 +12,11 @@ const StorePIDAllotment = () => {
   };
 
   const availableAuditors = [
-    { id: 'AUD001', name: 'Amit Singh', activeAssignments: 3, completionRate: 95.2 },
-    { id: 'AUD002', name: 'Priya Reddy', activeAssignments: 2, completionRate: 96.8 },
-    { id: 'AUD003', name: 'Suresh Kumar', activeAssignments: 4, completionRate: 91.5 },
-    { id: 'AUD004', name: 'Deepak Sharma', activeAssignments: 3, completionRate: 94.8 },
-    { id: 'AUD005', name: 'Anitha Rao', activeAssignments: 2, completionRate: 93.5 }
+    { id: 'AUD001', name: 'Amit Singh', totalAssignedSKUs: 1245, completedCount: 843 },
+    { id: 'AUD002', name: 'Priya Reddy', totalAssignedSKUs: 956, completedCount: 723 },
+    { id: 'AUD003', name: 'Suresh Kumar', totalAssignedSKUs: 1534, completedCount: 1102 },
+    { id: 'AUD004', name: 'Deepak Sharma', totalAssignedSKUs: 1089, completedCount: 892 },
+    { id: 'AUD005', name: 'Anitha Rao', totalAssignedSKUs: 734, completedCount: 589 }
   ];
 
   // Initial PID data with descriptions and statuses
@@ -556,7 +556,7 @@ const StorePIDAllotment = () => {
               <option value="">Choose auditor...</option>
               {availableAuditors.map(auditor => (
                 <option key={auditor.id} value={auditor.id}>
-                  {auditor.name} - Active: {auditor.activeAssignments} | Completion Rate: {auditor.completionRate}%
+                  {auditor.name} - Assigned SKUs: {auditor.totalAssignedSKUs.toLocaleString()} | Completed: {auditor.completedCount.toLocaleString()}
                 </option>
               ))}
             </Form.Select>
@@ -602,7 +602,7 @@ const StorePIDAllotment = () => {
                     .filter(a => a.id !== reassignPID.auditorId)
                     .map(auditor => (
                       <option key={auditor.id} value={auditor.id}>
-                        {auditor.name} - Active: {auditor.activeAssignments} | Completion Rate: {auditor.completionRate}%
+                        {auditor.name} - Total Assigned SKUs: {auditor.totalAssignedSKUs.toLocaleString()} | Completed: {auditor.completedCount.toLocaleString()}
                       </option>
                     ))}
                 </Form.Select>
@@ -644,7 +644,7 @@ const StorePIDAllotment = () => {
               <option value="">Choose auditor...</option>
               {availableAuditors.map(auditor => (
                 <option key={auditor.id} value={auditor.id}>
-                  {auditor.name} - Active: {auditor.activeAssignments} | Completion Rate: {auditor.completionRate}%
+                  {auditor.name} - Total Assigned SKUs: {auditor.totalAssignedSKUs.toLocaleString()} | Completed: {auditor.completedCount.toLocaleString()}
                 </option>
               ))}
             </Form.Select>

@@ -19,8 +19,8 @@ This documentation follows the logical user journey through the application, sta
 
 ### Modal Components
 7. [Store Detail Modal](#store-detail-modal)
-8. [Audit Detail Modal](#audit-detail-modal)
-9. [Auditor Detail Modal](#auditor-detail-modal)
+8. [Auditor Detail Modal](#auditor-detail-modal)
+9. [Audit Detail Modal](#audit-detail-modal)
 10. [Supervisor Detail Modal](#supervisor-detail-modal)
 
 ### Key Features by Screen
@@ -708,7 +708,7 @@ Data may auto-refresh while modal is open. Progress percentages and completed co
 This modal appears when user clicks on any audit row from various locations in the dashboard:
 - From Supervisor Detail Modal: Click any row in the "Audit History" table
 - From Auditor Detail Modal: Click any row in the "Audit History" table
-- From Live Audit Schedule: Click any store/audit row showing audit progress
+- From other audit history contexts where audit-level details are needed
 
 This modal provides comprehensive breakdown of a single audit including store details, re-audit metrics, and individual auditor performance.
 
@@ -1058,7 +1058,7 @@ Modal opens with smooth animation overlay:
 
 ## Visual Documentation
 
-![Audit Detail Modal](screenshots/audit-modal.png)
+![Audit Detail Modal](screenshots/audit-detail-modal.png)
 
 ---
 

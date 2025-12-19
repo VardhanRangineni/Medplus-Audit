@@ -1,5 +1,34 @@
 # Live Audit Schedule Screen
 
+## Table of Contents
+- [When This Screen Appears](#when-this-screen-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Header Section](#header-section)
+  - [Global Filter Bar](#global-filter-bar)
+  - [Audit Status Summary Cards](#audit-status-summary-cards)
+  - [Live Audit Schedule Section](#live-audit-schedule-section)
+  - [Audit Table](#audit-table)
+  - [Sample Data Rows](#sample-data-rows)
+  - [Sidebar Navigation](#sidebar-navigation)
+- [Interaction Behavior (Step-by-Step)](#interaction-behavior-step-by-step)
+  - [Status Summary Cards](#status-summary-cards)
+  - [Export Report Button](#export-report-button)
+  - [Table Row Click](#table-row-click)
+  - [Progress Bar](#progress-bar)
+  - [Table Sorting](#table-sorting)
+  - [Real-Time Updates](#real-time-updates)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Status Card Purpose](#status-card-purpose)
+  - [Export Report Purpose](#export-report-purpose)
+  - [Row Click / Modal Purpose](#row-click--modal-purpose)
+  - [Progress Tracking Purpose](#progress-tracking-purpose)
+  - [Auditor Information Purpose](#auditor-information-purpose)
+  - [Supervisor Information Purpose](#supervisor-information-purpose)
+  - [Start Date Purpose](#start-date-purpose)
+  - [Real-Time Focus](#real-time-focus)
+- [Visual Documentation](#visual-documentation)
+
+
 ## When This Screen Appears
 
 This screen appears when:
@@ -390,6 +419,6 @@ The table displays currently active audits with the following columns:
 
 ## Visual Documentation
 
-![Live Audit Schedule Screen](screenshots/live-audit-schedule.png)
+![Live Audit Schedule Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/live-audit-schedule.png)
 
 *The Live Audit Schedule screen showing audits currently in progress with real-time completion tracking and auditor assignments.*

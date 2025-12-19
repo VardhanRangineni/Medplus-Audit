@@ -1,5 +1,28 @@
 # Auditor Performance Screen
 
+## Table of Contents
+- [When This Screen Appears](#when-this-screen-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Header and Filters](#header-and-filters)
+  - [Summary Metrics Cards](#summary-metrics-cards)
+  - [Deviation Summary Section](#deviation-summary-section)
+  - [Performance Rankings](#performance-rankings)
+  - [Auditor Productivity Summary Table](#auditor-productivity-summary-table)
+- [Interaction Behavior](#interaction-behavior)
+  - [Clicking auditor rows:](#clicking-auditor-rows)
+  - [Search field:](#search-field)
+  - [Column sorting:](#column-sorting)
+  - [View More buttons:](#view-more-buttons)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Performance Tracking:](#performance-tracking)
+  - [Productivity Metrics:](#productivity-metrics)
+  - [Match Rate:](#match-rate)
+  - [Edit Rate:](#edit-rate)
+  - [Deviation Summary:](#deviation-summary)
+  - [Rankings Purpose:](#rankings-purpose)
+- [Visual Documentation](#visual-documentation)
+
+
 ## When This Screen Appears
 
 This screen appears when:
@@ -164,6 +187,6 @@ Lists bottom 3 auditors:
 
 ## Visual Documentation
 
-![Auditor Performance Screen](screenshots/auditor-performance.png)
+![Auditor Performance Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/auditor-performance.png)
 
 *The Auditor Performance screen showing productivity metrics, accuracy ratings, and detailed performance data for all auditors.*

@@ -1,5 +1,36 @@
 # Store Detail Modal
 
+## Table of Contents
+- [When This Modal Appears](#when-this-modal-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Modal Header](#modal-header)
+  - [Store Summary Bar](#store-summary-bar)
+  - [Metrics Cards (Two Large Cards)](#metrics-cards-two-large-cards)
+  - [PIDs Section](#pids-section)
+  - [Mismatches Section](#mismatches-section)
+  - [Deviations Section](#deviations-section)
+  - [Assigned Auditors Section](#assigned-auditors-section)
+  - [Footer](#footer)
+- [Interaction Behavior (Step-by-Step)](#interaction-behavior-step-by-step)
+  - [Opening the Modal](#opening-the-modal)
+  - [Download Report Button](#download-report-button)
+  - [Close Buttons](#close-buttons)
+  - [Scrolling Within Modal](#scrolling-within-modal)
+  - [Auditor Table Interactions](#auditor-table-interactions)
+  - [Real-Time Updates](#real-time-updates)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Modal Display Purpose](#modal-display-purpose)
+  - [Store Summary Purpose](#store-summary-purpose)
+  - [Metrics Cards Purpose](#metrics-cards-purpose)
+  - [PIDs Section Purpose](#pids-section-purpose)
+  - [Mismatches Section Purpose](#mismatches-section-purpose)
+  - [Deviations Section Purpose](#deviations-section-purpose)
+  - [Assigned Auditors Purpose](#assigned-auditors-purpose)
+  - [Download Report Purpose](#download-report-purpose)
+  - [Close Function Purpose](#close-function-purpose)
+- [Visual Documentation](#visual-documentation)
+
+
 ## When This Modal Appears
 
 This modal appears when:
@@ -397,6 +428,6 @@ Table displaying auditor-level details:
 
 ## Visual Documentation
 
-![Store Detail Modal](screenshots/store-detail-modal.png)
+![Store Detail Modal](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/store-detail-modal.png)
 
 *The Store Detail Modal showing comprehensive audit progress including individual auditor performance, inventory metrics, and deviation tracking for a specific store.*

@@ -1,5 +1,164 @@
 # MedPlus Audit Dashboard - Complete UI & Functional Documentation
 
+## Table of Contents
+- [Document Purpose](#document-purpose)
+- [When This Screen Appears](#when-this-screen-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Header Section](#header-section)
+  - [Filter Bar](#filter-bar)
+  - [Summary Cards Section](#summary-cards-section)
+  - [Store Recency Analysis Chart](#store-recency-analysis-chart)
+  - [Inventory Metrics Section](#inventory-metrics-section)
+  - [Deviation Distribution Section](#deviation-distribution-section)
+  - [Deviation Summary Section](#deviation-summary-section)
+  - [Sidebar Navigation](#sidebar-navigation)
+- [Interaction Behavior](#interaction-behavior)
+  - [Filter Interactions](#filter-interactions)
+  - [Refresh Now Button](#refresh-now-button)
+  - [Summary Cards Interactions](#summary-cards-interactions)
+  - [Chart Interactions](#chart-interactions)
+  - [Navigation Interactions](#navigation-interactions)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Filter Purpose](#filter-purpose)
+  - [Card Click Purpose](#card-click-purpose)
+  - [Chart Purpose](#chart-purpose)
+- [Visual Documentation](#visual-documentation)
+- [When This Screen Appears](#when-this-screen-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Header Section](#header-section)
+  - [Search and Filter Section](#search-and-filter-section)
+  - [Data Table](#data-table)
+- [Interaction Behavior](#interaction-behavior)
+  - [Back Button](#back-button)
+  - [Export Report](#export-report)
+  - [Search Functionality](#search-functionality)
+  - [Filters](#filters)
+  - [Table Sorting](#table-sorting)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Search and Filter Purpose](#search-and-filter-purpose)
+  - [Export Purpose](#export-purpose)
+  - [Column Data Purpose](#column-data-purpose)
+- [Visual Documentation](#visual-documentation)
+- [When This Screen Appears](#when-this-screen-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Audit Status Summary Cards](#audit-status-summary-cards)
+  - [Live Audit Schedule Section](#live-audit-schedule-section)
+  - [Audit Table](#audit-table)
+- [Interaction Behavior](#interaction-behavior)
+  - [Status Summary Cards](#status-summary-cards)
+  - [Export Report](#export-report)
+  - [Table Row Click](#table-row-click)
+  - [Progress Bars](#progress-bars)
+  - [Table Sorting](#table-sorting)
+  - [Real-Time Updates](#real-time-updates)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Status Cards](#status-cards)
+  - [Export Report](#export-report)
+  - [Row Click/Modal](#row-clickmodal)
+  - [Progress Tracking](#progress-tracking)
+  - [Auditor/Supervisor Information](#auditorsupervisor-information)
+  - [Real-Time Focus](#real-time-focus)
+- [Visual Documentation](#visual-documentation)
+- [When This Modal Appears](#when-this-modal-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Modal Header](#modal-header)
+  - [Store Summary Bar](#store-summary-bar)
+  - [Metrics Cards](#metrics-cards)
+  - [PIDs Section](#pids-section)
+  - [Mismatches Section](#mismatches-section)
+  - [Deviations Section](#deviations-section)
+  - [Assigned Auditors Table](#assigned-auditors-table)
+- [Interaction Behavior](#interaction-behavior)
+  - [Download Report](#download-report)
+  - [Close Buttons](#close-buttons)
+  - [Scrolling](#scrolling)
+  - [Auditor Table](#auditor-table)
+  - [Real-Time Updates](#real-time-updates)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Modal Display](#modal-display)
+  - [Store Summary](#store-summary)
+  - [Metrics Cards](#metrics-cards)
+  - [PIDs Section](#pids-section)
+  - [Mismatches Section](#mismatches-section)
+  - [Deviations Section](#deviations-section)
+  - [Assigned Auditors](#assigned-auditors)
+- [Visual Documentation](#visual-documentation)
+- [When This Screen Appears](#when-this-screen-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Summary Metrics Cards](#summary-metrics-cards)
+  - [Deviation Summary Section](#deviation-summary-section)
+  - [Performance Rankings](#performance-rankings)
+  - [Auditor Productivity Summary Table](#auditor-productivity-summary-table)
+- [Interaction Behavior](#interaction-behavior)
+  - [Clicking Auditor Rows](#clicking-auditor-rows)
+  - [Search Field](#search-field)
+  - [Column Sorting](#column-sorting)
+  - [View More Buttons](#view-more-buttons)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Performance Tracking](#performance-tracking)
+  - [Productivity Metrics](#productivity-metrics)
+  - [Match Rate](#match-rate)
+  - [Edit Rate](#edit-rate)
+  - [Rankings](#rankings)
+- [Visual Documentation](#visual-documentation)
+- [When This Modal Appears](#when-this-modal-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Modal Header](#modal-header)
+  - [Performance Summary Cards](#performance-summary-cards)
+  - [Deviation Summary Section](#deviation-summary-section)
+  - [Audit History Table](#audit-history-table)
+- [Interaction Behavior](#interaction-behavior)
+  - [Date Range Filters](#date-range-filters)
+  - [Download Report](#download-report)
+  - [Table Sorting](#table-sorting)
+  - [Close Buttons](#close-buttons)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Individual Performance Review](#individual-performance-review)
+  - [Deviation Analysis](#deviation-analysis)
+  - [Audit History](#audit-history)
+  - [Date Filtering](#date-filtering)
+  - [Export](#export)
+- [Visual Documentation](#visual-documentation)
+- [When This Screen Appears](#when-this-screen-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Summary Metrics Cards](#summary-metrics-cards)
+  - [Supervisor Performance Summary Table](#supervisor-performance-summary-table)
+- [Interaction Behavior](#interaction-behavior)
+  - [Clicking Supervisor Rows](#clicking-supervisor-rows)
+  - [Search Field](#search-field)
+  - [Column Sorting](#column-sorting)
+  - [Export Report](#export-report)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Workload Monitoring](#workload-monitoring)
+  - [Performance Tracking](#performance-tracking)
+  - [Value Oversight](#value-oversight)
+  - [Quality Management](#quality-management)
+- [Visual Documentation](#visual-documentation)
+- [When This Screen Appears](#when-this-screen-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Store Header](#store-header)
+  - [PID Management Section](#pid-management-section)
+  - [PID Table](#pid-table)
+- [Interaction Behavior](#interaction-behavior)
+  - [Filter Buttons](#filter-buttons)
+  - [Checkboxes](#checkboxes)
+  - [Assign Button](#assign-button)
+  - [Reassign Button (Individual)](#reassign-button-individual)
+  - [Bulk Reassign Button](#bulk-reassign-button)
+  - [Search Field](#search-field)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [PID Management](#pid-management)
+  - [Assignment](#assignment)
+  - [Status Tracking](#status-tracking)
+  - [Reassignment](#reassignment)
+  - [Filter Functions](#filter-functions)
+  - [SKU Count](#sku-count)
+  - [Checkbox Disable Logic](#checkbox-disable-logic)
+  - [Bulk Operations](#bulk-operations)
+- [Visual Documentation](#visual-documentation)
+- [End of Documentation](#end-of-documentation)
+
+
 ## Document Purpose
 
 This document provides comprehensive, screen-level functional documentation of the MedPlus Audit Dashboard application. It is designed for managerial and non-technical audiences to understand what the system does and how users interact with it.
@@ -280,7 +439,7 @@ Clicking any sidebar navigation item transitions to that screen and highlights i
 
 ## Visual Documentation
 
-![Dashboard - Store Coverage Screen](screenshots/dashboard-main.png)
+![Dashboard - Store Coverage Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/dashboard-main.png)
 
 ---
 
@@ -385,7 +544,7 @@ Clicking column headers sorts data in ascending/descending order. Sortable colum
 
 ## Visual Documentation
 
-![Total Stores Details Screen](screenshots/total-stores-details.png)
+![Total Stores Details Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/total-stores-details.png)
 
 ---
 
@@ -488,7 +647,7 @@ Designed for "right now" operations enabling immediate response and active manag
 
 ## Visual Documentation
 
-![Live Audit Schedule Screen](screenshots/live-audit-schedule.png)
+![Live Audit Schedule Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/live-audit-schedule.png)
 
 ---
 
@@ -620,7 +779,7 @@ Data may auto-refresh while modal is open. Progress percentages and completed co
 
 ## Visual Documentation
 
-![Store Detail Modal](screenshots/store-detail-modal.png)
+![Store Detail Modal](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/store-detail-modal.png)
 
 ---
 
@@ -736,7 +895,7 @@ Expands to show more top/bottom performers, may open separate screen or expand l
 
 ## Visual Documentation
 
-![Auditor Performance Screen](screenshots/auditor-performance.png)
+![Auditor Performance Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/auditor-performance.png)
 
 ---
 
@@ -841,7 +1000,7 @@ X or Close button returns to Auditor Performance screen with modal animation.
 
 ## Visual Documentation
 
-![Auditor Detail Modal](screenshots/auditor-detail-modal.png)
+![Auditor Detail Modal](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/auditor-detail-modal.png)
 
 ---
 
@@ -921,7 +1080,7 @@ Downloads complete supervisor performance data including all visible columns, re
 
 ## Visual Documentation
 
-![Supervisor Approvals Screen](screenshots/supervisor-approvals.png)
+![Supervisor Approvals Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/supervisor-approvals.png)
 
 ---
 
@@ -1052,7 +1211,7 @@ Filters table as user types, searches PID number, description, and auditor name 
 
 ## Visual Documentation
 
-![Store PID Allotment Screen](screenshots/store-pid-allotment.png)
+![Store PID Allotment Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/store-pid-allotment.png)
 
 ---
 

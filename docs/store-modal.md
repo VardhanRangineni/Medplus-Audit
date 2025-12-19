@@ -1,5 +1,42 @@
 # Store Detail Modal Documentation
 
+## Table of Contents
+- [Overview](#overview)
+- [How to Access](#how-to-access)
+- [On-Screen Modal Components](#on-screen-modal-components)
+  - [Store Information Header](#store-information-header)
+  - [Mini Dashboard KPIs](#mini-dashboard-kpis)
+  - [Assigned Auditors Table](#assigned-auditors-table)
+  - [Deviations Breakdown](#deviations-breakdown)
+  - [Contra Summary](#contra-summary)
+- [User Interface Indicators](#user-interface-indicators)
+  - [Visual Cues](#visual-cues)
+  - [Progress Indicators](#progress-indicators)
+- [Modal Behavior](#modal-behavior)
+  - [Opening and Closing](#opening-and-closing)
+  - [Responsive Design](#responsive-design)
+- [Data Interpretation](#data-interpretation)
+  - [Understanding Store Progress](#understanding-store-progress)
+  - [Analyzing Auditor Performance](#analyzing-auditor-performance)
+  - [Deviation Patterns](#deviation-patterns)
+- [Use Cases](#use-cases)
+  - [For Supervisors](#for-supervisors)
+  - [For Audit Managers](#for-audit-managers)
+  - [For Store Managers](#for-store-managers)
+- [Technical Notes](#technical-notes)
+  - [Data Refresh](#data-refresh)
+  - [Performance Considerations](#performance-considerations)
+  - [Mock Data](#mock-data)
+- [Best Practices](#best-practices)
+  - [For Daily Operations](#for-daily-operations)
+  - [For Quality Assurance](#for-quality-assurance)
+  - [For Efficiency](#for-efficiency)
+- [Accessibility Features](#accessibility-features)
+- [Browser Support](#browser-support)
+- [Related Documentation](#related-documentation)
+- [Future Enhancements](#future-enhancements)
+
+
 ## Overview
 
 The Store Detail Modal provides a comprehensive view of a specific store's audit progress, including assigned auditors, deviations breakdown, contra items, and key performance indicators. This modal is accessible by clicking on any store row from the drill-down pages in the audit dashboard.

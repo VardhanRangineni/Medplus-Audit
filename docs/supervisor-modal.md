@@ -1,5 +1,33 @@
 # Supervisor Details Modal Documentation
 
+## Table of Contents
+- [Overview](#overview)
+- [How to Access](#how-to-access)
+- [On-Screen Summary Components](#on-screen-summary-components)
+  - [Header Section](#header-section)
+  - [Key Performance Metrics (Top Cards)](#key-performance-metrics-top-cards)
+  - [Deviation Summary Section](#deviation-summary-section)
+  - [Audit History Table](#audit-history-table)
+- [Download Functionality](#download-functionality)
+  - [Accessing Downloads](#accessing-downloads)
+  - [Excel Export](#excel-export)
+  - [PDF Export](#pdf-export)
+- [Use Cases](#use-cases)
+  - [When to View Supervisor Summary](#when-to-view-supervisor-summary)
+  - [When to Download](#when-to-download)
+- [Data Interpretation](#data-interpretation)
+  - [Understanding Deviation Metrics](#understanding-deviation-metrics)
+  - [Status Indicators](#status-indicators)
+- [Technical Notes](#technical-notes)
+  - [Date Filtering Behavior](#date-filtering-behavior)
+  - [Data Aggregation](#data-aggregation)
+  - [Performance Considerations](#performance-considerations)
+- [Best Practices](#best-practices)
+  - [For Audit Managers](#for-audit-managers)
+  - [For Supervisors](#for-supervisors)
+- [Related Documentation](#related-documentation)
+
+
 ## Overview
 
 The Supervisor Summary provides a comprehensive view of a supervisor's audit oversight activities, performance metrics, and workload. This summary is accessible by clicking on any supervisor card from the "Supervisor Approvals & Workload" tab in the audit dashboard.

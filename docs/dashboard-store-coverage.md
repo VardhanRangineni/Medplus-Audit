@@ -1,5 +1,30 @@
 # Dashboard - Store Coverage Screen
 
+## Table of Contents
+- [When This Screen Appears](#when-this-screen-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Header Section](#header-section)
+  - [Filter Bar](#filter-bar)
+  - [Summary Cards Section](#summary-cards-section)
+  - [Store Recency Analysis Chart](#store-recency-analysis-chart)
+  - [Inventory Metrics Section](#inventory-metrics-section)
+  - [Deviation Distribution Section](#deviation-distribution-section)
+  - [Deviation Summary Section](#deviation-summary-section)
+  - [Sidebar Navigation](#sidebar-navigation)
+- [Interaction Behavior (Step-by-Step)](#interaction-behavior-step-by-step)
+  - [Filter Interactions](#filter-interactions)
+  - [Refresh Now Button](#refresh-now-button)
+  - [Summary Cards Interactions](#summary-cards-interactions)
+  - [Chart Interactions](#chart-interactions)
+  - [Navigation Interactions](#navigation-interactions)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Filter Purpose](#filter-purpose)
+  - [Card Click Purpose](#card-click-purpose)
+  - [Chart Purpose](#chart-purpose)
+  - [Navigation Purpose](#navigation-purpose)
+- [Visual Documentation](#visual-documentation)
+
+
 ## When This Screen Appears
 
 This screen appears immediately when the application loads. It is the home screen and primary landing page. Users arrive at this screen when:
@@ -430,6 +455,6 @@ Three cards displaying inventory statistics:
 
 ## Visual Documentation
 
-![Dashboard - Store Coverage Screen](screenshots/dashboard-main.png)
+![Dashboard - Store Coverage Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/dashboard-main.png)
 
 *The main dashboard showing store coverage metrics, inventory statistics, and deviation analysis. This screen provides a comprehensive overview of the audit program status.*

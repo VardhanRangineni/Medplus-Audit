@@ -1,5 +1,34 @@
 # Total Stores - Details Screen
 
+## Table of Contents
+- [When This Screen Appears](#when-this-screen-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Header Section](#header-section)
+  - [Global Filter Bar](#global-filter-bar)
+  - [Search and Filter Section](#search-and-filter-section)
+  - [Data Table](#data-table)
+  - [Sample Data Rows](#sample-data-rows)
+  - [Table Features](#table-features)
+- [Interaction Behavior (Step-by-Step)](#interaction-behavior-step-by-step)
+  - [Back Button](#back-button)
+  - [Export Report Button](#export-report-button)
+  - [Search Field](#search-field)
+  - [State Dropdown Filter](#state-dropdown-filter)
+  - [Store Type Filter Field](#store-type-filter-field)
+  - [Reset Button](#reset-button)
+  - [Table Column Headers](#table-column-headers)
+  - [Table Rows](#table-rows)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Back Button Purpose](#back-button-purpose)
+  - [Export Report Purpose](#export-report-purpose)
+  - [Search Functionality Purpose](#search-functionality-purpose)
+  - [Filter Purpose](#filter-purpose)
+  - [Reset Function Purpose](#reset-function-purpose)
+  - [Sorting Purpose](#sorting-purpose)
+  - [Column Data Purpose](#column-data-purpose)
+- [Visual Documentation](#visual-documentation)
+
+
 ## When This Screen Appears
 
 This screen appears when:
@@ -409,6 +438,6 @@ The table shows stores including:
 
 ## Visual Documentation
 
-![Total Stores Details Screen](screenshots/total-stores-details.png)
+![Total Stores Details Screen](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/total-stores-details.png)
 
 *The detailed view showing all stores in a searchable, filterable table format. Each row represents a complete store record with key operational metrics.*

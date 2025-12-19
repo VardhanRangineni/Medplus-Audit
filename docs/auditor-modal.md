@@ -1,5 +1,37 @@
 # Auditor Details Modal Documentation
 
+## Table of Contents
+- [Overview](#overview)
+- [How to Access](#how-to-access)
+- [On-Screen Summary Components](#on-screen-summary-components)
+  - [Header Section](#header-section)
+  - [Key Performance Metrics (Top Cards)](#key-performance-metrics-top-cards)
+  - [Deviation Summary Section](#deviation-summary-section)
+  - [Audit History Table](#audit-history-table)
+- [Download Functionality](#download-functionality)
+  - [Accessing Downloads](#accessing-downloads)
+  - [Excel Export](#excel-export)
+  - [PDF Export](#pdf-export)
+- [Performance Indicators](#performance-indicators)
+  - [Key Metrics Explained](#key-metrics-explained)
+- [Use Cases](#use-cases)
+  - [When to View Auditor Summary](#when-to-view-auditor-summary)
+  - [When to Download](#when-to-download)
+- [Data Interpretation](#data-interpretation)
+  - [Understanding Deviation Patterns](#understanding-deviation-patterns)
+  - [Status Indicators](#status-indicators)
+- [Technical Notes](#technical-notes)
+  - [Date Filtering Behavior](#date-filtering-behavior)
+  - [Data Aggregation](#data-aggregation)
+  - [Sorting Options](#sorting-options)
+- [Best Practices](#best-practices)
+  - [For Audit Managers](#for-audit-managers)
+  - [For Supervisors](#for-supervisors)
+  - [For Auditors (Self-Review)](#for-auditors-self-review)
+- [Common Questions](#common-questions)
+- [Related Documentation](#related-documentation)
+
+
 ## Overview
 
 The Auditor Summary provides a detailed performance view of an individual auditor's productivity, accuracy, and quality metrics across all assigned audits. This summary is accessible by clicking on any auditor row from the "Auditor Performance & Productivity" tab in the audit dashboard.

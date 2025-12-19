@@ -1,5 +1,26 @@
 # Auditor Detail Modal
 
+## Table of Contents
+- [When This Modal Appears](#when-this-modal-appears)
+- [Complete UI Breakdown](#complete-ui-breakdown)
+  - [Modal Header](#modal-header)
+  - [Performance Summary Cards](#performance-summary-cards)
+  - [Deviation Summary Section](#deviation-summary-section)
+  - [Audit History Table](#audit-history-table)
+- [Interaction Behavior](#interaction-behavior)
+  - [Date Range Filters:](#date-range-filters)
+  - [Download Report:](#download-report)
+  - [Table Sorting:](#table-sorting)
+  - [Close Buttons:](#close-buttons)
+- [Purpose of Every Action](#purpose-of-every-action)
+  - [Individual Performance Review:](#individual-performance-review)
+  - [Deviation Analysis:](#deviation-analysis)
+  - [Audit History:](#audit-history)
+  - [Date Filtering:](#date-filtering)
+  - [Export Purpose:](#export-purpose)
+- [Visual Documentation](#visual-documentation)
+
+
 ## When This Modal Appears
 
 This modal appears when:
@@ -133,6 +154,6 @@ Shows this auditor's deviation statistics in three panels:
 
 ## Visual Documentation
 
-![Auditor Detail Modal](screenshots/auditor-detail-modal.png)
+![Auditor Detail Modal](https://github.com/VardhanRangineni/Medplus-Audit/raw/main/docs/screenshots/auditor-detail-modal.png)
 
 *The Auditor Detail Modal showing complete performance history, deviation statistics, and detailed audit history for an individual auditor.*

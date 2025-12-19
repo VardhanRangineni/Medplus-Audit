@@ -48,6 +48,8 @@ const StorePIDAllotment = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('all'); // 'all', 'notAssigned', 'reassign'
   const [alertMessage, setAlertMessage] = useState({ show: false, type: '', message: '' });
+  const [sortField, setSortField] = useState(''); // '', 'assignStatus', 'auditStatus'
+  const [sortOrder, setSortOrder] = useState('asc'); // 'asc', 'desc'
 
   // Filter PIDs based on search and active filter
   const filteredPIDs = useMemo(() => {
@@ -69,8 +71,21 @@ const StorePIDAllotment = () => {
       );
     }
 
+    // Apply sorting
+    if (sortField) {
+      filtered = [...filtered].sort((a, b) => {
+        let compareValue = 0;
+        if (sortField === 'assignStatus') {
+          compareValue = a.assignStatus.localeCompare(b.assignStatus);
+        } else if (sortField === 'auditStatus') {
+          compareValue = a.auditStatus.localeCompare(b.auditStatus);
+        }
+        return sortOrder === 'asc' ? compareValue : -compareValue;
+      });
+    }
+
     return filtered;
-  }, [searchTerm, pids, activeFilter]);
+  }, [searchTerm, pids, activeFilter, sortField, sortOrder]);
 
   // Statistics
   const stats = useMemo(() => {
@@ -232,6 +247,17 @@ const StorePIDAllotment = () => {
     }, 4000);
   };
 
+  const handleSort = (field) => {
+    if (sortField === field) {
+      // Toggle sort order if same field
+      setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Set new field and default to ascending
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
+
   const getAssignStatusBadge = (status) => {
     return status === 'Assigned' ? (
       <Badge bg="success">Assigned</Badge>
@@ -307,15 +333,26 @@ const StorePIDAllotment = () => {
         <Col>
           <Card className="shadow-sm">
             <Card.Header className="bg-white border-0 py-3">
-              <Row className="align-items-center mb-3">
-                <Col md={6}>
+              <Row className="mb-3">
+                <Col>
                   <h5 className="mb-0">
                     <i className="fas fa-list-check me-2 text-primary"></i>
                     PID Management
                   </h5>
                 </Col>
-                <Col md={6}>
-                  <div className="d-flex gap-2 justify-content-end">
+              </Row>
+              <Row className="align-items-center">
+                <Col md={3}>
+                  <Form.Control
+                    type="text"
+                    placeholder="Search by PID, description, or auditor..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    size="sm"
+                  />
+                </Col>
+                <Col md={5}>
+                  <div className="d-flex gap-2">
                     <Button
                       variant={activeFilter === 'all' ? 'primary' : 'outline-primary'}
                       size="sm"
@@ -342,18 +379,7 @@ const StorePIDAllotment = () => {
                     </Button>
                   </div>
                 </Col>
-              </Row>
-              <Row className="align-items-center">
-                <Col md={6}>
-                  <Form.Control
-                    type="text"
-                    placeholder="Search by PID, description, or auditor..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    size="sm"
-                  />
-                </Col>
-                <Col md={6}>
+                <Col md={4}>
                   <div className="d-flex gap-2 justify-content-end">
                     {(activeFilter === 'all' || activeFilter === 'notAssigned') && (
                       <Button
@@ -418,8 +444,26 @@ const StorePIDAllotment = () => {
                       <th>PID Number</th>
                       <th>SKU Count</th>
                       <th>Description</th>
-                      <th>Assign Status</th>
-                      <th>Audit Status</th>
+                      <th 
+                        onClick={() => handleSort('assignStatus')} 
+                        style={{ cursor: 'pointer', userSelect: 'none' }}
+                        className="sortable-header"
+                      >
+                        Assign Status 
+                        {sortField === 'assignStatus' && (
+                          <i className={`fas fa-sort-${sortOrder === 'asc' ? 'up' : 'down'} ms-1`}></i>
+                        )}
+                      </th>
+                      <th 
+                        onClick={() => handleSort('auditStatus')} 
+                        style={{ cursor: 'pointer', userSelect: 'none' }}
+                        className="sortable-header"
+                      >
+                        Audit Status 
+                        {sortField === 'auditStatus' && (
+                          <i className={`fas fa-sort-${sortOrder === 'asc' ? 'up' : 'down'} ms-1`}></i>
+                        )}
+                      </th>
                       <th>Auditor Name</th>
                       <th>Actions</th>
                     </tr>

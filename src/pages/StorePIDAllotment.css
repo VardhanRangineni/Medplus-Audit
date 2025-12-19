@@ -56,6 +56,11 @@
   padding: 0.875rem 0.75rem;
 }
 
+.store-pid-allotment .table thead th.sortable-header:hover {
+  background-color: #e9ecef;
+  color: #0d6efd;
+}
+
 .store-pid-allotment .table tbody td {
   padding: 0.875rem 0.75rem;
   vertical-align: middle;

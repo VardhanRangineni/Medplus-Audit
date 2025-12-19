@@ -467,7 +467,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL PIDS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianCurrency(metrics.totalPIDs)}</h2>
+                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianNumber(metrics.totalPIDs, true)}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -475,7 +475,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL SKUS</h6>
-                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianCurrency(metrics.totalSKUs)}</h2>
+                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianNumber(metrics.totalSKUs, true)}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>

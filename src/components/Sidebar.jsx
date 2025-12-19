@@ -11,31 +11,26 @@ const Sidebar = () => {
       path: '/',
       icon: 'fas fa-store',
       label: 'Store Coverage',
-      description: 'Coverage & Inventory'
     },
     {
       path: '/live-audit',
       icon: 'fas fa-clipboard-list',
       label: 'Live Audit',
-      description: 'Schedule & Progress'
     },
     {
       path: '/auditor-performance',
       icon: 'fas fa-user-check',
       label: 'Auditor Performance',
-      description: 'Productivity & Quality'
     },
     {
       path: '/supervisor-approvals',
       icon: 'fas fa-user-shield',
       label: 'Supervisor',
-      description: 'Approvals & Workload'
     },
     {
       path: '/store-pid-allotment',
       icon: 'fas fa-tasks',
       label: 'Store PID Allotment',
-      description: 'Assign PIDs to Auditors',
       supervisorOnly: true
     }
   ];

@@ -326,11 +326,14 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                 ['Days Supervised', metrics.daysSupervised],
                 ['Total PIDs', metrics.totalPIDs.toLocaleString('en-IN')],
                 ['Total SKUs', metrics.totalSKUs.toLocaleString('en-IN')],
-                ['Total Value', formatIndianCurrency(metrics.totalValue)]
+                ['Total Value', formatIndianCurrency(metrics.totalValue).replace('₹', 'Rs. ')]
             ],
             theme: 'grid',
             headStyles: { fillColor: [78, 84, 200] }, // Matches the primary card gradient roughly
-            margin: { left: 14 }
+            margin: { left: 14 },
+            columnStyles: {
+                1: { halign: 'right' }
+            }
         });
 
         // Deviation Summary Table
@@ -343,7 +346,9 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                 ['Revised', metrics.deviations.revised.qty.toLocaleString('en-IN'), metrics.deviations.revised.value.toLocaleString('en-IN')],
             ],
             theme: 'striped',
-            headStyles: { fillColor: [41, 128, 185] },
+            headStyles: { fillColor: [41, 128, 185], halign: 'center' },
+            bodyStyles: { halign: 'right' },
+            columnStyles: { 0: { halign: 'left' } },
             margin: { left: 14 }
         });
 
@@ -374,11 +379,14 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     (r.AppearedValue || 0).toLocaleString('en-IN')
                 ]),
                 theme: 'striped',
-                headStyles: { fillColor: [52, 73, 94] },
+                headStyles: { fillColor: [52, 73, 94], halign: 'center' },
+                bodyStyles: { halign: 'right' },
                 margin: { left: 14 },
                 columnStyles: {
-                    0: { cellWidth: 25 },
-                    1: { cellWidth: 40 },
+                    0: { cellWidth: 25, halign: 'left' },
+                    1: { cellWidth: 40, halign: 'left' },
+                    2: { halign: 'center' },
+                    3: { halign: 'left' }
                     // spread the rest
                 }
             });
@@ -448,13 +456,21 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
 
                 <Modal.Body className="bg-light p-4" style={{ maxHeight: '80vh', overflowY: 'auto' }}>
                     {/* Top Cards */}
-                    <Row className="g-3 mb-4 row-cols-2 row-cols-md-5">
+                    <Row className="g-3 mb-4 row-cols-2 row-cols-md-3">
                         <Col>
                             <Card className="h-100 text-white bg-primary border-0 shadow-sm" style={{ background: 'linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%)' }}>
                                 <Card.Body>
                                     <h6 className="text-white-50 text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL AUDITS</h6>
                                     <h2 className="display-6 fw-bold mb-0">{metrics.totalAudits}</h2>
                                     <i className="fas fa-clipboard-list position-absolute top-0 end-0 m-3 opacity-25 fa-2x"></i>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col>
+                            <Card className="h-100 border-0 shadow-sm">
+                                <Card.Body>
+                                    <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>AUDITORS SUPERVISED</h6>
+                                    <h2 className="fw-bold mb-0 text-dark">{metrics.totalAuditorsSupervised}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>

@@ -269,15 +269,18 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             head: [['Category', 'Details']],
             body: [
                 ['Total Audits', metrics.totalAudits],
-                ['Total PIDs', metrics.totalPIDs.toLocaleString()],
-                ['Total SKUs', metrics.totalSKUs.toLocaleString()],
-                ['Total Value', formatIndianCurrency(metrics.totalValue)],
+                ['Total PIDs', metrics.totalPIDs.toLocaleString('en-IN')],
+                ['Total SKUs', metrics.totalSKUs.toLocaleString('en-IN')],
+                ['Total Value', formatIndianCurrency(metrics.totalValue).replace('₹', 'Rs. ')],
                 ['Completed Audits', metrics.statusBreakdown.Completed],
                 ['In-Progress Audits', metrics.statusBreakdown.InProgress],
             ],
             theme: 'striped',
             headStyles: { fillColor: [41, 128, 185] },
-            margin: { left: 14 }
+            margin: { left: 14 },
+            columnStyles: {
+                1: { halign: 'right' }
+            }
         });
 
         // Deviation Summary Table
@@ -290,7 +293,9 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                 ['Revised', metrics.deviations.revised.qty.toLocaleString('en-IN'), metrics.deviations.revised.value.toLocaleString('en-IN')],
             ],
             theme: 'grid',
-            headStyles: { fillColor: [243, 156, 18] },
+            headStyles: { fillColor: [243, 156, 18], halign: 'center' },
+            bodyStyles: { halign: 'right' },
+            columnStyles: { 0: { halign: 'left' } },
             margin: { left: 14 }
         });
 
@@ -320,13 +325,13 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                 ]
             }),
             theme: 'grid',
-            styles: { fontSize: 8, cellPadding: 2, halign: 'center' },
+            styles: { fontSize: 8, cellPadding: 2, halign: 'right' }, // Default right align for numbers
             headStyles: { fillColor: [52, 73, 94], textColor: 255, halign: 'center' },
             columnStyles: {
-                0: { cellWidth: 20 }, // Store ID
-                1: { cellWidth: 35 }, // Store Name
-                2: { cellWidth: 20 }, // Date
-                3: { cellWidth: 25 }, // Job Type
+                0: { cellWidth: 20, halign: 'left' }, // Store ID
+                1: { cellWidth: 35, halign: 'left' }, // Store Name
+                2: { cellWidth: 20, halign: 'center' }, // Date
+                3: { cellWidth: 25, halign: 'left' }, // Job Type
                 // Remaining columns auto-distributed
             }
         });

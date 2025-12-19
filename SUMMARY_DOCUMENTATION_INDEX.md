@@ -2,7 +2,12 @@
 
 ## Overview
 
-This directory contains comprehensive documentation for the three main summary views available in the MedPlus Audit Dashboard. These summaries provide detailed insights into supervisor oversight, auditor performance, and individual audit breakdowns.
+This directory contains comprehensive documentation for the MedPlus Audit Dashboard, including summary views and detailed modal documentation. These resources provide detailed insights into supervisor oversight, auditor performance, individual audit breakdowns, and store-level details.
+
+## 📁 Documentation Structure
+
+- **Root Directory**: Main documentation files (this location)
+- **[docs/ Directory](./docs/)**: Organized modal documentation with PDFs and screenshots
 
 ## Available Summary Documentation
 
@@ -64,6 +69,44 @@ Complete documentation for Audit-Specific Summary views and downloads.
 
 ---
 
+### 🏪 [Store Detail Modal](./docs/store-modal.md)
+
+Complete documentation for Store Detail Modal with screenshot.
+
+**Key Topics Covered:**
+- How to access store details
+- Store information and progress tracking
+- Assigned auditors table
+- Deviations breakdown and contra summary
+- Visual indicators and modal behavior
+
+**Best For:**
+- Daily monitoring of store audit progress
+- Reviewing auditor assignments and performance
+- Analyzing store-specific deviations
+- Tracking contra items requiring approval
+
+**Screenshot Available:** [Store Detail Modal Screenshot](./docs/screenshots/store-detail-modal.png)
+
+---
+
+## 📚 Complete Modal Documentation
+
+For comprehensive modal documentation with PDF versions:
+
+### [docs/ Directory - Complete Modal Documentation](./docs/)
+
+The `docs/` directory contains:
+- **Individual modal documentation** (Markdown + PDF):
+  - [Supervisor Details Modal](./docs/supervisor-modal.md)
+  - [Auditor Details Modal](./docs/auditor-modal.md)
+  - [Audit Details Modal](./docs/audit-modal.md)
+  - [Store Detail Modal](./docs/store-modal.md)
+- **[Combined documentation](./docs/COMBINED_MODAL_DOCUMENTATION.md)** with complete table of contents (Markdown + PDF)
+- **Screenshots** of modal interfaces
+
+---
+
 ## Quick Navigation
 
 ### By User Role
@@ -82,6 +125,11 @@ Complete documentation for Audit-Specific Summary views and downloads.
 - View your [Auditor Summary](./AUDITOR_SUMMARY.md) for self-assessment
 - Track your progress and quality metrics
 - Compare your performance against benchmarks
+
+**Store Managers:**
+- Check [Store Detail Modal](./docs/store-modal.md) for audit progress
+- Review deviations and contra items
+- Monitor assigned auditor performance
 
 ### By Task
 

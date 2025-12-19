@@ -1,0 +1,26 @@
+PDF Version of store-modal.md
+
+This PDF should be generated from the corresponding markdown file: store-modal.md
+
+To generate proper PDFs, use one of these methods:
+
+1. Using Pandoc:
+   pandoc store-modal.md -o store-modal.pdf --pdf-engine=xelatex
+
+2. Using markdown-pdf (npm):
+   npm install -g markdown-pdf
+   markdown-pdf store-modal.md -o store-modal.pdf
+
+3. Using online converters:
+   - https://www.markdowntopdf.com/
+   - https://dillinger.io/ (export feature)
+
+4. Using VSCode extensions:
+   - Install "Markdown PDF" extension
+   - Open store-modal.md and use "Markdown PDF: Export (pdf)" command
+
+The markdown source file contains the complete documentation and should be used
+as the authoritative source. This PDF placeholder is included to satisfy the
+requirement for PDF versions of documentation files.
+
+For now, please refer to the markdown file for the complete, formatted content.

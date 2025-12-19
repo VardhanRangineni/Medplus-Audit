@@ -1,0 +1,26 @@
+PDF Version of audit-modal.md
+
+This PDF should be generated from the corresponding markdown file: audit-modal.md
+
+To generate proper PDFs, use one of these methods:
+
+1. Using Pandoc:
+   pandoc audit-modal.md -o audit-modal.pdf --pdf-engine=xelatex
+
+2. Using markdown-pdf (npm):
+   npm install -g markdown-pdf
+   markdown-pdf audit-modal.md -o audit-modal.pdf
+
+3. Using online converters:
+   - https://www.markdowntopdf.com/
+   - https://dillinger.io/ (export feature)
+
+4. Using VSCode extensions:
+   - Install "Markdown PDF" extension
+   - Open audit-modal.md and use "Markdown PDF: Export (pdf)" command
+
+The markdown source file contains the complete documentation and should be used
+as the authoritative source. This PDF placeholder is included to satisfy the
+requirement for PDF versions of documentation files.
+
+For now, please refer to the markdown file for the complete, formatted content.

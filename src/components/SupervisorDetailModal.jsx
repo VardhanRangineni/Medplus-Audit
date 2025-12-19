@@ -304,14 +304,14 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
     };
 
     const handleDownloadPDF = () => {
-        const doc = new jsPDF();
+        const doc = new jsPDF({ orientation: 'landscape' });
 
         // Title
         doc.setFontSize(16);
-        doc.text(`Supervisor Report: ${supervisorName}`, 14, 20);
+        doc.text(`Supervisor Performance Report`, 14, 20);
 
         doc.setFontSize(10);
-        doc.text(`ID: ${supervisorId}`, 14, 28);
+        doc.text(`Supervisor: ${supervisorName} (${supervisorId})`, 14, 28);
         doc.text(`Date Range: ${formatDate(startDate)} - ${formatDate(endDate)}`, 14, 34);
 
         // Metrics Summary Table
@@ -326,7 +326,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                 ['Total SKUs', metrics.totalSKUs.toLocaleString('en-IN')]
             ],
             theme: 'grid',
-            headStyles: { fillColor: [78, 84, 200] } // Matches the primary card gradient roughly
+            headStyles: { fillColor: [78, 84, 200] }, // Matches the primary card gradient roughly
+            margin: { left: 14 }
         });
 
         // Deviation Summary Table
@@ -339,14 +340,24 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                 ['Revised', metrics.deviations.revised.qty.toLocaleString('en-IN'), metrics.deviations.revised.value.toLocaleString('en-IN')],
             ],
             theme: 'striped',
-            headStyles: { fillColor: [41, 128, 185] }
+            headStyles: { fillColor: [41, 128, 185] },
+            margin: { left: 14 }
         });
 
         // Audit History Table
         if (sortedRecords.length > 0) {
+            // New Page for History if needed, or just continue if space permits based on previous content?
+            // User requested "all pages landscape", which is now set.
+            // Let's add a page break if it's getting tight, or let autoTable handle it.
+            // But let's verify if we need a dedicated page for History like we did for Auditor.
+            // The Auditor one forced a new page. Let's force a new page here too for consistency with "put audit history in 2nd page" request from before, 
+            // although the current prompt says "all pages... landscape".
+            doc.addPage();
+            doc.text("Audit History", 14, 15);
+
             autoTable(doc, {
-                startY: doc.lastAutoTable.finalY + 15,
-                head: [['Store ID', 'Store', 'Date', 'Type', 'Auditors', 'Days', 'PIDs', 'SKUs', 'Qty', 'Value (Rs.)']],
+                startY: 20,
+                head: [['Store ID', 'Store Name', 'Date', 'Job Type', 'Auditors Count', 'Days Supervised', 'Allocated PIDs', 'Allocated SKUs', 'Appeared Qty', 'Appeared Value (Rs.)']],
                 body: sortedRecords.map(r => [
                     r.StoreID,
                     r.StoreName,
@@ -360,7 +371,13 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     (r.AppearedValue || 0).toLocaleString('en-IN')
                 ]),
                 theme: 'striped',
-                headStyles: { fillColor: [52, 73, 94] }
+                headStyles: { fillColor: [52, 73, 94] },
+                margin: { left: 14 },
+                columnStyles: {
+                    0: { cellWidth: 25 },
+                    1: { cellWidth: 40 },
+                    // spread the rest
+                }
             });
         }
 

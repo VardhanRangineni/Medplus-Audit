@@ -136,6 +136,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
         const totalAudits = auditorRecords.length;
         const totalSKUs = auditorRecords.reduce((sum, r) => sum + (r.AuditorAllottedSKUs || 0), 0);
         const totalPIDs = auditorRecords.reduce((sum, r) => sum + (r.AuditorAllottedPIDs || 0), 0);
+        const totalValue = auditorRecords.reduce((sum, r) => sum + (r.AuditorAuditedValue || 0), 0);
 
         const statusBreakdown = {
             Completed: auditorRecords.filter(r => r.Status === 'Completed').length,
@@ -168,7 +169,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             pending: { qty: 0, value: 0 }
         });
 
-        return { totalAudits, totalSKUs, totalPIDs, statusBreakdown, deviations };
+        return { totalAudits, totalSKUs, totalPIDs, totalValue, statusBreakdown, deviations };
     }, [auditorRecords]);
 
     const handleDownloadExcel = () => {
@@ -194,6 +195,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             ["Total Audits", metrics.totalAudits],
             ["Total PIDs", metrics.totalPIDs],
             ["Total SKUs", metrics.totalSKUs],
+            ["Total Value (Rs.)", metrics.totalValue],
             [],
             ["Status Breakdown", "Count"],
             ["Completed", metrics.statusBreakdown.Completed],
@@ -269,6 +271,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                 ['Total Audits', metrics.totalAudits],
                 ['Total PIDs', metrics.totalPIDs.toLocaleString()],
                 ['Total SKUs', metrics.totalSKUs.toLocaleString()],
+                ['Total Value', formatIndianCurrency(metrics.totalValue)],
                 ['Completed Audits', metrics.statusBreakdown.Completed],
                 ['In-Progress Audits', metrics.statusBreakdown.InProgress],
             ],
@@ -410,8 +413,8 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
                 <Modal.Body className="bg-light p-4" style={{ maxHeight: '80vh', overflowY: 'auto' }}>
                     {/* Top Cards */}
-                    <Row className="g-3 mb-4">
-                        <Col md={3}>
+                    <Row className="g-3 mb-4 row-cols-2 row-cols-md-4">
+                        <Col>
                             <Card className="h-100 text-white bg-primary border-0 shadow-sm" style={{ background: 'linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%)' }}>
                                 <Card.Body>
                                     <h6 className="text-white-50 text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL AUDITS</h6>
@@ -420,7 +423,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={3}>
+                        <Col>
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL PIDS</h6>
@@ -428,11 +431,19 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={3}>
+                        <Col>
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL SKUS</h6>
                                     <h2 className="fw-bold mb-0 text-dark">{formatIndianNumber(metrics.totalSKUs, true)}</h2>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col>
+                            <Card className="h-100 border-0 shadow-sm">
+                                <Card.Body>
+                                    <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL VALUE</h6>
+                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianCurrency(metrics.totalValue)}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>

@@ -183,6 +183,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         const totalAudits = aggregatedRecords.length; // Count unique audits
         const totalSKUs = supervisorRecords.reduce((sum, r) => sum + (r.AuditorAllottedSKUs || 0), 0);
         const totalPIDs = supervisorRecords.reduce((sum, r) => sum + (r.AuditorAllottedPIDs || 0), 0);
+        const totalValue = supervisorRecords.reduce((sum, r) => sum + (r.AuditorAuditedValue || 0), 0);
 
         const statusBreakdown = {
             Completed: supervisorRecords.filter(r => r.Status === 'Completed').length,
@@ -233,7 +234,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
         const daysSupervised = supervisedDates.size;
         const totalAuditorsSupervised = auditors.size;
 
-        return { totalAudits, totalSKUs, totalPIDs, daysSupervised, totalAuditorsSupervised, statusBreakdown, deviations };
+        return { totalAudits, totalSKUs, totalPIDs, totalValue, daysSupervised, totalAuditorsSupervised, statusBreakdown, deviations };
     }, [supervisorRecords, aggregatedRecords]);
 
     // Format Date
@@ -267,6 +268,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             ["Days Supervised", metrics.daysSupervised],
             ["Total PIDs", metrics.totalPIDs],
             ["Total SKUs", metrics.totalSKUs],
+            ["Total Value (Rs.)", metrics.totalValue],
             [],
             ["Deviation Summary", "Qty", "Value"],
             ["Appeared", metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
@@ -323,7 +325,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                 ['Total Auditors Supervised', metrics.totalAuditorsSupervised],
                 ['Days Supervised', metrics.daysSupervised],
                 ['Total PIDs', metrics.totalPIDs.toLocaleString('en-IN')],
-                ['Total SKUs', metrics.totalSKUs.toLocaleString('en-IN')]
+                ['Total SKUs', metrics.totalSKUs.toLocaleString('en-IN')],
+                ['Total Value', formatIndianCurrency(metrics.totalValue)]
             ],
             theme: 'grid',
             headStyles: { fillColor: [78, 84, 200] }, // Matches the primary card gradient roughly
@@ -445,8 +448,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
 
                 <Modal.Body className="bg-light p-4" style={{ maxHeight: '80vh', overflowY: 'auto' }}>
                     {/* Top Cards */}
-                    <Row className="g-3 mb-4">
-                        <Col md={3}>
+                    <Row className="g-3 mb-4 row-cols-2 row-cols-md-5">
+                        <Col>
                             <Card className="h-100 text-white bg-primary border-0 shadow-sm" style={{ background: 'linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%)' }}>
                                 <Card.Body>
                                     <h6 className="text-white-50 text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL AUDITS</h6>
@@ -455,7 +458,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={3}>
+                        <Col>
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>DAYS SUPERVISED</h6>
@@ -463,7 +466,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={3}>
+                        <Col>
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL PIDS</h6>
@@ -471,11 +474,19 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={3}>
+                        <Col>
                             <Card className="h-100 border-0 shadow-sm">
                                 <Card.Body>
                                     <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL SKUS</h6>
                                     <h2 className="fw-bold mb-0 text-dark">{formatIndianNumber(metrics.totalSKUs, true)}</h2>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        <Col>
+                            <Card className="h-100 border-0 shadow-sm">
+                                <Card.Body>
+                                    <h6 className="text-muted text-uppercase mb-2" style={{ fontSize: '0.8rem' }}>TOTAL VALUE</h6>
+                                    <h2 className="fw-bold mb-0 text-dark">{formatIndianCurrency(metrics.totalValue)}</h2>
                                 </Card.Body>
                             </Card>
                         </Col>

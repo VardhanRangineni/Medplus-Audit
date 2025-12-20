@@ -235,7 +235,7 @@ const AuditorPerformance = ({ filters = {} }) => {
     if (type === 'top') {
       const items = [...auditorData].sort((a, b) => b.matchRate - a.matchRate).map(a => ({ name: a.auditorName, value: a.matchRate }));
       setPerformersModalData({
-        title: 'Top Performers (Match Rate)',
+        title: 'Top Performers (High Deviation Match Rate)',
         items: items,
         variant: 'success',
         metricLabel: 'Match Rate',
@@ -244,7 +244,7 @@ const AuditorPerformance = ({ filters = {} }) => {
     } else {
       const items = [...auditorData].sort((a, b) => a.matchRate - b.matchRate).map(a => ({ name: a.auditorName, value: a.matchRate }));
       setPerformersModalData({
-        title: 'Needs Attention (Low Match Rate)',
+        title: 'Needs Attention (Low Deviation Match Rate)',
         items: items,
         variant: 'warning',
         metricLabel: 'Match Rate',
@@ -500,28 +500,6 @@ const AuditorPerformance = ({ filters = {} }) => {
         </Alert>
       )}
 
-      {/* Export Button */}
-      <div className="d-flex justify-content-end mb-3">
-        <Dropdown>
-          <Dropdown.Toggle
-            size="sm"
-            className="d-flex align-items-center gap-2 fw-bold shadow-sm"
-            style={{ backgroundColor: '#0d6efd', color: 'white', border: 'none' }}
-            id="auditor-export-dropdown"
-          >
-            <i className="fas fa-download"></i> Export Report
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={handleDownloadExcel}>
-              <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
-            </Dropdown.Item>
-            <Dropdown.Item onClick={handleDownloadPDF}>
-              <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-
       {/* Performance Summary Cards */}
       <Row className="g-3 mb-4">
         <Col md={3}>
@@ -550,6 +528,26 @@ const AuditorPerformance = ({ filters = {} }) => {
             icon="fas fa-clock"
             color="primary"
           />
+        </Col>
+        <Col md={3} className="d-flex justify-content-end align-items-start">
+          <Dropdown>
+            <Dropdown.Toggle
+              size="sm"
+              className="d-flex align-items-center gap-2 fw-bold shadow-sm"
+              style={{ backgroundColor: '#0d6efd', color: 'white', border: 'none' }}
+              id="auditor-export-dropdown"
+            >
+              <i className="fas fa-download"></i> Export Report
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={handleDownloadExcel}>
+                <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
+              </Dropdown.Item>
+              <Dropdown.Item onClick={handleDownloadPDF}>
+                <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </Col>
       </Row>
 
@@ -616,6 +614,8 @@ const AuditorPerformance = ({ filters = {} }) => {
       </Row>
 
       {/* Performance Insights */}
+      <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>DEVIATION MATCH RATE</h6>
+
       <Row className="mb-4">
         <Col md={6}>
           <Card className="border-0 shadow-sm">

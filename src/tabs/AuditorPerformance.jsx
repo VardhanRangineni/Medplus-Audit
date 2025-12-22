@@ -525,7 +525,7 @@ const AuditorPerformance = ({ filters = {} }) => {
           <KPICard
             title="Auditors"
             value={auditorData.length}
-            subtitle="Auditors with alteast one audit in FY"
+            subtitle="Auditors with atleast one audit in FY"
             icon="fas fa-users"
             color="info"
           />

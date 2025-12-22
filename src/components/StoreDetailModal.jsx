@@ -954,11 +954,23 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
             <Card className="h-100 border-0 shadow-sm">
               <Card.Body className="text-center">
                 <div className="text-muted small mb-1">Inventory Value at MRP</div>
-                <h3 className="mb-0 text-success">₹{(inventorySummary.totalValue / 1000 || 0).toFixed(0)}K</h3>
+                <h3 className="mb-0 text-success">
+                  {inventorySummary.totalValue >= 10000000 
+                    ? `₹${(inventorySummary.totalValue / 10000000).toFixed(2)}Cr`
+                    : inventorySummary.totalValue >= 100000
+                    ? `₹${(inventorySummary.totalValue / 100000).toFixed(2)}L`
+                    : `₹${formatIndianNumber(inventorySummary.totalValue || 0)}`}
+                </h3>
                 {auditStatus === 'completed' && (
                   <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
                     <small className="text-muted d-block">Deviation Value at MRP</small>
-                    <span className="text-danger fw-bold">₹{(totalDeviationValue / 1000 || 0).toFixed(0)}K</span>
+                    <span className="text-danger fw-bold">
+                      {totalDeviationValue >= 10000000 
+                        ? `₹${(totalDeviationValue / 10000000).toFixed(2)}Cr`
+                        : totalDeviationValue >= 100000
+                        ? `₹${(totalDeviationValue / 100000).toFixed(2)}L`
+                        : `₹${formatIndianNumber(totalDeviationValue || 0)}`}
+                    </span>
                   </div>
                 )}
                 {auditStatus !== 'completed' && (

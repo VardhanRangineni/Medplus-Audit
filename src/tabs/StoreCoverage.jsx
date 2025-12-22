@@ -14,6 +14,23 @@ const StoreCoverage = ({ filters = {} }) => {
   const [selectedDeviation, setSelectedDeviation] = useState(null);
   const [recencyView, setRecencyView] = useState('quarterly'); // quarterly, half-yearly, yearly
 
+  // Helper function to format numbers in Indian numbering system
+  const formatIndianNumber = (num) => {
+    if (num === null || num === undefined) return '0';
+    const numStr = num.toString();
+    const [intPart, decPart] = numStr.split('.');
+    
+    // Format integer part with Indian numbering
+    let lastThree = intPart.substring(intPart.length - 3);
+    const otherNumbers = intPart.substring(0, intPart.length - 3);
+    if (otherNumbers !== '') {
+      lastThree = ',' + lastThree;
+    }
+    const result = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + lastThree;
+    
+    return decPart ? result + '.' + decPart : result;
+  };
+
   // Check if any filters are active
   const hasActiveFilters = (filters.state && filters.state.length > 0) ||
     (filters.store && filters.store.length > 0) ||
@@ -304,7 +321,7 @@ const StoreCoverage = ({ filters = {} }) => {
 
       doc.setFontSize(10);
       doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 28);
-      doc.text(`Total Value: Rs. ${selectedDeviation.value.toLocaleString()}`, 14, 34);
+      doc.text(`Total Value: Rs. ${formatIndianNumber(selectedDeviation.value)}`, 14, 34);
       doc.text(`Total Items: ${selectedDeviation.count}`, 14, 40);
 
       autoTable(doc, {
@@ -312,7 +329,7 @@ const StoreCoverage = ({ filters = {} }) => {
         head: [['Product Form', 'Value (Rs.)', 'Item Count']],
         body: productFormData[selectedDeviation.type].map(item => [
           item.form,
-          `Rs. ${item.value.toLocaleString()}`,
+          `Rs. ${formatIndianNumber(item.value)}`,
           item.count.toString()
         ]),
         theme: 'striped',
@@ -334,7 +351,7 @@ const StoreCoverage = ({ filters = {} }) => {
       });
 
       const dataToExport = Object.entries(overallData)
-        .map(([form, data]) => [form, `Rs. ${data.value.toLocaleString()}`, data.count.toString()])
+        .map(([form, data]) => [form, `Rs. ${formatIndianNumber(data.value)}`, data.count.toString()])
         .sort((a, b) => {
           const aVal = parseInt(a[1].replace(/[Rs.,\s]/g, ''));
           const bVal = parseInt(b[1].replace(/[Rs.,\s]/g, ''));
@@ -451,9 +468,9 @@ const StoreCoverage = ({ filters = {} }) => {
       startY: finalY + 4,
       head: [['Metric', 'Value']],
       body: [
-        ['Total SKUs', inventoryData.totalSKUs.toLocaleString()],
-        ['Total Quantity', inventoryData.totalQuantity.toLocaleString()],
-        ['Total Inventory Value', `Rs. ${inventoryData.totalValue.toLocaleString()}`]
+        ['Total SKUs', formatIndianNumber(inventoryData.totalSKUs)],
+        ['Total Quantity', formatIndianNumber(inventoryData.totalQuantity)],
+        ['Total Inventory Value', `Rs. ${formatIndianNumber(inventoryData.totalValue)}`]
       ],
       theme: 'grid',
       headStyles: { fillColor: [13, 110, 253] }
@@ -468,7 +485,7 @@ const StoreCoverage = ({ filters = {} }) => {
       head: [['Deviation Type', 'Value (Rs.)', 'Item Count']],
       body: deviationData.map(item => [
         item.type,
-        `Rs. ${item.value.toLocaleString()}`,
+        `Rs. ${formatIndianNumber(item.value)}`,
         item.count.toString()
       ]),
       theme: 'striped',
@@ -514,7 +531,7 @@ const StoreCoverage = ({ filters = {} }) => {
           head: [['Product Form', 'Value (Rs.)', 'Item Count']],
           body: productFormData[deviationType].map(item => [
             item.form,
-            `Rs. ${item.value.toLocaleString()}`,
+            `Rs. ${formatIndianNumber(item.value)}`,
             item.count.toString()
           ]),
           theme: 'striped',
@@ -650,7 +667,7 @@ const StoreCoverage = ({ filters = {} }) => {
         <Col md={4}>
           <KPICard
             title="Total SKUs"
-            value={inventoryData.totalSKUs.toLocaleString()}
+            value={formatIndianNumber(inventoryData.totalSKUs)}
             subtitle="Across all audited stores"
             icon="fas fa-box"
             color="info"
@@ -705,7 +722,7 @@ const StoreCoverage = ({ filters = {} }) => {
                   <XAxis type="number" tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}K`} />
                   <YAxis type="category" dataKey="type" width={120} />
                   <Tooltip
-                    formatter={(value) => `₹${value.toLocaleString()}`}
+                    formatter={(value) => `₹${formatIndianNumber(value)}`}
                     contentStyle={{ fontSize: '12px' }}
                   />
                   <Bar
@@ -779,7 +796,7 @@ const StoreCoverage = ({ filters = {} }) => {
                       Product Form Breakdown
                     </h6>
                     <div className="text-muted small">
-                      Total: ₹{selectedDeviation.value.toLocaleString()} | {selectedDeviation.count} items
+                      Total: ₹{formatIndianNumber(selectedDeviation.value)} | {selectedDeviation.count} items
                     </div>
                   </div>
                   {productFormData[selectedDeviation.type].length > 0 ? (
@@ -799,7 +816,7 @@ const StoreCoverage = ({ filters = {} }) => {
                             <span className="fw-semibold">{form.form}</span>
                           </div>
                           <div className="text-end">
-                            <div className="fw-bold text-success">₹{form.value.toLocaleString()}</div>
+                            <div className="fw-bold text-success">₹{formatIndianNumber(form.value)}</div>
                             <div className="text-muted small">{form.count} items</div>
                           </div>
                         </div>
@@ -858,7 +875,7 @@ const StoreCoverage = ({ filters = {} }) => {
                                 <span className="fw-semibold">{form.form}</span>
                               </div>
                               <div className="text-end">
-                                <div className="fw-bold text-success">₹{form.value.toLocaleString()}</div>
+                                <div className="fw-bold text-success">₹{formatIndianNumber(form.value)}</div>
                                 <div className="text-muted small">{form.count} items</div>
                               </div>
                             </div>

@@ -89,29 +89,29 @@ const DetailsPage = ({ filters = {} }) => {
       ];
     } else if (type === 'stores-recency-oct-dec') {
       return [
-        { storeId: 'MP001', storeName: 'Chennai Central', state: 'TN', lastAudit: '2024-11-15', daysSinceLastAudit: 26, skus: 4200, quantity: 385000, auditors: 'Amit Singh, Rahul Verma', deviationCount: 12, supervisor: 'Rajesh Kumar' },
-        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'KA', lastAudit: '2024-11-20', daysSinceLastAudit: 21, skus: 3900, quantity: 425000, auditors: 'Priya Reddy, Suresh Kumar, Anita Desai', deviationCount: 8, supervisor: 'Lakshmi Iyer' },
-        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'MH', lastAudit: '2024-10-15', daysSinceLastAudit: 57, skus: 4800, quantity: 512000, auditors: 'Deepak Sharma', deviationCount: 15, supervisor: 'Pradeep Singh' },
-        { storeId: 'MP005', storeName: 'Pune West', state: 'MH', lastAudit: '2024-11-05', daysSinceLastAudit: 36, skus: 3100, quantity: 285000, auditors: 'Anitha Rao, Vikram Singh, Neha Kapoor, Ravi Teja', deviationCount: 10, supervisor: 'Anjali Deshmukh' },
-        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'DL', lastAudit: '2024-11-28', daysSinceLastAudit: 13, skus: 4500, quantity: 545000, auditors: 'Ravi Teja, Pooja Sharma', deviationCount: 6, supervisor: 'Amit Verma' }
+        { storeId: 'MP001', storeName: 'Chennai Central', state: 'TN', city: 'Chennai', lastAudit: '2024-11-15', daysSinceLastAudit: 26, skus: 4200, quantity: 385000, auditors: 'Amit Singh, Rahul Verma', deviationCount: 12, supervisor: 'Rajesh Kumar' },
+        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'KA', city: 'Bangalore', lastAudit: '2024-11-20', daysSinceLastAudit: 21, skus: 3900, quantity: 425000, auditors: 'Priya Reddy, Suresh Kumar, Anita Desai', deviationCount: 8, supervisor: 'Lakshmi Iyer' },
+        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'MH', city: 'Mumbai', lastAudit: '2024-10-15', daysSinceLastAudit: 57, skus: 4800, quantity: 512000, auditors: 'Deepak Sharma', deviationCount: 15, supervisor: 'Pradeep Singh' },
+        { storeId: 'MP005', storeName: 'Pune West', state: 'MH', city: 'Pune', lastAudit: '2024-11-05', daysSinceLastAudit: 36, skus: 3100, quantity: 285000, auditors: 'Anitha Rao, Vikram Singh, Neha Kapoor, Ravi Teja', deviationCount: 10, supervisor: 'Anjali Deshmukh' },
+        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'DL', city: 'New Delhi', lastAudit: '2024-11-28', daysSinceLastAudit: 13, skus: 4500, quantity: 545000, auditors: 'Ravi Teja, Pooja Sharma', deviationCount: 6, supervisor: 'Amit Verma' }
       ];
     } else if (type === 'stores-recency-jul-sep') {
       return [
-        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'TS', lastAudit: '2024-09-15', daysSinceLastAudit: 87, skus: 5200, quantity: 498000, auditors: 'Suresh Kumar, Lakshmi Iyer, Arun Mehta', deviationCount: 18, supervisor: 'Mohammed Ali' },
-        { storeId: 'MP007', storeName: 'Ahmedabad Main', state: 'GJ', lastAudit: '2024-08-20', daysSinceLastAudit: 113, skus: 3600, quantity: 365000, auditors: 'Vijay Patil', deviationCount: 22, supervisor: 'Kiran Patel' },
-        { storeId: 'MP008', storeName: 'Kolkata East', state: 'WB', lastAudit: '2024-09-10', daysSinceLastAudit: 92, skus: 3800, quantity: 398000, auditors: 'Pooja Deshmukh, Sanjay Gupta', deviationCount: 14, supervisor: 'Sourav Das' },
-        { storeId: 'MP009', storeName: 'Nagpur Central', state: 'MH', lastAudit: '2024-07-25', daysSinceLastAudit: 139, skus: 3200, quantity: 315000, auditors: 'Arun Mehta, Divya Shah, Ramesh Kumar', deviationCount: 20, supervisor: 'Pooja Deshmukh' }
+        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'TS', city: 'Hyderabad', lastAudit: '2024-09-15', daysSinceLastAudit: 87, skus: 5200, quantity: 498000, auditors: 'Suresh Kumar, Lakshmi Iyer, Arun Mehta', deviationCount: 18, supervisor: 'Mohammed Ali' },
+        { storeId: 'MP007', storeName: 'Ahmedabad Main', state: 'GJ', city: 'Ahmedabad', lastAudit: '2024-08-20', daysSinceLastAudit: 113, skus: 3600, quantity: 365000, auditors: 'Vijay Patil', deviationCount: 22, supervisor: 'Kiran Patel' },
+        { storeId: 'MP008', storeName: 'Kolkata East', state: 'WB', city: 'Kolkata', lastAudit: '2024-09-10', daysSinceLastAudit: 92, skus: 3800, quantity: 398000, auditors: 'Pooja Deshmukh, Sanjay Gupta', deviationCount: 14, supervisor: 'Sourav Das' },
+        { storeId: 'MP009', storeName: 'Nagpur Central', state: 'MH', city: 'Nagpur', lastAudit: '2024-07-25', daysSinceLastAudit: 139, skus: 3200, quantity: 315000, auditors: 'Arun Mehta, Divya Shah, Ramesh Kumar', deviationCount: 20, supervisor: 'Pooja Deshmukh' }
       ];
     } else if (type === 'stores-recency-apr-jun') {
       return [
-        { storeId: 'MP010', storeName: 'Bhopal Main', state: 'MP', lastAudit: '2024-06-18', daysSinceLastAudit: 176, skus: 2900, quantity: 278000, auditors: 'Divya Shah, Meena Iyer', deviationCount: 28, supervisor: 'Anil Shukla' },
-        { storeId: 'MP012', storeName: 'Surat Hub', state: 'GJ', lastAudit: '2024-05-22', daysSinceLastAudit: 203, skus: 2800, quantity: 265000, auditors: 'Ramesh Gupta', deviationCount: 32, supervisor: 'Dipak Shah' },
-        { storeId: 'MP018', storeName: 'Coimbatore Main', state: 'TN', lastAudit: '2024-04-10', daysSinceLastAudit: 245, skus: 4200, quantity: 425000, auditors: 'Sneha Reddy, Karthik Kumar, Priya Reddy', deviationCount: 35, supervisor: 'Ramesh Babu' }
+        { storeId: 'MP010', storeName: 'Bhopal Main', state: 'MP', city: 'Bhopal', lastAudit: '2024-06-18', daysSinceLastAudit: 176, skus: 2900, quantity: 278000, auditors: 'Divya Shah, Meena Iyer', deviationCount: 28, supervisor: 'Anil Shukla' },
+        { storeId: 'MP012', storeName: 'Surat Hub', state: 'GJ', city: 'Surat', lastAudit: '2024-05-22', daysSinceLastAudit: 203, skus: 2800, quantity: 265000, auditors: 'Ramesh Gupta', deviationCount: 32, supervisor: 'Dipak Shah' },
+        { storeId: 'MP018', storeName: 'Coimbatore Main', state: 'TN', city: 'Coimbatore', lastAudit: '2024-04-10', daysSinceLastAudit: 245, skus: 4200, quantity: 425000, auditors: 'Sneha Reddy, Karthik Kumar, Priya Reddy', deviationCount: 35, supervisor: 'Ramesh Babu' }
       ];
     } else if (type === 'stores-recency-jan-mar') {
       return [
-        { storeId: 'MP033', storeName: 'Chandigarh Hub', state: 'PB', lastAudit: '2024-03-05', daysSinceLastAudit: 281, skus: 4100, quantity: 435000, auditors: 'Karthik Kumar, Amit Singh', deviationCount: 42, supervisor: 'Meera Kapoor' },
-        { storeId: 'MP041', storeName: 'Indore Main', state: 'MP', lastAudit: '2024-01-20', daysSinceLastAudit: 326, skus: 3500, quantity: 342000, auditors: 'Meena Iyer, Vijay Patil, Deepak Sharma', deviationCount: 48, supervisor: 'Rahul Joshi' }
+        { storeId: 'MP033', storeName: 'Chandigarh Hub', state: 'PB', city: 'Chandigarh', lastAudit: '2024-03-05', daysSinceLastAudit: 281, skus: 4100, quantity: 435000, auditors: 'Karthik Kumar, Amit Singh', deviationCount: 42, supervisor: 'Meera Kapoor' },
+        { storeId: 'MP041', storeName: 'Indore Main', state: 'MP', city: 'Indore', lastAudit: '2024-01-20', daysSinceLastAudit: 326, skus: 3500, quantity: 342000, auditors: 'Meena Iyer, Vijay Patil, Deepak Sharma', deviationCount: 48, supervisor: 'Rahul Joshi' }
       ];
     } else if (type === 'audit-created') {
       return [
@@ -577,6 +577,7 @@ const DetailsPage = ({ filters = {} }) => {
         'storeId',
         'storeName',
         'state',
+        'city',
         'lastAudit',
         'daysSinceLastAudit',
         'supervisor',

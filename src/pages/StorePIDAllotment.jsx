@@ -613,17 +613,19 @@ const StorePIDAllotment = () => {
                 <Table striped hover responsive className="mb-0">
                   <thead style={{ position: 'sticky', top: 0, background: 'white', zIndex: 1 }}>
                     <tr>
-                      <th style={{ width: '50px' }}>
-                        <Form.Check
-                          type="checkbox"
-                          onChange={handleSelectAll}
-                          checked={selectedPIDs.length > 0 && (
-                            activeFilter === 'notAssigned' ? selectedPIDs.length === filteredPIDs.length :
-                            activeFilter === 'reassign' ? selectedPIDs.length === filteredPIDs.length :
-                            selectedPIDs.length === filteredPIDs.filter(p => p.assignStatus === 'Not Assigned' || (p.assignStatus === 'Assigned' && p.auditStatus === 'Pending')).length
-                          )}
-                        />
-                      </th>
+                      {activeFilter !== 'all' && (
+                        <th style={{ width: '50px' }}>
+                          <Form.Check
+                            type="checkbox"
+                            onChange={handleSelectAll}
+                            checked={selectedPIDs.length > 0 && (
+                              activeFilter === 'notAssigned' ? selectedPIDs.length === filteredPIDs.length :
+                              activeFilter === 'reassign' ? selectedPIDs.length === filteredPIDs.length :
+                              selectedPIDs.length === filteredPIDs.filter(p => p.assignStatus === 'Not Assigned' || (p.assignStatus === 'Assigned' && p.auditStatus === 'Pending')).length
+                            )}
+                          />
+                        </th>
+                      )}
                       <th>PID Number</th>
                       <th>SKU Count</th>
                       <th>Description</th>
@@ -655,18 +657,20 @@ const StorePIDAllotment = () => {
                     {filteredPIDs.length > 0 ? (
                       filteredPIDs.map((pid) => (
                         <tr key={pid.pid}>
-                          <td>
-                            <Form.Check
-                              type="checkbox"
-                              checked={selectedPIDs.includes(pid.pid)}
-                              onChange={() => handleSelectPID(pid.pid)}
-                              disabled={
-                                activeFilter === 'notAssigned' ? false :
-                                activeFilter === 'reassign' ? false :
-                                !(pid.assignStatus === 'Not Assigned' || (pid.assignStatus === 'Assigned' && pid.auditStatus === 'Pending'))
-                              }
-                            />
-                          </td>
+                          {activeFilter !== 'all' && (
+                            <td>
+                              <Form.Check
+                                type="checkbox"
+                                checked={selectedPIDs.includes(pid.pid)}
+                                onChange={() => handleSelectPID(pid.pid)}
+                                disabled={
+                                  activeFilter === 'notAssigned' ? false :
+                                  activeFilter === 'reassign' ? false :
+                                  !(pid.assignStatus === 'Not Assigned' || (pid.assignStatus === 'Assigned' && pid.auditStatus === 'Pending'))
+                                }
+                              />
+                            </td>
+                          )}
                           <td>
                             <strong className="text-primary">{pid.pid}</strong>
                           </td>

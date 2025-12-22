@@ -81,8 +81,8 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
 
         // 1. Summary Sheet
         const summaryData = [
-            ["Store ID", audit.StoreID || audit.AUDIT_ID],
             ["Store Name", audit.StoreName],
+            ["Store ID", audit.StoreID || audit.AUDIT_ID],
             ["Total Value (₹)", audit.StoreAuditValue],
             ["Start Date", formatDate(audit.AuditStartDate)],
             ["End Date", formatDate(audit.AuditEndDate)],
@@ -123,9 +123,8 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
 
         // Title
         doc.setFontSize(16);
-        doc.text(`Audit Details: ${audit.StoreID || audit.AUDIT_ID}`, 14, 20);
-
-        doc.text(`Store: ${audit.StoreName}`, 14, 28);
+        doc.text(`Audit Details: ${audit.StoreName}`, 14, 20);
+        doc.text(`Store ID: ${audit.StoreID || audit.AUDIT_ID}`, 14, 28);
         doc.text(`Total Value: Rs. ${(audit.StoreAuditValue || 0).toLocaleString('en-IN')}`, 14, 34);
 
         doc.text(`Start Date: ${formatDate(audit.AuditStartDate)}`, 14, 40);
@@ -234,14 +233,14 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                     </div>
 
                                     <div>
-                                        <h4 className="fw-bold mb-0" style={{ color: '#1e293b' }}>{audit.StoreID || audit.AUDIT_ID}</h4>
+                                        <h4 className="fw-bold mb-0" style={{ color: '#1e293b' }}>{audit.StoreName}</h4>
                                         <span className="text-muted small">{audit.AuditJobType}</span>
                                     </div>
                                 </div>
                                 <div className="d-flex flex-wrap gap-4 mt-3">
                                     <div className="d-flex align-items-center text-muted">
-                                        <i className="fas fa-store me-2" style={{ color: '#667eea' }}></i>
-                                        <span className="fw-medium">{audit.StoreName}</span>
+                                        <i className="fas fa-hashtag me-2" style={{ color: '#667eea' }}></i>
+                                        <span className="fw-medium">{audit.StoreID || audit.AUDIT_ID}</span>
                                     </div>
                                     <div className="d-flex align-items-center text-muted">
                                         <i className="fas fa-calendar-alt me-2" style={{ color: '#10b981' }}></i>

@@ -15,40 +15,49 @@ const StoreCoverage = ({ filters = {} }) => {
   const [recencyView, setRecencyView] = useState('quarterly'); // quarterly, half-yearly, yearly
 
   // Check if any filters are active
-  const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
+  const hasActiveFilters = (filters.state && filters.state.length > 0) || 
+                          (filters.store && filters.store.length > 0) || 
+                          (filters.auditJobType && filters.auditJobType.length > 0) || 
+                          (filters.auditProcessType && filters.auditProcessType.length > 0) || 
+                          (filters.auditStatus && filters.auditStatus.length > 0);
 
   // Apply filters to store data
   const filteredStoreData = useMemo(() => {
     let data = [...storeCoverageData];
 
-    // Apply state filter
-    if (filters.state) {
-      data = data.filter(store => store.State === filters.state);
+    // Apply state filter - handle both array and single value
+    if (filters.state && filters.state.length > 0) {
+      const stateArray = Array.isArray(filters.state) ? filters.state : [filters.state];
+      data = data.filter(store => stateArray.includes(store.State));
     }
 
-    // Apply store type filter (HUB or REGULAR)
-    if (filters.store) {
-      data = data.filter(store => store.StoreType === filters.store);
+    // Apply store type filter (HUB or REGULAR) - handle both array and single value
+    if (filters.store && filters.store.length > 0) {
+      const storeArray = Array.isArray(filters.store) ? filters.store : [filters.store];
+      data = data.filter(store => storeArray.includes(store.StoreType));
     }
 
-    // Apply audit job type filter
-    if (filters.auditJobType) {
+    // Apply audit job type filter - handle both array and single value
+    if (filters.auditJobType && filters.auditJobType.length > 0) {
+      const jobTypeArray = Array.isArray(filters.auditJobType) ? filters.auditJobType : [filters.auditJobType];
       data = data.filter(store =>
-        store.IsCovered && store.LastAuditJobType === filters.auditJobType
+        store.IsCovered && jobTypeArray.includes(store.LastAuditJobType)
       );
     }
 
-    // Apply audit process type filter
-    if (filters.auditProcessType) {
+    // Apply audit process type filter - handle both array and single value
+    if (filters.auditProcessType && filters.auditProcessType.length > 0) {
+      const processTypeArray = Array.isArray(filters.auditProcessType) ? filters.auditProcessType : [filters.auditProcessType];
       data = data.filter(store =>
-        store.IsCovered && store.LastAuditProcessType === filters.auditProcessType
+        store.IsCovered && processTypeArray.includes(store.LastAuditProcessType)
       );
     }
 
-    // Apply audit status filter
-    if (filters.auditStatus) {
+    // Apply audit status filter - handle both array and single value
+    if (filters.auditStatus && filters.auditStatus.length > 0) {
+      const statusArray = Array.isArray(filters.auditStatus) ? filters.auditStatus : [filters.auditStatus];
       data = data.filter(store =>
-        store.IsCovered && store.LastAuditStatus === filters.auditStatus
+        store.IsCovered && statusArray.includes(store.LastAuditStatus)
       );
     }
 
@@ -602,11 +611,31 @@ const StoreCoverage = ({ filters = {} }) => {
         <Alert variant="info" className="mb-3">
           <i className="fas fa-filter me-2"></i>
           <strong>Active Filters:</strong>
-          {filters.state && <Badge bg="primary" className="ms-2">State: {filters.state}</Badge>}
-          {filters.store && <Badge bg="primary" className="ms-2">Store: {filters.store}</Badge>}
-          {filters.auditJobType && <Badge bg="primary" className="ms-2">Job Type: {filters.auditJobType}</Badge>}
-          {filters.auditProcessType && <Badge bg="primary" className="ms-2">Process: {filters.auditProcessType}</Badge>}
-          {filters.auditStatus && <Badge bg="primary" className="ms-2">Status: {filters.auditStatus}</Badge>}
+          {filters.state && filters.state.length > 0 && (
+            <Badge bg="primary" className="ms-2">
+              State: {Array.isArray(filters.state) ? filters.state.join(', ') : filters.state}
+            </Badge>
+          )}
+          {filters.store && filters.store.length > 0 && (
+            <Badge bg="primary" className="ms-2">
+              Store: {Array.isArray(filters.store) ? filters.store.join(', ') : filters.store}
+            </Badge>
+          )}
+          {filters.auditJobType && filters.auditJobType.length > 0 && (
+            <Badge bg="primary" className="ms-2">
+              Job Type: {Array.isArray(filters.auditJobType) ? filters.auditJobType.join(', ') : filters.auditJobType}
+            </Badge>
+          )}
+          {filters.auditProcessType && filters.auditProcessType.length > 0 && (
+            <Badge bg="primary" className="ms-2">
+              Process: {Array.isArray(filters.auditProcessType) ? filters.auditProcessType.join(', ') : filters.auditProcessType}
+            </Badge>
+          )}
+          {filters.auditStatus && filters.auditStatus.length > 0 && (
+            <Badge bg="primary" className="ms-2">
+              Status: {Array.isArray(filters.auditStatus) ? filters.auditStatus.join(', ') : filters.auditStatus}
+            </Badge>
+          )}
         </Alert>
       )}
       {/* KPI Summary Cards */}

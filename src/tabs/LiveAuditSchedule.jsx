@@ -152,38 +152,47 @@ const LiveAuditSchedule = ({ filters = {} }) => {
   }, [selectedStore, filters]);
 
   // Check if any filters are active
-  const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
+  const hasActiveFilters = (filters.state && filters.state.length > 0) || 
+                          (filters.store && filters.store.length > 0) || 
+                          (filters.auditJobType && filters.auditJobType.length > 0) || 
+                          (filters.auditProcessType && filters.auditProcessType.length > 0) || 
+                          (filters.auditStatus && filters.auditStatus.length > 0);
 
   // Apply filters to audit data
   const filteredAuditData = useMemo(() => {
     let data = [...liveAuditData];
 
-    // Apply state filter
-    if (filters.state) {
-      data = data.filter(audit => audit.State === filters.state);
+    // Apply state filter - handle both array and single value
+    if (filters.state && filters.state.length > 0) {
+      const stateArray = Array.isArray(filters.state) ? filters.state : [filters.state];
+      data = data.filter(audit => stateArray.includes(audit.State));
     }
 
-    // Apply store type filter (HUB or REGULAR)
-    if (filters.store) {
+    // Apply store type filter (HUB or REGULAR) - handle both array and single value
+    if (filters.store && filters.store.length > 0) {
+      const storeArray = Array.isArray(filters.store) ? filters.store : [filters.store];
       data = data.filter(audit => {
         const storeInfo = storeCoverageData.find(s => s.StoreID === audit.StoreID);
-        return storeInfo && storeInfo.StoreType === filters.store;
+        return storeInfo && storeArray.includes(storeInfo.StoreType);
       });
     }
 
-    // Apply audit job type filter
-    if (filters.auditJobType) {
-      data = data.filter(audit => audit.AuditJobType === filters.auditJobType);
+    // Apply audit job type filter - handle both array and single value
+    if (filters.auditJobType && filters.auditJobType.length > 0) {
+      const jobTypeArray = Array.isArray(filters.auditJobType) ? filters.auditJobType : [filters.auditJobType];
+      data = data.filter(audit => jobTypeArray.includes(audit.AuditJobType));
     }
 
-    // Apply audit process type filter
-    if (filters.auditProcessType) {
-      data = data.filter(audit => audit.AuditProcessType === filters.auditProcessType);
+    // Apply audit process type filter - handle both array and single value
+    if (filters.auditProcessType && filters.auditProcessType.length > 0) {
+      const processTypeArray = Array.isArray(filters.auditProcessType) ? filters.auditProcessType : [filters.auditProcessType];
+      data = data.filter(audit => processTypeArray.includes(audit.AuditProcessType));
     }
 
-    // Apply audit status filter
-    if (filters.auditStatus) {
-      data = data.filter(audit => audit.Status === filters.auditStatus);
+    // Apply audit status filter - handle both array and single value
+    if (filters.auditStatus && filters.auditStatus.length > 0) {
+      const statusArray = Array.isArray(filters.auditStatus) ? filters.auditStatus : [filters.auditStatus];
+      data = data.filter(audit => statusArray.includes(audit.Status));
     }
 
     return data;

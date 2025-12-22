@@ -15,11 +15,11 @@ function AppContent() {
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
   const [filters, setFilters] = useState({
     financialYear: '2025-26',
-    state: '',
-    store: '',
-    auditJobType: '',
-    auditProcessType: '',
-    auditStatus: ''
+    state: [],
+    store: [],
+    auditJobType: [],
+    auditProcessType: [],
+    auditStatus: []
   });
 
   const handleRefresh = () => {

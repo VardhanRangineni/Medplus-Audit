@@ -113,7 +113,11 @@ const SupervisorApprovals = ({ filters = {} }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const hasActiveFilters =
-    filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
+    (filters.state && filters.state.length > 0) || 
+    (filters.store && filters.store.length > 0) || 
+    (filters.auditJobType && filters.auditJobType.length > 0) || 
+    (filters.auditProcessType && filters.auditProcessType.length > 0) || 
+    (filters.auditStatus && filters.auditStatus.length > 0);
 
 
 

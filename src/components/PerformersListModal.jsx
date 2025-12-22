@@ -75,7 +75,8 @@ const PerformersListModal = ({ show, onHide, title, items, metricKey, metricLabe
                     </div>
                 </div>
 
-                <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                <div style={{ maxHeight: '55vh', overflowY: 'auto' }}>
+
                     <Table hover className="mb-0 align-middle">
                         <thead className="bg-light sticky-top" style={{ top: 0, zIndex: 10 }}>
                             <tr>

@@ -1262,7 +1262,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                         <th>Assigned SKUs (count)</th>
                         <th>Completed SKUs (count)</th>
                         <th>Progress (%)</th>
-                        <th>Match Rate (%)</th>
+                        <th>Audit Accuracy (%)</th>
                       </>
                     )}
                   </tr>

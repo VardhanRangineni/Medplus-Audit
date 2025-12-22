@@ -437,7 +437,7 @@ const AuditorPerformance = ({ filters = {} }) => {
           </th>
           <th onClick={() => requestSort('matchRate')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
-              Match Rate % {getSortIcon('matchRate')}
+              Audit Accuracy % {getSortIcon('matchRate')}
             </div>
           </th>
 
@@ -497,65 +497,100 @@ const AuditorPerformance = ({ filters = {} }) => {
     <Container fluid className="auditor-performance-tab py-4">
 
       {/* Performance Summary Cards */}
-      {/* Export Button */}
-      <div className="d-flex justify-content-end mb-3">
-        <Dropdown>
-          <Dropdown.Toggle
-            size="sm"
-            className="d-flex align-items-center gap-2 fw-bold shadow-sm"
-            style={{ backgroundColor: '#0d6efd', color: 'white', border: 'none' }}
-            id="auditor-export-dropdown"
-          >
-            <i className="fas fa-download"></i> Export Report
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={handleDownloadExcel}>
-              <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
-            </Dropdown.Item>
-            <Dropdown.Item onClick={handleDownloadPDF}>
-              <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
+      <Row className="g-3 mb-4 align-items-stretch">
+        {/* Total Auditors Card */}
+        <Col md={3}>
+          <Card className="border-0 shadow-sm h-100">
+            <Card.Body className="d-flex justify-content-between align-items-start flex-column">
+              <div className="d-flex w-100 justify-content-between align-items-start">
+                <div>
+                  <h6 className="text-info fw-bold text-uppercase mb-3">
+                    AUDITORS
+                  </h6>
+                  <h2 className="fw-bold text-info mb-1" style={{ fontSize: '2rem' }}>{auditorData.length}</h2>
+                </div>
+                <div className="bg-info bg-opacity-10 p-3 rounded-3 text-info">
+                  <i className="fas fa-users fa-lg"></i>
+                </div>
+              </div>
+              <div className="text-muted small mt-auto">
+                Auditors with at least one audit in FY
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
 
-      {/* Performance Summary Cards */}
-      <Row className="g-3 mb-4">
+        {/* Avg Time / PID Card */}
         <Col md={3}>
-          <KPICard
-            title="Auditors"
-            value={auditorData.length}
-            subtitle="Auditors with atleast one audit in FY"
-            icon="fas fa-users"
-            color="info"
-          />
+          <Card className="border-0 shadow-sm h-100">
+            <Card.Body className="d-flex justify-content-between align-items-start flex-column">
+              <div className="d-flex w-100 justify-content-between align-items-start">
+                <div>
+                  <h6 className="text-info fw-bold text-uppercase mb-3">
+                    AVG TIME / PID
+                  </h6>
+                  <h2 className="fw-bold text-info mb-1" style={{ fontSize: '2rem' }}>{performanceMetrics.avgTimePerPID}</h2>
+                </div>
+                <div className="bg-info bg-opacity-10 p-3 rounded-3 text-info">
+                  <i className="fas fa-hourglass-half fa-lg"></i>
+                </div>
+              </div>
+              <div className="text-muted small mt-auto">
+                Across all audits
+              </div>
+            </Card.Body>
+          </Card>
         </Col>
-        <Col md={3}>
-          <KPICard
-            title="Avg Time / PID"
-            value={performanceMetrics.avgTimePerPID}
-            subtitle="Across all audits"
-            icon="fas fa-hourglass-half"
-            color="info"
-          />
+
+        {/* Avg Time / SKU Card (Combined) */}
+        <Col md={4}>
+          <Card className="border-0 shadow-sm h-100">
+            <Card.Body className="d-flex justify-content-between align-items-start flex-column">
+              <div className="d-flex w-100 justify-content-between align-items-start">
+                <div>
+                  <h6 className="text-primary fw-bold text-uppercase mb-3">
+                    AVG TIME / SKU
+                  </h6>
+                  <div className="d-flex">
+                    <div className="me-4 pe-4 border-end">
+                      <div className="text-secondary text-uppercase mb-1 small fw-semibold">PER PRODUCT</div>
+                      <h2 className="fw-bold text-primary mb-0" style={{ fontSize: '2rem' }}>{performanceMetrics.avgTimePerSKU}</h2>
+                    </div>
+                    <div>
+                      <div className="text-secondary text-uppercase mb-1 small fw-semibold">PER BATCH</div>
+                      <h2 className="fw-bold text-primary mb-0" style={{ fontSize: '2rem' }}>{performanceMetrics.avgTimePerSKUProduct}</h2>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-primary bg-opacity-10 p-3 rounded-3 text-primary">
+                  <i className="fas fa-clock fa-lg"></i>
+                </div>
+              </div>
+              <div className="text-muted small mt-auto">Across all audits</div>
+            </Card.Body>
+          </Card>
         </Col>
-        <Col md={3}>
-          <KPICard
-            title="Avg Time / SKU (Batch)"
-            value={performanceMetrics.avgTimePerSKU}
-            subtitle="Across all audits"
-            icon="fas fa-clock"
-            color="primary"
-          />
-        </Col>
-        <Col md={3}>
-          <KPICard
-            title="Avg Time / SKU (Product)"
-            value={performanceMetrics.avgTimePerSKUProduct}
-            subtitle="Across all audits"
-            icon="fas fa-stopwatch"
-            color="primary"
-          />
+
+        {/* Export Button Column */}
+        <Col md={2} className="d-flex align-items-start justify-content-end">
+          <Dropdown>
+            <Dropdown.Toggle
+              size="sm"
+              className="d-flex align-items-center gap-2 fw-bold shadow-sm"
+              style={{ backgroundColor: '#0d6efd', color: 'white', border: 'none' }}
+              id="auditor-export-dropdown"
+            >
+              <i className="fas fa-download"></i> Export Report
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={handleDownloadExcel}>
+                <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
+              </Dropdown.Item>
+              <Dropdown.Item onClick={handleDownloadPDF}>
+                <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
         </Col>
       </Row>
 

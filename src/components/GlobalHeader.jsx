@@ -4,7 +4,7 @@ import Select from 'react-select';
 import './GlobalHeader.css';
 import medplusIcon from '../assets/Group 1420.png';
 
-const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideFilters = false }) => {
+const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideFilters = false, hideFinancialYear = false }) => {
   // Use filters from props instead of local state
 
   const handleFilterChange = (key, value) => {
@@ -147,6 +147,7 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideF
         {!hideFilters && (
           <>
             <Row className="g-3 mb-2">
+          {!hideFinancialYear && (
           <Col md={2}>
             <Form.Group>
               <Form.Label className="small fw-semibold mb-1">
@@ -166,6 +167,7 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideF
               </Form.Select>
             </Form.Group>
           </Col>
+          )}
 
           <Col md={2}>
             <Form.Group>

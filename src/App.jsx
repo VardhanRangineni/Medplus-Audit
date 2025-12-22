@@ -34,6 +34,8 @@ function AppContent() {
 
   // Hide filters for Store PID Allotment page
   const hideFilters = location.pathname === '/store-pid-allotment';
+  // Hide Financial Year filter for Live Audit page
+  const hideFinancialYear = location.pathname === '/live-audit';
 
   return (
     <div className="app-layout">
@@ -45,6 +47,7 @@ function AppContent() {
           filters={filters}
           onFilterChange={handleFilterChange}
           hideFilters={hideFilters}
+          hideFinancialYear={hideFinancialYear}
         />
         <main className="content-area">
           <Routes>

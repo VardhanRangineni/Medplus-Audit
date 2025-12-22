@@ -26,6 +26,7 @@ const DetailsPage = ({ filters = {} }) => {
   const [expandedRows, setExpandedRows] = useState({});
   const [mismatchFilters, setMismatchFilters] = useState({});
   const [mismatchSearchTerms, setMismatchSearchTerms] = useState({});
+  const [showTableFilters, setShowTableFilters] = useState(false);
 
   // Mock data based on type
   const getData = () => {
@@ -44,14 +45,14 @@ const DetailsPage = ({ filters = {} }) => {
       ];
     } else if (type === 'covered-stores') {
       return [
-        { storeId: 'MP001', city: 'Chennai', storeName: 'Chennai Central', state: 'Tamil Nadu', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2020-01-15', lastAuditedDate: '2024-11-15', cycle: 'Cycle 3', skus: 4200, quantity: 385000, mismatch: 12, deviation: 4, short: 5, shortValue: 8250, excess: 4, excessValue: 6800, contraExcess: 2, contraExcessValue: 5400, contraShort: 1, contraShortValue: 2150, status: 'Active', inventoryValueMRP: 125000 },
-        { storeId: 'MP002', city: 'Bangalore', storeName: 'Bangalore Hub', state: 'Karnataka', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-08-20', lastAuditedDate: '2024-11-20', cycle: 'Cycle 3', skus: 3900, quantity: 425000, mismatch: 8, deviation: 3, short: 4, shortValue: 6500, excess: 3, excessValue: 4950, contraExcess: 1, contraExcessValue: 2800, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 198000 },
-        { storeId: 'MP003', city: 'Hyderabad', storeName: 'Hyderabad Main', state: 'Telangana', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-03-12', lastAuditedDate: '2024-10-28', cycle: 'Cycle 2', skus: 5200, quantity: 498000, mismatch: 15, deviation: 5, short: 7, shortValue: 11550, excess: 5, excessValue: 8250, contraExcess: 2, contraExcessValue: 5600, contraShort: 1, contraShortValue: 2400, status: 'Active', inventoryValueMRP: 167000 },
-        { storeId: 'MP004', city: 'Mumbai', storeName: 'Mumbai Central', state: 'Maharashtra', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-05-10', lastAuditedDate: '2024-10-15', cycle: 'Cycle 2', skus: 4800, quantity: 512000, mismatch: 10, deviation: 4, short: 6, shortValue: 9900, excess: 3, excessValue: 4950, contraExcess: 1, contraExcessValue: 2800, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 215000 },
-        { storeId: 'MP005', city: 'Pune', storeName: 'Pune West', state: 'Maharashtra', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2021-02-05', lastAuditedDate: '2024-11-05', cycle: 'Cycle 3', skus: 3100, quantity: 285000, mismatch: 6, deviation: 2, short: 3, shortValue: 4950, excess: 2, excessValue: 3300, contraExcess: 1, contraExcessValue: 2800, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 89000 },
-        { storeId: 'MP006', city: 'New Delhi', storeName: 'Delhi NCR', state: 'Delhi', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2020-06-18', lastAuditedDate: '2024-11-28', cycle: 'Cycle 3', skus: 4500, quantity: 545000, mismatch: 14, deviation: 6, short: 8, shortValue: 13200, excess: 5, excessValue: 8250, contraExcess: 3, contraExcessValue: 8400, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 245000 },
-        { storeId: 'MP007', city: 'Ahmedabad', storeName: 'Ahmedabad Main', state: 'Gujarat', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-09-22', lastAuditedDate: '2024-08-20', cycle: 'Cycle 2', skus: 3600, quantity: 365000, mismatch: 18, deviation: 7, short: 9, shortValue: 14850, excess: 6, excessValue: 9900, contraExcess: 3, contraExcessValue: 8400, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 178000 },
-        { storeId: 'MP008', city: 'Kolkata', storeName: 'Kolkata East', state: 'West Bengal', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-11-30', lastAuditedDate: '2024-09-10', cycle: 'Cycle 2', skus: 3800, quantity: 398000, mismatch: 11, deviation: 4, short: 5, shortValue: 8250, excess: 4, excessValue: 6600, contraExcess: 1, contraExcessValue: 2800, contraShort: 1, contraShortValue: 2150, status: 'Active', inventoryValueMRP: 198000 }
+        { storeId: 'MP001', city: 'Chennai', storeName: 'Chennai Central', state: 'Tamil Nadu', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2020-01-15', lastAuditedDate: '2024-11-15', cycle: 'Cycle 3', skus: 4200, quantity: 385000, mismatch: 12, deviation: 4, deviationValueMRP: 8250 + 6800 + 5400 + 2150, short: 5, shortValue: 8250, excess: 4, excessValue: 6800, contraExcess: 2, contraExcessValue: 5400, contraShort: 1, contraShortValue: 2150, status: 'Active', inventoryValueMRP: 125000 },
+        { storeId: 'MP002', city: 'Bangalore', storeName: 'Bangalore Hub', state: 'Karnataka', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-08-20', lastAuditedDate: '2024-11-20', cycle: 'Cycle 3', skus: 3900, quantity: 425000, mismatch: 8, deviation: 3, deviationValueMRP: 6500 + 4950 + 2800 + 0, short: 4, shortValue: 6500, excess: 3, excessValue: 4950, contraExcess: 1, contraExcessValue: 2800, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 198000 },
+        { storeId: 'MP003', city: 'Hyderabad', storeName: 'Hyderabad Main', state: 'Telangana', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-03-12', lastAuditedDate: '2024-10-28', cycle: 'Cycle 2', skus: 5200, quantity: 498000, mismatch: 15, deviation: 5, deviationValueMRP: 11550 + 8250 + 5600 + 2400, short: 7, shortValue: 11550, excess: 5, excessValue: 8250, contraExcess: 2, contraExcessValue: 5600, contraShort: 1, contraShortValue: 2400, status: 'Active', inventoryValueMRP: 167000 },
+        { storeId: 'MP004', city: 'Mumbai', storeName: 'Mumbai Central', state: 'Maharashtra', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-05-10', lastAuditedDate: '2024-10-15', cycle: 'Cycle 2', skus: 4800, quantity: 512000, mismatch: 10, deviation: 4, deviationValueMRP: 9900 + 4950 + 2800 + 0, short: 6, shortValue: 9900, excess: 3, excessValue: 4950, contraExcess: 1, contraExcessValue: 2800, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 215000 },
+        { storeId: 'MP005', city: 'Pune', storeName: 'Pune West', state: 'Maharashtra', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2021-02-05', lastAuditedDate: '2024-11-05', cycle: 'Cycle 3', skus: 3100, quantity: 285000, mismatch: 6, deviation: 2, deviationValueMRP: 4950 + 3300 + 2800 + 0, short: 3, shortValue: 4950, excess: 2, excessValue: 3300, contraExcess: 1, contraExcessValue: 2800, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 89000 },
+        { storeId: 'MP006', city: 'New Delhi', storeName: 'Delhi NCR', state: 'Delhi', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2020-06-18', lastAuditedDate: '2024-11-28', cycle: 'Cycle 3', skus: 4500, quantity: 545000, mismatch: 14, deviation: 6, deviationValueMRP: 13200 + 8250 + 8400 + 0, short: 8, shortValue: 13200, excess: 5, excessValue: 8250, contraExcess: 3, contraExcessValue: 8400, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 245000 },
+        { storeId: 'MP007', city: 'Ahmedabad', storeName: 'Ahmedabad Main', state: 'Gujarat', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-09-22', lastAuditedDate: '2024-08-20', cycle: 'Cycle 2', skus: 3600, quantity: 365000, mismatch: 18, deviation: 7, deviationValueMRP: 14850 + 9900 + 8400 + 0, short: 9, shortValue: 14850, excess: 6, excessValue: 9900, contraExcess: 3, contraExcessValue: 8400, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 178000 },
+        { storeId: 'MP008', city: 'Kolkata', storeName: 'Kolkata East', state: 'West Bengal', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-11-30', lastAuditedDate: '2024-09-10', cycle: 'Cycle 2', skus: 3800, quantity: 398000, mismatch: 11, deviation: 4, deviationValueMRP: 8250 + 6600 + 2800 + 2150, short: 5, shortValue: 8250, excess: 4, excessValue: 6600, contraExcess: 1, contraExcessValue: 2800, contraShort: 1, contraShortValue: 2150, status: 'Active', inventoryValueMRP: 198000 }
       ];
     } else if (type === 'uncovered-stores') {
       // Calculate days since last audit or store creation for uncovered stores
@@ -320,7 +321,7 @@ const DetailsPage = ({ filters = {} }) => {
     const headers = [
       "STORE ID", "STORE NAME", "CITY", "STATE", "HUB TYPE", "STATUS", "BOX TYPE",
       "STORE CREATED DATE", "LAST AUDITED DATE", "NO.OF AUDITS", "SKUS (count)",
-      "QUANTITY (units)", "INVENTORY VALUE MRP (₹)", "MISMATCH", "DEVIATION"
+      "QUANTITY (units)", "INVENTORY VALUE MRP (₹)", "MISMATCH", "DEVIATION", "DEVIATION VALUE MRP (₹)"
     ];
 
     const dataToExport = filteredData.map(row => {
@@ -341,7 +342,8 @@ const DetailsPage = ({ filters = {} }) => {
           "QUANTITY (units)": row.quantity,
           "INVENTORY VALUE MRP (₹)": row.inventoryValueMRP,
           "MISMATCH": row.mismatch || 0,
-          "DEVIATION": row.deviation || 0
+          "DEVIATION": row.deviation || 0,
+          "DEVIATION VALUE MRP (₹)": row.deviationValueMRP || 0
         };
       } else {
         // Default generic export for other views
@@ -503,6 +505,7 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'inventoryValueMRP') return 'INVENTORY VALUE MRP (₹)';
     if (key === 'mismatch') return 'MISMATCH';
     if (key === 'deviation') return 'DEVIATION';
+    if (key === 'deviationValueMRP') return 'DEVIATION VALUE MRP (₹)';
 
     // First, handle the splitting while preserving common acronyms
     let label = key
@@ -555,7 +558,8 @@ const DetailsPage = ({ filters = {} }) => {
         'quantity',
         'inventoryValueMRP',
         'mismatch',
-        'deviation'
+        'deviation',
+        'deviationValueMRP'
       ];
       
       // Include only columns that exist in the data and match the ordered list
@@ -603,18 +607,6 @@ const DetailsPage = ({ filters = {} }) => {
 
   return (
     <Container fluid className="py-4">
-      {/* Filter Status Alert */}
-      {hasActiveFilters && (
-        <Alert variant="info" className="mb-3">
-          <i className="fas fa-filter me-2"></i>
-          <strong>Active Filters:</strong>
-          {filters.state && <Badge bg="primary" className="ms-2">State: {filters.state}</Badge>}
-          {filters.store && <Badge bg="primary" className="ms-2">Store: {filters.store}</Badge>}
-          {filters.auditJobType && <Badge bg="primary" className="ms-2">Job Type: {filters.auditJobType}</Badge>}
-          {filters.auditProcessType && <Badge bg="primary" className="ms-2">Process: {filters.auditProcessType}</Badge>}
-          {filters.auditStatus && <Badge bg="primary" className="ms-2">Status: {filters.auditStatus}</Badge>}
-        </Alert>
-      )}
       <Row className="mb-4">
         <Col>
           <div className="d-flex justify-content-between align-items-center">
@@ -633,28 +625,40 @@ const DetailsPage = ({ filters = {} }) => {
                 )}
               </p>
             </div>
-            <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                <i className="fas fa-download me-2"></i>Export Report
-              </Dropdown.Toggle>
+            <div className="d-flex gap-2">
+              <Button 
+                variant="outline-primary" 
+                size="sm"
+                onClick={() => setShowTableFilters(!showTableFilters)}
+              >
+                <i className="fas fa-filter me-1"></i>
+                Table Filters
+                <i className={`fas fa-chevron-${showTableFilters ? 'up' : 'down'} ms-1`}></i>
+              </Button>
+              <Dropdown>
+                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                  <i className="fas fa-download me-2"></i>Export Report
+                </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                <Dropdown.Item onClick={handleDownloadExcel}>
-                  <i className="fas fa-file-excel text-success me-2"></i>Export as Excel
-                </Dropdown.Item>
-                <Dropdown.Item onClick={handleDownloadPDF}>
-                  <i className="fas fa-file-pdf text-danger me-2"></i>Export as PDF
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={handleDownloadExcel}>
+                    <i className="fas fa-file-excel text-success me-2"></i>Export as Excel
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={handleDownloadPDF}>
+                    <i className="fas fa-file-pdf text-danger me-2"></i>Export as PDF
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
           </div>
         </Col>
       </Row>
 
-      <Card className="mb-4">
+      {showTableFilters && (
+      <Card className="mb-3">
         <Card.Body>
           <Row className="g-3">
-            <Col md={3}>
+            <Col md={4}>
               <InputGroup>
                 <InputGroup.Text>
                   <i className="fas fa-search"></i>
@@ -666,23 +670,8 @@ const DetailsPage = ({ filters = {} }) => {
                 />
               </InputGroup>
             </Col>
-            <Col md={2}>
-              <Form.Select value={filterState} onChange={(e) => setFilterState(e.target.value)}>
-                <option value="">All States</option>
-                {states.map(state => (
-                  <option key={state} value={state}>{state}</option>
-                ))}
-              </Form.Select>
-            </Col>
-            <Col md={2}>
-              <Form.Control
-                placeholder="Filter by store..."
-                value={filterStore}
-                onChange={(e) => setFilterStore(e.target.value)}
-              />
-            </Col>
             {auditJobTypes.length > 0 && (
-              <Col md={2}>
+              <Col md={3}>
                 <Form.Select value={filterAuditJobType} onChange={(e) => setFilterAuditJobType(e.target.value)}>
                   <option value="">All Audit Types</option>
                   {auditJobTypes.map(type => (
@@ -692,7 +681,7 @@ const DetailsPage = ({ filters = {} }) => {
               </Col>
             )}
             {processTypes.length > 0 && (
-              <Col md={2}>
+              <Col md={3}>
                 <Form.Select value={filterProcessType} onChange={(e) => setFilterProcessType(e.target.value)}>
                   <option value="">All Process Types</option>
                   {processTypes.map(type => (
@@ -701,14 +690,10 @@ const DetailsPage = ({ filters = {} }) => {
                 </Form.Select>
               </Col>
             )}
-            <Col md={1}>
-              <Button variant="outline-secondary" className="w-100" onClick={resetFilters}>
-                <i className="fas fa-redo me-2"></i>Reset
-              </Button>
-            </Col>
           </Row>
         </Card.Body>
       </Card>
+      )}
 
       <Card>
         <Card.Body className="p-0">
@@ -761,7 +746,7 @@ const DetailsPage = ({ filters = {} }) => {
                           >
                             {key === 'status' ? (
                               <Badge bg="success">{value}</Badge>
-                            ) : key === 'inventoryValue' || key === 'inventoryValueMRP' || key === 'value' ? (
+                            ) : key === 'inventoryValue' || key === 'inventoryValueMRP' || key === 'value' || key === 'deviationValueMRP' ? (
                               `₹${Number(value).toLocaleString()}`
                             ) : key === 'mismatch' && row.mismatchDetails ? (
                               <span>

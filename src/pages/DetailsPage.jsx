@@ -503,7 +503,7 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'lastAuditedDate') return 'LAST AUDITED DATE';
     if (key === 'daysSinceCreation') return 'NO. OF DAYS/MONTHS';
     if (key === 'daysSinceLastAudit') return 'DAYS SINCE LAST AUDIT';
-    if (key === 'status') return 'STATUS';
+    if (key === 'status') return 'STORE STATUS';
     if (key === 'supervisor') return 'SUPERVISOR';
     if (key === 'auditors') return 'AUDITORS';
     if (key === 'inventoryValueMRP') return 'INVENTORY VALUE MRP (₹)';

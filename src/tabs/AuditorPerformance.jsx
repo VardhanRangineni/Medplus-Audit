@@ -561,7 +561,7 @@ const AuditorPerformance = ({ filters = {} }) => {
 
 
       {/* Deviation Summary */}
-      <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>AUDIT ACCURACY SUMMARY</h6>
+      <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>AUDIT ACCURACY</h6>
       <Row className="g-3 mb-4">
         <Col md={3}>
           <Card className="border-0 shadow-sm border-start border-4 border-primary">

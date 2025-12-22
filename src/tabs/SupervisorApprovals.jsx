@@ -70,7 +70,7 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
           </th>
           <th onClick={() => requestSort('totalValue')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
-              Total Value {getSortIcon('totalValue')}
+              Total Value (MRP) {getSortIcon('totalValue')}
             </div>
           </th>
         </tr>
@@ -316,9 +316,9 @@ const SupervisorApprovals = ({ filters = {} }) => {
 
       <Row className="g-3 mb-4">
         <Col md={3}><KPICard title="Total Supervisors" value={supervisorData.length} /></Col>
-        <Col md={3}><KPICard title="Total Stores Supervised" value={overallMetrics.totalStores} /></Col>
         <Col md={3}><KPICard title="Total Audits Supervised" value={overallMetrics.totalAudits?.toLocaleString()} /></Col>
-        <Col md={3}><KPICard title="Total Value" value={formatIndianCurrency(overallMetrics.totalValue)} /></Col>
+        <Col md={3}><KPICard title="Total Stores Supervised" value={overallMetrics.totalStores} /></Col>
+        <Col md={3}><KPICard title="Total Value (MRP)" value={formatIndianCurrency(overallMetrics.totalValue)} /></Col>
       </Row>
 
       <Card className="border-0 shadow-sm">

@@ -151,10 +151,14 @@ const StoreCoverage = ({ filters = {} }) => {
   // Calculate inventory data from filtered stores
   const inventoryData = useMemo(() => {
     const coveredStores = filteredStoreData.filter(s => s.IsCovered);
+    const totalValueMRP = coveredStores.reduce((sum, s) => sum + s.InventoryValue, 0);
+    const totalValueCost = totalValueMRP * 0.75; // Assuming cost is 75% of MRP
     return {
       totalSKUs: coveredStores.reduce((sum, s) => sum + s.TotalSKUs, 0),
       totalQuantity: coveredStores.reduce((sum, s) => sum + s.TotalQuantity, 0),
-      totalValue: coveredStores.reduce((sum, s) => sum + s.InventoryValue, 0)
+      totalValue: totalValueMRP,
+      totalValueCost: totalValueCost,
+      totalValueMRP: totalValueMRP
     };
   }, [filteredStoreData]);
 
@@ -351,8 +355,8 @@ const StoreCoverage = ({ filters = {} }) => {
   const exportStoreCoverageToExcel = () => {
     const summaryData = [
       { 'Metric': 'Total Active Stores', 'Value': storeStats.totalActive },
-      { 'Metric': 'Covered Stores', 'Value': storeStats.covered, 'Percentage': `${storeStats.coveredPercentage}%` },
-      { 'Metric': 'Uncovered Stores', 'Value': storeStats.uncovered, 'Percentage': `${storeStats.uncoveredPercentage}%` }
+      { 'Metric': 'Audited Stores', 'Value': storeStats.covered, 'Percentage': `${storeStats.coveredPercentage}%` },
+      { 'Metric': 'Non Audited Stores', 'Value': storeStats.uncovered, 'Percentage': `${storeStats.uncoveredPercentage}%` }
     ];
 
     const inventorySummary = [
@@ -423,8 +427,8 @@ const StoreCoverage = ({ filters = {} }) => {
       head: [['Metric', 'Value', 'Percentage']],
       body: [
         ['Total Active Stores', storeStats.totalActive.toString(), '100%'],
-        ['Covered Stores', storeStats.covered.toString(), `${storeStats.coveredPercentage}%`],
-        ['Uncovered Stores', storeStats.uncovered.toString(), `${storeStats.uncoveredPercentage}%`]
+        ['Audited Stores', storeStats.covered.toString(), `${storeStats.coveredPercentage}%`],
+        ['Non Audited Stores', storeStats.uncovered.toString(), `${storeStats.uncoveredPercentage}%`]
       ],
       theme: 'grid',
       headStyles: { fillColor: [13, 110, 253] }
@@ -566,7 +570,7 @@ const StoreCoverage = ({ filters = {} }) => {
     const totalStores = recencyData.reduce((sum, item) => sum + item.stores, 0);
     const finalY = doc.lastAutoTable.finalY + 10;
     doc.setFontSize(10);
-    doc.text(`Total Covered Stores: ${totalStores}`, 14, finalY);
+    doc.text(`Total Audited Stores: ${totalStores}`, 14, finalY);
 
     // Save PDF
     const fileName = `Store_Recency_Analysis_${recencyView}_${new Date().toISOString().split('T')[0]}.pdf`;
@@ -578,6 +582,9 @@ const StoreCoverage = ({ filters = {} }) => {
     const typeMap = {
       'Total Stores': 'total-active-stores',
       'Total Active Stores': 'total-active-stores',
+      'Active Stores': 'total-active-stores',
+      'Audited Stores': 'covered-stores',
+      'Non Audited Stores': 'uncovered-stores',
       'Covered Stores': 'covered-stores',
       'Uncovered Stores': 'uncovered-stores',
       'Stores - Oct - Dec': 'stores-recency-oct-dec',
@@ -604,120 +611,40 @@ const StoreCoverage = ({ filters = {} }) => {
       )}
       {/* KPI Summary Cards */}
       <Row className="g-3 mb-4">
-        <Col md={4}>
+        <Col md={6}>
           <KPICard
-            title="Total Stores"
-            value={storeStats.totalStores}
-            subtitle={`Active: ${storeStats.activeStores} | Inactive: ${storeStats.inactiveStores}`}
-            icon="fas fa-store"
-            color="primary"
-            onClick={() => showStoreDetails('Total Stores')}
-          />
-        </Col>
-        <Col md={4}>
-          <KPICard
-            title="Covered Stores"
+            title="Audited Stores"
             value={storeStats.covered}
-            subtitle={`${storeStats.coveredPercentage}% of total`}
+            subtitle={(() => {
+              const activeAudited = filteredStoreData.filter(s => s.IsCovered && s.IsActive !== false).length;
+              const inactiveAudited = filteredStoreData.filter(s => s.IsCovered && s.IsActive === false).length;
+              const activePercent = storeStats.covered > 0 ? ((activeAudited / storeStats.covered) * 100).toFixed(1) : 0;
+              return (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+                  <div style={{ textAlign: 'left' }}>
+                    <div>Active: {activeAudited}</div>
+                    <div style={{ fontSize: '0.85em', marginTop: '2px' }}>{activePercent}%</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    Inactive: {inactiveAudited}
+                  </div>
+                </div>
+              );
+            })()}
             icon="fas fa-check-circle"
             color="success"
-            onClick={() => showStoreDetails('Covered Stores')}
+            onClick={() => showStoreDetails('Audited Stores')}
           />
         </Col>
-        <Col md={4}>
+        <Col md={6}>
           <KPICard
-            title="Uncovered Stores"
+            title="Non Audited Stores"
             value={storeStats.uncovered}
             subtitle={`${storeStats.uncoveredPercentage}% of total`}
             icon="fas fa-exclamation-triangle"
             color="danger"
-            onClick={() => showStoreDetails('Uncovered Stores')}
+            onClick={() => showStoreDetails('Non Audited Stores')}
           />
-        </Col>
-      </Row>
-
-      {/* Store Recency Analysis */}
-      <Row className="mb-4">
-        <Col>
-          <Card className="border-0 shadow-sm">
-            <Card.Header className="bg-white border-0 py-3">
-              <div className="d-flex justify-content-between align-items-center mb-2">
-                <div>
-                  <h5 className="mb-0 fw-bold">
-                    <i className="fas fa-calendar-alt me-2 text-primary"></i>
-                    Store Recency Analysis
-                  </h5>
-                  <small className="text-muted">Breakdown of covered stores by days since last audit</small>
-                </div>
-                <div className="d-flex gap-2">
-                  {/* <Dropdown>
-                    <Dropdown.Toggle
-                      size="sm"
-                      variant="success"
-                      id="recency-export-dropdown"
-                    >
-                      <i className="fas fa-download me-1"></i>
-                      Export
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={exportRecencyAnalysisToExcel}>
-                        <i className="fas fa-file-excel text-success me-2"></i>
-                        Export as Excel
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={exportRecencyAnalysisToPDF}>
-                        <i className="fas fa-file-pdf text-danger me-2"></i>
-                        Export as PDF
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown> */}
-                  <div className="btn-group" role="group">
-                    <Button
-                      size="sm"
-                      variant={recencyView === 'quarterly' ? 'primary' : 'outline-primary'}
-                      onClick={() => setRecencyView('quarterly')}
-                    >
-                      <i className="fas fa-calendar-week me-1"></i>
-                      Quarterly
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={recencyView === 'half-yearly' ? 'primary' : 'outline-primary'}
-                      onClick={() => setRecencyView('half-yearly')}
-                    >
-                      <i className="fas fa-calendar-alt me-1"></i>
-                      Half-Yearly
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={recencyView === 'yearly' ? 'primary' : 'outline-primary'}
-                      onClick={() => setRecencyView('yearly')}
-                    >
-                      <i className="fas fa-calendar me-1"></i>
-                      Yearly
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </Card.Header>
-            <Card.Body>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={recencyData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="range" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar
-                    dataKey="stores"
-                    fill="#0d6efd"
-                    radius={[5, 5, 0, 0]}
-                    onClick={(data) => showStoreDetails(`Stores - ${data.range}`)}
-                    cursor="pointer"
-                    barSize={80}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </Card.Body>
-          </Card>
         </Col>
       </Row>
 
@@ -725,9 +652,9 @@ const StoreCoverage = ({ filters = {} }) => {
       <Row className="g-3 mb-4">
         <Col md={4}>
           <KPICard
-            title="Total SKUs"
+            title="Total Quantity in Units"
             value={inventoryData.totalSKUs.toLocaleString()}
-            subtitle="Across all covered stores"
+            subtitle="Across all audited stores"
             icon="fas fa-box"
             color="info"
           />
@@ -736,16 +663,31 @@ const StoreCoverage = ({ filters = {} }) => {
           <KPICard
             title="Total Quantity"
             value={inventoryData.totalQuantity >= 10000000 ? `${(inventoryData.totalQuantity / 10000000).toFixed(1)}Cr` : `${(inventoryData.totalQuantity / 100000).toFixed(1)}L`}
-            subtitle="Units in inventory"
+            subtitle="Across all audited stores"
             icon="fas fa-cubes"
             color="warning"
           />
         </Col>
         <Col md={4}>
           <KPICard
-            title="Total Inventory Value"
-            value={`₹${(inventoryData.totalValue / 100000).toFixed(2)}L`}
-            subtitle="Aggregate value"
+            title="Total Value"
+            value={`₹${(inventoryData.totalValueMRP / 100000).toFixed(2)}L`}
+            subtitle={(() => {
+              const costInLakhs = (inventoryData.totalValueCost / 100000).toFixed(2);
+              const mrpInLakhs = (inventoryData.totalValueMRP / 100000).toFixed(2);
+              return (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: '8px' }}>
+                  <div style={{ textAlign: 'left' }}>
+                    <span style={{ fontSize: '0.9rem', color: '#666' }}>At Cost: </span>
+                    <span style={{ fontWeight: '600', color: '#000' }}>₹{costInLakhs}L</span>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <span style={{ fontSize: '0.9rem', color: '#666' }}>At MRP: </span>
+                    <span style={{ fontWeight: '600', color: '#000' }}>₹{mrpInLakhs}L</span>
+                  </div>
+                </div>
+              );
+            })()}
             icon="fas fa-rupee-sign"
             color="success"
           />
@@ -758,41 +700,32 @@ const StoreCoverage = ({ filters = {} }) => {
           <Card className="border-0 shadow-sm h-100">
             <Card.Header className="bg-white border-0 py-3">
               <h5 className="mb-0 fw-bold">
-                <i className="fas fa-chart-pie me-2 text-primary"></i>
-                Deviation Distribution
+                <i className="fas fa-chart-bar me-2 text-primary"></i>
+                Deviation Summary
               </h5>
-              <small className="text-muted">Click on segments for details</small>
+              <small className="text-muted">Click on bars for details</small>
             </Card.Header>
             <Card.Body>
               <ResponsiveContainer width="100%" height={450}>
-                <PieChart>
-                  <Pie
-                    data={deviationData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={false}
-                    outerRadius={90}
-                    fill="#8884d8"
-                    dataKey="value"
-                    onClick={(data) => setSelectedDeviation(data)}
-                    cursor="pointer"
-                  >
-                    {deviationData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
+                <BarChart data={deviationData} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}K`} />
+                  <YAxis type="category" dataKey="type" width={120} />
                   <Tooltip 
                     formatter={(value) => `₹${value.toLocaleString()}`}
                     contentStyle={{ fontSize: '12px' }}
                   />
-                  <Legend 
-                    verticalAlign="bottom" 
-                    height={60}
-                    formatter={(value, entry) => `${entry.payload.type}: ₹${(entry.payload.value / 1000).toFixed(0)}K`}
-                    wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
-                  />
-                </PieChart>
+                  <Bar 
+                    dataKey="value" 
+                    onClick={(data) => setSelectedDeviation(data)}
+                    cursor="pointer"
+                    radius={[0, 5, 5, 0]}
+                  >
+                    {deviationData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
               </ResponsiveContainer>
             </Card.Body>
           </Card>
@@ -808,7 +741,7 @@ const StoreCoverage = ({ filters = {} }) => {
                     {selectedDeviation ? 'Deviation Details' : 'Deviation Summary'}
                   </h5>
                   <small className="text-muted">
-                    {selectedDeviation ? `Details for ${selectedDeviation.type}` : 'Click on a pie segment for details'}
+                    {selectedDeviation ? `Details for ${selectedDeviation.type}` : 'Click on a bar for details'}
                   </small>
                 </div>
                 <div className="d-flex gap-2">
@@ -1005,6 +938,92 @@ const StoreCoverage = ({ filters = {} }) => {
                   );
                 })()
               )}
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Store Recency Analysis */}
+      <Row className="mb-4">
+        <Col>
+          <Card className="border-0 shadow-sm">
+            <Card.Header className="bg-white border-0 py-3">
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                  <h5 className="mb-0 fw-bold">
+                    <i className="fas fa-calendar-alt me-2 text-primary"></i>
+                    Store Recency Analysis
+                  </h5>
+                  <small className="text-muted">Breakdown of audited stores by days since last audit</small>
+                </div>
+                <div className="d-flex gap-2">
+                  {/* <Dropdown>
+                    <Dropdown.Toggle
+                      size="sm"
+                      variant="success"
+                      id="recency-export-dropdown"
+                    >
+                      <i className="fas fa-download me-1"></i>
+                      Export
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item onClick={exportRecencyAnalysisToExcel}>
+                        <i className="fas fa-file-excel text-success me-2"></i>
+                        Export as Excel
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={exportRecencyAnalysisToPDF}>
+                        <i className="fas fa-file-pdf text-danger me-2"></i>
+                        Export as PDF
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown> */}
+                  <div className="btn-group" role="group">
+                    <Button
+                      size="sm"
+                      variant={recencyView === 'quarterly' ? 'primary' : 'outline-primary'}
+                      onClick={() => setRecencyView('quarterly')}
+                    >
+                      <i className="fas fa-calendar-week me-1"></i>
+                      Quarterly
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={recencyView === 'half-yearly' ? 'primary' : 'outline-primary'}
+                      onClick={() => setRecencyView('half-yearly')}
+                    >
+                      <i className="fas fa-calendar-alt me-1"></i>
+                      Half-Yearly
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={recencyView === 'yearly' ? 'primary' : 'outline-primary'}
+                      onClick={() => setRecencyView('yearly')}
+                    >
+                      <i className="fas fa-calendar me-1"></i>
+                      Yearly
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Card.Header>
+            <Card.Body>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={recencyData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="range" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar
+                    dataKey="stores"
+                    fill="#0d6efd"
+                    radius={[5, 5, 0, 0]}
+                    onClick={(data) => showStoreDetails(`Stores - ${data.range}`)}
+                    cursor="pointer"
+                    barSize={80}
+                    label={{ position: 'top', fill: '#000', fontSize: 14 }}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
             </Card.Body>
           </Card>
         </Col>

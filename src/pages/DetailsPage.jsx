@@ -318,38 +318,30 @@ const DetailsPage = ({ filters = {} }) => {
   const handleDownloadExcel = () => {
     const wb = utils.book_new();
     const headers = [
-      "STORE ID", "STORE NAME", "CITY", "STATE", "STORE TYPE", "BOX TYPE",
-      "STORE CREATED DATE", "LAST AUDITED DATE", "CYCLE", "SKUS (count)",
-      "QUANTITY (units)", "MISMATCH", "DEVIATION",
-      "SHORT", "VALUE", "EXCESS", "VALUE",
-      "CONTRA EXCESS", "VALUE", "CONTRA SHORT", "VALUE"
+      "STORE ID", "STORE NAME", "CITY", "STATE", "HUB TYPE", "STATUS", "BOX TYPE",
+      "STORE CREATED DATE", "LAST AUDITED DATE", "NO.OF AUDITS", "SKUS (count)",
+      "QUANTITY (units)", "INVENTORY VALUE MRP (₹)", "MISMATCH", "DEVIATION"
     ];
 
     const dataToExport = filteredData.map(row => {
-      // Logic for Covered Stores specific headers
-      if (type === 'covered-stores') {
+      // Logic for Covered Stores and Uncovered Stores specific headers
+      if (type === 'covered-stores' || type === 'uncovered-stores') {
         return {
           "STORE ID": row.storeId,
           "STORE NAME": row.storeName,
           "CITY": row.city,
           "STATE": row.state,
-          "STORE TYPE": row.storeType,
+          "HUB TYPE": row.storeType,
+          "STATUS": row.status,
           "BOX TYPE": row.boxType,
           "STORE CREATED DATE": row.storeCreatedDate,
           "LAST AUDITED DATE": row.lastAuditedDate,
-          "CYCLE": row.cycle,
+          "NO.OF AUDITS": row.cycle || 0,
           "SKUS (count)": row.skus,
           "QUANTITY (units)": row.quantity,
-          "MISMATCH": row.mismatch,
-          "DEVIATION": row.deviation,
-          "SHORT": row.short || 0,
-          "VALUE_SHORT": row.shortValue || 0,
-          "EXCESS": row.excess || 0,
-          "VALUE_EXCESS": row.excessValue || 0,
-          "CONTRA EXCESS": row.contraExcess || 0,
-          "VALUE_CE": row.contraExcessValue || 0,
-          "CONTRA SHORT": row.contraShort || 0,
-          "VALUE_CS": row.contraShortValue || 0
+          "INVENTORY VALUE MRP (₹)": row.inventoryValueMRP,
+          "MISMATCH": row.mismatch || 0,
+          "DEVIATION": row.deviation || 0
         };
       } else {
         // Default generic export for other views
@@ -367,17 +359,13 @@ const DetailsPage = ({ filters = {} }) => {
     // Note: JS Objects keys must be unique. `xlsx` handles array of arrays better for duplicate headers.
 
     let ws;
-    if (type === 'covered-stores') {
+    if (type === 'covered-stores' || type === 'uncovered-stores') {
       const aoaData = [headers];
       dataToExport.forEach(r => {
         aoaData.push([
-          r["STORE ID"], r["STORE NAME"], r["CITY"], r["STATE"], r["STORE TYPE"], r["BOX TYPE"],
-          r["STORE CREATED DATE"], r["LAST AUDITED DATE"], r["CYCLE"], r["SKUS (count)"],
-          r["QUANTITY (units)"], r["MISMATCH"], r["DEVIATION"],
-          r["SHORT"], r["VALUE_SHORT"],
-          r["EXCESS"], r["VALUE_EXCESS"],
-          r["CONTRA EXCESS"], r["VALUE_CE"],
-          r["CONTRA SHORT"], r["VALUE_CS"]
+          r["STORE ID"], r["STORE NAME"], r["CITY"], r["STATE"], r["HUB TYPE"], r["STATUS"], r["BOX TYPE"],
+          r["STORE CREATED DATE"], r["LAST AUDITED DATE"], r["NO.OF AUDITS"], r["SKUS (count)"],
+          r["QUANTITY (units)"], r["INVENTORY VALUE MRP (₹)"], r["MISMATCH"], r["DEVIATION"]
         ]);
       });
       ws = utils.aoa_to_sheet(aoaData);
@@ -399,25 +387,20 @@ const DetailsPage = ({ filters = {} }) => {
     let headers = [];
     let tableData = [];
 
-    if (type === 'covered-stores') {
+    if (type === 'covered-stores' || type === 'uncovered-stores') {
       // Use abbreviated headers for PDF to fit
       headers = [
-        "ID", "Store", "City", "State", "Type", "Box",
-        "Created", "Audited", "Cycle", "SKUs",
-        "Qty", "Mis", "Dev",
-        "Sh", "Val", "Ex", "Val",
-        "CE", "Val", "CS", "Val"
+        "ID", "Store", "City", "State", "Hub Type", "Status", "Box",
+        "Created", "Audited", "Audits", "SKUs",
+        "Qty", "Inv Value", "Mis", "Dev"
       ];
 
       tableData = filteredData.map(row => {
         return [
-          row.storeId, row.storeName, row.city, row.state, row.storeType, row.boxType,
-          row.storeCreatedDate, row.lastAuditedDate, row.cycle, row.skus,
-          row.quantity, row.mismatch, row.deviation,
-          row.short || 0, '₹' + (row.shortValue || 0).toLocaleString('en-IN'),
-          row.excess || 0, '₹' + (row.excessValue || 0).toLocaleString('en-IN'),
-          row.contraExcess || 0, '₹' + (row.contraExcessValue || 0).toLocaleString('en-IN'),
-          row.contraShort || 0, '₹' + (row.contraShortValue || 0).toLocaleString('en-IN')
+          row.storeId, row.storeName, row.city, row.state, row.storeType, row.status, row.boxType,
+          row.storeCreatedDate, row.lastAuditedDate, row.cycle || 0, row.skus,
+          row.quantity, '₹' + (row.inventoryValueMRP || 0).toLocaleString('en-IN'),
+          row.mismatch || 0, row.deviation || 0
         ];
       });
 
@@ -505,6 +488,12 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'storeName') return 'STORE NAME';
     if (key === 'city') return 'CITY';
     if (key === 'state') return 'STATE';
+    if (key === 'storeType') return 'HUB TYPE';
+    if (key === 'boxType') return 'BOX TYPE';
+    if (key === 'storeCreatedDate') return 'STORE CREATED DATE';
+    if (key === 'lastAuditedDate') return 'LAST AUDITED DATE';
+    if (key === 'cycle') return 'NO.OF AUDITS';
+    if (key === 'inventoryValueMRP') return 'INVENTORY VALUE MRP (₹)';
     if (key === 'storeType') return 'STORE TYPE';
     if (key === 'boxType') return 'BOX TYPE';
     if (key === 'storeCreatedDate') return 'STORE CREATED DATE';
@@ -541,6 +530,40 @@ const DetailsPage = ({ filters = {} }) => {
   const shouldHideColumn = (key) => {
     const hiddenColumns = ['short', 'shortValue', 'excess', 'excessValue', 'contraExcess', 'contraExcessValue', 'contraShort', 'contraShortValue'];
     return hiddenColumns.includes(key);
+  };
+
+  // Define column order for store coverage views
+  const getOrderedColumns = (data) => {
+    if (!data || data.length === 0) return [];
+    
+    const allKeys = Object.keys(data[0]);
+    
+    // For covered-stores and uncovered-stores, use specific order
+    if (type === 'covered-stores' || type === 'uncovered-stores') {
+      const orderedKeys = [
+        'storeId',
+        'storeName',
+        'city',
+        'state',
+        'storeType',
+        'status',
+        'boxType',
+        'storeCreatedDate',
+        'lastAuditedDate',
+        'cycle',
+        'skus',
+        'quantity',
+        'inventoryValueMRP',
+        'mismatch',
+        'deviation'
+      ];
+      
+      // Include only columns that exist in the data and match the ordered list
+      return orderedKeys.filter(key => allKeys.includes(key));
+    }
+    
+    // For other views, use default order but exclude hidden columns
+    return allKeys.filter(key => key !== 'mismatchDetails' && !shouldHideColumn(key));
   };
 
   // Determine if store click is enabled for this view
@@ -693,7 +716,7 @@ const DetailsPage = ({ filters = {} }) => {
             <Table striped hover responsive className="mb-0">
               <thead style={{ position: 'sticky', top: 0, background: 'white', zIndex: 1 }}>
                 <tr>
-                  {Object.keys(filteredData[0] || {}).filter(key => key !== 'mismatchDetails' && !shouldHideColumn(key)).map(key => (
+                  {getOrderedColumns(filteredData).map(key => (
                     <th key={key}>{formatColumnHeader(key)}</th>
                   ))}
                 </tr>
@@ -717,7 +740,9 @@ const DetailsPage = ({ filters = {} }) => {
                           e.currentTarget.style.backgroundColor = '';
                         }}
                       >
-                        {Object.entries(row).filter(([key]) => key !== 'mismatchDetails' && !shouldHideColumn(key)).map(([key, value], i) => (
+                        {getOrderedColumns(filteredData).map((key, i) => {
+                          const value = row[key];
+                          return (
                           <td
                             key={i}
                             onClick={(e) => {
@@ -746,7 +771,8 @@ const DetailsPage = ({ filters = {} }) => {
                               value
                             )}
                           </td>
-                        ))}
+                        );
+                        })}
                       </tr>
                       {expandedRows[row.storeId] && row.mismatchDetails && (
                         <tr key={`${idx}-details`}>

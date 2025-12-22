@@ -228,13 +228,6 @@ const SupervisorApprovals = ({ filters = {} }) => {
 
   return (
     <Container fluid className="supervisor-approvals-tab py-4">
-      {hasActiveFilters && (
-        <Alert variant="info">
-          <i className="fas fa-filter me-2"></i>
-          <strong>Active Filters</strong>
-        </Alert>
-      )}
-
       {/* Export Button */}
       <div className="d-flex justify-content-end mb-3">
         <Dropdown>

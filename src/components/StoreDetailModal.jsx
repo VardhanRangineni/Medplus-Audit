@@ -374,7 +374,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
       ["Store ID", storeId],
       ["Store Name", storeName],
       ["State", state],
-      ["Supervisor", supervisor || 'N/A'],
+      ["Audit Supervisor", supervisor || 'N/A'],
       [],
       ["Audit Progress"],
       ["Completion Percentage", `${auditProgress.percentage || 0}%`],
@@ -504,7 +504,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     doc.setFontSize(10);
     doc.text(`Store ID: ${storeId}`, 14, 28);
     doc.text(`State: ${state}`, 14, 34);
-    doc.text(`Supervisor: ${supervisor || 'N/A'}`, 14, 40);
+    doc.text(`Audit Supervisor: ${supervisor || 'N/A'}`, 14, 40);
 
     // Audit Progress
     doc.setFontSize(12);
@@ -920,7 +920,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                 <div className="fw-bold fs-5">{state}</div>
               </Col>
               <Col md={3}>
-                <div className="text-muted small">Supervisor</div>
+                <div className="text-muted small">Audit Supervisor</div>
                 <div className="fw-bold fs-5">
                   <i className="fas fa-user-tie me-2 text-primary"></i>
                   {supervisor || 'N/A'}
@@ -953,9 +953,17 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
           <Col md={auditStatus === 'completed' ? 3 : 6}>
             <Card className="h-100 border-0 shadow-sm">
               <Card.Body className="text-center">
-                <div className="text-muted small mb-1">Inventory Value</div>
+                <div className="text-muted small mb-1">Inventory Value at MRP</div>
                 <h3 className="mb-0 text-success">₹{(inventorySummary.totalValue / 1000 || 0).toFixed(0)}K</h3>
-                <small className="text-muted">Total Value</small>
+                {auditStatus === 'completed' && (
+                  <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
+                    <small className="text-muted d-block">Deviation Value at MRP</small>
+                    <span className="text-danger fw-bold">₹{(totalDeviationValue / 1000 || 0).toFixed(0)}K</span>
+                  </div>
+                )}
+                {auditStatus !== 'completed' && (
+                  <small className="text-muted">Total Value</small>
+                )}
               </Card.Body>
             </Card>
           </Col>

@@ -73,7 +73,6 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
               Total Value {getSortIcon('totalValue')}
             </div>
           </th>
-          <th>Actions</th>
         </tr>
       </thead>
 
@@ -94,9 +93,6 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
             <td className="fw-semibold">{sup.auditorsSupervised}</td>
             <td className="fw-semibold">{formatIndianNumber(sup.totalSKUs, true)}</td>
             <td className="fw-semibold">{formatIndianCurrency(sup.totalValue)}</td>
-            <td>
-              <i className="fas fa-chevron-right text-primary"></i>
-            </td>
           </tr>
         ))}
       </tbody>
@@ -113,10 +109,10 @@ const SupervisorApprovals = ({ filters = {} }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const hasActiveFilters =
-    (filters.state && filters.state.length > 0) || 
-    (filters.store && filters.store.length > 0) || 
-    (filters.auditJobType && filters.auditJobType.length > 0) || 
-    (filters.auditProcessType && filters.auditProcessType.length > 0) || 
+    (filters.state && filters.state.length > 0) ||
+    (filters.store && filters.store.length > 0) ||
+    (filters.auditJobType && filters.auditJobType.length > 0) ||
+    (filters.auditProcessType && filters.auditProcessType.length > 0) ||
     (filters.auditStatus && filters.auditStatus.length > 0);
 
 

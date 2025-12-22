@@ -270,13 +270,13 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
             ["Total SKUs", metrics.totalSKUs],
             ["Total Value (Rs.)", metrics.totalValue],
             [],
-            ["Deviation Summary", "Qty", "Value"],
+            ["Audit Accuracy", "Qty", "Value"],
             ["Appeared", metrics.deviations.appeared.qty, metrics.deviations.appeared.value],
             ["Matched", metrics.deviations.matched.qty, metrics.deviations.matched.value],
             ["Revised", metrics.deviations.revised.qty, metrics.deviations.revised.value],
             [],
             ["Audit History"],
-            ["Store ID", "Store Name", "Date", "Job Type", "Auditors", "Days", "PIDs", "SKUs", "Quantity", "Value (Rs.)"]
+            ["Store ID", "Store Name", "Date", "Job Type", "Auditors", "Days", "PIDs", "SKUs", "Quantity", "Deviation Value (MRP Rs.)", "Audited Value (MRP Rs.)"]
         ];
 
         // Append Audit History Rows
@@ -291,14 +291,15 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                 r.AuditorAllottedPIDs,
                 r.AuditorAllottedSKUs,
                 r.AppearedQty || 0,
-                r.AppearedValue || 0
+                r.AppearedValue || 0,
+                r.StoreAuditValue || 0
             ]);
         });
 
         const wsSummary = utils.aoa_to_sheet(summaryData);
         wsSummary['!cols'] = [
             { wch: 20 }, { wch: 25 }, { wch: 15 }, { wch: 15 },
-            { wch: 10 }, { wch: 8 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 15 }
+            { wch: 10 }, { wch: 8 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 15 }, { wch: 15 }
         ];
         utils.book_append_sheet(wb, wsSummary, "Supervisor Summary");
 
@@ -365,7 +366,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
 
             autoTable(doc, {
                 startY: 20,
-                head: [['Store ID', 'Store Name', 'Date', 'Job Type', 'Auditors Count', 'Days Supervised', 'Allocated PIDs', 'Allocated SKUs', 'Appeared Qty', 'Appeared Value (Rs.)']],
+                head: [['Store ID', 'Store Name', 'Date', 'Job Type', 'Auditors Count', 'Days Supervised', 'Allocated PIDs', 'Allocated SKUs', 'Appeared Qty', 'Dev Value (MRP Rs.)', 'Audited Value (MRP Rs.)']],
                 body: sortedRecords.map(r => [
                     r.StoreID,
                     r.StoreName,
@@ -376,7 +377,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     (r.AuditorAllottedPIDs || 0).toLocaleString('en-IN'),
                     (r.AuditorAllottedSKUs || 0).toLocaleString('en-IN'),
                     (r.AppearedQty || 0).toLocaleString('en-IN'),
-                    (r.AppearedValue || 0).toLocaleString('en-IN')
+                    (r.AppearedValue || 0).toLocaleString('en-IN'),
+                    (r.StoreAuditValue || 0).toLocaleString('en-IN')
                 ]),
                 theme: 'striped',
                 headStyles: { fillColor: [52, 73, 94], halign: 'center' },
@@ -509,7 +511,7 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                     </Row>
 
                     {/* Deviation Summary */}
-                    <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>DEVIATION SUMMARY</h6>
+                    <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>Audit Accuracy</h6>
                     <Row className="g-3 mb-4">
                         <Col md={3}>
                             <Card className="border-0 shadow-sm border-start border-4 border-primary">
@@ -602,8 +604,11 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                         <th className="border-0 py-3 text-end" onClick={() => requestSort('AppearedQty')} style={{ cursor: 'pointer' }}>
                                             QTY {getSortIcon('AppearedQty')}
                                         </th>
-                                        <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AppearedValue')} style={{ cursor: 'pointer' }}>
-                                            Value {getSortIcon('AppearedValue')}
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AppearedValue')} style={{ cursor: 'pointer' }}>
+                                            Deviation Value (MRP) {getSortIcon('AppearedValue')}
+                                        </th>
+                                        <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('StoreAuditValue')} style={{ cursor: 'pointer' }}>
+                                            Audited Value (MRP) {getSortIcon('StoreAuditValue')}
                                         </th>
                                     </tr>
                                 </thead>
@@ -622,7 +627,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                             <td className="text-end font-monospace">{formatIndianNumber(audit.AuditorAllottedPIDs, true)}</td>
                                             <td className="text-end fw-bold">{formatIndianNumber(audit.AuditorAllottedSKUs, true)}</td>
                                             <td className="text-end fw-bold">{formatIndianNumber(audit.AppearedQty, true)}</td>
-                                            <td className="text-end pe-4 fw-bold">{formatIndianCurrency(audit.AppearedValue)}</td>
+                                            <td className="text-end fw-bold text-danger">{formatIndianCurrency(audit.AppearedValue)}</td>
+                                            <td className="text-end pe-4 fw-bold">{formatIndianCurrency(audit.StoreAuditValue)}</td>
                                         </tr>
                                     ))}
                                 </tbody>

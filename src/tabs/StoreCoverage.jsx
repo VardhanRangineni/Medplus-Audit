@@ -15,11 +15,11 @@ const StoreCoverage = ({ filters = {} }) => {
   const [recencyView, setRecencyView] = useState('quarterly'); // quarterly, half-yearly, yearly
 
   // Check if any filters are active
-  const hasActiveFilters = (filters.state && filters.state.length > 0) || 
-                          (filters.store && filters.store.length > 0) || 
-                          (filters.auditJobType && filters.auditJobType.length > 0) || 
-                          (filters.auditProcessType && filters.auditProcessType.length > 0) || 
-                          (filters.auditStatus && filters.auditStatus.length > 0);
+  const hasActiveFilters = (filters.state && filters.state.length > 0) ||
+    (filters.store && filters.store.length > 0) ||
+    (filters.auditJobType && filters.auditJobType.length > 0) ||
+    (filters.auditProcessType && filters.auditProcessType.length > 0) ||
+    (filters.auditStatus && filters.auditStatus.length > 0);
 
   // Apply filters to store data
   const filteredStoreData = useMemo(() => {
@@ -70,7 +70,7 @@ const StoreCoverage = ({ filters = {} }) => {
     const activeStores = filteredStoreData.filter(s => s.IsActive !== false).length;
     const inactiveStores = filteredStoreData.filter(s => s.IsActive === false).length;
     const totalStores = filteredStoreData.length;
-    
+
     const covered = filteredStoreData.filter(s => s.IsCovered).length;
     const uncovered = totalStores - covered;
     const coveredPercentage = totalStores > 0 ? ((covered / totalStores) * 100).toFixed(1) : 0;
@@ -393,7 +393,7 @@ const StoreCoverage = ({ filters = {} }) => {
 
     // Deviation Summary sheet
     const ws3 = utils.json_to_sheet(deviationSummary);
-    utils.book_append_sheet(wb, ws3, 'Deviation Summary');
+    utils.book_append_sheet(wb, ws3, 'Audit Accuracy');
 
     // Add product-level details for each deviation type
     Object.keys(productFormData).forEach(deviationType => {
@@ -462,7 +462,7 @@ const StoreCoverage = ({ filters = {} }) => {
     // Deviation Summary
     finalY = doc.lastAutoTable.finalY + 10;
     doc.setFontSize(12);
-    doc.text('Deviation Summary', 14, finalY);
+    doc.text('Audit Accuracy', 14, finalY);
     autoTable(doc, {
       startY: finalY + 4,
       head: [['Deviation Type', 'Value (Rs.)', 'Item Count']],
@@ -730,7 +730,7 @@ const StoreCoverage = ({ filters = {} }) => {
             <Card.Header className="bg-white border-0 py-3">
               <h5 className="mb-0 fw-bold">
                 <i className="fas fa-chart-bar me-2 text-primary"></i>
-                Deviation Summary
+                Audit Accuracy
               </h5>
               <small className="text-muted">Click on bars for details</small>
             </Card.Header>
@@ -740,12 +740,12 @@ const StoreCoverage = ({ filters = {} }) => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}K`} />
                   <YAxis type="category" dataKey="type" width={120} />
-                  <Tooltip 
+                  <Tooltip
                     formatter={(value) => `₹${value.toLocaleString()}`}
                     contentStyle={{ fontSize: '12px' }}
                   />
-                  <Bar 
-                    dataKey="value" 
+                  <Bar
+                    dataKey="value"
                     onClick={(data) => setSelectedDeviation(data)}
                     cursor="pointer"
                     radius={[0, 5, 5, 0]}
@@ -767,7 +767,7 @@ const StoreCoverage = ({ filters = {} }) => {
                 <div>
                   <h5 className="mb-0 fw-bold">
                     <i className="fas fa-info-circle me-2 text-primary"></i>
-                    {selectedDeviation ? 'Deviation Details' : 'Deviation Summary'}
+                    {selectedDeviation ? 'Deviation Details' : 'Audit Accuracy'}
                   </h5>
                   <small className="text-muted">
                     {selectedDeviation ? `Details for ${selectedDeviation.type}` : 'Click on a bar for details'}

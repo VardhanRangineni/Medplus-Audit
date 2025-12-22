@@ -35,6 +35,9 @@ function AppContent() {
   // Hide filters for Store PID Allotment page
   const hideFilters = location.pathname === '/store-pid-allotment';
 
+  // Show limited financial years (Current/Client) for specific pages
+  const showLimitedFinancialYears = ['/auditor-performance', '/supervisor-approvals'].includes(location.pathname);
+
   return (
     <div className="app-layout">
       <Sidebar />
@@ -45,6 +48,7 @@ function AppContent() {
           filters={filters}
           onFilterChange={handleFilterChange}
           hideFilters={hideFilters}
+          showLimitedFinancialYears={showLimitedFinancialYears}
         />
         <main className="content-area">
           <Routes>

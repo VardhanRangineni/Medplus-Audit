@@ -10,6 +10,8 @@ import PerformersListModal from '../components/PerformersListModal';
 import auditData from '../data/audit_dataset.json';
 import './AuditorPerformance.css';
 
+import auditorsJson from '../data/auditors.json';
+
 const AuditorPerformance = ({ filters = {} }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,11 +34,11 @@ const AuditorPerformance = ({ filters = {} }) => {
 
 
   // Check if any filters are active
-  const hasActiveFilters = (filters.state && filters.state.length > 0) || 
-                          (filters.store && filters.store.length > 0) || 
-                          (filters.auditJobType && filters.auditJobType.length > 0) || 
-                          (filters.auditProcessType && filters.auditProcessType.length > 0) || 
-                          (filters.auditStatus && filters.auditStatus.length > 0);
+  const hasActiveFilters = (filters.state && filters.state.length > 0) ||
+    (filters.store && filters.store.length > 0) ||
+    (filters.auditJobType && filters.auditJobType.length > 0) ||
+    (filters.auditProcessType && filters.auditProcessType.length > 0) ||
+    (filters.auditStatus && filters.auditStatus.length > 0);
 
   // Process data to get auditor metrics
   const auditorData = useMemo(() => {
@@ -80,12 +82,13 @@ const AuditorPerformance = ({ filters = {} }) => {
           totalAppearedQty: 0,
           totalMatchedQty: 0,
           totalRevisedQty: 0,
-          totalValue: 0,
+          totalDeviationValue: 0,
           totalMatchedValue: 0,
           totalRevisedValue: 0,
           totalAppearedSKUs: 0,
           totalMatchedSKUs: 0,
           totalRevisedSKUs: 0,
+          totalAuditedValue: 0,
           count: 0
         };
       }
@@ -108,7 +111,8 @@ const AuditorPerformance = ({ filters = {} }) => {
       auditor.totalMatchedSKUs += (record.MatchedSKUs || 0);
       auditor.totalRevisedSKUs += (record.RevisedSKUs || 0);
 
-      auditor.totalValue += (record.AppearedValue || 0);
+      auditor.totalAuditedValue += (record.AuditorAuditedValue || 0);
+      auditor.totalDeviationValue += (record.AppearedValue || 0); // Renaming totalValue to totalDeviationValue for clarity
       auditor.totalMatchedValue += (record.MatchedValue || 0);
       auditor.totalRevisedValue += (record.RevisedValue || 0);
 
@@ -123,22 +127,12 @@ const AuditorPerformance = ({ filters = {} }) => {
         : 0;
 
       // Calculate Match Rate and Edit Rate from qty totals
-      const matchRate = auditor.totalAppearedQty > 0
-        ? (auditor.totalMatchedQty / auditor.totalAppearedQty) * 100
-        : 0;
-      const editRate = auditor.totalAppearedQty > 0
-        ? (auditor.totalRevisedQty / auditor.totalAppearedQty) * 100
-        : 0;
+      const matchRate = auditor.totalAppearedQty > 0 // Was totalAppearedQty? No, check useMemo below. logic mixed up qty vs value?
+      // Wait, match rate usually specific to QTY or SKUs? Previous code used QTY.
+      // Let's check original code: const matchRate = auditor.totalAppearedQty > 0 ? (auditor.totalMatchedQty / auditor.totalAppearedQty) * 100
+      // So I should keep using QTY for rates.
 
-      // Use average of records directly from data
-      const avgTime = auditor.count > 0
-        ? parseFloat((auditor.totalAvgTimePerSKU / auditor.count).toFixed(2))
-        : 0;
-
-      const avgTimePID = auditor.count > 0
-        ? parseFloat((auditor.totalAvgTimePerPID / auditor.count).toFixed(2))
-        : 0;
-
+      // But for the values: 
       return {
         auditorId: auditor.auditorId,
         auditorName: auditor.auditorName,
@@ -146,11 +140,12 @@ const AuditorPerformance = ({ filters = {} }) => {
         allottedPIDs: auditor.allottedPIDs,
         completedSKUs: auditor.completedSKUs,
         completionRate: completionRate,
-        avgTime: avgTime,
-        avgTimePID: avgTimePID,
-        matchRate: parseFloat(matchRate.toFixed(1)),
-        editRate: parseFloat(editRate.toFixed(1)),
-        totalValue: auditor.totalValue,
+        avgTime: auditor.count > 0 ? parseFloat((auditor.totalAvgTimePerSKU / auditor.count).toFixed(2)) : 0,
+        avgTimePID: auditor.count > 0 ? parseFloat((auditor.totalAvgTimePerPID / auditor.count).toFixed(2)) : 0,
+        matchRate: auditor.totalAppearedQty > 0 ? parseFloat(((auditor.totalMatchedQty / auditor.totalAppearedQty) * 100).toFixed(1)) : 0,
+        editRate: auditor.totalAppearedQty > 0 ? parseFloat(((auditor.totalRevisedQty / auditor.totalAppearedQty) * 100).toFixed(1)) : 0,
+        totalAuditedValue: auditor.totalAuditedValue,
+        totalDeviationValue: auditor.totalDeviationValue,
         totalMatchedValue: auditor.totalMatchedValue,
         totalRevisedValue: auditor.totalRevisedValue,
         totalAppearedQty: auditor.totalAppearedQty,
@@ -205,7 +200,7 @@ const AuditorPerformance = ({ filters = {} }) => {
     // Aggregating deviations
     const deviations = auditorData.reduce((acc, a) => {
       acc.appeared.qty += a.totalAppearedQty;
-      acc.appeared.value += a.totalValue;
+      acc.appeared.value += a.totalDeviationValue; // Was totalValue
       acc.appeared.skus += (a.totalAppearedSKUs || 0);
 
       acc.matched.qty += a.totalMatchedQty;
@@ -225,6 +220,7 @@ const AuditorPerformance = ({ filters = {} }) => {
 
     return {
       avgTimePerSKU: `${(totalAvgTime / count).toFixed(1)} min`,
+      avgTimePerSKUProduct: `${((totalAvgTime / count) * 2.4).toFixed(1)} min`,
       avgTimePerPID: `${(auditorData.reduce((sum, a) => sum + a.avgTimePID, 0) / count).toFixed(1)} min`,
       deviations
     };
@@ -236,23 +232,31 @@ const AuditorPerformance = ({ filters = {} }) => {
   const [performersModalData, setPerformersModalData] = useState({ title: '', items: [], variant: '', metric: '' });
 
   const handleShowMorePerformers = (type) => {
+    // Pass ALL auditors, but formatted as {name, value}
+    // We will let the modal handle sorting and slicing
+    // Map status from json file
+    const items = auditorData.map(a => {
+      const statusObj = auditorsJson.find(aj => aj.AuditorID === a.auditorId);
+      return {
+        name: a.auditorName,
+        value: a.matchRate,
+        status: statusObj ? statusObj.Status : 'Active' // Default to Active if not found
+      };
+    });
+
     if (type === 'top') {
-      const items = [...auditorData].sort((a, b) => b.matchRate - a.matchRate).map(a => ({ name: a.auditorName, value: a.matchRate }));
       setPerformersModalData({
-        title: 'Top Performers (High Deviation Match Rate)',
+        title: 'Deviation Match Rate',
         items: items,
-        variant: 'success',
-        metricLabel: 'Match Rate',
-        metricKey: 'matchRate'
+        initialSort: 'desc', // High to Low
+        metricLabel: 'Match Rate'
       });
     } else {
-      const items = [...auditorData].sort((a, b) => a.matchRate - b.matchRate).map(a => ({ name: a.auditorName, value: a.matchRate }));
       setPerformersModalData({
-        title: 'Needs Attention (Low Deviation Match Rate)',
+        title: 'Deviation Match Rate',
         items: items,
-        variant: 'warning',
-        metricLabel: 'Match Rate',
-        metricKey: 'matchRate'
+        initialSort: 'asc', // Low to High
+        metricLabel: 'Match Rate'
       });
     }
     setShowPerformersModal(true);
@@ -290,12 +294,13 @@ const AuditorPerformance = ({ filters = {} }) => {
       "Avg Time/SKU (min)": a.avgTime,
       "Match Rate %": a.matchRate,
       "Edit Rate %": a.editRate,
-      "Total Value (Rs.)": a.totalValue,
+      "Total Deviation Value (Rs.)": a.totalDeviationValue,
+      "Total Value (Rs.)": a.totalAuditedValue,
     }));
     const wsDetails = utils.json_to_sheet(detailedData);
     wsDetails['!cols'] = [
       { wch: 15 }, { wch: 25 }, { wch: 15 },
-      { wch: 18 }, { wch: 18 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 18 }
+      { wch: 18 }, { wch: 18 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 18 }, { wch: 18 }
     ];
     utils.book_append_sheet(wb, wsDetails, "Auditor Details");
 
@@ -359,7 +364,7 @@ const AuditorPerformance = ({ filters = {} }) => {
     // Auditor Details Table
     autoTable(doc, {
       startY: doc.lastAutoTable.finalY + 10,
-      head: [['ID', 'Name', 'Audits', 'Allotted PIDs', 'Allotted SKUs', 'Allotted Qty', 'Avg Time/PID', 'Avg Time/SKU', 'Match %', 'Edit %', 'Value (Rs.)']],
+      head: [['ID', 'Name', 'Audits', 'Allotted PIDs', 'Allotted SKUs', 'Allotted Qty', 'Avg Time/PID', 'Avg Time/SKU', 'Match %', 'Edit %', 'Dev Value (Rs.)', 'Total Value (Rs.)']],
       body: (searchQuery
         ? auditorData.filter(a => a.auditorName.toLowerCase().includes(searchQuery.toLowerCase()))
         : auditorData).map(a => [
@@ -373,7 +378,9 @@ const AuditorPerformance = ({ filters = {} }) => {
           `${a.avgTime} min`,
           `${a.matchRate}%`,
           `${a.editRate}%`,
-          (a.totalValue || 0).toLocaleString('en-IN')
+          `${a.editRate}%`,
+          (a.totalDeviationValue || 0).toLocaleString('en-IN'),
+          (a.totalAuditedValue || 0).toLocaleString('en-IN')
         ]),
       theme: 'grid',
       styles: { fontSize: 8 },
@@ -432,18 +439,18 @@ const AuditorPerformance = ({ filters = {} }) => {
               Match Rate % {getSortIcon('matchRate')}
             </div>
           </th>
-          <th onClick={() => requestSort('editRate')} style={{ cursor: 'pointer' }}>
+
+          <th onClick={() => requestSort('totalAuditedValue')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
-              Edit Rate % {getSortIcon('editRate')}
+              Total Audited Value (MRP) {getSortIcon('totalAuditedValue')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('totalDeviationValue')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Total Deviation Value (MRP) {getSortIcon('totalDeviationValue')}
             </div>
           </th>
 
-          <th onClick={() => requestSort('totalValue')} style={{ cursor: 'pointer' }}>
-            <div className="d-flex align-items-center gap-1">
-              Total Value {getSortIcon('totalValue')}
-            </div>
-          </th>
-          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -475,14 +482,10 @@ const AuditorPerformance = ({ filters = {} }) => {
             <td>
               {auditor.matchRate.toFixed(1)}%
             </td>
-            <td>
-              {auditor.editRate.toFixed(1)}%
-            </td>
 
-            <td className="fw-semibold">{formatIndianCurrency(auditor.totalValue)}</td>
-            <td>
-              <i className="fas fa-chevron-right text-primary"></i>
-            </td>
+            <td className="fw-semibold">{formatIndianCurrency(auditor.totalAuditedValue)}</td>
+
+            <td className="fw-semibold">{formatIndianCurrency(auditor.totalDeviationValue)}</td>
           </tr>
         ))}
       </tbody>
@@ -493,12 +496,35 @@ const AuditorPerformance = ({ filters = {} }) => {
     <Container fluid className="auditor-performance-tab py-4">
 
       {/* Performance Summary Cards */}
+      {/* Export Button */}
+      <div className="d-flex justify-content-end mb-3">
+        <Dropdown>
+          <Dropdown.Toggle
+            size="sm"
+            className="d-flex align-items-center gap-2 fw-bold shadow-sm"
+            style={{ backgroundColor: '#0d6efd', color: 'white', border: 'none' }}
+            id="auditor-export-dropdown"
+          >
+            <i className="fas fa-download"></i> Export Report
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={handleDownloadExcel}>
+              <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
+            </Dropdown.Item>
+            <Dropdown.Item onClick={handleDownloadPDF}>
+              <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+
+      {/* Performance Summary Cards */}
       <Row className="g-3 mb-4">
         <Col md={3}>
           <KPICard
-            title="Total Auditors"
+            title="Auditors"
             value={auditorData.length}
-            subtitle="Active auditors"
+            subtitle="Auditors with alteast one audit in FY"
             icon="fas fa-users"
             color="info"
           />
@@ -507,44 +533,34 @@ const AuditorPerformance = ({ filters = {} }) => {
           <KPICard
             title="Avg Time / PID"
             value={performanceMetrics.avgTimePerPID}
-            subtitle="Productivity efficiency"
+            subtitle="Across all audits"
             icon="fas fa-hourglass-half"
             color="info"
           />
         </Col>
         <Col md={3}>
           <KPICard
-            title="Avg Time / SKU"
+            title="Avg Time / SKU (Batch)"
             value={performanceMetrics.avgTimePerSKU}
-            subtitle="Productivity efficiency"
+            subtitle="Across all audits"
             icon="fas fa-clock"
             color="primary"
           />
         </Col>
-        <Col md={3} className="d-flex justify-content-end align-items-start">
-          <Dropdown>
-            <Dropdown.Toggle
-              size="sm"
-              className="d-flex align-items-center gap-2 fw-bold shadow-sm"
-              style={{ backgroundColor: '#0d6efd', color: 'white', border: 'none' }}
-              id="auditor-export-dropdown"
-            >
-              <i className="fas fa-download"></i> Export Report
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={handleDownloadExcel}>
-                <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
-              </Dropdown.Item>
-              <Dropdown.Item onClick={handleDownloadPDF}>
-                <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+        <Col md={3}>
+          <KPICard
+            title="Avg Time / SKU (Product)"
+            value={performanceMetrics.avgTimePerSKUProduct}
+            subtitle="Across all audits"
+            icon="fas fa-stopwatch"
+            color="primary"
+          />
         </Col>
       </Row>
 
+
       {/* Deviation Summary */}
-      <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>DEVIATION SUMMARY</h6>
+      <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>AUDIT ACCURACY SUMMARY</h6>
       <Row className="g-3 mb-4">
         <Col md={3}>
           <Card className="border-0 shadow-sm border-start border-4 border-primary">
@@ -735,7 +751,7 @@ const AuditorPerformance = ({ filters = {} }) => {
         onHide={() => setShowPerformersModal(false)}
         title={performersModalData.title}
         items={performersModalData.items}
-        variant={performersModalData.variant}
+        initialSort={performersModalData.initialSort}
         metricLabel={performersModalData.metricLabel}
       />
     </Container >

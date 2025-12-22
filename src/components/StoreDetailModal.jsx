@@ -395,7 +395,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
       summaryData.push([]);
       summaryData.push(["Auditors Information"]);
       summaryData.push(["Auditor Name", "Assigned SKUs", "Completed SKUs", "Completion Rate (%)", "Match Rate (%)"]);
-      
+
       auditors.forEach(a => {
         summaryData.push([
           a.name,
@@ -416,7 +416,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
     // Add deviation summary section
     if (deviations && deviations.length > 0) {
-      allDeviationsData.push(["Deviation Summary"]);
+      allDeviationsData.push(["Audit Accuracy"]);
       allDeviationsData.push(["Deviation Type", "Count", "Value (₹)"]);
       deviations.forEach(d => {
         allDeviationsData.push([d.type, d.count || 0, d.value || 0]);
@@ -428,7 +428,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     // Add detailed product-level deviations
     Object.keys(detailedProductData).forEach(deviationType => {
       const deviationData = detailedProductData[deviationType];
-      
+
       allDeviationsData.push([`${deviationType} - Detailed Products`]);
       allDeviationsData.push([
         "Deviation Type", "Product Form", "Product ID", "SKU", "Product Name",
@@ -1018,7 +1018,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
           {/* New Deviation Summary Row (Appeared/Matched/Revised) */}
           {auditStatus === 'completed' && (
             <>
-              <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>DEVIATION SUMMARY</h6>
+              <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>Audit Accuracy</h6>
               <Row className="g-3 mb-4">
                 <Col md={3}>
                   <Card className="border-0 shadow-sm border-start border-4 border-primary">

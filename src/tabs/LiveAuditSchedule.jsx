@@ -586,7 +586,6 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                       {selectedStatus !== 'completed' && <th>Audit Progress</th>}
                       {selectedStatus === 'completed' && <th>Job Type</th>}
                       {selectedStatus === 'completed' && <th>Process</th>}
-                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -732,16 +731,6 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                                 </td>
                               </>
                             )}
-                            <td>
-                              {selectedStatus !== 'completed' ? (
-                                <i className="fas fa-chevron-right text-primary"></i>
-                              ) : (
-                                <Badge bg="success">
-                                  <i className="fas fa-check-circle me-1"></i>
-                                  Complete
-                                </Badge>
-                              )}
-                            </td>
                           </tr>
                           {/* Expandable Mismatch Details Row */}
                           {selectedStatus === 'completed' && expandedRows[audit.storeId] && audit.mismatchDetails && audit.mismatchDetails.length > 0 && (

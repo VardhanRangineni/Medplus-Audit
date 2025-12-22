@@ -701,7 +701,7 @@ const AuditorPerformance = ({ filters = {} }) => {
                   <small className="text-muted">Click on any auditor to view detailed performance metrics</small>
                 </div>
                 <div className="d-flex gap-2 align-items-center">
-                  <button 
+                  <button
                     className="btn btn-outline-primary btn-sm"
                     onClick={() => setShowTableFilters(!showTableFilters)}
                   >

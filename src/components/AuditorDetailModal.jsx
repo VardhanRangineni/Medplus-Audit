@@ -177,7 +177,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
         // 1. Audit History Headers (Extended)
         const historyHeaders = [
-            "Store ID", "Store Name", "Date", "Job Type", "Allocated PIDs", "Allocated SKUs",
+            "Store Name", "Store ID", "Audit Date", "Job Type", "Allocated PIDs", "Allocated SKUs",
             "Appeared Dev Qty", "Appeared Dev Value",
             "Matched Dev Qty", "Matched Dev Value",
             "Revised Dev Qty", "Revised Dev Value",
@@ -221,8 +221,8 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
             const editRate = (100 - parseFloat(matchRate)).toFixed(2);
 
             summaryData.push([
-                r.StoreID || r.AUDIT_ID,
                 r.StoreName,
+                r.StoreID || r.AUDIT_ID,
                 new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
                 r.AuditJobType,
                 r.AuditorAllottedPIDs,
@@ -305,7 +305,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
         autoTable(doc, {
             startY: 20,
-            head: [['Store ID', 'Store Name', 'Date', 'Job Type', 'Appeared Qty', 'Appeared Value (Rs.)', 'Matched Qty', 'Matched Value (Rs.)', 'Revised Qty', 'Revised Value (Rs.)', 'Match Rate %', 'Edit Rate %']],
+            head: [['Store Name', 'Store ID', 'Audit Date', 'Job Type', 'Appeared Qty', 'Appeared Value (Rs.)', 'Matched Qty', 'Matched Value (Rs.)', 'Revised Qty', 'Revised Value (Rs.)', 'Match Rate %', 'Edit Rate %']],
             body: auditorRecords.map(r => {
                 const appearedQty = r.AppearedQty || 0;
                 const matchedQty = r.MatchedQty || 0;
@@ -313,8 +313,8 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                 const editRate = (100 - parseFloat(matchRate)).toFixed(2);
 
                 return [
-                    r.StoreID || r.AUDIT_ID,
                     r.StoreName,
+                    r.StoreID || r.AUDIT_ID,
                     new Date(r.AuditStartDate).toLocaleDateString('en-GB'),
                     r.AuditJobType,
                     (r.AppearedQty || 0).toLocaleString('en-IN'), (r.AppearedValue || 0).toLocaleString('en-IN'),
@@ -523,14 +523,14 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Table hover responsive className="mb-0 hover-scale-row">
                                 <thead className="bg-light text-muted small text-uppercase">
                                     <tr>
-                                        <th className="border-0 py-3 ps-4" onClick={() => requestSort('StoreID')} style={{ cursor: 'pointer' }}>
+                                        <th className="border-0 py-3 ps-4" onClick={() => requestSort('StoreName')} style={{ cursor: 'pointer' }}>
+                                            Store Name {getSortIcon('StoreName')}
+                                        </th>
+                                        <th className="border-0 py-3" onClick={() => requestSort('StoreID')} style={{ cursor: 'pointer' }}>
                                             Store ID {getSortIcon('StoreID')}
                                         </th>
-                                        <th className="border-0 py-3" onClick={() => requestSort('StoreName')} style={{ cursor: 'pointer' }}>
-                                            Store {getSortIcon('StoreName')}
-                                        </th>
                                         <th className="border-0 py-3" onClick={() => requestSort('AuditStartDate')} style={{ cursor: 'pointer' }}>
-                                            Date {getSortIcon('AuditStartDate')}
+                                            Audit Date {getSortIcon('AuditStartDate')}
                                         </th>
                                         <th className="border-0 py-3" onClick={() => requestSort('AuditJobType')} style={{ cursor: 'pointer' }}>
                                             Job Type {getSortIcon('AuditJobType')}
@@ -544,8 +544,11 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                         <th className="border-0 py-3 text-end" onClick={() => requestSort('AppearedQty')} style={{ cursor: 'pointer' }}>
                                             QTY {getSortIcon('AppearedQty')}
                                         </th>
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AppearedValue')} style={{ cursor: 'pointer' }}>
+                                            Deviation Value (MRP) {getSortIcon('AppearedValue')}
+                                        </th>
                                         <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AuditorAuditedValue')} style={{ cursor: 'pointer' }}>
-                                            Audited Value {getSortIcon('AuditorAuditedValue')}
+                                            Audited Value (MRP) {getSortIcon('AuditorAuditedValue')}
                                         </th>
                                     </tr>
                                 </thead>
@@ -557,13 +560,14 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                             style={{ cursor: 'pointer' }}
                                             onClick={() => { setSelectedAudit(audit); setShowAuditDetail(true); }}
                                         >
-                                            <td className="ps-4 fw-bold text-primary">{audit.StoreID || audit.AUDIT_ID}</td>
-                                            <td>{audit.StoreName}</td>
+                                            <td className="ps-4 fw-bold text-primary">{audit.StoreName}</td>
+                                            <td>{audit.StoreID || audit.AUDIT_ID}</td>
                                             <td>{formatDate(audit.AuditStartDate)}</td>
                                             <td>{audit.AuditJobType}</td>
                                             <td className="text-end font-monospace">{formatIndianNumber(audit.AuditorAllottedPIDs, true)}</td>
                                             <td className="text-end fw-bold">{formatIndianNumber(audit.AuditorAllottedSKUs, true)}</td>
                                             <td className="text-end fw-bold">{formatIndianNumber(audit.AppearedQty, true)}</td>
+                                            <td className="text-end fw-bold text-danger">{formatIndianCurrency(audit.AppearedValue)}</td>
                                             <td className="text-end pe-4 fw-bold">{formatIndianCurrency(audit.AuditorAuditedValue)}</td>
                                         </tr>
                                     ))}

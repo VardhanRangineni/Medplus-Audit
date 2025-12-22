@@ -193,7 +193,7 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideF
 
               <Col md={2}>
                 <Form.Group>
-                  <Form.Label className="small fw-semibold mb-1">Store</Form.Label>
+                  <Form.Label className="small fw-semibold mb-1">Hub Type</Form.Label>
                   <Select
                     isMulti
                     options={storeOptions}

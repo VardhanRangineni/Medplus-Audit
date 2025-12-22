@@ -83,13 +83,17 @@ const StoreCoverage = ({ filters = {} }) => {
 
   // Calculate store stats from filtered data
   const storeStats = useMemo(() => {
+    // Hardcoded values for audited stores
+    const covered = 478;
+    const activeAuditedStores = 410;
+    const inactiveAuditedStores = 8;
+    const uncovered = 60;
+    
     // Assume all stores in data are active (can be enhanced with IsActive field if available)
     const activeStores = filteredStoreData.filter(s => s.IsActive !== false).length;
     const inactiveStores = filteredStoreData.filter(s => s.IsActive === false).length;
-    const totalStores = filteredStoreData.length;
+    const totalStores = covered + uncovered; // 470 + 60 = 530
 
-    const covered = filteredStoreData.filter(s => s.IsCovered).length;
-    const uncovered = totalStores - covered;
     const coveredPercentage = totalStores > 0 ? ((covered / totalStores) * 100).toFixed(1) : 0;
     const uncoveredPercentage = totalStores > 0 ? ((uncovered / totalStores) * 100).toFixed(1) : 0;
 
@@ -101,7 +105,9 @@ const StoreCoverage = ({ filters = {} }) => {
       covered,
       uncovered,
       coveredPercentage: parseFloat(coveredPercentage),
-      uncoveredPercentage: parseFloat(uncoveredPercentage)
+      uncoveredPercentage: parseFloat(uncoveredPercentage),
+      activeAuditedStores,
+      inactiveAuditedStores
     };
   }, [filteredStoreData]);
 
@@ -630,14 +636,14 @@ const StoreCoverage = ({ filters = {} }) => {
             title="Audited Stores"
             value={storeStats.covered}
             subtitle={(() => {
-              const activeAudited = filteredStoreData.filter(s => s.IsCovered && s.IsActive !== false).length;
-              const inactiveAudited = filteredStoreData.filter(s => s.IsCovered && s.IsActive === false).length;
-              const activePercent = storeStats.covered > 0 ? ((activeAudited / storeStats.covered) * 100).toFixed(1) : 0;
+              const activeAudited = storeStats.activeAuditedStores;
+              const inactiveAudited = storeStats.inactiveAuditedStores;
+              const totalPercentage = storeStats.coveredPercentage; // Percentage of audited stores out of total (audited + non-audited)
               return (
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
                   <div style={{ textAlign: 'left' }}>
                     <div>Active: {activeAudited}</div>
-                    <div style={{ fontSize: '0.85em', marginTop: '2px' }}>{activePercent}% of total</div>
+                    <div style={{ fontSize: '0.85em', marginTop: '2px' }}>{totalPercentage}% of total</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     Inactive: {inactiveAudited}
@@ -713,14 +719,13 @@ const StoreCoverage = ({ filters = {} }) => {
                 <i className="fas fa-chart-bar me-2 text-primary"></i>
                 Deviation Summary
               </h5>
-              <small className="text-muted">Click on bars for details</small>
             </Card.Header>
             <Card.Body>
               <ResponsiveContainer width="100%" height={450}>
-                <BarChart data={deviationData} layout="vertical" barSize={20}>
+                <BarChart data={deviationData} barSize={40}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}K`} />
-                  <YAxis type="category" dataKey="type" width={120} />
+                  <XAxis type="category" dataKey="type" />
+                  <YAxis type="number" tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}K`} />
                   <Tooltip
                     formatter={(value) => `₹${formatIndianNumber(value)}`}
                     contentStyle={{ fontSize: '12px' }}
@@ -729,7 +734,7 @@ const StoreCoverage = ({ filters = {} }) => {
                     dataKey="value"
                     onClick={(data) => setSelectedDeviation(data)}
                     cursor="pointer"
-                    radius={[0, 5, 5, 0]}
+                    radius={[5, 5, 0, 0]}
                   >
                     {deviationData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -750,9 +755,6 @@ const StoreCoverage = ({ filters = {} }) => {
                     <i className="fas fa-info-circle me-2 text-primary"></i>
                     {selectedDeviation ? 'Deviation Details' : 'Deviation Summary'}
                   </h5>
-                  <small className="text-muted">
-                    {selectedDeviation ? `Details for ${selectedDeviation.type}` : 'Click on a bar for details'}
-                  </small>
                 </div>
                 <div className="d-flex gap-2">
                   {/* <Dropdown>
@@ -966,18 +968,18 @@ const StoreCoverage = ({ filters = {} }) => {
             </Card.Header>
             <Card.Body>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={recencyData} layout="vertical" barSize={20}>
+                <BarChart data={recencyData} barSize={40}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis type="category" dataKey="range" width={100} />
+                  <XAxis type="category" dataKey="range" />
+                  <YAxis type="number" />
                   <Tooltip />
                   <Bar
                     dataKey="stores"
                     fill="#0d6efd"
-                    radius={[0, 5, 5, 0]}
+                    radius={[5, 5, 0, 0]}
                     onClick={(data) => showStoreDetails(`Stores - ${data.range}`)}
                     cursor="pointer"
-                    label={{ position: 'right', fill: '#000', fontSize: 14 }}
+                    label={{ position: 'top', fill: '#000', fontSize: 14 }}
                   />
                 </BarChart>
               </ResponsiveContainer>

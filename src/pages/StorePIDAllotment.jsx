@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Container, Row, Col, Card, Form, Button, Table, Badge, Modal, Alert } from 'react-bootstrap';
+import Select from 'react-select';
 import './StorePIDAllotment.css';
 
 const StorePIDAllotment = () => {
@@ -15,9 +16,10 @@ const StorePIDAllotment = () => {
   const [selectedStoreId, setSelectedStoreId] = useState('MP001');
   const selectedStore = supervisorStores.find(s => s.storeId === selectedStoreId) || supervisorStores[0];
   const [showStoreDropdown, setShowStoreDropdown] = useState(false);
+  const [isSelectFocused, setIsSelectFocused] = useState(false);
 
   const availableAuditors = [
-    { id: 'AUD001', name: 'Amit Singh', totalAssignedSKUs: 1245, completedCount: 843 },
+    { id: 'AUD001', name: 'Amit Singh', totalAssignedSKUs: 1245, completedCount: 843, isSupervisor: true },
     { id: 'AUD002', name: 'Priya Reddy', totalAssignedSKUs: 956, completedCount: 723 },
     { id: 'AUD003', name: 'Suresh Kumar', totalAssignedSKUs: 1534, completedCount: 1102 },
     { id: 'AUD004', name: 'Deepak Sharma', totalAssignedSKUs: 1089, completedCount: 892 },
@@ -221,10 +223,10 @@ const StorePIDAllotment = () => {
         selectablePIDs = filteredPIDs
           .filter(p => p.assignStatus === 'Assigned' && p.auditStatus === 'Pending')
           .map(p => p.pid);
-      } else {
-        // For all filter: select PIDs that can be assigned OR reassigned
+      } else if (activeFilter === 'all') {
+        // For all filter: only select PIDs with 'Not Assigned' status (not reassign)
         selectablePIDs = filteredPIDs
-          .filter(p => p.assignStatus === 'Not Assigned' || (p.assignStatus === 'Assigned' && p.auditStatus === 'Pending'))
+          .filter(p => p.assignStatus === 'Not Assigned')
           .map(p => p.pid);
       }
       setSelectedPIDs(selectablePIDs);
@@ -411,18 +413,55 @@ const StorePIDAllotment = () => {
 
   return (
     <Container fluid className="store-pid-allotment py-4">
+      {/* Store Selector */}
+      <Row className="mb-3">
+        <Col md={6}>
+          <label className="form-label fw-semibold">
+            <i className="fas fa-store me-2"></i>
+            Select Store
+          </label>
+          <Select
+            options={supervisorStores.map(store => ({
+              value: store.storeId,
+              label: `${store.storeName} - ${store.state}`,
+              store: store
+            }))}
+            value={{
+              value: selectedStore.storeId,
+              label: `${selectedStore.storeName} - ${selectedStore.state}`,
+              store: selectedStore
+            }}
+            onChange={(option) => handleStoreChange(option.value)}
+            formatOptionLabel={(option) => (
+              <div className="d-flex justify-content-between align-items-center">
+                <div>
+                  <div className="fw-semibold">{option.store.storeName}</div>
+                  <small className="text-muted">{option.store.state} | {option.store.storeId}</small>
+                </div>
+                <Badge bg="info" className="ms-2">{option.store.totalPIDs} PIDs</Badge>
+              </div>
+            )}
+            isSearchable
+            placeholder="Search and select store..."
+            controlShouldRenderValue={!isSelectFocused}
+            onFocus={() => setIsSelectFocused(true)}
+            onBlur={() => setIsSelectFocused(false)}
+            onMenuClose={() => setIsSelectFocused(false)}
+          />
+        </Col>
+      </Row>
+
       {/* Store Header */}
       <Row className="mb-4">
         <Col>
-          <Card className="shadow-sm border-primary" style={{ position: 'relative' }}>
+          <Card className="shadow-sm border-primary">
             <Card.Body>
               <div className="d-flex justify-content-between align-items-center">
-                <div className="d-flex align-items-center" style={{ cursor: 'pointer' }} onClick={() => setShowStoreDropdown(!showStoreDropdown)}>
+                <div className="d-flex align-items-center">
                   <div>
                     <h3 className="mb-1 text-primary">
                       <i className="fas fa-store me-2"></i>
                       {selectedStore.storeName}
-                      <i className={`fas fa-chevron-${showStoreDropdown ? 'up' : 'down'} ms-2`} style={{ fontSize: '0.8rem' }}></i>
                     </h3>
                     <p className="text-muted mb-0">
                       <i className="fas fa-map-marker-alt me-2"></i>
@@ -453,53 +492,6 @@ const StorePIDAllotment = () => {
                   </div>
                 </div>
               </div>
-              
-              {/* Store Dropdown Menu */}
-              {showStoreDropdown && (
-                <div className="store-dropdown-menu mt-3 pt-3 border-top">
-                  <div className="mb-2 text-muted small">
-                    <i className="fas fa-building me-2"></i>
-                    <strong>All Stores ({supervisorStores.length})</strong> - Click to switch
-                  </div>
-                  <div className="row g-2">
-                    {supervisorStores.map(store => (
-                      <div key={store.storeId} className="col-md-6">
-                        <div
-                          className={`store-option p-3 border rounded ${
-                            store.storeId === selectedStoreId ? 'border-primary bg-primary bg-opacity-10' : 'border-secondary'
-                          }`}
-                          style={{ cursor: 'pointer', transition: 'all 0.2s' }}
-                          onClick={() => handleStoreChange(store.storeId)}
-                          onMouseEnter={(e) => {
-                            if (store.storeId !== selectedStoreId) {
-                              e.currentTarget.style.backgroundColor = '#f8f9fa';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (store.storeId !== selectedStoreId) {
-                              e.currentTarget.style.backgroundColor = 'transparent';
-                            }
-                          }}
-                        >
-                          <div className="d-flex justify-content-between align-items-start">
-                            <div>
-                              <div className="fw-bold text-primary">
-                                {store.storeId === selectedStoreId && <i className="fas fa-check-circle me-2 text-success"></i>}
-                                {store.storeName}
-                              </div>
-                              <div className="small text-muted">
-                                <i className="fas fa-map-marker-alt me-1"></i>
-                                {store.state} | {store.storeId}
-                              </div>
-                            </div>
-                            <Badge bg="info" className="ms-2">{store.totalPIDs} PIDs</Badge>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </Card.Body>
           </Card>
         </Col>
@@ -564,7 +556,7 @@ const StorePIDAllotment = () => {
                 </Col>
                 <Col md={4}>
                   <div className="d-flex gap-2 justify-content-end">
-                    {activeFilter === 'notAssigned' && (
+                    {(activeFilter === 'notAssigned' || activeFilter === 'all') && selectedCounts.assignable > 0 && (
                       <Button
                         variant="success"
                         size="sm"
@@ -572,7 +564,7 @@ const StorePIDAllotment = () => {
                         disabled={selectedCounts.assignable === 0}
                       >
                         <i className="fas fa-user-plus me-1"></i>
-                        Assign ({selectedCounts.assignable})
+                        Bulk Assign ({selectedCounts.assignable})
                       </Button>
                     )}
                     {activeFilter === 'reassign' && (
@@ -613,19 +605,18 @@ const StorePIDAllotment = () => {
                 <Table striped hover responsive className="mb-0">
                   <thead style={{ position: 'sticky', top: 0, background: 'white', zIndex: 1 }}>
                     <tr>
-                      {activeFilter !== 'all' && (
-                        <th style={{ width: '50px' }}>
-                          <Form.Check
-                            type="checkbox"
-                            onChange={handleSelectAll}
-                            checked={selectedPIDs.length > 0 && (
-                              activeFilter === 'notAssigned' ? selectedPIDs.length === filteredPIDs.length :
-                              activeFilter === 'reassign' ? selectedPIDs.length === filteredPIDs.length :
-                              selectedPIDs.length === filteredPIDs.filter(p => p.assignStatus === 'Not Assigned' || (p.assignStatus === 'Assigned' && p.auditStatus === 'Pending')).length
-                            )}
-                          />
-                        </th>
-                      )}
+                      <th style={{ width: '50px' }}>
+                        <Form.Check
+                          type="checkbox"
+                          onChange={handleSelectAll}
+                          checked={selectedPIDs.length > 0 && (
+                            activeFilter === 'notAssigned' ? selectedPIDs.length === filteredPIDs.filter(p => p.assignStatus === 'Not Assigned').length :
+                            activeFilter === 'reassign' ? selectedPIDs.length === filteredPIDs.filter(p => p.assignStatus === 'Assigned' && p.auditStatus === 'Pending').length :
+                            activeFilter === 'all' ? selectedPIDs.length === filteredPIDs.filter(p => p.assignStatus === 'Not Assigned').length :
+                            false
+                          )}
+                        />
+                      </th>
                       <th>PID Number</th>
                       <th>SKU Count</th>
                       <th>Description</th>
@@ -657,20 +648,19 @@ const StorePIDAllotment = () => {
                     {filteredPIDs.length > 0 ? (
                       filteredPIDs.map((pid) => (
                         <tr key={pid.pid}>
-                          {activeFilter !== 'all' && (
-                            <td>
-                              <Form.Check
-                                type="checkbox"
-                                checked={selectedPIDs.includes(pid.pid)}
-                                onChange={() => handleSelectPID(pid.pid)}
-                                disabled={
-                                  activeFilter === 'notAssigned' ? false :
-                                  activeFilter === 'reassign' ? false :
-                                  !(pid.assignStatus === 'Not Assigned' || (pid.assignStatus === 'Assigned' && pid.auditStatus === 'Pending'))
-                                }
-                              />
-                            </td>
-                          )}
+                          <td>
+                            <Form.Check
+                              type="checkbox"
+                              checked={selectedPIDs.includes(pid.pid)}
+                              onChange={() => handleSelectPID(pid.pid)}
+                              disabled={
+                                activeFilter === 'notAssigned' ? pid.assignStatus !== 'Not Assigned' :
+                                activeFilter === 'reassign' ? !(pid.assignStatus === 'Assigned' && pid.auditStatus === 'Pending') :
+                                activeFilter === 'all' ? pid.assignStatus !== 'Not Assigned' :
+                                true
+                              }
+                            />
+                          </td>
                           <td>
                             <strong className="text-primary">{pid.pid}</strong>
                           </td>
@@ -683,7 +673,9 @@ const StorePIDAllotment = () => {
                           <td>
                             {pid.auditorName ? (
                               <span>
-                                <i className="fas fa-user-circle me-1 text-primary"></i>
+                                {availableAuditors.find(a => a.id === pid.auditorId)?.isSupervisor && (
+                                  <i className="fas fa-user-tie me-2 text-warning" title="Supervisor"></i>
+                                )}
                                 {pid.auditorName}
                               </span>
                             ) : (
@@ -699,6 +691,7 @@ const StorePIDAllotment = () => {
                                   setSelectedPIDs([pid.pid]);
                                   openAssignModal(true);
                                 }}
+                                disabled={selectedPIDs.length > 0}
                               >
                                 <i className="fas fa-user-plus me-1"></i>
                                 Assign
@@ -708,6 +701,7 @@ const StorePIDAllotment = () => {
                                 size="sm"
                                 variant="outline-warning"
                                 onClick={() => openReassignModal(pid)}
+                                disabled={selectedPIDs.length > 0}
                               >
                                 <i className="fas fa-exchange-alt me-1"></i>
                                 Reassign
@@ -755,7 +749,7 @@ const StorePIDAllotment = () => {
               <option value="">Choose auditor...</option>
               {availableAuditors.map(auditor => (
                 <option key={auditor.id} value={auditor.id}>
-                  {auditor.name} - Assigned SKUs: {auditor.totalAssignedSKUs.toLocaleString()} | Completed: {auditor.completedCount.toLocaleString()}
+                  {auditor.isSupervisor ? '👔 ' : ''}{auditor.name} - Assigned SKUs: {auditor.totalAssignedSKUs.toLocaleString()} | Completed: {auditor.completedCount.toLocaleString()}
                 </option>
               ))}
             </Form.Select>
@@ -801,7 +795,7 @@ const StorePIDAllotment = () => {
                     .filter(a => a.id !== reassignPID.auditorId)
                     .map(auditor => (
                       <option key={auditor.id} value={auditor.id}>
-                        {auditor.name} - Total Assigned SKUs: {auditor.totalAssignedSKUs.toLocaleString()} | Completed: {auditor.completedCount.toLocaleString()}
+                        {auditor.name}{auditor.isSupervisor ? ' 👔' : ''} - Total Assigned SKUs: {auditor.totalAssignedSKUs.toLocaleString()} | Completed: {auditor.completedCount.toLocaleString()}
                       </option>
                     ))}
                 </Form.Select>

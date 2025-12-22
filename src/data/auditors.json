@@ -2,17 +2,17 @@
   {
     "AuditorID": "A011",
     "AuditorName": "Raghu Babu",
-    "Status": "Active"
+    "Status": "Deactivated"
   },
   {
     "AuditorID": "A012",
     "AuditorName": "Chaitanya Reddy",
-    "Status": "Inactive"
+    "Status": "Active"
   },
   {
     "AuditorID": "A013",
     "AuditorName": "Lokesh Rao",
-    "Status": "Active"
+    "Status": "Inactive"
   },
   {
     "AuditorID": "A014",
@@ -27,7 +27,7 @@
   {
     "AuditorID": "A016",
     "AuditorName": "Venkatesh Varma",
-    "Status": "Active"
+    "Status": "Deactivated"
   },
   {
     "AuditorID": "A017",
@@ -42,7 +42,7 @@
   {
     "AuditorID": "A019",
     "AuditorName": "Arjun Reddy",
-    "Status": "Active"
+    "Status": "Deactivated"
   },
   {
     "AuditorID": "A020",
@@ -52,22 +52,22 @@
   {
     "AuditorID": "A021",
     "AuditorName": "Santosh Rao",
-    "Status": "Active"
+    "Status": "Deactivated"
   },
   {
     "AuditorID": "A022",
     "AuditorName": "Pavan Kalyan",
-    "Status": "Inactive"
+    "Status": "Active"
   },
   {
     "AuditorID": "A023",
     "AuditorName": "Anil Kumar",
-    "Status": "Inactive"
+    "Status": "Active"
   },
   {
     "AuditorID": "A024",
     "AuditorName": "Teja Reddy",
-    "Status": "Active"
+    "Status": "Inactive"
   },
   {
     "AuditorID": "A025",
@@ -82,67 +82,67 @@
   {
     "AuditorID": "A027",
     "AuditorName": "Sharath Reddy",
-    "Status": "Inactive"
+    "Status": "Deactivated"
   },
   {
     "AuditorID": "A028",
     "AuditorName": "Yogesh Naidu",
-    "Status": "Deactivated"
+    "Status": "Active"
   },
   {
     "AuditorID": "A029",
     "AuditorName": "Vinay Kumar",
-    "Status": "Active"
+    "Status": "Deactivated"
   },
   {
     "AuditorID": "A030",
     "AuditorName": "Sashank Reddy",
-    "Status": "Active"
+    "Status": "Inactive"
   },
   {
     "AuditorID": "A031",
     "AuditorName": "Ajay Rao",
-    "Status": "Inactive"
+    "Status": "Active"
   },
   {
     "AuditorID": "A032",
     "AuditorName": "Gopi Krishna",
-    "Status": "Inactive"
+    "Status": "Active"
   },
   {
     "AuditorID": "A033",
     "AuditorName": "Sriram Reddy",
-    "Status": "Inactive"
+    "Status": "Active"
   },
   {
     "AuditorID": "A034",
     "AuditorName": "Rajesh Chowdary",
-    "Status": "Inactive"
+    "Status": "Active"
   },
   {
     "AuditorID": "A035",
     "AuditorName": "Sudheer Naidu",
-    "Status": "Active"
+    "Status": "Deactivated"
   },
   {
     "AuditorID": "A036",
     "AuditorName": "Kiran Kumar",
-    "Status": "Active"
+    "Status": "Inactive"
   },
   {
     "AuditorID": "A037",
     "AuditorName": "Uday Varma",
-    "Status": "Deactivated"
+    "Status": "Active"
   },
   {
     "AuditorID": "A038",
     "AuditorName": "Balaji Reddy",
-    "Status": "Deactivated"
+    "Status": "Inactive"
   },
   {
     "AuditorID": "A039",
     "AuditorName": "Srikanth Rao",
-    "Status": "Active"
+    "Status": "Inactive"
   },
   {
     "AuditorID": "A040",
@@ -152,12 +152,12 @@
   {
     "AuditorID": "A041",
     "AuditorName": "Charan Reddy",
-    "Status": "Active"
+    "Status": "Deactivated"
   },
   {
     "AuditorID": "A042",
     "AuditorName": "Tarun Varma",
-    "Status": "Inactive"
+    "Status": "Active"
   },
   {
     "AuditorID": "A043",
@@ -172,22 +172,22 @@
   {
     "AuditorID": "A045",
     "AuditorName": "Nikhil Reddy",
-    "Status": "Active"
+    "Status": "Deactivated"
   },
   {
     "AuditorID": "A046",
     "AuditorName": "Abhinay Naidu",
-    "Status": "Active"
+    "Status": "Deactivated"
   },
   {
     "AuditorID": "A047",
     "AuditorName": "Rakesh Kumar",
-    "Status": "Active"
+    "Status": "Inactive"
   },
   {
     "AuditorID": "A048",
     "AuditorName": "Suman Reddy",
-    "Status": "Deactivated"
+    "Status": "Active"
   },
   {
     "AuditorID": "A049",

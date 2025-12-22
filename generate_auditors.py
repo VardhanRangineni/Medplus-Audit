@@ -20,7 +20,7 @@ auditors = {f"A{i+11:03d}": name for i, name in enumerate([
 
 # -------- STATUS LOGIC --------
 statuses = ["Active", "Inactive", "Deactivated"]
-weights = [0.75, 0.15, 0.10]  # realistic workforce split
+weights = [0.6, 0.2, 0.2]  # realistic workforce split
 
 # -------- GENERATION --------
 auditor_list = []

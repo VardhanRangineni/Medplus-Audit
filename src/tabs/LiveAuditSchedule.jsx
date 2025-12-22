@@ -537,7 +537,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
         </Col>
         <Col md={3}>
           <KPICard
-            title="Completed"
+            title="Completed (Today)"
             value={workflowStats.completed}
             subtitle="Finalized"
             icon="fas fa-check-circle"

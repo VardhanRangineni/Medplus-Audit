@@ -78,9 +78,8 @@ const PerformersListModal = ({ show, onHide, title, items, metricKey, metricLabe
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body className="pt-2 p-0">
-                {/* Controls Bar */}
-                <div className="d-flex justify-content-between align-items-center px-3 py-2 bg-white border-bottom flex-wrap gap-2">
-
+                {/* Controls Bar - Row 1: Sort & Status */}
+                <div className="d-flex justify-content-between align-items-center px-3 py-2 bg-white border-bottom">
                     {/* Sort Control */}
                     <div className="d-flex align-items-center">
                         <span className="small fw-bold text-muted me-2">Sort by:</span>
@@ -133,50 +132,52 @@ const PerformersListModal = ({ show, onHide, title, items, metricKey, metricLabe
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
+                </div>
 
-                    {/* Pagination & Page Size */}
-                    <div className="d-flex align-items-center gap-3">
-                        <div className="d-flex align-items-center">
-                            <span className="me-2 small text-muted">Show</span>
-                            <Form.Select
-                                size="sm"
-                                style={{ width: '70px', boxShadow: 'none' }}
-                                value={itemsPerPage}
-                                onChange={(e) => {
-                                    setItemsPerPage(Number(e.target.value));
-                                    setCurrentPage(1);
-                                }}
-                            >
-                                <option value="5">5</option>
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="50">50</option>
-                            </Form.Select>
-                        </div>
+                {/* Controls Bar - Row 2: Show & Pagination */}
+                <div className="d-flex justify-content-between align-items-center px-3 py-2 bg-white border-bottom">
+                    {/* Show X Items */}
+                    <div className="d-flex align-items-center">
+                        <span className="me-2 small text-muted">Show</span>
+                        <Form.Select
+                            size="sm"
+                            style={{ width: '70px', boxShadow: 'none' }}
+                            value={itemsPerPage}
+                            onChange={(e) => {
+                                setItemsPerPage(Number(e.target.value));
+                                setCurrentPage(1);
+                            }}
+                        >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </Form.Select>
+                    </div>
 
-                        <div className="d-flex align-items-center gap-2">
-                            <Button
-                                variant="outline-secondary"
-                                size="sm"
-                                disabled={currentPage === 1}
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                className="border-0"
-                            >
-                                <i className="fas fa-chevron-left"></i>
-                            </Button>
-                            <span className="small fw-bold text-muted">
-                                {currentPage} / {totalPages || 1}
-                            </span>
-                            <Button
-                                variant="outline-secondary"
-                                size="sm"
-                                disabled={currentPage === totalPages || totalPages === 0}
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                className="border-0"
-                            >
-                                <i className="fas fa-chevron-right"></i>
-                            </Button>
-                        </div>
+                    {/* Pagination */}
+                    <div className="d-flex align-items-center gap-2">
+                        <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            disabled={currentPage === 1}
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            className="border-0"
+                        >
+                            <i className="fas fa-chevron-left"></i>
+                        </Button>
+                        <span className="small fw-bold text-muted">
+                            {currentPage} / {totalPages || 1}
+                        </span>
+                        <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            disabled={currentPage === totalPages || totalPages === 0}
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            className="border-0"
+                        >
+                            <i className="fas fa-chevron-right"></i>
+                        </Button>
                     </div>
                 </div>
 

@@ -177,7 +177,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
         // 1. Audit History Headers (Extended)
         const historyHeaders = [
-            "Store ID", "Store Name", "Date", "Job Type", "Allocated PIDs", "Allocated SKUs",
+            "Store ID", "Store Name", "Audit Date", "Job Type", "Allocated PIDs", "Allocated SKUs",
             "Appeared Dev Qty", "Appeared Dev Value (MRP)", "Audited Value (MRP)",
             "Matched Dev Qty", "Matched Dev Value",
             "Revised Dev Qty", "Revised Dev Value",
@@ -306,7 +306,7 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
 
         autoTable(doc, {
             startY: 20,
-            head: [['Store ID', 'Store Name', 'Date', 'Job Type', 'Appeared Qty', 'Dev Value (MRP Rs.)', 'Audited Value (MRP Rs.)', 'Matched Qty', 'Matched Value (Rs.)', 'Revised Qty', 'Revised Value (Rs.)', 'Match Rate %', 'Edit Rate %']],
+            head: [['Store ID', 'Store Name', 'Audit Date', 'Job Type', 'Appeared Qty', 'Dev Value (MRP Rs.)', 'Audited Value (MRP Rs.)', 'Matched Qty', 'Matched Value (Rs.)', 'Revised Qty', 'Revised Value (Rs.)', 'Match Rate %', 'Edit Rate %']],
             body: auditorRecords.map(r => {
                 const appearedQty = r.AppearedQty || 0;
                 const matchedQty = r.MatchedQty || 0;
@@ -530,10 +530,10 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                                             Store ID {getSortIcon('StoreID')}
                                         </th>
                                         <th className="border-0 py-3" onClick={() => requestSort('StoreName')} style={{ cursor: 'pointer' }}>
-                                            Store {getSortIcon('StoreName')}
+                                            Store Name {getSortIcon('StoreName')}
                                         </th>
                                         <th className="border-0 py-3" onClick={() => requestSort('AuditStartDate')} style={{ cursor: 'pointer' }}>
-                                            Date {getSortIcon('AuditStartDate')}
+                                            Audit Date {getSortIcon('AuditStartDate')}
                                         </th>
                                         <th className="border-0 py-3" onClick={() => requestSort('AuditJobType')} style={{ cursor: 'pointer' }}>
                                             Job Type {getSortIcon('AuditJobType')}

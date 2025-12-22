@@ -51,6 +51,7 @@ function AppContent() {
           onFilterChange={handleFilterChange}
           hideFilters={hideFilters}
           hideFinancialYear={hideFinancialYear}
+          showLimitedFinancialYears={showLimitedFinancialYears}
         />
         <main className="content-area">
           <Routes>

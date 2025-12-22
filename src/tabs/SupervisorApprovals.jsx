@@ -316,8 +316,8 @@ const SupervisorApprovals = ({ filters = {} }) => {
 
       <Row className="g-3 mb-4">
         <Col md={3}><KPICard title="Total Supervisors" value={supervisorData.length} /></Col>
-        <Col md={3}><KPICard title="Total Stores Managed" value={overallMetrics.totalStores} /></Col>
-        <Col md={3}><KPICard title="Total Audits" value={overallMetrics.totalAudits?.toLocaleString()} /></Col>
+        <Col md={3}><KPICard title="Total Stores Supervised" value={overallMetrics.totalStores} /></Col>
+        <Col md={3}><KPICard title="Total Audits Supervised" value={overallMetrics.totalAudits?.toLocaleString()} /></Col>
         <Col md={3}><KPICard title="Total Value" value={formatIndianCurrency(overallMetrics.totalValue)} /></Col>
       </Row>
 

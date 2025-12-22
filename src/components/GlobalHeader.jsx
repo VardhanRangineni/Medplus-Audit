@@ -4,7 +4,7 @@ import Select from 'react-select';
 import './GlobalHeader.css';
 import medplusIcon from '../assets/Group 1420.png';
 
-const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideFilters = false, showLimitedFinancialYears = false }) => {
+const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideFilters = false, hideFinancialYear = false }) => {
   // Use filters from props instead of local state
 
   const handleFilterChange = (key, value) => {
@@ -147,29 +147,29 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideF
         {!hideFilters && (
           <>
             <Row className="g-3 mb-2">
-              <Col md={2}>
-                <Form.Group>
-                  <Form.Label className="small fw-semibold mb-1">
-                    Financial year <span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Select
-                    size="sm"
-                    value={filters.financialYear}
-                    onChange={(e) => handleFilterChange('financialYear', e.target.value)}
-                    className="filter-select text-center fw-bold"
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <option value="2025-26">2025–26</option>
-                    <option value="2024-25">2024–25</option>
-                    {!showLimitedFinancialYears && (
-                      <>
-                        <option value="2023-24">2023–24</option>
-                        <option value="2022-23">2022–23</option>
-                      </>
-                    )}
-                  </Form.Select>
-                </Form.Group>
-              </Col>
+          {!hideFinancialYear && (
+          <Col md={2}>
+            <Form.Group>
+              <Form.Label className="small fw-semibold mb-1">
+                Financial year <span className="text-danger">*</span>
+              </Form.Label>
+              <Select
+                options={[
+                  { value: '2025-26', label: '2025-26' },
+                  { value: '2024-25', label: '2024-25' },
+                  { value: '2023-24', label: '2023-24' },
+                  { value: '2022-23', label: '2022-23' }
+                ]}
+                value={{ value: filters.financialYear, label: filters.financialYear }}
+                onChange={(selected) => handleFilterChange('financialYear', selected.value)}
+                styles={customSelectStyles}
+                isSearchable={false}
+                className="react-select-container"
+                classNamePrefix="react-select"
+              />
+            </Form.Group>
+          </Col>
+          )}
 
               <Col md={2}>
                 <Form.Group>

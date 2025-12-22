@@ -620,10 +620,19 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                                 <div className="d-flex align-items-center gap-2">
                                   {audit.auditors !== 'Not Assigned' ? (
                                     <>
+                                      <small className="text-muted" title={audit.auditors} style={{ cursor: 'help' }}>
+                                        {(() => {
+                                          const auditorList = audit.auditors.split(',');
+                                          const count = auditorList.length;
+                                          if (count > 3) {
+                                            return auditorList.slice(0, 3).map(a => a.trim()).join(', ') + '...';
+                                          }
+                                          return audit.auditors;
+                                        })()}
+                                      </small>
                                       <Badge bg="info" pill>
                                         {audit.auditors.split(',').length}
                                       </Badge>
-                                      <small className="text-muted">{audit.auditors}</small>
                                     </>
                                   ) : (
                                     <Badge bg="secondary">{audit.auditors}</Badge>

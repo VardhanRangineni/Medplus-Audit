@@ -30,15 +30,15 @@ const StorePIDAllotment = () => {
       { pid: 'PID001', storeId: 'MP001', description: 'A1-56', skuCount: 245, assignStatus: 'Assigned', auditStatus: 'In Progress', auditorId: 'AUD001', auditorName: 'Amit Singh' },
       { pid: 'PID002', storeId: 'MP001', description: 'B6-7', skuCount: 189, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID003', storeId: 'MP001', description: 'C2-89', skuCount: 312, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID004', storeId: 'MP001', description: 'A3-45', skuCount: 156, assignStatus: 'Assigned', auditStatus: 'Not Started', auditorId: 'AUD002', auditorName: 'Priya Reddy' },
+      { pid: 'PID004', storeId: 'MP001', description: 'A3-45', skuCount: 156, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD002', auditorName: 'Priya Reddy' },
       { pid: 'PID005', storeId: 'MP001', description: 'D1-23', skuCount: 278, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID006', storeId: 'MP001', description: 'B8-90', skuCount: 201, assignStatus: 'Assigned', auditStatus: 'Not Started', auditorId: 'AUD003', auditorName: 'Suresh Kumar' },
+      { pid: 'PID006', storeId: 'MP001', description: 'B8-90', skuCount: 201, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD003', auditorName: 'Suresh Kumar' },
       { pid: 'PID007', storeId: 'MP001', description: 'E5-67', skuCount: 167, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID008', storeId: 'MP001', description: 'A2-34', skuCount: 234, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID009', storeId: 'MP001', description: 'C7-12', skuCount: 198, assignStatus: 'Assigned', auditStatus: 'Completed', auditorId: 'AUD001', auditorName: 'Amit Singh' },
       { pid: 'PID010', storeId: 'MP001', description: 'F3-78', skuCount: 289, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID011', storeId: 'MP001', description: 'B4-56', skuCount: 176, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID012', storeId: 'MP001', description: 'D8-91', skuCount: 223, assignStatus: 'Assigned', auditStatus: 'Not Started', auditorId: 'AUD002', auditorName: 'Priya Reddy' },
+      { pid: 'PID012', storeId: 'MP001', description: 'D8-91', skuCount: 223, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD002', auditorName: 'Priya Reddy' },
       { pid: 'PID013', storeId: 'MP001', description: 'A5-23', skuCount: 145, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID014', storeId: 'MP001', description: 'E2-45', skuCount: 267, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID015', storeId: 'MP001', description: 'C9-67', skuCount: 192, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null }
@@ -50,7 +50,7 @@ const StorePIDAllotment = () => {
       { pid: 'PID019', storeId: 'MP002', description: 'D3-89', skuCount: 189, assignStatus: 'Assigned', auditStatus: 'Completed', auditorId: 'AUD003', auditorName: 'Suresh Kumar' },
       { pid: 'PID020', storeId: 'MP002', description: 'E1-45', skuCount: 312, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID021', storeId: 'MP002', description: 'F6-23', skuCount: 156, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID022', storeId: 'MP002', description: 'G2-78', skuCount: 245, assignStatus: 'Assigned', auditStatus: 'Not Started', auditorId: 'AUD002', auditorName: 'Priya Reddy' },
+      { pid: 'PID022', storeId: 'MP002', description: 'G2-78', skuCount: 245, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD002', auditorName: 'Priya Reddy' },
       { pid: 'PID023', storeId: 'MP002', description: 'H4-56', skuCount: 201, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID024', storeId: 'MP002', description: 'I1-90', skuCount: 223, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID025', storeId: 'MP002', description: 'J5-34', skuCount: 267, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
@@ -59,7 +59,7 @@ const StorePIDAllotment = () => {
     ],
     'MP003': [
       { pid: 'PID028', storeId: 'MP003', description: 'A2-78', skuCount: 234, assignStatus: 'Assigned', auditStatus: 'In Progress', auditorId: 'AUD004', auditorName: 'Deepak Sharma' },
-      { pid: 'PID029', storeId: 'MP003', description: 'B5-23', skuCount: 198, assignStatus: 'Assigned', auditStatus: 'Not Started', auditorId: 'AUD005', auditorName: 'Anitha Rao' },
+      { pid: 'PID029', storeId: 'MP003', description: 'B5-23', skuCount: 198, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD005', auditorName: 'Anitha Rao' },
       { pid: 'PID030', storeId: 'MP003', description: 'C1-45', skuCount: 312, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID031', storeId: 'MP003', description: 'D6-89', skuCount: 267, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID032', storeId: 'MP003', description: 'E3-12', skuCount: 189, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
@@ -81,7 +81,7 @@ const StorePIDAllotment = () => {
       { pid: 'PID046', storeId: 'MP004', description: 'A6-45', skuCount: 256, assignStatus: 'Assigned', auditStatus: 'In Progress', auditorId: 'AUD002', auditorName: 'Priya Reddy' },
       { pid: 'PID047', storeId: 'MP004', description: 'B3-78', skuCount: 189, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID048', storeId: 'MP004', description: 'C7-23', skuCount: 234, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID049', storeId: 'MP004', description: 'D4-56', skuCount: 298, assignStatus: 'Assigned', auditStatus: 'Not Started', auditorId: 'AUD003', auditorName: 'Suresh Kumar' },
+      { pid: 'PID049', storeId: 'MP004', description: 'D4-56', skuCount: 298, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD003', auditorName: 'Suresh Kumar' },
       { pid: 'PID050', storeId: 'MP004', description: 'E1-89', skuCount: 212, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID051', storeId: 'MP004', description: 'F5-12', skuCount: 267, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID052', storeId: 'MP004', description: 'G2-34', skuCount: 178, assignStatus: 'Assigned', auditStatus: 'Completed', auditorId: 'AUD004', auditorName: 'Deepak Sharma' },
@@ -95,7 +95,7 @@ const StorePIDAllotment = () => {
     ],
     'MP005': [
       { pid: 'PID060', storeId: 'MP005', description: 'A3-67', skuCount: 245, assignStatus: 'Assigned', auditStatus: 'In Progress', auditorId: 'AUD005', auditorName: 'Anitha Rao' },
-      { pid: 'PID061', storeId: 'MP005', description: 'B7-12', skuCount: 198, assignStatus: 'Assigned', auditStatus: 'Not Started', auditorId: 'AUD001', auditorName: 'Amit Singh' },
+      { pid: 'PID061', storeId: 'MP005', description: 'B7-12', skuCount: 198, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD001', auditorName: 'Amit Singh' },
       { pid: 'PID062', storeId: 'MP005', description: 'C4-45', skuCount: 289, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID063', storeId: 'MP005', description: 'D1-78', skuCount: 234, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
       { pid: 'PID064', storeId: 'MP005', description: 'E5-23', skuCount: 267, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
@@ -144,7 +144,7 @@ const StorePIDAllotment = () => {
     if (activeFilter === 'notAssigned') {
       filtered = filtered.filter(pid => pid.assignStatus === 'Not Assigned');
     } else if (activeFilter === 'reassign') {
-      filtered = filtered.filter(pid => pid.assignStatus === 'Assigned' && pid.auditStatus === 'Not Started');
+      filtered = filtered.filter(pid => pid.assignStatus === 'Assigned' && pid.auditStatus === 'Pending');
     }
 
     // Apply search term
@@ -194,7 +194,7 @@ const StorePIDAllotment = () => {
   const selectedCounts = useMemo(() => {
     const selectedPIDsData = pids.filter(p => selectedPIDs.includes(p.pid));
     const assignable = selectedPIDsData.filter(p => p.assignStatus === 'Not Assigned').length;
-    const reassignable = selectedPIDsData.filter(p => p.assignStatus === 'Assigned' && p.auditStatus === 'Not Started').length;
+    const reassignable = selectedPIDsData.filter(p => p.assignStatus === 'Assigned' && p.auditStatus === 'Pending').length;
     return { assignable, reassignable };
   }, [selectedPIDs, pids]);
 
@@ -217,14 +217,14 @@ const StorePIDAllotment = () => {
           .filter(p => p.assignStatus === 'Not Assigned')
           .map(p => p.pid);
       } else if (activeFilter === 'reassign') {
-        // For reassign: only select PIDs that are 'Assigned' and 'Not Started'
+        // For reassign: only select PIDs that are 'Assigned' and 'Pending'
         selectablePIDs = filteredPIDs
-          .filter(p => p.assignStatus === 'Assigned' && p.auditStatus === 'Not Started')
+          .filter(p => p.assignStatus === 'Assigned' && p.auditStatus === 'Pending')
           .map(p => p.pid);
       } else {
         // For all filter: select PIDs that can be assigned OR reassigned
         selectablePIDs = filteredPIDs
-          .filter(p => p.assignStatus === 'Not Assigned' || (p.assignStatus === 'Assigned' && p.auditStatus === 'Not Started'))
+          .filter(p => p.assignStatus === 'Not Assigned' || (p.assignStatus === 'Assigned' && p.auditStatus === 'Pending'))
           .map(p => p.pid);
       }
       setSelectedPIDs(selectablePIDs);
@@ -233,16 +233,18 @@ const StorePIDAllotment = () => {
     }
   };
 
-  const openAssignModal = () => {
-    if (selectedPIDs.length === 0) {
-      showAlert('warning', 'Please select at least one PID to assign');
-      return;
-    }
-    
-    // Check if there are any assignable PIDs
-    if (selectedCounts.assignable === 0) {
-      showAlert('warning', 'None of the selected PIDs can be assigned. Only unassigned PIDs can be assigned.');
-      return;
+  const openAssignModal = (skipValidation = false) => {
+    if (!skipValidation) {
+      if (selectedPIDs.length === 0) {
+        showAlert('warning', 'Please select at least one PID to assign');
+        return;
+      }
+      
+      // Check if there are any assignable PIDs
+      if (selectedCounts.assignable === 0) {
+        showAlert('warning', 'None of the selected PIDs can be assigned. Only unassigned PIDs can be assigned.');
+        return;
+      }
     }
     
     setShowAssignModal(true);
@@ -256,7 +258,7 @@ const StorePIDAllotment = () => {
     
     // Check if there are any reassignable PIDs
     if (selectedCounts.reassignable === 0) {
-      showAlert('warning', 'None of the selected PIDs can be reassigned. Only assigned PIDs with "Not Started" status can be reassigned.');
+      showAlert('warning', 'None of the selected PIDs can be reassigned. Only assigned PIDs with "Pending" status can be reassigned.');
       return;
     }
     
@@ -280,7 +282,7 @@ const StorePIDAllotment = () => {
           ? { 
               ...pid, 
               assignStatus: 'Assigned', 
-              auditStatus: 'Not Started',
+              auditStatus: 'Pending',
               auditorId: selectedAuditor, 
               auditorName: auditor.name 
             }
@@ -318,7 +320,7 @@ const StorePIDAllotment = () => {
               ...pid, 
               auditorId: selectedAuditor, 
               auditorName: auditor.name,
-              auditStatus: 'Not Started'
+              auditStatus: 'Pending'
             }
           : pid
       )
@@ -342,7 +344,7 @@ const StorePIDAllotment = () => {
     const reassignablePIDs = pids.filter(p => 
       selectedPIDs.includes(p.pid) && 
       p.assignStatus === 'Assigned' && 
-      p.auditStatus === 'Not Started'
+      p.auditStatus === 'Pending'
     ).map(p => p.pid);
     
     setPids(prev =>
@@ -352,7 +354,7 @@ const StorePIDAllotment = () => {
               ...pid, 
               auditorId: selectedAuditor, 
               auditorName: auditor.name,
-              auditStatus: 'Not Started'
+              auditStatus: 'Pending'
             }
           : pid
       )
@@ -392,10 +394,9 @@ const StorePIDAllotment = () => {
 
   const getAuditStatusBadge = (status) => {
     const variants = {
-      'Not Started': 'secondary',
+      'Pending': 'warning',
       'In Progress': 'primary',
-      'Completed': 'success',
-      'Pending': 'warning'
+      'Completed': 'success'
     };
     return <Badge bg={variants[status] || 'secondary'}>{status}</Badge>;
   };
@@ -563,7 +564,7 @@ const StorePIDAllotment = () => {
                 </Col>
                 <Col md={4}>
                   <div className="d-flex gap-2 justify-content-end">
-                    {(activeFilter === 'all' || activeFilter === 'notAssigned') && (
+                    {activeFilter === 'notAssigned' && (
                       <Button
                         variant="success"
                         size="sm"
@@ -574,7 +575,7 @@ const StorePIDAllotment = () => {
                         Assign ({selectedCounts.assignable})
                       </Button>
                     )}
-                    {(activeFilter === 'all' || activeFilter === 'reassign') && (
+                    {activeFilter === 'reassign' && (
                       <Button
                         variant="warning"
                         size="sm"
@@ -619,7 +620,7 @@ const StorePIDAllotment = () => {
                           checked={selectedPIDs.length > 0 && (
                             activeFilter === 'notAssigned' ? selectedPIDs.length === filteredPIDs.length :
                             activeFilter === 'reassign' ? selectedPIDs.length === filteredPIDs.length :
-                            selectedPIDs.length === filteredPIDs.filter(p => p.assignStatus === 'Not Assigned' || (p.assignStatus === 'Assigned' && p.auditStatus === 'Not Started')).length
+                            selectedPIDs.length === filteredPIDs.filter(p => p.assignStatus === 'Not Assigned' || (p.assignStatus === 'Assigned' && p.auditStatus === 'Pending')).length
                           )}
                         />
                       </th>
@@ -662,7 +663,7 @@ const StorePIDAllotment = () => {
                               disabled={
                                 activeFilter === 'notAssigned' ? false :
                                 activeFilter === 'reassign' ? false :
-                                !(pid.assignStatus === 'Not Assigned' || (pid.assignStatus === 'Assigned' && pid.auditStatus === 'Not Started'))
+                                !(pid.assignStatus === 'Not Assigned' || (pid.assignStatus === 'Assigned' && pid.auditStatus === 'Pending'))
                               }
                             />
                           </td>
@@ -686,7 +687,19 @@ const StorePIDAllotment = () => {
                             )}
                           </td>
                           <td>
-                            {pid.assignStatus === 'Assigned' && pid.auditStatus === 'Not Started' && (
+                            {pid.assignStatus === 'Not Assigned' ? (
+                              <Button
+                                size="sm"
+                                variant="outline-success"
+                                onClick={() => {
+                                  setSelectedPIDs([pid.pid]);
+                                  openAssignModal(true);
+                                }}
+                              >
+                                <i className="fas fa-user-plus me-1"></i>
+                                Assign
+                              </Button>
+                            ) : pid.assignStatus === 'Assigned' && pid.auditStatus === 'Pending' ? (
                               <Button
                                 size="sm"
                                 variant="outline-warning"
@@ -695,7 +708,7 @@ const StorePIDAllotment = () => {
                                 <i className="fas fa-exchange-alt me-1"></i>
                                 Reassign
                               </Button>
-                            )}
+                            ) : null}
                           </td>
                         </tr>
                       ))
@@ -815,7 +828,7 @@ const StorePIDAllotment = () => {
           <Alert variant="warning">
             <strong>Selected PIDs for Reassignment:</strong> {selectedCounts.reassignable}
             <br />
-            <small className="text-muted">{pids.filter(p => selectedPIDs.includes(p.pid) && p.assignStatus === 'Assigned' && p.auditStatus === 'Not Started').map(p => p.pid).join(', ')}</small>
+            <small className="text-muted">{pids.filter(p => selectedPIDs.includes(p.pid) && p.assignStatus === 'Assigned' && p.auditStatus === 'Pending').map(p => p.pid).join(', ')}</small>
           </Alert>
           <Form.Group>
             <Form.Label>Select New Auditor <span className="text-danger">*</span></Form.Label>
@@ -847,3 +860,6 @@ const StorePIDAllotment = () => {
 };
 
 export default StorePIDAllotment;
+
+
+

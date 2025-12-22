@@ -107,6 +107,7 @@ const SupervisorApprovals = ({ filters = {} }) => {
   const [selectedSupervisor, setSelectedSupervisor] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: 'supervisorId', direction: 'ascending' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [showTableFilters, setShowTableFilters] = useState(false);
 
   const hasActiveFilters =
     (filters.state && filters.state.length > 0) ||
@@ -330,29 +331,43 @@ const SupervisorApprovals = ({ filters = {} }) => {
               </h5>
               <small className="text-muted">Click on any supervisor to view detailed performance metrics</small>
             </div>
-            <InputGroup style={{ maxWidth: '300px' }}>
-              <InputGroup.Text className="bg-white border-end-0">
-                <i className="fas fa-search text-muted"></i>
-              </InputGroup.Text>
-              <Form.Control
-                type="text"
-                placeholder="Search by supervisor name..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="border-start-0"
-                style={{ boxShadow: 'none' }}
-              />
-              {searchQuery && (
-                <InputGroup.Text
-                  className="bg-white"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => setSearchQuery('')}
-                >
-                  <i className="fas fa-times text-muted"></i>
-                </InputGroup.Text>
-              )}
-            </InputGroup>
+            <div className="d-flex gap-2 align-items-center">
+              <button 
+                className="btn btn-outline-primary btn-sm"
+                onClick={() => setShowTableFilters(!showTableFilters)}
+              >
+                <i className="fas fa-filter me-1"></i>
+                Table Filters
+                <i className={`fas fa-chevron-${showTableFilters ? 'up' : 'down'} ms-1`}></i>
+              </button>
+            </div>
           </div>
+          {showTableFilters && (
+            <div className="mt-3">
+              <InputGroup style={{ maxWidth: '300px' }}>
+                <InputGroup.Text className="bg-white border-end-0">
+                  <i className="fas fa-search text-muted"></i>
+                </InputGroup.Text>
+                <Form.Control
+                  type="text"
+                  placeholder="Search by supervisor name..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="border-start-0"
+                  style={{ boxShadow: 'none' }}
+                />
+                {searchQuery && (
+                  <InputGroup.Text
+                    className="bg-white"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setSearchQuery('')}
+                  >
+                    <i className="fas fa-times text-muted"></i>
+                  </InputGroup.Text>
+                )}
+              </InputGroup>
+            </div>
+          )}
         </Card.Header>
         <Card.Body className="p-0">
           <div className="table-responsive" style={{ maxHeight: '600px', overflowY: 'auto' }}>

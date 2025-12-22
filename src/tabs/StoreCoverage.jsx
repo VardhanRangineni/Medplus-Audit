@@ -711,7 +711,7 @@ const StoreCoverage = ({ filters = {} }) => {
             <Card.Header className="bg-white border-0 py-3">
               <h5 className="mb-0 fw-bold">
                 <i className="fas fa-chart-bar me-2 text-primary"></i>
-                Audit Accuracy
+                Deviation Summary
               </h5>
               <small className="text-muted">Click on bars for details</small>
             </Card.Header>
@@ -748,7 +748,7 @@ const StoreCoverage = ({ filters = {} }) => {
                 <div>
                   <h5 className="mb-0 fw-bold">
                     <i className="fas fa-info-circle me-2 text-primary"></i>
-                    {selectedDeviation ? 'Deviation Details' : 'Audit Accuracy'}
+                    {selectedDeviation ? 'Deviation Details' : 'Deviation Summary'}
                   </h5>
                   <small className="text-muted">
                     {selectedDeviation ? `Details for ${selectedDeviation.type}` : 'Click on a bar for details'}

@@ -92,9 +92,9 @@ const StoreCoverage = ({ filters = {} }) => {
     // Assume all stores in data are active (can be enhanced with IsActive field if available)
     const activeStores = filteredStoreData.filter(s => s.IsActive !== false).length;
     const inactiveStores = filteredStoreData.filter(s => s.IsActive === false).length;
-    const totalStores = covered + uncovered; // 470 + 60 = 530
+    const totalStores = activeAuditedStores + uncovered; 
 
-    const coveredPercentage = totalStores > 0 ? ((covered / totalStores) * 100).toFixed(1) : 0;
+    const coveredPercentage = totalStores > 0 ? ((activeAuditedStores / totalStores) * 100).toFixed(1) : 0;
     const uncoveredPercentage = totalStores > 0 ? ((uncovered / totalStores) * 100).toFixed(1) : 0;
 
     return {

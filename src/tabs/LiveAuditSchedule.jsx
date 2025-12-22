@@ -19,6 +19,23 @@ const LiveAuditSchedule = ({ filters = {} }) => {
   const [selectedStore, setSelectedStore] = useState(null);
   const [storeData, setStoreData] = useState(null);
 
+  // Helper function to format numbers in Indian numbering system
+  const formatIndianNumber = (num) => {
+    if (num === null || num === undefined) return '0';
+    const numStr = num.toString();
+    const [intPart, decPart] = numStr.split('.');
+    
+    // Format integer part with Indian numbering
+    let lastThree = intPart.substring(intPart.length - 3);
+    const otherNumbers = intPart.substring(0, intPart.length - 3);
+    if (otherNumbers !== '') {
+      lastThree = ',' + lastThree;
+    }
+    const result = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + lastThree;
+    
+    return decPart ? result + '.' + decPart : result;
+  };
+
   // Fetch store data when selectedStore changes
   useEffect(() => {
     if (selectedStore?.storeId) {
@@ -650,10 +667,10 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                                   {audit.endDate}
                                 </td>
                                 <td>
-                                  <Badge bg="light" text="dark">{audit.totalPIDs.toLocaleString()}</Badge>
+                                  <Badge bg="light" text="dark">{formatIndianNumber(audit.totalPIDs)}</Badge>
                                 </td>
                                 <td>
-                                  <Badge bg="light" text="dark">{audit.totalSKUs.toLocaleString()}</Badge>
+                                  <Badge bg="light" text="dark">{formatIndianNumber(audit.totalSKUs)}</Badge>
                                 </td>
                                 <td>
                                   <Badge bg="primary">{audit.duration}</Badge>
@@ -710,7 +727,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                               <td style={{ minWidth: '250px' }}>
                                 <div className="mb-1">
                                   <small className="text-muted">
-                                    {audit.completedSKUs.toLocaleString()} / {audit.totalSKUs.toLocaleString()} SKUs
+                                    {formatIndianNumber(audit.completedSKUs)} / {formatIndianNumber(audit.totalSKUs)} SKUs
                                   </small>
                                 </div>
                                 <ProgressBar

@@ -561,7 +561,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                 <div>
                   <h5 className="mb-0 fw-bold">
                     <i className="fas fa-table me-2 text-primary"></i>
-                    Live Audit Schedule - {selectedStatus === 'created' ? 'Total' : selectedStatus === 'in-progress' ? 'In Progress' : selectedStatus === 'pending' ? 'Pending' : 'Completed'}
+                    Live Audit Schedule - {selectedStatus === 'created' ? 'Total' : selectedStatus === 'in-progress' ? 'In Progress' : selectedStatus === 'pending' ? 'Yet to Start' : 'Completed'}
                   </h5>
                   <small className="text-muted">Click on any row to view auditor-wise allocation and real-time progress</small>
                 </div>
@@ -600,7 +600,8 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                     <tr>
                       <th>Store ID</th>
                       <th>Store Name</th>
-                      {selectedStatus === 'completed' && <th>State</th>}
+                      <th>State</th>
+                      <th>City</th>
                       <th>Supervisor</th>
                       {selectedStatus === 'completed' ? <th>Auditors</th> : <th>Assigned Auditors</th>}
                       <th>Start Date</th>
@@ -631,11 +632,8 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                               </Badge>
                             </td>
                             <td className="fw-semibold">{audit.storeName}</td>
-                            {selectedStatus === 'completed' && (
-                              <td>
-                                <Badge bg="secondary">{audit.state}</Badge>
-                              </td>
-                            )}
+                            <td>{audit.storeId?.substring(2, 4) || '-'}</td>
+                            <td>{audit.storeId?.substring(4, 7) || '-'}</td>
                             <td>
                               <i className="fas fa-user-tie me-2 text-muted"></i>
                               {audit.supervisor}

@@ -239,7 +239,7 @@ const AuditSpecificDetailModal = ({ show, onHide, audit, allData }) => {
                                 </div>
                                 <div className="d-flex flex-wrap gap-4 mt-3">
                                     <div className="d-flex align-items-center text-muted">
-                                        <i className="fas fa-hashtag me-2" style={{ color: '#667eea' }}></i>
+                                        <span className="fw-bold small me-1">Store ID:</span>
                                         <span className="fw-medium">{audit.StoreID || audit.AUDIT_ID}</span>
                                     </div>
                                     <div className="d-flex align-items-center text-muted">

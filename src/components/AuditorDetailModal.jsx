@@ -523,32 +523,50 @@ const AuditorDetailModal = ({ show, onHide, auditorId, allData }) => {
                             <Table hover responsive className="mb-0 hover-scale-row">
                                 <thead className="bg-light text-muted small text-uppercase">
                                     <tr>
-                                        <th className="border-0 py-3 ps-4" onClick={() => requestSort('StoreName')} style={{ cursor: 'pointer' }}>
-                                            Store Name {getSortIcon('StoreName')}
+                                        <th className="border-0 py-3 ps-4" onClick={() => requestSort('StoreName')} style={{ cursor: 'pointer', verticalAlign: 'middle' }}>
+                                            <div className="d-flex align-items-center gap-1">
+                                                Store Name {getSortIcon('StoreName')}
+                                            </div>
                                         </th>
-                                        <th className="border-0 py-3" onClick={() => requestSort('StoreID')} style={{ cursor: 'pointer' }}>
-                                            Store ID {getSortIcon('StoreID')}
+                                        <th className="border-0 py-3" onClick={() => requestSort('StoreID')} style={{ cursor: 'pointer', verticalAlign: 'middle' }}>
+                                            <div className="d-flex align-items-center gap-1">
+                                                Store ID {getSortIcon('StoreID')}
+                                            </div>
                                         </th>
-                                        <th className="border-0 py-3" onClick={() => requestSort('AuditStartDate')} style={{ cursor: 'pointer' }}>
-                                            Audit Date {getSortIcon('AuditStartDate')}
+                                        <th className="border-0 py-3" onClick={() => requestSort('AuditStartDate')} style={{ cursor: 'pointer', verticalAlign: 'middle' }}>
+                                            <div className="d-flex align-items-center gap-1">
+                                                Audit Date {getSortIcon('AuditStartDate')}
+                                            </div>
                                         </th>
-                                        <th className="border-0 py-3" onClick={() => requestSort('AuditJobType')} style={{ cursor: 'pointer' }}>
-                                            Job Type {getSortIcon('AuditJobType')}
+                                        <th className="border-0 py-3" onClick={() => requestSort('AuditJobType')} style={{ cursor: 'pointer', verticalAlign: 'middle' }}>
+                                            <div className="d-flex align-items-center gap-1">
+                                                Job Type {getSortIcon('AuditJobType')}
+                                            </div>
                                         </th>
-                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedPIDs')} style={{ cursor: 'pointer' }}>
-                                            PIDs {getSortIcon('AuditorAllottedPIDs')}
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedPIDs')} style={{ cursor: 'pointer', verticalAlign: 'middle' }}>
+                                            <div className="d-flex align-items-center justify-content-end gap-1">
+                                                PIDs {getSortIcon('AuditorAllottedPIDs')}
+                                            </div>
                                         </th>
-                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedSKUs')} style={{ cursor: 'pointer' }}>
-                                            SKUs {getSortIcon('AuditorAllottedSKUs')}
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AuditorAllottedSKUs')} style={{ cursor: 'pointer', verticalAlign: 'middle' }}>
+                                            <div className="d-flex align-items-center justify-content-end gap-1">
+                                                SKUs {getSortIcon('AuditorAllottedSKUs')}
+                                            </div>
                                         </th>
-                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AppearedQty')} style={{ cursor: 'pointer' }}>
-                                            QTY {getSortIcon('AppearedQty')}
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AppearedQty')} style={{ cursor: 'pointer', verticalAlign: 'middle' }}>
+                                            <div className="d-flex align-items-center justify-content-end gap-1">
+                                                QTY {getSortIcon('AppearedQty')}
+                                            </div>
                                         </th>
-                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AppearedValue')} style={{ cursor: 'pointer' }}>
-                                            Deviation Value (MRP) {getSortIcon('AppearedValue')}
+                                        <th className="border-0 py-3 text-end" onClick={() => requestSort('AppearedValue')} style={{ cursor: 'pointer', verticalAlign: 'middle' }}>
+                                            <div className="d-flex align-items-center justify-content-end gap-1">
+                                                Deviation Value (MRP) {getSortIcon('AppearedValue')}
+                                            </div>
                                         </th>
-                                        <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AuditorAuditedValue')} style={{ cursor: 'pointer' }}>
-                                            Audited Value (MRP) {getSortIcon('AuditorAuditedValue')}
+                                        <th className="border-0 py-3 text-end pe-4" onClick={() => requestSort('AuditorAuditedValue')} style={{ cursor: 'pointer', verticalAlign: 'middle' }}>
+                                            <div className="d-flex align-items-center justify-content-end gap-1">
+                                                Audited Value (MRP) {getSortIcon('AuditorAuditedValue')}
+                                            </div>
                                         </th>
                                     </tr>
                                 </thead>

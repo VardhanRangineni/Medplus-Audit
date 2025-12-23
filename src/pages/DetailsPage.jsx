@@ -523,7 +523,7 @@ const DetailsPage = ({ filters = {} }) => {
     const headers = [
       "STORE ID", "STORE NAME", "CITY", "STATE", "HUB TYPE", "STATUS", "BOX TYPE",
       "STORE CREATED DATE", "LAST AUDITED DATE", "NO.OF AUDITS", "SKUS (count)",
-      "QUANTITY (units)", "INVENTORY VALUE MRP (₹)", "MISMATCH", "DEVIATION", "DEVIATION VALUE MRP (₹)"
+      "QUANTITY (units)", "INVENTORY VALUE MRP (₹)", "MISMATCH ITEMS", "DEVIATION ITEMS", "DEVIATION ITEMS VALUE MRP (₹)"
     ];
 
     const dataToExport = filteredData.map(row => {
@@ -543,9 +543,9 @@ const DetailsPage = ({ filters = {} }) => {
           "SKUS (count)": row.skus,
           "QUANTITY (units)": row.quantity,
           "INVENTORY VALUE MRP (₹)": row.inventoryValueMRP,
-          "MISMATCH": row.mismatch || 0,
-          "DEVIATION": row.deviation || 0,
-          "DEVIATION VALUE MRP (₹)": row.deviationValueMRP || 0
+          "MISMATCH ITEMS": row.mismatch || 0,
+          "DEVIATION ITEMS": row.deviation || 0,
+          "DEVIATION ITEMS VALUE MRP (₹)": row.deviationValueMRP || 0
         };
       } else {
         // Default generic export for other views
@@ -569,7 +569,7 @@ const DetailsPage = ({ filters = {} }) => {
         aoaData.push([
           r["STORE ID"], r["STORE NAME"], r["CITY"], r["STATE"], r["HUB TYPE"], r["STATUS"], r["BOX TYPE"],
           r["STORE CREATED DATE"], r["LAST AUDITED DATE"], r["NO.OF AUDITS"], r["SKUS (count)"],
-          r["QUANTITY (units)"], r["INVENTORY VALUE MRP (₹)"], r["MISMATCH"], r["DEVIATION"]
+          r["QUANTITY (units)"], r["INVENTORY VALUE MRP (₹)"], r["MISMATCH ITEMS"], r["DEVIATION ITEMS"]
         ]);
       });
       ws = utils.aoa_to_sheet(aoaData);
@@ -712,10 +712,10 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'supervisor') return 'SUPERVISOR';
     if (key === 'auditors') return 'AUDITORS';
     if (key === 'inventoryValueMRP') return 'INVENTORY VALUE MRP (₹)';
-    if (key === 'mismatch') return 'MISMATCH';
-    if (key === 'deviation') return 'DEVIATION';
-    if (key === 'deviationValueMRP') return 'DEVIATION VALUE MRP (₹)';
-    if (key === 'deviationCount') return 'DEVIATION COUNT (items)';
+    if (key === 'mismatch') return 'MISMATCH ITEMS';
+    if (key === 'deviation') return 'DEVIATION ITEMS';
+    if (key === 'deviationValueMRP') return 'DEVIATION ITEMS VALUE MRP (₹)';
+    if (key === 'deviationCount') return 'DEVIATION ITEMS COUNT (items)';
 
     // First, handle the splitting while preserving common acronyms
     let label = key

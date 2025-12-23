@@ -681,7 +681,7 @@ const StoreCoverage = ({ filters = {} }) => {
         </Col>
         <Col md={4}>
           <KPICard
-            title="Total Quantity in Units"
+            title="Total Quantity (in Units)"
             value={inventoryData.totalQuantity >= 10000000 ? `${(inventoryData.totalQuantity / 10000000).toFixed(1)}Cr` : `${(inventoryData.totalQuantity / 100000).toFixed(1)}L`}
             subtitle="Across all audited stores"
             icon="fas fa-cubes"
@@ -690,7 +690,7 @@ const StoreCoverage = ({ filters = {} }) => {
         </Col>
         <Col md={4}>
           <KPICard
-            title="Total Value(MRP)"
+            title="Total Value (MRP)"
             value={`₹${(inventoryData.totalValueMRP / 10000000).toFixed(2)}Cr`}
             subtitle={(() => {
               const costInCrores = (inventoryData.totalValueCost / 10000000).toFixed(2);

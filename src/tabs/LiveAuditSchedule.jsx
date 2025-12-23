@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Container, Row, Col, Card, Badge, Table, ProgressBar, Alert, Form, InputGroup, Dropdown } from 'react-bootstrap';
+import { Container, Row, Col, Card, Badge, Table, ProgressBar, Alert, Form, InputGroup, Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -647,19 +647,44 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                                 <div className="d-flex align-items-center gap-2">
                                   {audit.auditors !== 'Not Assigned' ? (
                                     <>
-                                      <small className="text-muted" title={audit.auditors} style={{ cursor: 'help' }}>
-                                        {(() => {
-                                          const auditorList = audit.auditors.split(',');
-                                          const count = auditorList.length;
-                                          if (count > 3) {
-                                            return auditorList.slice(0, 3).map(a => a.trim()).join(', ') + '...';
-                                          }
-                                          return audit.auditors;
-                                        })()}
-                                      </small>
-                                      <Badge bg="info" pill>
-                                        {audit.auditors.split(',').length}
-                                      </Badge>
+                                      <OverlayTrigger
+                                        placement="top"
+                                        overlay={
+                                          <Tooltip id={`tooltip-auditors-${idx}`} style={{ maxWidth: '420px' }}>
+                                            <div style={{ textAlign: 'left', padding: '8px' }}>
+                                              {(() => {
+                                                const auditorList = audit.auditors.split(',').map(a => a.trim());
+                                                const rows = [];
+                                                for (let i = 0; i < auditorList.length; i += 3) {
+                                                  const chunk = auditorList.slice(i, i + 3);
+                                                  rows.push(
+                                                    <div key={i} style={{ marginBottom: '6px' }}>
+                                                      {chunk.join(', ')}
+                                                    </div>
+                                                  );
+                                                }
+                                                return rows;
+                                              })()}
+                                            </div>
+                                          </Tooltip>
+                                        }
+                                      >
+                                        <span className="d-inline-flex align-items-center gap-2" style={{ cursor: 'pointer' }}>
+                                          <small className="text-muted mb-0">
+                                            {(() => {
+                                              const auditorList = audit.auditors.split(',');
+                                              const count = auditorList.length;
+                                              if (count > 3) {
+                                                return auditorList.slice(0, 3).map(a => a.trim()).join(', ') + '...';
+                                              }
+                                              return audit.auditors;
+                                            })()}
+                                          </small>
+                                          <Badge bg="info" pill style={{ cursor: 'pointer' }}>
+                                            {audit.auditors.split(',').length}
+                                          </Badge>
+                                        </span>
+                                      </OverlayTrigger>
                                     </>
                                   ) : (
                                     <Badge bg="secondary">{audit.auditors}</Badge>

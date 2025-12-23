@@ -504,12 +504,13 @@ const AuditorPerformance = ({ filters = {} }) => {
             <Card.Body className="d-flex justify-content-between align-items-start flex-column">
               <div className="d-flex w-100 justify-content-between align-items-start">
                 <div>
-                  <h6 className="text-info fw-bold text-uppercase mb-3">
+                  <h6 className="text-primary fw-bold text-uppercase mb-3">
                     AUDITORS
                   </h6>
-                  <h2 className="fw-bold text-info mb-1" style={{ fontSize: '2rem' }}>{auditorData.length}</h2>
+                  <div className="text-secondary text-uppercase mb-1 small fw-semibold" style={{ visibility: 'hidden' }}>SPACER</div>
+                  <h2 className="fw-bold text-primary mb-0" style={{ fontSize: '2rem' }}>{auditorData.length}</h2>
                 </div>
-                <div className="bg-info bg-opacity-10 p-3 rounded-3 text-info">
+                <div className="bg-primary bg-opacity-10 p-3 rounded-3 text-primary">
                   <i className="fas fa-users fa-lg"></i>
                 </div>
               </div>
@@ -526,12 +527,13 @@ const AuditorPerformance = ({ filters = {} }) => {
             <Card.Body className="d-flex justify-content-between align-items-start flex-column">
               <div className="d-flex w-100 justify-content-between align-items-start">
                 <div>
-                  <h6 className="text-info fw-bold text-uppercase mb-3">
+                  <h6 className="text-primary fw-bold text-uppercase mb-3">
                     AVG TIME / PID
                   </h6>
-                  <h2 className="fw-bold text-info mb-1" style={{ fontSize: '2rem' }}>{performanceMetrics.avgTimePerPID}</h2>
+                  <div className="text-secondary text-uppercase mb-1 small fw-semibold" style={{ visibility: 'hidden' }}>SPACER</div>
+                  <h2 className="fw-bold text-primary mb-0" style={{ fontSize: '2rem' }}>{performanceMetrics.avgTimePerPID}</h2>
                 </div>
-                <div className="bg-info bg-opacity-10 p-3 rounded-3 text-info">
+                <div className="bg-primary bg-opacity-10 p-3 rounded-3 text-primary">
                   <i className="fas fa-hourglass-half fa-lg"></i>
                 </div>
               </div>

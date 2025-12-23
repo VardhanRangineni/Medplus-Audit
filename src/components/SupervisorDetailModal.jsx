@@ -593,6 +593,16 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                                 Store Name {getSortIcon('StoreName')}
                                             </div>
                                         </th>
+                                        <th className="border-0 py-3" style={{ verticalAlign: 'middle' }}>
+                                            <div className="d-flex align-items-center gap-1">
+                                                State
+                                            </div>
+                                        </th>
+                                        <th className="border-0 py-3" style={{ verticalAlign: 'middle' }}>
+                                            <div className="d-flex align-items-center gap-1">
+                                                City
+                                            </div>
+                                        </th>
                                         <th className="border-0 py-3" onClick={() => requestSort('AuditStartDate')} style={{ cursor: 'pointer', verticalAlign: 'middle' }}>
                                             <div className="d-flex align-items-center gap-1">
                                                 Audit Date {getSortIcon('AuditStartDate')}
@@ -640,6 +650,8 @@ const SupervisorDetailModal = ({ show, onHide, supervisorId, allData }) => {
                                         >
                                             <td className="ps-4 fw-bold text-primary">{audit.StoreID || audit.AUDIT_ID}</td>
                                             <td>{audit.StoreName}</td>
+                                            <td>{(audit.StoreID || audit.AUDIT_ID)?.substring(2, 4) || '-'}</td>
+                                            <td>{(audit.StoreID || audit.AUDIT_ID)?.substring(4, 7) || '-'}</td>
                                             <td>{formatDate(audit.AuditStartDate)}</td>
                                             <td>{audit.AuditJobType}</td>
                                             <td className="text-end font-monospace">{formatIndianNumber(audit.AuditorAllottedPIDs, true)}</td>

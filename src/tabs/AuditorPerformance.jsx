@@ -250,14 +250,14 @@ const AuditorPerformance = ({ filters = {} }) => {
         title: 'Audit Accuracy Ranking',
         items: items,
         initialSort: 'desc', // High to Low
-        metricLabel: 'Match Rate'
+        metricLabel: 'Audit Accuracy'
       });
     } else {
       setPerformersModalData({
         title: 'Audit Accuracy Ranking',
         items: items,
         initialSort: 'asc', // Low to High
-        metricLabel: 'Match Rate'
+        metricLabel: 'Audit Accuracy'
       });
     }
     setShowPerformersModal(true);

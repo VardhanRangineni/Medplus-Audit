@@ -642,7 +642,7 @@ const StoreCoverage = ({ filters = {} }) => {
               return (
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
                   <div style={{ textAlign: 'left' }}>
-                    <div>Active: {activeAudited}</div>
+                    <div>Active: <strong style={{color:'black'}}>{activeAudited}</strong></div>
                     <div style={{ fontSize: '0.85em', marginTop: '2px' }}>{totalPercentage}% of total</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>

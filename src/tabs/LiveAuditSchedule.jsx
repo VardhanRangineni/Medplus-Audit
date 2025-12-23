@@ -494,7 +494,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
           <KPICard
             title="Total"
             value={workflowStats.created}
-            subtitle="All Audits"
+            subtitle="Audits"
             icon="fas fa-file-alt"
             color={selectedStatus === 'created' ? 'secondary' : 'secondary'}
             onClick={() => showWorkflowDetails('Created')}
@@ -507,7 +507,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
         </Col>
         <Col md={3}>
           <KPICard
-            title="Pending"
+            title="Yet to Start"
             value={workflowStats.pending}
             subtitle="Awaiting action"
             icon="fas fa-pause-circle"

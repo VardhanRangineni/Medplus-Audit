@@ -1,9 +1,9 @@
 [
   {
-    "StoreID": "MP0001",
-    "StoreName": "Chennai-Central",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD01093",
+    "StoreName": "MEDPLUS DWARKAPURI COLONY CHINTAL",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -23,10 +23,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0002",
-    "StoreName": "Coimbatore-Main",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD50061",
+    "StoreName": "SWARAJYA ENGINEERS AND TRADERS QUTHBULLAPUR",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -190,10 +190,10 @@
     "TotalDeviationCount": 273
   },
   {
-    "StoreID": "MP0003",
-    "StoreName": "Madurai-Hub",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00601",
+    "StoreName": "MEDPLUS MIYAPUR OLD VILLAGE",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -236,10 +236,10 @@
     "TotalDeviationCount": 85
   },
   {
-    "StoreID": "MP0004",
-    "StoreName": "Trichy-East",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00921",
+    "StoreName": "MEDPLUS KISHANBAGH ROAD ATTAPUR",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -259,10 +259,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0005",
-    "StoreName": "Salem-West",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00895",
+    "StoreName": "MEDPLUS VINAYAKA NAGAR COLONY MANSOORABAD ROAD",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -436,10 +436,10 @@
     "TotalDeviationCount": 236
   },
   {
-    "StoreID": "MP0006",
-    "StoreName": "Chennai-Clock Tower",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00718",
+    "StoreName": "MEDPLUS MEDIPALLY UPPAL",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -546,10 +546,10 @@
     "TotalDeviationCount": 144
   },
   {
-    "StoreID": "MP0007",
-    "StoreName": "Coimbatore-Market",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00735",
+    "StoreName": "MEDPLUS CHINTHAL PADMANAGAR RINGROAD",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -688,10 +688,10 @@
     "TotalDeviationCount": 304
   },
   {
-    "StoreID": "MP0008",
-    "StoreName": "Madurai-Central",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD50077",
+    "StoreName": "FIRST HEALTH SERVICES MAKTHA MAHABOOB PET",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -845,10 +845,10 @@
     "TotalDeviationCount": 246
   },
   {
-    "StoreID": "MP0009",
-    "StoreName": "Trichy-Main",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INAPHYD00411",
+    "StoreName": "MEDPLUS MART YOUSUFGUDA MADHURANAGAR",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -948,10 +948,10 @@
     "TotalDeviationCount": 133
   },
   {
-    "StoreID": "MP0010",
-    "StoreName": "Salem-Hub",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00630",
+    "StoreName": "MEDPLUS ALLWYN COLONY",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -1058,10 +1058,10 @@
     "TotalDeviationCount": 260
   },
   {
-    "StoreID": "MP0011",
-    "StoreName": "Chennai-East",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00997",
+    "StoreName": "MEDPLUS SRI MYTRI VILLAS KRISHNAREDDY PET",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -1163,10 +1163,10 @@
     "TotalDeviationCount": 211
   },
   {
-    "StoreID": "MP0012",
-    "StoreName": "Coimbatore-West",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00960",
+    "StoreName": "MEDPLUS THUMUKUNTA SHAMIRPET",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -1278,10 +1278,10 @@
     "TotalDeviationCount": 197
   },
   {
-    "StoreID": "MP0013",
-    "StoreName": "Madurai-Clock Tower",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD01033",
+    "StoreName": "MEDPLUS DIAMOND HEIGHTS MAIN ROAD GOPANPALLY",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -1301,10 +1301,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0014",
-    "StoreName": "Trichy-Market",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INAPHYD00105",
+    "StoreName": "MEDPLUS SRINAGAR COLONY ATM CENTRE",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -1478,10 +1478,10 @@
     "TotalDeviationCount": 225
   },
   {
-    "StoreID": "MP0015",
-    "StoreName": "Salem-Central",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00660",
+    "StoreName": "MEDPLUS WEST MARREDPALLY",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -1576,10 +1576,10 @@
     "TotalDeviationCount": 92
   },
   {
-    "StoreID": "MP0016",
-    "StoreName": "Chennai-Main",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INAPHYD00337",
+    "StoreName": "MEDPLUS GREEN PARK COLONY",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -1627,10 +1627,10 @@
     "TotalDeviationCount": 34
   },
   {
-    "StoreID": "MP0017",
-    "StoreName": "Coimbatore-Hub",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD70023",
+    "StoreName": "MEDPLUS FRANCHISE VASANTH NAGAR PHASE II",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -1752,10 +1752,10 @@
     "TotalDeviationCount": 186
   },
   {
-    "StoreID": "MP0018",
-    "StoreName": "Madurai-East",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00720",
+    "StoreName": "MEDPLUS  TNGO COLONY GACHIBOWLI",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -1877,10 +1877,10 @@
     "TotalDeviationCount": 177
   },
   {
-    "StoreID": "MP0019",
-    "StoreName": "Trichy-West",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00711",
+    "StoreName": "MEDPLUS  QUTHBULLAPUR X ROADS",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -1975,10 +1975,10 @@
     "TotalDeviationCount": 136
   },
   {
-    "StoreID": "MP0020",
-    "StoreName": "Salem-Clock Tower",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD01023",
+    "StoreName": "MEDPLUS IDPL GANDHI NAGAR ROAD",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -2036,10 +2036,10 @@
     "TotalDeviationCount": 30
   },
   {
-    "StoreID": "MP0021",
-    "StoreName": "Chennai-Market",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INAPHYD00142",
+    "StoreName": "MEDPLUS ALWAL",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -2059,10 +2059,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0022",
-    "StoreName": "Coimbatore-Central",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INAPHYD00371",
+    "StoreName": "MEDPLUS SAIPURI",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -2082,10 +2082,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0023",
-    "StoreName": "Madurai-Main",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00632",
+    "StoreName": "MEDPLUS GOLLAGUDA ALWAL",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -2209,10 +2209,10 @@
     "TotalDeviationCount": 222
   },
   {
-    "StoreID": "MP0024",
-    "StoreName": "Trichy-Hub",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INAPHYD00299",
+    "StoreName": "MEDPLUS MOOSARAM BAGH",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -2232,10 +2232,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0025",
-    "StoreName": "Salem-East",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD01064",
+    "StoreName": "MAVENS PICK ONLINE STORE",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -2255,10 +2255,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0026",
-    "StoreName": "Chennai-West",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00605",
+    "StoreName": "MEDPLUS RAMANTHAPUR TV TOWER",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -2278,10 +2278,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0027",
-    "StoreName": "Coimbatore-Clock Tower",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD50067",
+    "StoreName": "VENKATESHWAR MEDICALS CHENGICHERLA",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -2301,10 +2301,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0028",
-    "StoreName": "Madurai-Market",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00937",
+    "StoreName": "MEDPLUS PENTA REDDY COLONY BODUPPAL",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -2324,10 +2324,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0029",
-    "StoreName": "Trichy-Central",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INAPHYD00288",
+    "StoreName": "MEDPLUS SAIDABAD SANKESWARA SWAMY TEMPLE",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -2375,10 +2375,10 @@
     "TotalDeviationCount": 26
   },
   {
-    "StoreID": "MP0030",
-    "StoreName": "Salem-Main",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00595",
+    "StoreName": "MEDPLUS KONDAPUR VILLAGE",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -2398,10 +2398,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0031",
-    "StoreName": "Chennai-Hub",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00954",
+    "StoreName": "MEDPLUS SAI HOMES COLONY GURRAMGUDA",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -2513,10 +2513,10 @@
     "TotalDeviationCount": 93
   },
   {
-    "StoreID": "MP0032",
-    "StoreName": "Coimbatore-East",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD01072",
+    "StoreName": "MEDPLUS BRIGADE CITADEL CLUB HOUSE",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -2638,10 +2638,10 @@
     "TotalDeviationCount": 157
   },
   {
-    "StoreID": "MP0033",
-    "StoreName": "Madurai-West",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00991",
+    "StoreName": "MEDPLUS SINGARENI COLONY SAIDABAD EXP",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -2731,10 +2731,10 @@
     "TotalDeviationCount": 122
   },
   {
-    "StoreID": "MP0034",
-    "StoreName": "Trichy-Clock Tower",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD01121",
+    "StoreName": "MEDPLUS TURKAYAMJAL",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -2866,10 +2866,10 @@
     "TotalDeviationCount": 175
   },
   {
-    "StoreID": "MP0035",
-    "StoreName": "Salem-Market",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00721",
+    "StoreName": "MEDPLUS SHAILAJAPURI COLONY MANSOORABAD",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -2889,10 +2889,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0036",
-    "StoreName": "Chennai-Central",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00757",
+    "StoreName": "MEDPLUS NANDI HILLS MEERPET",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -2977,10 +2977,10 @@
     "TotalDeviationCount": 160
   },
   {
-    "StoreID": "MP0037",
-    "StoreName": "Coimbatore-Main",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00707",
+    "StoreName": "MEDPLUS MASJID BANDA KONDAPUR APARNA SERENE PARK",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -3000,10 +3000,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0038",
-    "StoreName": "Madurai-Hub",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00696",
+    "StoreName": "MEDPLUS SHAMSHABAD",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -3142,10 +3142,10 @@
     "TotalDeviationCount": 215
   },
   {
-    "StoreID": "MP0039",
-    "StoreName": "Trichy-East",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00500",
+    "StoreName": "MEDPLUS KARKHANA",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -3247,10 +3247,10 @@
     "TotalDeviationCount": 153
   },
   {
-    "StoreID": "MP0040",
-    "StoreName": "Salem-West",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00505",
+    "StoreName": "MEDPLUS SRINIVASAPURAM",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -3293,10 +3293,10 @@
     "TotalDeviationCount": 87
   },
   {
-    "StoreID": "MP0041",
-    "StoreName": "Chennai-Clock Tower",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00540",
+    "StoreName": "MEDPLUS KAPRA SAKET",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -3435,10 +3435,10 @@
     "TotalDeviationCount": 247
   },
   {
-    "StoreID": "MP0042",
-    "StoreName": "Coimbatore-Market",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD50099",
+    "StoreName": "TRINITY SOLUTIONS RAMPALLY VILLAGE",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -3550,10 +3550,10 @@
     "TotalDeviationCount": 253
   },
   {
-    "StoreID": "MP0043",
-    "StoreName": "Madurai-Central",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD01049",
+    "StoreName": "MEDPLUS SAI NAGAR VANASTHALIPURAM",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -3601,10 +3601,10 @@
     "TotalDeviationCount": 85
   },
   {
-    "StoreID": "MP0044",
-    "StoreName": "Trichy-Main",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00495",
+    "StoreName": "MEDPLUS SHANKARMUT - TEMPLE ROAD",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -3709,10 +3709,10 @@
     "TotalDeviationCount": 113
   },
   {
-    "StoreID": "MP0045",
-    "StoreName": "Salem-Hub",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INAPHYD00048",
+    "StoreName": "MEDPLUS UPPAL PRASHANTI NAGAR",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -3814,10 +3814,10 @@
     "TotalDeviationCount": 236
   },
   {
-    "StoreID": "MP0046",
-    "StoreName": "Chennai-East",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD01014",
+    "StoreName": "MEDPLUS KUKAYPALLY DIAGNOSTICS PHARMACY",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -3956,10 +3956,10 @@
     "TotalDeviationCount": 179
   },
   {
-    "StoreID": "MP0047",
-    "StoreName": "Coimbatore-West",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00520",
+    "StoreName": "MEDPLUS MOOSARAMBAGH PARK",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -4022,10 +4022,10 @@
     "TotalDeviationCount": 94
   },
   {
-    "StoreID": "MP0048",
-    "StoreName": "Madurai-Clock Tower",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00940",
+    "StoreName": "MEDPLUS ALWAL MRK ROAD EXP",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -4162,10 +4162,10 @@
     "TotalDeviationCount": 180
   },
   {
-    "StoreID": "MP0049",
-    "StoreName": "Trichy-Market",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INTGHYD00800",
+    "StoreName": "MEDPLUS PRIYA COLONY GUDIMALKAPUR",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -4185,10 +4185,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0050",
-    "StoreName": "Salem-Central",
-    "State": "TN",
-    "StateName": "Tamil Nadu",
+    "StoreID": "INAPHYD00089",
+    "StoreName": "MEDPLUS VIJAYAPURI UPPAL",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -4290,10 +4290,10 @@
     "TotalDeviationCount": 168
   },
   {
-    "StoreID": "MP0051",
-    "StoreName": "Bangalore-Central",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INTGHYD01037",
+    "StoreName": "MEDPLUS RAM NARESH NAGAR NIZAMPET",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -4388,10 +4388,10 @@
     "TotalDeviationCount": 100
   },
   {
-    "StoreID": "MP0052",
-    "StoreName": "Mysore-Main",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INTGHYD01085",
+    "StoreName": "MEDPLUS MY HOME ANKURA",
+    "State": "HYD",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -4454,10 +4454,10 @@
     "TotalDeviationCount": 78
   },
   {
-    "StoreID": "MP0053",
-    "StoreName": "Mangalore-Hub",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00021",
+    "StoreName": "MEDPLUS GURUNANAK COLONY",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -4564,10 +4564,10 @@
     "TotalDeviationCount": 215
   },
   {
-    "StoreID": "MP0054",
-    "StoreName": "Hubli-East",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00043",
+    "StoreName": "MEDPLUS KRISHNA NAGAR",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -4731,10 +4731,10 @@
     "TotalDeviationCount": 315
   },
   {
-    "StoreID": "MP0055",
-    "StoreName": "Belgaum-West",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00036",
+    "StoreName": "MEDPLUS RTC WORKSHOP ROAD",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -4754,10 +4754,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0056",
-    "StoreName": "Bangalore-Clock Tower",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00007",
+    "StoreName": "MEDPLUS RAMAVARAPADU",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -4777,10 +4777,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0057",
-    "StoreName": "Mysore-Market",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00016",
+    "StoreName": "MEDPLUS RAMAKRISHNAPURAM",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -4934,10 +4934,10 @@
     "TotalDeviationCount": 224
   },
   {
-    "StoreID": "MP0058",
-    "StoreName": "Mangalore-Central",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00054",
+    "StoreName": "MEDPLUS KEDARESWARAPETA",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -5039,10 +5039,10 @@
     "TotalDeviationCount": 211
   },
   {
-    "StoreID": "MP0059",
-    "StoreName": "Hubli-Main",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00086",
+    "StoreName": "MEDPLUS STADIUM ROAD SINGNAGAR",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -5132,10 +5132,10 @@
     "TotalDeviationCount": 93
   },
   {
-    "StoreID": "MP0060",
-    "StoreName": "Belgaum-Hub",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00079",
+    "StoreName": "MEDPLUS CURRENCY NAGAR VIAJAYAWADA",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -5235,10 +5235,10 @@
     "TotalDeviationCount": 165
   },
   {
-    "StoreID": "MP0061",
-    "StoreName": "Bangalore-East",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00039",
+    "StoreName": "MEDPLUS PORANKI",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -5296,10 +5296,10 @@
     "TotalDeviationCount": 68
   },
   {
-    "StoreID": "MP0062",
-    "StoreName": "Mysore-West",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00047",
+    "StoreName": "MEDPLUS VIDHYADHARAPURAM",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -5416,10 +5416,10 @@
     "TotalDeviationCount": 200
   },
   {
-    "StoreID": "MP0063",
-    "StoreName": "Mangalore-Clock Tower",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA50003",
+    "StoreName": "JEEVAN ENTERPRISES LOYOLA COLLEGE ROAD GUNADALA",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -5439,10 +5439,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0064",
-    "StoreName": "Hubli-Market",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA50007",
+    "StoreName": "REDDY ENTERPRISES KRISHNA LANKA",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -5544,10 +5544,10 @@
     "TotalDeviationCount": 182
   },
   {
-    "StoreID": "MP0065",
-    "StoreName": "Belgaum-Central",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00037",
+    "StoreName": "MEDPLUS BALLAMVARI STREET",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -5649,10 +5649,10 @@
     "TotalDeviationCount": 171
   },
   {
-    "StoreID": "MP0066",
-    "StoreName": "Bangalore-Main",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00010",
+    "StoreName": "MEDPLUS RAMESH HOSPITAL ROAD",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -5705,10 +5705,10 @@
     "TotalDeviationCount": 24
   },
   {
-    "StoreID": "MP0067",
-    "StoreName": "Mysore-Hub",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00050",
+    "StoreName": "MEDPLUS GOLLAPUDI ONE CENTER",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -5793,10 +5793,10 @@
     "TotalDeviationCount": 122
   },
   {
-    "StoreID": "MP0068",
-    "StoreName": "Mangalore-East",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00075",
+    "StoreName": "MEDPLUS PATAMATALANKA BENZ CIRCLE",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -5928,10 +5928,10 @@
     "TotalDeviationCount": 182
   },
   {
-    "StoreID": "MP0069",
-    "StoreName": "Hubli-West",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00085",
+    "StoreName": "MEDPLUS BHARATHI NAGAR",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -5994,10 +5994,10 @@
     "TotalDeviationCount": 87
   },
   {
-    "StoreID": "MP0070",
-    "StoreName": "Belgaum-Clock Tower",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00009",
+    "StoreName": "MEDPLUS NTR CIRCLE",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -6017,10 +6017,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0071",
-    "StoreName": "Bangalore-Market",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00042",
+    "StoreName": "MEDPLUS BHAVANIPURAM CROMBAY ROAD",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -6147,10 +6147,10 @@
     "TotalDeviationCount": 168
   },
   {
-    "StoreID": "MP0072",
-    "StoreName": "Mysore-Central",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00076",
+    "StoreName": "MEDPLUS GANDHI BOMMA CENTER KANURU EXP",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -6245,10 +6245,10 @@
     "TotalDeviationCount": 94
   },
   {
-    "StoreID": "MP0073",
-    "StoreName": "Mangalore-Main",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00058",
+    "StoreName": "MEDPLUS DONKA ROAD",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -6402,10 +6402,10 @@
     "TotalDeviationCount": 219
   },
   {
-    "StoreID": "MP0074",
-    "StoreName": "Hubli-Hub",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00034",
+    "StoreName": "MEDPLUS KANUR",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -6458,10 +6458,10 @@
     "TotalDeviationCount": 41
   },
   {
-    "StoreID": "MP0075",
-    "StoreName": "Belgaum-East",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00004",
+    "StoreName": "MEDPLUS MACHAVARAM",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -6481,10 +6481,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0076",
-    "StoreName": "Bangalore-West",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00083",
+    "StoreName": "MEDPLUS PAYAKAPURAM MAIN ROAD",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -6633,10 +6633,10 @@
     "TotalDeviationCount": 167
   },
   {
-    "StoreID": "MP0077",
-    "StoreName": "Mysore-Clock Tower",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00056",
+    "StoreName": "MEDPLUS KABELA CENTER",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -6775,10 +6775,10 @@
     "TotalDeviationCount": 312
   },
   {
-    "StoreID": "MP0078",
-    "StoreName": "Mangalore-Market",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00084",
+    "StoreName": "MEDPLUS SWATHI THEATRE ROAD BHAVANIPURAM",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -6826,10 +6826,10 @@
     "TotalDeviationCount": 48
   },
   {
-    "StoreID": "MP0079",
-    "StoreName": "Hubli-Central",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00012",
+    "StoreName": "MEDPLUS LABBIPET-SIDDARTHA ARTS COLLEGE",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -6919,10 +6919,10 @@
     "TotalDeviationCount": 72
   },
   {
-    "StoreID": "MP0080",
-    "StoreName": "Belgaum-Main",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00065",
+    "StoreName": "MEDPLUS NUNNA MAIN ROAD",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -6942,10 +6942,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0081",
-    "StoreName": "Bangalore-Hub",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00002",
+    "StoreName": "MEDPLUS ANJANEYA VAGU CENTER",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -7069,10 +7069,10 @@
     "TotalDeviationCount": 275
   },
   {
-    "StoreID": "MP0082",
-    "StoreName": "Mysore-East",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00048",
+    "StoreName": "MEDPLUS SAIBABA TEMPLE ROAD",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -7221,10 +7221,10 @@
     "TotalDeviationCount": 182
   },
   {
-    "StoreID": "MP0083",
-    "StoreName": "Mangalore-West",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00030",
+    "StoreName": "MEDPLUS SRINIVASA NAGAR BANK COLONY",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -7282,10 +7282,10 @@
     "TotalDeviationCount": 47
   },
   {
-    "StoreID": "MP0084",
-    "StoreName": "Hubli-Clock Tower",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00066",
+    "StoreName": "MEDPLUS USHA CARDIAC CENTER BUNDER ROAD",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -7402,10 +7402,10 @@
     "TotalDeviationCount": 123
   },
   {
-    "StoreID": "MP0085",
-    "StoreName": "Belgaum-Market",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00074",
+    "StoreName": "MEDPLUS NIDAMANURU",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -7500,10 +7500,10 @@
     "TotalDeviationCount": 124
   },
   {
-    "StoreID": "MP0086",
-    "StoreName": "Bangalore-Central",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00090",
+    "StoreName": "MEDPLUS BALAJI NAGAR KRISHNA LANKA",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -7568,10 +7568,10 @@
     "TotalDeviationCount": 181
   },
   {
-    "StoreID": "MP0087",
-    "StoreName": "Mysore-Main",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00038",
+    "StoreName": "MEDPLUS GUNADALA CENTER",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -7629,10 +7629,10 @@
     "TotalDeviationCount": 93
   },
   {
-    "StoreID": "MP0088",
-    "StoreName": "Mangalore-Hub",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00082",
+    "StoreName": "MEDPLUS PANTAKALUVA ROAD PATAMATA",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -7652,10 +7652,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0089",
-    "StoreName": "Hubli-East",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00077",
+    "StoreName": "MEDPLUS MUTHYALAMPADU MAIN ROAD VIJAYAWADA",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -7755,10 +7755,10 @@
     "TotalDeviationCount": 89
   },
   {
-    "StoreID": "MP0090",
-    "StoreName": "Belgaum-West",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00029",
+    "StoreName": "MEDPLUS GOLLAPUDI",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -7870,10 +7870,10 @@
     "TotalDeviationCount": 170
   },
   {
-    "StoreID": "MP0091",
-    "StoreName": "Bangalore-Clock Tower",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00051",
+    "StoreName": "MEDPLUS MADHURA NAGAR",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -7893,10 +7893,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0092",
-    "StoreName": "Mysore-Market",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00032",
+    "StoreName": "MEDPLUS P & T COLONY PATAMATA",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -7916,10 +7916,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0093",
-    "StoreName": "Mangalore-Central",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00052",
+    "StoreName": "MEDPLUS AS NAGAR COLONY",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -8041,10 +8041,10 @@
     "TotalDeviationCount": 216
   },
   {
-    "StoreID": "MP0094",
-    "StoreName": "Hubli-Main",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00040",
+    "StoreName": "MEDPLUS K C P COLONY",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -8064,10 +8064,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0095",
-    "StoreName": "Belgaum-Hub",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00071",
+    "StoreName": "MEDPLUS TADIGADAPA DONKA ROAD YANAMALAKUDURU",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -8087,10 +8087,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0096",
-    "StoreName": "Bangalore-East",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00045",
+    "StoreName": "MEDPLUS PIPULA ROAD",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -8175,10 +8175,10 @@
     "TotalDeviationCount": 71
   },
   {
-    "StoreID": "MP0097",
-    "StoreName": "Mysore-West",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00055",
+    "StoreName": "MEDPLUS N T P S ROAD IBRAHIMPATANAM",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -8198,10 +8198,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0098",
-    "StoreName": "Mangalore-Clock Tower",
-    "State": "KA",
-    "StateName": "Karnataka",
+    "StoreID": "INAPBZA00069",
+    "StoreName": "MEDPLUS YANAMALA KUDURU",
+    "State": "BZA",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -8221,9 +8221,9 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0099",
-    "StoreName": "Visakhapatnam-Central",
-    "State": "AP",
+    "StoreID": "INAPBZA50011",
+    "StoreName": "SRI TEJA MEDICALS KONDAPALLI",
+    "State": "BZA",
     "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
@@ -8299,10 +8299,10 @@
     "TotalDeviationCount": 141
   },
   {
-    "StoreID": "MP0100",
-    "StoreName": "Vijayawada-Main",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00376",
+    "StoreName": "MEDPLUS VYASARPADI ERUKENCHERY HIGH ROAD",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -8322,10 +8322,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0101",
-    "StoreName": "Guntur-Hub",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00372",
+    "StoreName": "MEDPLUS PADIYANALLUR",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -8410,10 +8410,10 @@
     "TotalDeviationCount": 112
   },
   {
-    "StoreID": "MP0102",
-    "StoreName": "Nellore-East",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00182",
+    "StoreName": "MEDPLUS KOLATHUR SASTHRI NAGAR",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -8433,10 +8433,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0103",
-    "StoreName": "Kurnool-West",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS50015",
+    "StoreName": "METRO MEDICARE VADAPALANI",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -8456,10 +8456,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0104",
-    "StoreName": "Visakhapatnam-Clock Tower",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00225",
+    "StoreName": "MEDPLUS JAMIN PALLAVARAM",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -8522,10 +8522,10 @@
     "TotalDeviationCount": 39
   },
   {
-    "StoreID": "MP0105",
-    "StoreName": "Vijayawada-Market",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00085",
+    "StoreName": "MEDPLUS DURAIARASAN ST",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -8545,10 +8545,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0106",
-    "StoreName": "Guntur-Central",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00406",
+    "StoreName": "MEDPLUS JYOTHI NAGAR NOOTHENCHERI",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -8665,10 +8665,10 @@
     "TotalDeviationCount": 150
   },
   {
-    "StoreID": "MP0107",
-    "StoreName": "Nellore-Main",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00452",
+    "StoreName": "MEDPLUS NEMILICHERRY HIGH ROAD CHROMPET",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -8822,10 +8822,10 @@
     "TotalDeviationCount": 255
   },
   {
-    "StoreID": "MP0108",
-    "StoreName": "Kurnool-Hub",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00516",
+    "StoreName": "MEDPLUS PONNIAMMANMADU EXP",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -8942,10 +8942,10 @@
     "TotalDeviationCount": 208
   },
   {
-    "StoreID": "MP0109",
-    "StoreName": "Visakhapatnam-East",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00133",
+    "StoreName": "MEDPLUS PAMMAL NALLATHAMBI ROAD",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -9057,10 +9057,10 @@
     "TotalDeviationCount": 157
   },
   {
-    "StoreID": "MP0110",
-    "StoreName": "Vijayawada-West",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00583",
+    "StoreName": "MEDPLUS MANALI NEW TOWN EDYANCHAVADI",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -9108,10 +9108,10 @@
     "TotalDeviationCount": 22
   },
   {
-    "StoreID": "MP0111",
-    "StoreName": "Guntur-Clock Tower",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00287",
+    "StoreName": "MEDPLUS AMBATTUR BHARATHI NAGAR",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -9169,10 +9169,10 @@
     "TotalDeviationCount": 97
   },
   {
-    "StoreID": "MP0112",
-    "StoreName": "Nellore-Market",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS50031",
+    "StoreName": "AKSHAYAM ENTERPRISES THIRUPATHI KODAI RD AMBATTUR",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -9235,10 +9235,10 @@
     "TotalDeviationCount": 98
   },
   {
-    "StoreID": "MP0113",
-    "StoreName": "Kurnool-Central",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00042",
+    "StoreName": "MEDPLUS ANNA NAGAR-3RD AVENUE RD",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -9350,10 +9350,10 @@
     "TotalDeviationCount": 188
   },
   {
-    "StoreID": "MP0114",
-    "StoreName": "Visakhapatnam-Main",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00143",
+    "StoreName": "MEDPLUS VILLIVAKKAM NORTH REDHILLS ROAD",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -9396,10 +9396,10 @@
     "TotalDeviationCount": 96
   },
   {
-    "StoreID": "MP0115",
-    "StoreName": "Vijayawada-Hub",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00604",
+    "StoreName": "MEDPLUS CHOLAPURAM THIRUMULLAIVOYAL",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -9511,10 +9511,10 @@
     "TotalDeviationCount": 188
   },
   {
-    "StoreID": "MP0116",
-    "StoreName": "Guntur-East",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00293",
+    "StoreName": "MEDPLUS MADHANANDAPURAM",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -9534,10 +9534,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0117",
-    "StoreName": "Nellore-West",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00038",
+    "StoreName": "MEDPLUS KODAMBAKKAM-LIBERTY",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -9557,10 +9557,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0118",
-    "StoreName": "Kurnool-Clock Tower",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00578",
+    "StoreName": "MEDPLUS PUDUR MAIN ROAD NEW ANNA NAGAR AMBATTUR",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -9580,10 +9580,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0119",
-    "StoreName": "Visakhapatnam-Market",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00134",
+    "StoreName": "MEDPLUS KOLATHUR RED HILLS ROAD",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -9653,10 +9653,10 @@
     "TotalDeviationCount": 132
   },
   {
-    "StoreID": "MP0120",
-    "StoreName": "Vijayawada-Central",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00391",
+    "StoreName": "MEDPLUS NARAYANAPURAM PALLIKARANAI",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -9676,10 +9676,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0121",
-    "StoreName": "Guntur-Main",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00355",
+    "StoreName": "MEDPLUS AMBATTUR MENAMBEDU",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -9699,10 +9699,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0122",
-    "StoreName": "Nellore-Hub",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00260",
+    "StoreName": "MEDPLUS ADAMBAKKAM-NEW COLONY",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -9722,10 +9722,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0123",
-    "StoreName": "Kurnool-East",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00538",
+    "StoreName": "MEDPLUS SRIPERUMBUDUR MAIN ROAD NANDHAMBAKKAM",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -9800,10 +9800,10 @@
     "TotalDeviationCount": 183
   },
   {
-    "StoreID": "MP0124",
-    "StoreName": "Visakhapatnam-West",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00574",
+    "StoreName": "MEDPLUS NEW LINK ROAD CHROMPET EXP",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -9823,10 +9823,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0125",
-    "StoreName": "Vijayawada-Clock Tower",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00484",
+    "StoreName": "MEDPLUS ILLAYA STREET TONDAIRPET EXP",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -9921,10 +9921,10 @@
     "TotalDeviationCount": 107
   },
   {
-    "StoreID": "MP0126",
-    "StoreName": "Guntur-Market",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00245",
+    "StoreName": "MEDPLUS WEST TAMBARAM-SIVASHANMUGAM RD ",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -9982,10 +9982,10 @@
     "TotalDeviationCount": 30
   },
   {
-    "StoreID": "MP0127",
-    "StoreName": "Nellore-Central",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00069",
+    "StoreName": "MEDPLUS AMBATTUR",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -10080,10 +10080,10 @@
     "TotalDeviationCount": 139
   },
   {
-    "StoreID": "MP0128",
-    "StoreName": "Kurnool-Main",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00517",
+    "StoreName": "MEDPLUS BALAMMAL NAGAR ULLAGARAM EXP",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -10131,10 +10131,10 @@
     "TotalDeviationCount": 91
   },
   {
-    "StoreID": "MP0129",
-    "StoreName": "Visakhapatnam-Hub",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00037",
+    "StoreName": "MEDPLUS ADAMBAKKAM-LAKE VIEW STREET",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -10209,10 +10209,10 @@
     "TotalDeviationCount": 127
   },
   {
-    "StoreID": "MP0130",
-    "StoreName": "Vijayawada-East",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00032",
+    "StoreName": "MEDPLUS MUGAPPAIR WEST",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -10255,10 +10255,10 @@
     "TotalDeviationCount": 52
   },
   {
-    "StoreID": "MP0131",
-    "StoreName": "Guntur-West",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00587",
+    "StoreName": "MEDPLUS MONDIAMMAN NAGAR PADIANALLUR",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -10278,10 +10278,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0132",
-    "StoreName": "Nellore-Clock Tower",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00132",
+    "StoreName": "MEDPLUS CHOOLAIMEDU HIGH ROAD",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -10334,10 +10334,10 @@
     "TotalDeviationCount": 61
   },
   {
-    "StoreID": "MP0133",
-    "StoreName": "Kurnool-Market",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00202",
+    "StoreName": "MEDPLUS KILKATTALAI BIG STREET",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -10407,10 +10407,10 @@
     "TotalDeviationCount": 125
   },
   {
-    "StoreID": "MP0134",
-    "StoreName": "Visakhapatnam-Central",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00427",
+    "StoreName": "MEDPLUS ANNANUR CHOLAMBEDU",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -10554,10 +10554,10 @@
     "TotalDeviationCount": 272
   },
   {
-    "StoreID": "MP0135",
-    "StoreName": "Vijayawada-Main",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00410",
+    "StoreName": "MEDPLUS 31st STREET KORATTUR",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -10620,10 +10620,10 @@
     "TotalDeviationCount": 33
   },
   {
-    "StoreID": "MP0136",
-    "StoreName": "Guntur-Hub",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00243",
+    "StoreName": "MEDPLUS TONDIARPET",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -10750,10 +10750,10 @@
     "TotalDeviationCount": 133
   },
   {
-    "StoreID": "MP0137",
-    "StoreName": "Nellore-East",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00226",
+    "StoreName": "MEDPLUS AVADI-CTH ROAD",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -10811,10 +10811,10 @@
     "TotalDeviationCount": 26
   },
   {
-    "StoreID": "MP0138",
-    "StoreName": "Kurnool-West",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00543",
+    "StoreName": "MEDPLUS MELPATTI PONNAPPAN SALAI PERAMBUR",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -10953,10 +10953,10 @@
     "TotalDeviationCount": 247
   },
   {
-    "StoreID": "MP0139",
-    "StoreName": "Visakhapatnam-Clock Tower",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00011",
+    "StoreName": "MEDPLUS CHROMPET-LAXMI NAGAR",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -11041,10 +11041,10 @@
     "TotalDeviationCount": 84
   },
   {
-    "StoreID": "MP0140",
-    "StoreName": "Vijayawada-Market",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00344",
+    "StoreName": "MEDPLUS CHOOLAIMEDU VADA AGARAM",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -11064,10 +11064,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0141",
-    "StoreName": "Guntur-Central",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INTNMAS00382",
+    "StoreName": "MEDPLUS EGATTUR OMR MAIN ROAD",
+    "State": "MAS",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -11201,10 +11201,10 @@
     "TotalDeviationCount": 257
   },
   {
-    "StoreID": "MP0142",
-    "StoreName": "Nellore-Main",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INKABLR00376",
+    "StoreName": "MEDPLUS MAVALLI",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -11224,10 +11224,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0143",
-    "StoreName": "Kurnool-Hub",
-    "State": "AP",
-    "StateName": "Andhra Pradesh",
+    "StoreID": "INKABLR00336",
+    "StoreName": "MEDPLUS JARAGANAHALLI",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -11247,10 +11247,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0144",
-    "StoreName": "Hyderabad-Central",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00037",
+    "StoreName": "MEDPLUS RAJARAJESHWARI NAGAR",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -11409,10 +11409,10 @@
     "TotalDeviationCount": 252
   },
   {
-    "StoreID": "MP0145",
-    "StoreName": "Warangal-Main",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00609",
+    "StoreName": "MEDPLUS DEVARACHIKKANAHALLI MAIN ROAD EXP",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -11576,10 +11576,10 @@
     "TotalDeviationCount": 150
   },
   {
-    "StoreID": "MP0146",
-    "StoreName": "Nizamabad-Hub",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00231",
+    "StoreName": "MEDPLUS KATHRIGUPPE WATER TANK CIRCLE",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -11669,10 +11669,10 @@
     "TotalDeviationCount": 40
   },
   {
-    "StoreID": "MP0147",
-    "StoreName": "Karimnagar-East",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00573",
+    "StoreName": "MEDPLUS RAJAJINAGAR 3RD BLOCK",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -11816,10 +11816,10 @@
     "TotalDeviationCount": 340
   },
   {
-    "StoreID": "MP0148",
-    "StoreName": "Khammam-West",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00517",
+    "StoreName": "MEDPLUS ARAKERE VILLAGE 80 FEET ROAD",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -11839,10 +11839,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0149",
-    "StoreName": "Hyderabad-Clock Tower",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00533",
+    "StoreName": "MEDPLUS VARTHUR MAIN ROAD THUBARAHALLI",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -11862,10 +11862,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0150",
-    "StoreName": "Warangal-Market",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00471",
+    "StoreName": "MEDPLUS KAGGADASAPURA",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -11930,10 +11930,10 @@
     "TotalDeviationCount": 133
   },
   {
-    "StoreID": "MP0151",
-    "StoreName": "Nizamabad-Central",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00289",
+    "StoreName": "MEDPLUS JP PARK",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -12040,10 +12040,10 @@
     "TotalDeviationCount": 166
   },
   {
-    "StoreID": "MP0152",
-    "StoreName": "Karimnagar-Main",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00634",
+    "StoreName": "MEDPLUS BEL LAYOUT VIDYARANYAPURA",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -12143,10 +12143,10 @@
     "TotalDeviationCount": 123
   },
   {
-    "StoreID": "MP0153",
-    "StoreName": "Khammam-Hub",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00570",
+    "StoreName": "MEDPLUS NELAMANGALA TOWN BH ROAD",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -12236,10 +12236,10 @@
     "TotalDeviationCount": 162
   },
   {
-    "StoreID": "MP0154",
-    "StoreName": "Hyderabad-East",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00599",
+    "StoreName": "MEDPLUS LAKSHMIPURA ROAD MADANAYAKAHALLI",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -12297,10 +12297,10 @@
     "TotalDeviationCount": 37
   },
   {
-    "StoreID": "MP0155",
-    "StoreName": "Warangal-West",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00196",
+    "StoreName": "MEDPLUS JAYANAGAR 9TH BLOCK",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -12320,10 +12320,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0156",
-    "StoreName": "Nizamabad-Clock Tower",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00322",
+    "StoreName": "MEDPLUS BEGUR",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -12452,10 +12452,10 @@
     "TotalDeviationCount": 261
   },
   {
-    "StoreID": "MP0157",
-    "StoreName": "Karimnagar-Market",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00356",
+    "StoreName": "MEDPLUS KACHAKARANA HALLI",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -12567,10 +12567,10 @@
     "TotalDeviationCount": 231
   },
   {
-    "StoreID": "MP0158",
-    "StoreName": "Khammam-Central",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00027",
+    "StoreName": "MEDPLUS BHUVANESHWARA NAGAR",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -12702,10 +12702,10 @@
     "TotalDeviationCount": 182
   },
   {
-    "StoreID": "MP0159",
-    "StoreName": "Hyderabad-Main",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00243",
+    "StoreName": "MEDPLUS BIDADI BUS STAND",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -12725,10 +12725,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0160",
-    "StoreName": "Warangal-Hub",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00032",
+    "StoreName": "MEDPLUS YELAHANKA NEW TOWN",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -12830,10 +12830,10 @@
     "TotalDeviationCount": 189
   },
   {
-    "StoreID": "MP0161",
-    "StoreName": "Nizamabad-East",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00445",
+    "StoreName": "MEDPLUS GOTTIGERE",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -12898,10 +12898,10 @@
     "TotalDeviationCount": 157
   },
   {
-    "StoreID": "MP0162",
-    "StoreName": "Karimnagar-West",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00488",
+    "StoreName": "MEDPLUS HOSAKEREHALLI 3RD MAIN ROAD",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -13080,10 +13080,10 @@
     "TotalDeviationCount": 201
   },
   {
-    "StoreID": "MP0163",
-    "StoreName": "Khammam-Clock Tower",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00457",
+    "StoreName": "MEDPLUS SEA COLLEGE ROAD ",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -13103,10 +13103,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0164",
-    "StoreName": "Hyderabad-Market",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00651",
+    "StoreName": "MEDPLUS SAPTHAGIRI COLLEGE ROAD HESARAGHATTA ROAD",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -13280,10 +13280,10 @@
     "TotalDeviationCount": 252
   },
   {
-    "StoreID": "MP0165",
-    "StoreName": "Warangal-Central",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00120",
+    "StoreName": "MEDPLUS KANAKA NAGAR",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -13373,10 +13373,10 @@
     "TotalDeviationCount": 176
   },
   {
-    "StoreID": "MP0166",
-    "StoreName": "Nizamabad-Main",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00718",
+    "StoreName": "MEDPLUS BSK 2ND BLOCK HANUMANTHNAGAR",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -13439,10 +13439,10 @@
     "TotalDeviationCount": 81
   },
   {
-    "StoreID": "MP0167",
-    "StoreName": "Karimnagar-Hub",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00596",
+    "StoreName": "MEDPLUS PRAKASH NAGAR LN PURAM EXP",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -13495,10 +13495,10 @@
     "TotalDeviationCount": 29
   },
   {
-    "StoreID": "MP0168",
-    "StoreName": "Khammam-East",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00514",
+    "StoreName": "MEDPLUS KENGERI ROBIN THEATRE",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -13620,10 +13620,10 @@
     "TotalDeviationCount": 240
   },
   {
-    "StoreID": "MP0169",
-    "StoreName": "Hyderabad-West",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00237",
+    "StoreName": "MEDPLUS HEGDE NAGAR",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -13777,10 +13777,10 @@
     "TotalDeviationCount": 253
   },
   {
-    "StoreID": "MP0170",
-    "StoreName": "Warangal-Clock Tower",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00430",
+    "StoreName": "MEDPLUS YELAHANKA OLD TOWN",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -13882,10 +13882,10 @@
     "TotalDeviationCount": 231
   },
   {
-    "StoreID": "MP0171",
-    "StoreName": "Nizamabad-Market",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR50030",
+    "StoreName": "BIG CAT SERVICES HENNUR MAIN ROAD ST THOMAS TOWN",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -13975,10 +13975,10 @@
     "TotalDeviationCount": 123
   },
   {
-    "StoreID": "MP0172",
-    "StoreName": "Karimnagar-Central",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00462",
+    "StoreName": "MEDPLUS YELAHANKA BUS STAND ROAD",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -14021,10 +14021,10 @@
     "TotalDeviationCount": 23
   },
   {
-    "StoreID": "MP0173",
-    "StoreName": "Khammam-Main",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00071",
+    "StoreName": "MEDPLUS SARAKKI-MARKET ROAD",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -14044,10 +14044,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0174",
-    "StoreName": "Hyderabad-Hub",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00116",
+    "StoreName": "MEDPLUS BSK BDA COMPLEX",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -14181,10 +14181,10 @@
     "TotalDeviationCount": 302
   },
   {
-    "StoreID": "MP0175",
-    "StoreName": "Warangal-East",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00486",
+    "StoreName": "MEDPLUS BYRAVESHWARA NAGAR",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -14242,10 +14242,10 @@
     "TotalDeviationCount": 82
   },
   {
-    "StoreID": "MP0176",
-    "StoreName": "Nizamabad-West",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00606",
+    "StoreName": "MEDPLUS VINAYAKA NAGAR BUS STOP HESARAGHATTA",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -14352,10 +14352,10 @@
     "TotalDeviationCount": 196
   },
   {
-    "StoreID": "MP0177",
-    "StoreName": "Karimnagar-Clock Tower",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00368",
+    "StoreName": "MEDPLUS SRI RAM MANDIR RD BASVANAGUDI",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -14477,10 +14477,10 @@
     "TotalDeviationCount": 193
   },
   {
-    "StoreID": "MP0178",
-    "StoreName": "Khammam-Market",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00560",
+    "StoreName": "MEDPLUS BOREWELL ROAD WHITEFIELD",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -14500,10 +14500,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0179",
-    "StoreName": "Hyderabad-Central",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INKABLR00304",
+    "StoreName": "MEDPLUS AMRUTHAHALLI WATER TANK",
+    "State": "BLR",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -14652,10 +14652,10 @@
     "TotalDeviationCount": 310
   },
   {
-    "StoreID": "MP0180",
-    "StoreName": "Warangal-Main",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INAPVSK00101",
+    "StoreName": "MEDPLUS PRAHALADAPURAM MAIN ROAD",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -14819,10 +14819,10 @@
     "TotalDeviationCount": 280
   },
   {
-    "StoreID": "MP0181",
-    "StoreName": "Nizamabad-Hub",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INAPVSK00063",
+    "StoreName": "MEDPLUS MADHAVADHARA RAMSAI CELEBRATIONS HOTEL",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -14971,10 +14971,10 @@
     "TotalDeviationCount": 352
   },
   {
-    "StoreID": "MP0182",
-    "StoreName": "Karimnagar-East",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INAPVSK00092",
+    "StoreName": "MEDPLUS AGANAMPUDI MINI JAGADHAMBHA CENTER",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -15037,10 +15037,10 @@
     "TotalDeviationCount": 71
   },
   {
-    "StoreID": "MP0183",
-    "StoreName": "Khammam-West",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INAPVSK00105",
+    "StoreName": "MEDPLUS SECTOR 2 MVP COLONY",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -15088,10 +15088,10 @@
     "TotalDeviationCount": 43
   },
   {
-    "StoreID": "MP0184",
-    "StoreName": "Hyderabad-Clock Tower",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INAPVSK00045",
+    "StoreName": "MEDPLUS CHINNAMUSIDIVADA",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -15111,10 +15111,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0185",
-    "StoreName": "Warangal-Market",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INAPVSK00091",
+    "StoreName": "MEDPLUS ANANDHAPURAM MAIN ROAD",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -15273,10 +15273,10 @@
     "TotalDeviationCount": 272
   },
   {
-    "StoreID": "MP0186",
-    "StoreName": "Nizamabad-Central",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INAPVSK00069",
+    "StoreName": "MEDPLUS SEETHAMMADHARA APSEB COLONY",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -15296,10 +15296,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0187",
-    "StoreName": "Karimnagar-Main",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INAPVSK00049",
+    "StoreName": "MEDPLUS BUCHIRAJUPALEM",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -15319,10 +15319,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0188",
-    "StoreName": "Khammam-Hub",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INAPVSK00087",
+    "StoreName": "MEDPLUS RAILWAY NEW COLONY NEAR MASJID",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -15412,10 +15412,10 @@
     "TotalDeviationCount": 151
   },
   {
-    "StoreID": "MP0189",
-    "StoreName": "Hyderabad-East",
-    "State": "TS",
-    "StateName": "Telangana",
+    "StoreID": "INAPVSK00040",
+    "StoreName": "MEDPLUS VADLAPUDI",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -15584,10 +15584,10 @@
     "TotalDeviationCount": 289
   },
   {
-    "StoreID": "MP0190",
-    "StoreName": "Mumbai-Central",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00012",
+    "StoreName": "MEDPLUS HB COLONY",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -15694,10 +15694,10 @@
     "TotalDeviationCount": 107
   },
   {
-    "StoreID": "MP0191",
-    "StoreName": "Pune-Main",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00046",
+    "StoreName": "MEDPLUS VISALAKSHI NAGAR",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -15871,10 +15871,10 @@
     "TotalDeviationCount": 383
   },
   {
-    "StoreID": "MP0192",
-    "StoreName": "Nagpur-Hub",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00074",
+    "StoreName": "MEDPLUS CHIINA WALTAIR MAIN ROAD",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -16003,10 +16003,10 @@
     "TotalDeviationCount": 152
   },
   {
-    "StoreID": "MP0193",
-    "StoreName": "Nashik-East",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00053",
+    "StoreName": "MEDPLUS AKKAYAPALEM",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -16026,10 +16026,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0194",
-    "StoreName": "Aurangabad-West",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00025",
+    "StoreName": "MEDPLUS MARRIPALEM",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -16198,10 +16198,10 @@
     "TotalDeviationCount": 216
   },
   {
-    "StoreID": "MP0195",
-    "StoreName": "Mumbai-Clock Tower",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00083",
+    "StoreName": "MEDPLUS PEDAGANTYADA X ROAD VUDA COLONY",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -16365,10 +16365,10 @@
     "TotalDeviationCount": 199
   },
   {
-    "StoreID": "MP0196",
-    "StoreName": "Pune-Market",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00094",
+    "StoreName": "MEDPLUS PULGAVANIPALEM ROAD NETHAJI NAGAR",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -16388,10 +16388,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0197",
-    "StoreName": "Nagpur-Central",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00102",
+    "StoreName": "MEDPLUS SIVAJI PARK ROAD SHIVAJI PALEM",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -16535,10 +16535,10 @@
     "TotalDeviationCount": 176
   },
   {
-    "StoreID": "MP0198",
-    "StoreName": "Nashik-Main",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00068",
+    "StoreName": "MEDPLUS APHB COLONY PM PALEM",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -16628,10 +16628,10 @@
     "TotalDeviationCount": 145
   },
   {
-    "StoreID": "MP0199",
-    "StoreName": "Aurangabad-Hub",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00061",
+    "StoreName": "MEDPLUS MADHURAWADA REVALLAPALEM ROAD",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -16723,10 +16723,10 @@
     "TotalDeviationCount": 179
   },
   {
-    "StoreID": "MP0200",
-    "StoreName": "Mumbai-East",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00014",
+    "StoreName": "MEDPLUS ANAKAPALLI MADUGULA RD",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -16746,10 +16746,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0201",
-    "StoreName": "Pune-West",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00031",
+    "StoreName": "MEDPLUS CMR ROAD",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -16769,10 +16769,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0202",
-    "StoreName": "Nagpur-Clock Tower",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00080",
+    "StoreName": "MEDPLUS GOPALAPATNAM MAIN ROAD SHANTHI NAGAR",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -16792,10 +16792,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0203",
-    "StoreName": "Nashik-Market",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00005",
+    "StoreName": "MEDPLUS BALAYYA SASTRY LAYOUT",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -16880,10 +16880,10 @@
     "TotalDeviationCount": 110
   },
   {
-    "StoreID": "MP0204",
-    "StoreName": "Aurangabad-Central",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00070",
+    "StoreName": "MEDPLUS KURMANNAPALEM",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -16903,10 +16903,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0205",
-    "StoreName": "Mumbai-Main",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00078",
+    "StoreName": "MEDPLUS CHINNAMUSHIDIWADA PENDURTHI",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -16926,10 +16926,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0206",
-    "StoreName": "Pune-Hub",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00099",
+    "StoreName": "MEDPLUS BC ROAD NEW GAJUWAKA",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -16949,10 +16949,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0207",
-    "StoreName": "Nagpur-East",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00082",
+    "StoreName": "MEDPLUS SUSARLA COLONY BUCHIRAJUPALEM",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -17052,10 +17052,10 @@
     "TotalDeviationCount": 110
   },
   {
-    "StoreID": "MP0208",
-    "StoreName": "Nashik-West",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00081",
+    "StoreName": "MEDPLUS NRI HOSPITAL ROAD SEETHAMMADHARA",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -17130,10 +17130,10 @@
     "TotalDeviationCount": 168
   },
   {
-    "StoreID": "MP0209",
-    "StoreName": "Aurangabad-Clock Tower",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK50007",
+    "StoreName": "SUVARNA VEDASRI ENTERPRISES AKKAYYAPALEM",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -17153,10 +17153,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0210",
-    "StoreName": "Mumbai-Market",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00076",
+    "StoreName": "MEDPLUS CHINAGANTYADA GAJUWAKA",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -17199,10 +17199,10 @@
     "TotalDeviationCount": 43
   },
   {
-    "StoreID": "MP0211",
-    "StoreName": "Pune-Central",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00013",
+    "StoreName": "MEDPLUS ANAKAPALLI MAIN ROAD",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -17282,10 +17282,10 @@
     "TotalDeviationCount": 126
   },
   {
-    "StoreID": "MP0212",
-    "StoreName": "Nagpur-Main",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00039",
+    "StoreName": "MEDPLUS MADHAVADHARA",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -17348,10 +17348,10 @@
     "TotalDeviationCount": 98
   },
   {
-    "StoreID": "MP0213",
-    "StoreName": "Nashik-Hub",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPVSK00097",
+    "StoreName": "MEDPLUS SAGAR NAGAR MAIN ROAD",
+    "State": "VSK",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -17478,10 +17478,10 @@
     "TotalDeviationCount": 198
   },
   {
-    "StoreID": "MP0214",
-    "StoreName": "Aurangabad-East",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY50008",
+    "StoreName": "SUREKHA AGENCIES ALCOT GARDENS ILTD JUNCTION",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -17640,10 +17640,10 @@
     "TotalDeviationCount": 223
   },
   {
-    "StoreID": "MP0215",
-    "StoreName": "Mumbai-West",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00022",
+    "StoreName": "MEDPLUS KONTHAMURU MAIN ROAD",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -17701,10 +17701,10 @@
     "TotalDeviationCount": 28
   },
   {
-    "StoreID": "MP0216",
-    "StoreName": "Pune-Clock Tower",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00016",
+    "StoreName": "MEDPLUS MORAMPUDI",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -17806,10 +17806,10 @@
     "TotalDeviationCount": 273
   },
   {
-    "StoreID": "MP0217",
-    "StoreName": "Nagpur-Market",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00004",
+    "StoreName": "MEDPLUS RAILWAY STATION RD",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -17889,10 +17889,10 @@
     "TotalDeviationCount": 91
   },
   {
-    "StoreID": "MP0218",
-    "StoreName": "Nashik-Central",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00010",
+    "StoreName": "MEDPLUS SHANTHI NAGAR-BOMMURU",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -17912,10 +17912,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0219",
-    "StoreName": "Aurangabad-Main",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00021",
+    "StoreName": "MEDPLUS JAMPETA RAJAHMUNDRY",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -17958,10 +17958,10 @@
     "TotalDeviationCount": 65
   },
   {
-    "StoreID": "MP0220",
-    "StoreName": "Mumbai-Hub",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY50004",
+    "StoreName": "NAVEEN MEDICALS DEVI CHOWK",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -18061,10 +18061,10 @@
     "TotalDeviationCount": 136
   },
   {
-    "StoreID": "MP0221",
-    "StoreName": "Pune-East",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00003",
+    "StoreName": "MEDPLUS AV APPARAO ROAD",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -18228,10 +18228,10 @@
     "TotalDeviationCount": 239
   },
   {
-    "StoreID": "MP0222",
-    "StoreName": "Nagpur-West",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00007",
+    "StoreName": "MEDPLUS BROTHERN CHURCH",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -18365,10 +18365,10 @@
     "TotalDeviationCount": 278
   },
   {
-    "StoreID": "MP0223",
-    "StoreName": "Nashik-Clock Tower",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00014",
+    "StoreName": "MEDPLUS TILAK ROAD - VL PURAM",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -18421,10 +18421,10 @@
     "TotalDeviationCount": 24
   },
   {
-    "StoreID": "MP0224",
-    "StoreName": "Aurangabad-Market",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00019",
+    "StoreName": "MEDPLUS MIG COLONY ROAD LALACHERUVU",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -18514,10 +18514,10 @@
     "TotalDeviationCount": 182
   },
   {
-    "StoreID": "MP0225",
-    "StoreName": "Mumbai-Central",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00024",
+    "StoreName": "MEDPLUS BOMMURU MAIN ROAD",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -18537,10 +18537,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0226",
-    "StoreName": "Pune-Main",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00013",
+    "StoreName": "MEDPLUS DEVI CHOWK",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -18667,10 +18667,10 @@
     "TotalDeviationCount": 118
   },
   {
-    "StoreID": "MP0227",
-    "StoreName": "Nagpur-Hub",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY50006",
+    "StoreName": "SRI SHANKAR MEDICALS APHB COLONY LALA CHERUVU",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -18690,10 +18690,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0228",
-    "StoreName": "Nashik-East",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00002",
+    "StoreName": "MEDPLUS STADIUM ROAD",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -18842,10 +18842,10 @@
     "TotalDeviationCount": 222
   },
   {
-    "StoreID": "MP0229",
-    "StoreName": "Aurangabad-West",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00020",
+    "StoreName": "MEDPLUS ARYAPURAM RAJAHMUNDRY",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -18908,10 +18908,10 @@
     "TotalDeviationCount": 96
   },
   {
-    "StoreID": "MP0230",
-    "StoreName": "Mumbai-Clock Tower",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00015",
+    "StoreName": "MEDPLUS MALLAYYA PETA MAIN ROAD",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -19028,10 +19028,10 @@
     "TotalDeviationCount": 173
   },
   {
-    "StoreID": "MP0231",
-    "StoreName": "Pune-Market",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPRJY00011",
+    "StoreName": "MEDPLUS ADDEPALLI COLONY",
+    "State": "RJY",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -19153,10 +19153,10 @@
     "TotalDeviationCount": 167
   },
   {
-    "StoreID": "MP0232",
-    "StoreName": "Nagpur-Central",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPGNT00003",
+    "StoreName": "MEDPLUS BRODIPET",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -19176,10 +19176,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0233",
-    "StoreName": "Nashik-Main",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPGNT00022",
+    "StoreName": "MEDPLUS PIDUGURALLA",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -19264,10 +19264,10 @@
     "TotalDeviationCount": 133
   },
   {
-    "StoreID": "MP0234",
-    "StoreName": "Aurangabad-Hub",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPGNT00016",
+    "StoreName": "MEDPLUS A T AGRAHARAM",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -19379,10 +19379,10 @@
     "TotalDeviationCount": 249
   },
   {
-    "StoreID": "MP0235",
-    "StoreName": "Mumbai-East",
-    "State": "MH",
-    "StateName": "Maharashtra",
+    "StoreID": "INAPGNT00025",
+    "StoreName": "MEDPLUS LANCHESTER RD SANGADIGUNTA",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -19425,10 +19425,10 @@
     "TotalDeviationCount": 92
   },
   {
-    "StoreID": "MP0236",
-    "StoreName": "Delhi NCR-Central",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00026",
+    "StoreName": "MEDPLUS OLD GUNTUR ROAD GUNTUR",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -19448,10 +19448,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0237",
-    "StoreName": "Connaught Place-Main",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00018",
+    "StoreName": "MEDPLUS J K C COLLEGE ROAD",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -19590,10 +19590,10 @@
     "TotalDeviationCount": 268
   },
   {
-    "StoreID": "MP0238",
-    "StoreName": "Rohini-Hub",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00013",
+    "StoreName": "MEDPLUS GORANTLA",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -19641,10 +19641,10 @@
     "TotalDeviationCount": 87
   },
   {
-    "StoreID": "MP0239",
-    "StoreName": "Dwarka-East",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00020",
+    "StoreName": "MEDPLUS AMARAVATHI",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -19664,10 +19664,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0240",
-    "StoreName": "Saket-West",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00005",
+    "StoreName": "MEDPLUS LAKSHMIPURAM",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -19725,10 +19725,10 @@
     "TotalDeviationCount": 25
   },
   {
-    "StoreID": "MP0241",
-    "StoreName": "Delhi NCR-Clock Tower",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00024",
+    "StoreName": "MEDPLUS KOLLURU DONKA ROAD",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -19791,10 +19791,10 @@
     "TotalDeviationCount": 63
   },
   {
-    "StoreID": "MP0242",
-    "StoreName": "Connaught Place-Market",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00019",
+    "StoreName": "MEDPLUS TADEPALLI",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -19837,10 +19837,10 @@
     "TotalDeviationCount": 35
   },
   {
-    "StoreID": "MP0243",
-    "StoreName": "Rohini-Central",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00023",
+    "StoreName": "MEDPLUS VALLURI VARI THOTA",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -19952,10 +19952,10 @@
     "TotalDeviationCount": 250
   },
   {
-    "StoreID": "MP0244",
-    "StoreName": "Dwarka-Main",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00006",
+    "StoreName": "MEDPLUS CHOWDARYPET",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -20047,10 +20047,10 @@
     "TotalDeviationCount": 250
   },
   {
-    "StoreID": "MP0245",
-    "StoreName": "Saket-Hub",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00015",
+    "StoreName": "MEDPLUS M G ROAD INNER RING ROAD - GUNTUR",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -20098,10 +20098,10 @@
     "TotalDeviationCount": 20
   },
   {
-    "StoreID": "MP0246",
-    "StoreName": "Delhi NCR-East",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00014",
+    "StoreName": "MEDPLUS PALAKALURU ROAD - GUNTUR",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -20121,10 +20121,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0247",
-    "StoreName": "Connaught Place-West",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00011",
+    "StoreName": "MEDPLUS SVN COLONY",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -20278,10 +20278,10 @@
     "TotalDeviationCount": 230
   },
   {
-    "StoreID": "MP0248",
-    "StoreName": "Rohini-Clock Tower",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00004",
+    "StoreName": "MEDPLUS KORITIPADU",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -20339,10 +20339,10 @@
     "TotalDeviationCount": 81
   },
   {
-    "StoreID": "MP0249",
-    "StoreName": "Dwarka-Market",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00027",
+    "StoreName": "MEDPLUS AGRAHARAM NALLACHERUVU ROAD",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -20407,10 +20407,10 @@
     "TotalDeviationCount": 104
   },
   {
-    "StoreID": "MP0250",
-    "StoreName": "Saket-Central",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPGNT00021",
+    "StoreName": "MEDPLUS PARK CENTER MACHERLA",
+    "State": "GNT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -20430,10 +20430,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0251",
-    "StoreName": "Delhi NCR-Main",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPKRN00014",
+    "StoreName": "MEDPLUS VENKATARAMANA COLONY",
+    "State": "KRN",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -20518,10 +20518,10 @@
     "TotalDeviationCount": 106
   },
   {
-    "StoreID": "MP0252",
-    "StoreName": "Connaught Place-Hub",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPKRN00016",
+    "StoreName": "MEDPLUS KOILAKUNTLA KURNOOL",
+    "State": "KRN",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -20648,10 +20648,10 @@
     "TotalDeviationCount": 96
   },
   {
-    "StoreID": "MP0253",
-    "StoreName": "Rohini-East",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPKRN00022",
+    "StoreName": "MEDPLUS SAI VAIBHAV NAGAR SREE RAMA NAGAR",
+    "State": "KRN",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -20758,10 +20758,10 @@
     "TotalDeviationCount": 156
   },
   {
-    "StoreID": "MP0254",
-    "StoreName": "Dwarka-West",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPKRN00015",
+    "StoreName": "MEDPLUS RMK PLAZA",
+    "State": "KRN",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -20900,10 +20900,10 @@
     "TotalDeviationCount": 254
   },
   {
-    "StoreID": "MP0255",
-    "StoreName": "Saket-Clock Tower",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPKRN00019",
+    "StoreName": "MEDPLUS AHOBILAM ROAD ALLAGADDA",
+    "State": "KRN",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -21057,10 +21057,10 @@
     "TotalDeviationCount": 213
   },
   {
-    "StoreID": "MP0256",
-    "StoreName": "Delhi NCR-Market",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPKRN00023",
+    "StoreName": "MEDPLUS AMMA HOSPITAL ROAD",
+    "State": "KRN",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -21118,10 +21118,10 @@
     "TotalDeviationCount": 38
   },
   {
-    "StoreID": "MP0257",
-    "StoreName": "Connaught Place-Central",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPKRN00025",
+    "StoreName": "MEDPLUS VENKATARAMANA COLONY MAIN ROAD",
+    "State": "KRN",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -21141,10 +21141,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0258",
-    "StoreName": "Rohini-Main",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPKRN00028",
+    "StoreName": "MEDPLUS CHANDRA SEKHAR NAGAR KURNOOL",
+    "State": "KRN",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -21236,10 +21236,10 @@
     "TotalDeviationCount": 174
   },
   {
-    "StoreID": "MP0259",
-    "StoreName": "Dwarka-Hub",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPKRN50008",
+    "StoreName": "NEW HEALTH PLUS MEDICAL AND SURGICALS KURNOOL",
+    "State": "KRN",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -21292,10 +21292,10 @@
     "TotalDeviationCount": 89
   },
   {
-    "StoreID": "MP0260",
-    "StoreName": "Saket-East",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPKRN00013",
+    "StoreName": "MEDPLUS PRAKASH NAGAR",
+    "State": "KRN",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -21353,10 +21353,10 @@
     "TotalDeviationCount": 35
   },
   {
-    "StoreID": "MP0261",
-    "StoreName": "Delhi NCR-West",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPKRN00020",
+    "StoreName": "MEDPLUS SRI VENKATESWARA NAGAR NH 44 KURNOOL EXP",
+    "State": "KRN",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -21414,10 +21414,10 @@
     "TotalDeviationCount": 50
   },
   {
-    "StoreID": "MP0262",
-    "StoreName": "Connaught Place-Clock Tower",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPKRN00021",
+    "StoreName": "MEDPLUS NANDIKOTKUR ROAD KURNOOL",
+    "State": "KRN",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -21437,10 +21437,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0263",
-    "StoreName": "Rohini-Market",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00031",
+    "StoreName": "MEDPLUS NAWABPET CENTER",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -21572,10 +21572,10 @@
     "TotalDeviationCount": 138
   },
   {
-    "StoreID": "MP0264",
-    "StoreName": "Dwarka-Central",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00021",
+    "StoreName": "MEDPLUS NIPPO CENTER NELLORE",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -21595,10 +21595,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0265",
-    "StoreName": "Saket-Main",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00035",
+    "StoreName": "MEDPLUS B V NAGAR MINI BYPASS ROAD",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -21740,10 +21740,10 @@
     "TotalDeviationCount": 201
   },
   {
-    "StoreID": "MP0266",
-    "StoreName": "Delhi NCR-Hub",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00024",
+    "StoreName": "MEDPLUS PRAGATHINAGR NELLORE",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -21912,10 +21912,10 @@
     "TotalDeviationCount": 186
   },
   {
-    "StoreID": "MP0267",
-    "StoreName": "Connaught Place-East",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00030",
+    "StoreName": "MEDPLUS NELLORE KRISHNAPATNAM ROAD",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -22084,10 +22084,10 @@
     "TotalDeviationCount": 225
   },
   {
-    "StoreID": "MP0268",
-    "StoreName": "Rohini-West",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00029",
+    "StoreName": "MEDPLUS NELLORE NAWABPET ROAD",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -22241,10 +22241,10 @@
     "TotalDeviationCount": 242
   },
   {
-    "StoreID": "MP0269",
-    "StoreName": "Dwarka-Clock Tower",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00033",
+    "StoreName": "MEDPLUS DYCUS ROAD NCC COLONY",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -22351,10 +22351,10 @@
     "TotalDeviationCount": 219
   },
   {
-    "StoreID": "MP0270",
-    "StoreName": "Saket-Market",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00038",
+    "StoreName": "MEDPLUS PRAGATHINAGAR NELLORE",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -22478,10 +22478,10 @@
     "TotalDeviationCount": 307
   },
   {
-    "StoreID": "MP0271",
-    "StoreName": "Delhi NCR-Central",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00020",
+    "StoreName": "MEDPLUS SARASWATHI NAGAR DARGAMITTA",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -22588,10 +22588,10 @@
     "TotalDeviationCount": 202
   },
   {
-    "StoreID": "MP0272",
-    "StoreName": "Connaught Place-Main",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00036",
+    "StoreName": "MEDPLUS MILATRY COLONY",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -22755,10 +22755,10 @@
     "TotalDeviationCount": 209
   },
   {
-    "StoreID": "MP0273",
-    "StoreName": "Rohini-Hub",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00027",
+    "StoreName": "MEDPLUS GOMATHI NAGAR",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -22778,10 +22778,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0274",
-    "StoreName": "Dwarka-East",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00032",
+    "StoreName": "MEDPLUS SETTI GUNTA ROAD NELLORE",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -22801,10 +22801,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0275",
-    "StoreName": "Saket-West",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00022",
+    "StoreName": "MEDPLUS BALAJI NAGAR",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -22884,10 +22884,10 @@
     "TotalDeviationCount": 68
   },
   {
-    "StoreID": "MP0276",
-    "StoreName": "Delhi NCR-Clock Tower",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPNLR00026",
+    "StoreName": "MEDPLUS VANAMTHOPU",
+    "State": "NLR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -22907,10 +22907,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0277",
-    "StoreName": "Connaught Place-Market",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPTIR00017",
+    "StoreName": "MEDPLUS NEHRU NAGAR ALIPIRI ROAD",
+    "State": "TIR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -23069,10 +23069,10 @@
     "TotalDeviationCount": 175
   },
   {
-    "StoreID": "MP0278",
-    "StoreName": "Rohini-Central",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPTIR00014",
+    "StoreName": "MEDPLUS PADMAVATHIPURAM TIRUCHANOOR ROAD",
+    "State": "TIR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -23092,10 +23092,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0279",
-    "StoreName": "Dwarka-Main",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPTIR00013",
+    "StoreName": "MEDPLUS RC ROAD TIRUPATHI",
+    "State": "TIR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -23158,10 +23158,10 @@
     "TotalDeviationCount": 29
   },
   {
-    "StoreID": "MP0280",
-    "StoreName": "Saket-Hub",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPTIR00015",
+    "StoreName": "MEDPLUS BAIRAGIPATTEDA ROAD TIRUPATI",
+    "State": "TIR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -23181,10 +23181,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0281",
-    "StoreName": "Delhi NCR-East",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPTIR00012",
+    "StoreName": "MEDPLUS THYAGARAJA NAGAR",
+    "State": "TIR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -23296,10 +23296,10 @@
     "TotalDeviationCount": 96
   },
   {
-    "StoreID": "MP0282",
-    "StoreName": "Connaught Place-West",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPTIR00021",
+    "StoreName": "MEDPLUS SATHYANARAYANAPURAM ROAD TIRUPATI",
+    "State": "TIR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -23458,10 +23458,10 @@
     "TotalDeviationCount": 196
   },
   {
-    "StoreID": "MP0283",
-    "StoreName": "Rohini-Clock Tower",
-    "State": "DL",
-    "StateName": "Delhi",
+    "StoreID": "INAPTIR00020",
+    "StoreName": "MEDPLUS TIRUMALA BYPASS ROAD SHIV JYOTHI NAGAR",
+    "State": "TIR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -23481,10 +23481,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0284",
-    "StoreName": "Kolkata-Central",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPTIR00022",
+    "StoreName": "MEDPLUS KORLAGUNTA MAIN ROAD EXP",
+    "State": "TIR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -23504,10 +23504,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0285",
-    "StoreName": "Howrah-Main",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPTIR00023",
+    "StoreName": "MEDPLUS LINGESWAR NAGAR JUNCTION STORE",
+    "State": "TIR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -23597,10 +23597,10 @@
     "TotalDeviationCount": 129
   },
   {
-    "StoreID": "MP0286",
-    "StoreName": "Durgapur-Hub",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPTIR50004",
+    "StoreName": "SREENIVASULU ENTERPRISES M R PALLY TIRUPATI",
+    "State": "TIR",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -23680,10 +23680,10 @@
     "TotalDeviationCount": 169
   },
   {
-    "StoreID": "MP0287",
-    "StoreName": "Siliguri-East",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPAML00007",
+    "StoreName": "MEDPLUS AMBAJIPETA GANNAVARAM ROAD",
+    "State": "AML",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -23768,10 +23768,10 @@
     "TotalDeviationCount": 156
   },
   {
-    "StoreID": "MP0288",
-    "StoreName": "Asansol-West",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPAML50002",
+    "StoreName": "PRATIMA ENTERPRISES P GANNAVARAM",
+    "State": "AML",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -23791,10 +23791,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0289",
-    "StoreName": "Kolkata-Clock Tower",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPAML00014",
+    "StoreName": "MEDPLUS MUKTESHWARAM ROAD",
+    "State": "AML",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -23837,10 +23837,10 @@
     "TotalDeviationCount": 56
   },
   {
-    "StoreID": "MP0290",
-    "StoreName": "Howrah-Market",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPATP00003",
+    "StoreName": "MEDPLUS GOPURAM ROAD PUTTAPARTHY",
+    "State": "ATP",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -23860,10 +23860,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0291",
-    "StoreName": "Durgapur-Central",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPATP00006",
+    "StoreName": "MEDPLUS TOWER CLOCK CIRCLE ANANTAPUR",
+    "State": "ATP",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -24032,10 +24032,10 @@
     "TotalDeviationCount": 272
   },
   {
-    "StoreID": "MP0292",
-    "StoreName": "Siliguri-Main",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPATP00004",
+    "StoreName": "MEDPLUS RTC BUS STATION ROAD",
+    "State": "ATP",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -24078,10 +24078,10 @@
     "TotalDeviationCount": 82
   },
   {
-    "StoreID": "MP0293",
-    "StoreName": "Asansol-Hub",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPBPT00005",
+    "StoreName": "MEDPLUS AG COLLEGE ROAD BAPATLA",
+    "State": "BPT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -24101,10 +24101,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0294",
-    "StoreName": "Kolkata-East",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPBPT00003",
+    "StoreName": "MEDPLUS BAPATLA STATION RD",
+    "State": "BPT",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -24124,10 +24124,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0295",
-    "StoreName": "Howrah-West",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPCDP00006",
+    "StoreName": "MEDPLUS MRUTHYUMJAYAKUNTA",
+    "State": "CDP",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -24217,10 +24217,10 @@
     "TotalDeviationCount": 161
   },
   {
-    "StoreID": "MP0296",
-    "StoreName": "Durgapur-Clock Tower",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPCDP00010",
+    "StoreName": "MEDPLUS PRAKASH NAGAR ROAD",
+    "State": "CDP",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -24337,10 +24337,10 @@
     "TotalDeviationCount": 202
   },
   {
-    "StoreID": "MP0297",
-    "StoreName": "Siliguri-Market",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPCDP50010",
+    "StoreName": "MEDPLUS APSARA CIRCLE KADAPA NEW",
+    "State": "CDP",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -24383,10 +24383,10 @@
     "TotalDeviationCount": 22
   },
   {
-    "StoreID": "MP0298",
-    "StoreName": "Asansol-Central",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPELU00013",
+    "StoreName": "MEDPLUS RR PETA MAIN ROAD",
+    "State": "ELU",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -24429,10 +24429,10 @@
     "TotalDeviationCount": 21
   },
   {
-    "StoreID": "MP0299",
-    "StoreName": "Kolkata-Main",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPELU00008",
+    "StoreName": "MEDPLUS ASHOK NAGAR ELURU",
+    "State": "ELU",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -24452,10 +24452,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0300",
-    "StoreName": "Howrah-Hub",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPELU00009",
+    "StoreName": "MEDPLUS SANKARAMATAM STREET-RR PET",
+    "State": "ELU",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -24525,10 +24525,10 @@
     "TotalDeviationCount": 131
   },
   {
-    "StoreID": "MP0301",
-    "StoreName": "Durgapur-East",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPJRG00002",
+    "StoreName": "MEDPLUS KAMAVARAPU KOTA",
+    "State": "JRG",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -24548,10 +24548,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0302",
-    "StoreName": "Siliguri-West",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPJRG00001",
+    "StoreName": "MEDPLUS JANGAREDDY GUDEM",
+    "State": "JRG",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -24599,10 +24599,10 @@
     "TotalDeviationCount": 32
   },
   {
-    "StoreID": "MP0303",
-    "StoreName": "Asansol-Clock Tower",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPJRG00003",
+    "StoreName": "MEDPLUS KOYYALAGUDEM MAIN ROAD",
+    "State": "JRG",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -24746,10 +24746,10 @@
     "TotalDeviationCount": 230
   },
   {
-    "StoreID": "MP0304",
-    "StoreName": "Kolkata-Market",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPNDL00004",
+    "StoreName": "MEDPLUS NANDYAL TEKKE",
+    "State": "NDL",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -24769,10 +24769,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0305",
-    "StoreName": "Howrah-Central",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPNDL00005",
+    "StoreName": "MEDPLUS NGO COLONY ROAD",
+    "State": "NDL",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -24820,10 +24820,10 @@
     "TotalDeviationCount": 100
   },
   {
-    "StoreID": "MP0306",
-    "StoreName": "Durgapur-Main",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPNDL00006",
+    "StoreName": "MEDPLUS SRINIVASA NAGAR",
+    "State": "NDL",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -24962,10 +24962,10 @@
     "TotalDeviationCount": 291
   },
   {
-    "StoreID": "MP0307",
-    "StoreName": "Siliguri-Hub",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INTGNLG00032",
+    "StoreName": "MEDPLUS MIRYALAGUDA ROAD BOTTU GUDA",
+    "State": "NLG",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -25055,10 +25055,10 @@
     "TotalDeviationCount": 112
   },
   {
-    "StoreID": "MP0308",
-    "StoreName": "Asansol-East",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPNLG00009",
+    "StoreName": "MEDPLUS MAMRE COMPLEX-PRAKASAM BAZAAR",
+    "State": "NLG",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -25212,10 +25212,10 @@
     "TotalDeviationCount": 163
   },
   {
-    "StoreID": "MP0309",
-    "StoreName": "Kolkata-West",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INTGNLG00023",
+    "StoreName": "MEDPLUS CHANDUR",
+    "State": "NLG",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -25322,10 +25322,10 @@
     "TotalDeviationCount": 274
   },
   {
-    "StoreID": "MP0310",
-    "StoreName": "Howrah-Clock Tower",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPNPM00005",
+    "StoreName": "MEDPLUS PANJA CENTER NARSAPURAM",
+    "State": "NPM",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -25479,10 +25479,10 @@
     "TotalDeviationCount": 183
   },
   {
-    "StoreID": "MP0311",
-    "StoreName": "Durgapur-Market",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPNPM00002",
+    "StoreName": "MEDPLUS STEAMER RD NARSAPURAM",
+    "State": "NPM",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -25631,10 +25631,10 @@
     "TotalDeviationCount": 184
   },
   {
-    "StoreID": "MP0312",
-    "StoreName": "Siliguri-Central",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPNPM00004",
+    "StoreName": "MEDPLUS MOGALTURU ROAD - NARSAPURAM",
+    "State": "NPM",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -25768,10 +25768,10 @@
     "TotalDeviationCount": 277
   },
   {
-    "StoreID": "MP0313",
-    "StoreName": "Asansol-Main",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPPRD00003",
+    "StoreName": "MEDPLUS GANDHI ROAD PRODDUTUR",
+    "State": "PRD",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -25791,10 +25791,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0314",
-    "StoreName": "Kolkata-Hub",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPPRD00005",
+    "StoreName": "MEDPLUS MUNCIPAL PARK ROAD PRODDUTUR",
+    "State": "PRD",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -25953,10 +25953,10 @@
     "TotalDeviationCount": 253
   },
   {
-    "StoreID": "MP0315",
-    "StoreName": "Howrah-East",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPPRD00004",
+    "StoreName": "MEDPLUS JNF ROAD YMR COLONY",
+    "State": "PRD",
+    "StateName": "Andhra Pradesh",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -25976,10 +25976,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0316",
-    "StoreName": "Durgapur-West",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPRAZ00006",
+    "StoreName": "MEDPLUS MALKIPURAM PADMAJA ROAD",
+    "State": "RAZ",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -25999,10 +25999,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0317",
-    "StoreName": "Siliguri-Clock Tower",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPRAZ00005",
+    "StoreName": "MEDPLUS TATIPAKA",
+    "State": "RAZ",
+    "StateName": "Andhra Pradesh",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -26171,10 +26171,10 @@
     "TotalDeviationCount": 262
   },
   {
-    "StoreID": "MP0318",
-    "StoreName": "Asansol-Market",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INAPRAZ00007",
+    "StoreName": "MEDPLUS LAKKAVARAM",
+    "State": "RAZ",
+    "StateName": "Andhra Pradesh",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -26194,10 +26194,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0319",
-    "StoreName": "Kolkata-Central",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INKABAY00007",
+    "StoreName": "MEDPLUS RENUKA NAGAR",
+    "State": "BAY",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -26361,10 +26361,10 @@
     "TotalDeviationCount": 292
   },
   {
-    "StoreID": "MP0320",
-    "StoreName": "Howrah-Main",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INKABAY00020",
+    "StoreName": "MEDPLUS DOLLARS COLONY BANDIHATTI",
+    "State": "BAY",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -26422,10 +26422,10 @@
     "TotalDeviationCount": 86
   },
   {
-    "StoreID": "MP0321",
-    "StoreName": "Durgapur-Hub",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INKABAY00005",
+    "StoreName": "MEDPLUS BELGAL CROSS",
+    "State": "BAY",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -26468,10 +26468,10 @@
     "TotalDeviationCount": 24
   },
   {
-    "StoreID": "MP0322",
-    "StoreName": "Siliguri-East",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INKAGLB00014",
+    "StoreName": "MEDPLUS GOA HOTEL CIRCLE",
+    "State": "GLB",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -26534,10 +26534,10 @@
     "TotalDeviationCount": 78
   },
   {
-    "StoreID": "MP0323",
-    "StoreName": "Asansol-West",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INKAGLB00006",
+    "StoreName": "MEDPLUS SEDAM ROAD",
+    "State": "GLB",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -26706,10 +26706,10 @@
     "TotalDeviationCount": 226
   },
   {
-    "StoreID": "MP0324",
-    "StoreName": "Kolkata-Clock Tower",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INKAGLB00005",
+    "StoreName": "MEDPLUS S V P CHOWK",
+    "State": "GLB",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -26831,10 +26831,10 @@
     "TotalDeviationCount": 167
   },
   {
-    "StoreID": "MP0325",
-    "StoreName": "Howrah-Market",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INKAHBL00039",
+    "StoreName": "MEDPLUS SIDDESHWAR PARK",
+    "State": "HBL",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -26983,10 +26983,10 @@
     "TotalDeviationCount": 201
   },
   {
-    "StoreID": "MP0326",
-    "StoreName": "Durgapur-Central",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INKAHBL00049",
+    "StoreName": "MEDPLUS MARATHA COLONY",
+    "State": "HBL",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -27034,10 +27034,10 @@
     "TotalDeviationCount": 88
   },
   {
-    "StoreID": "MP0327",
-    "StoreName": "Siliguri-Main",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INKAHBL00018",
+    "StoreName": "MEDPLUS SAPTAPUR MAIN ROAD - DARWAD",
+    "State": "HBL",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -27107,10 +27107,10 @@
     "TotalDeviationCount": 123
   },
   {
-    "StoreID": "MP0328",
-    "StoreName": "Asansol-Hub",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INKAIXE00052",
+    "StoreName": "MEDPLUS S L MATHAIS ROAD ATTAVARA",
+    "State": "IXE",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -27237,10 +27237,10 @@
     "TotalDeviationCount": 222
   },
   {
-    "StoreID": "MP0329",
-    "StoreName": "Kolkata-East",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INKAIXE00038",
+    "StoreName": "MEDPLUS VALENCIA GORIGUDDA ROAD",
+    "State": "IXE",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -27303,10 +27303,10 @@
     "TotalDeviationCount": 25
   },
   {
-    "StoreID": "MP0330",
-    "StoreName": "Howrah-West",
-    "State": "WB",
-    "StateName": "West Bengal",
+    "StoreID": "INKAIXE00045",
+    "StoreName": "MEDPLUS SHAKTHI NAGAR MANGALORE",
+    "State": "IXE",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -27450,10 +27450,10 @@
     "TotalDeviationCount": 188
   },
   {
-    "StoreID": "MP0331",
-    "StoreName": "Ahmedabad-Central",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKAIXG00031",
+    "StoreName": "MEDPLUS RAMTEERTH NAGAR",
+    "State": "IXG",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -27506,10 +27506,10 @@
     "TotalDeviationCount": 34
   },
   {
-    "StoreID": "MP0332",
-    "StoreName": "Surat-Main",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKAIXG00033",
+    "StoreName": "MEDPLUS HANUMAN NAGAR CIRCLE",
+    "State": "IXG",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -27599,10 +27599,10 @@
     "TotalDeviationCount": 144
   },
   {
-    "StoreID": "MP0333",
-    "StoreName": "Vadodara-Hub",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKAIXG00018",
+    "StoreName": "MEDPLUS LAXMI NAGAR",
+    "State": "IXG",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -27655,10 +27655,10 @@
     "TotalDeviationCount": 64
   },
   {
-    "StoreID": "MP0334",
-    "StoreName": "Rajkot-East",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKAMYA00009",
+    "StoreName": "MEDPLUS HOLALU CIRCLE MANDYA",
+    "State": "MYA",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -27678,10 +27678,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0335",
-    "StoreName": "Bhavnagar-West",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKAMYA00010",
+    "StoreName": "MEDPLUS GUTHAL ROAD MANDYA",
+    "State": "MYA",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -27701,10 +27701,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0336",
-    "StoreName": "Ahmedabad-Clock Tower",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKAMYA00007",
+    "StoreName": "MEDPLUS SWARNASANDRA MANDYA EXP",
+    "State": "MYA",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -27863,10 +27863,10 @@
     "TotalDeviationCount": 296
   },
   {
-    "StoreID": "MP0337",
-    "StoreName": "Surat-Market",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKAMYS00049",
+    "StoreName": "MEDPLUS GIRIDARSHINI LAYOUT MYSORE EXP",
+    "State": "MYS",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -27914,10 +27914,10 @@
     "TotalDeviationCount": 71
   },
   {
-    "StoreID": "MP0338",
-    "StoreName": "Vadodara-Central",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKAMYS00052",
+    "StoreName": "MEDPLUS K R S ROAD",
+    "State": "MYS",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -27987,10 +27987,10 @@
     "TotalDeviationCount": 146
   },
   {
-    "StoreID": "MP0339",
-    "StoreName": "Rajkot-Main",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKAMYS50002",
+    "StoreName": "AFSA PHARMA HOOTAGALLI MYSURU",
+    "State": "MYS",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -28010,10 +28010,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0340",
-    "StoreName": "Bhavnagar-Hub",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKASMG00020",
+    "StoreName": "MEDPLUS RANGAPPA CIRCLE",
+    "State": "SMG",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -28071,10 +28071,10 @@
     "TotalDeviationCount": 51
   },
   {
-    "StoreID": "MP0341",
-    "StoreName": "Ahmedabad-East",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKASMG00025",
+    "StoreName": "MEDPLUS LAKSHMI THEATRE SHIMOGA",
+    "State": "SMG",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -28149,10 +28149,10 @@
     "TotalDeviationCount": 127
   },
   {
-    "StoreID": "MP0342",
-    "StoreName": "Surat-West",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKASMG00022",
+    "StoreName": "MEDPLUS GOPAL GOWDA",
+    "State": "SMG",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -28172,10 +28172,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0343",
-    "StoreName": "Vadodara-Clock Tower",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKATUM00010",
+    "StoreName": "MEDPLUS MG ROAD TUMKUR",
+    "State": "TUM",
+    "StateName": "Karnataka",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -28292,10 +28292,10 @@
     "TotalDeviationCount": 254
   },
   {
-    "StoreID": "MP0344",
-    "StoreName": "Rajkot-Market",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKATUM00025",
+    "StoreName": "MEDPLUS MARALUR CIRCLE TUMKUR KUNIGAL RD",
+    "State": "TUM",
+    "StateName": "Karnataka",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -28315,10 +28315,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0345",
-    "StoreName": "Bhavnagar-Central",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INKATUM00008",
+    "StoreName": "MEDPLUS SIT MAIN ROAD",
+    "State": "TUM",
+    "StateName": "Karnataka",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -28423,10 +28423,10 @@
     "TotalDeviationCount": 82
   },
   {
-    "StoreID": "MP0346",
-    "StoreName": "Ahmedabad-Main",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHAMI00010",
+    "StoreName": "MEDPLUS MOTI NAGAR AMRAVTAI",
+    "State": "AMI",
+    "StateName": "Maharashtra",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -28446,10 +28446,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0347",
-    "StoreName": "Surat-Hub",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHAMI50002",
+    "StoreName": "RAHUL MEDICOS SHEGAON NAKA TO SHEGAON ROAD",
+    "State": "AMI",
+    "StateName": "Maharashtra",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -28598,10 +28598,10 @@
     "TotalDeviationCount": 254
   },
   {
-    "StoreID": "MP0348",
-    "StoreName": "Vadodara-East",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHAMI00011",
+    "StoreName": "MEDPLUS ARJUN NAGAR",
+    "State": "AMI",
+    "StateName": "Maharashtra",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -28621,10 +28621,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0349",
-    "StoreName": "Rajkot-West",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHAWB00029",
+    "StoreName": "MEDPLUS HANUMAN CHOWK ROAD CIDCO AURANGABAD",
+    "State": "AWB",
+    "StateName": "Maharashtra",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -28644,10 +28644,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0350",
-    "StoreName": "Bhavnagar-Clock Tower",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHAWB00027",
+    "StoreName": "MEDPLUS MAHARANA PRATAP CHOWK BAJAJ NAGAR WALUJ",
+    "State": "AWB",
+    "StateName": "Maharashtra",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -28727,10 +28727,10 @@
     "TotalDeviationCount": 106
   },
   {
-    "StoreID": "MP0351",
-    "StoreName": "Ahmedabad-Market",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHAWB00014",
+    "StoreName": "MEDPLUS KHADKESHWAR ROAD AURANGABAD",
+    "State": "AWB",
+    "StateName": "Maharashtra",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -28859,10 +28859,10 @@
     "TotalDeviationCount": 157
   },
   {
-    "StoreID": "MP0352",
-    "StoreName": "Surat-Central",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHMUM00054",
+    "StoreName": "MEDPLUS WILLINGDON SANTACRUZ WEST",
+    "State": "MUM",
+    "StateName": "Maharashtra",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -28905,10 +28905,10 @@
     "TotalDeviationCount": 49
   },
   {
-    "StoreID": "MP0353",
-    "StoreName": "Vadodara-Main",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHMUM00004",
+    "StoreName": "MEDPLUS RAILWAY STATION ROAD PANVEL",
+    "State": "MUM",
+    "StateName": "Maharashtra",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -28966,10 +28966,10 @@
     "TotalDeviationCount": 98
   },
   {
-    "StoreID": "MP0354",
-    "StoreName": "Rajkot-Hub",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHMUM00067",
+    "StoreName": "MEDPLUS SECTOR 19 ULWE",
+    "State": "MUM",
+    "StateName": "Maharashtra",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -29091,10 +29091,10 @@
     "TotalDeviationCount": 209
   },
   {
-    "StoreID": "MP0355",
-    "StoreName": "Bhavnagar-East",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHNAG00097",
+    "StoreName": "MEDPLUS NIT GARDEN TRIMURTHY NAGAR",
+    "State": "NAG",
+    "StateName": "Maharashtra",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -29114,10 +29114,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0356",
-    "StoreName": "Ahmedabad-West",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHNAG00095",
+    "StoreName": "MEDPLUS HINGANA ROAD NEAR T POINT",
+    "State": "NAG",
+    "StateName": "Maharashtra",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -29170,10 +29170,10 @@
     "TotalDeviationCount": 59
   },
   {
-    "StoreID": "MP0357",
-    "StoreName": "Surat-Clock Tower",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHNAG00027",
+    "StoreName": "MEDPLUS JARIPATKA",
+    "State": "NAG",
+    "StateName": "Maharashtra",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -29221,10 +29221,10 @@
     "TotalDeviationCount": 32
   },
   {
-    "StoreID": "MP0358",
-    "StoreName": "Vadodara-Market",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHNED00008",
+    "StoreName": "MEDPLUS GAJANAN TOWER MALEGOAN ROAD  ",
+    "State": "NED",
+    "StateName": "Maharashtra",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -29244,10 +29244,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0359",
-    "StoreName": "Rajkot-Central",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHNED00001",
+    "StoreName": "MEDPLUS WADI ",
+    "State": "NED",
+    "StateName": "Maharashtra",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -29290,10 +29290,10 @@
     "TotalDeviationCount": 57
   },
   {
-    "StoreID": "MP0360",
-    "StoreName": "Bhavnagar-Main",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHNED00004",
+    "StoreName": "MEDPLUS CIDKO",
+    "State": "NED",
+    "StateName": "Maharashtra",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -29351,10 +29351,10 @@
     "TotalDeviationCount": 53
   },
   {
-    "StoreID": "MP0361",
-    "StoreName": "Ahmedabad-Hub",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHPNQ50018",
+    "StoreName": "VARAD MEDICAL JAGTAP DAIRY PIMPRI CHINCHWAD",
+    "State": "PNQ",
+    "StateName": "Maharashtra",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -29439,10 +29439,10 @@
     "TotalDeviationCount": 95
   },
   {
-    "StoreID": "MP0362",
-    "StoreName": "Surat-East",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHPNQ00100",
+    "StoreName": "MEDPLUS WAGHOLI",
+    "State": "PNQ",
+    "StateName": "Maharashtra",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -29462,10 +29462,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0363",
-    "StoreName": "Vadodara-West",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHPNQ00136",
+    "StoreName": "MEDPLUS PIMPRI CHINCHWAD",
+    "State": "PNQ",
+    "StateName": "Maharashtra",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -29599,10 +29599,10 @@
     "TotalDeviationCount": 294
   },
   {
-    "StoreID": "MP0364",
-    "StoreName": "Rajkot-Clock Tower",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHTNA50002",
+    "StoreName": "SUSHRUT CHEMIST G B ROAD THANE",
+    "State": "TNA",
+    "StateName": "Maharashtra",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -29709,10 +29709,10 @@
     "TotalDeviationCount": 191
   },
   {
-    "StoreID": "MP0365",
-    "StoreName": "Bhavnagar-Market",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHTNA00006",
+    "StoreName": "MEDPLUS SURVALE CHOWK BADLAPUR",
+    "State": "TNA",
+    "StateName": "Maharashtra",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -29732,10 +29732,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0366",
-    "StoreName": "Ahmedabad-Central",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHTNA00005",
+    "StoreName": "MEDPLUS LODHA PARADISE",
+    "State": "TNA",
+    "StateName": "Maharashtra",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -29788,10 +29788,10 @@
     "TotalDeviationCount": 82
   },
   {
-    "StoreID": "MP0367",
-    "StoreName": "Surat-Main",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INMHUDG00001",
+    "StoreName": "MEDPLUS UMA CHOWK UDGIR",
+    "State": "UDG",
+    "StateName": "Maharashtra",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -29871,10 +29871,10 @@
     "TotalDeviationCount": 142
   },
   {
-    "StoreID": "MP0368",
-    "StoreName": "Vadodara-Hub",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORANG00009",
+    "StoreName": "MEDPLUS BANARPAL ANGUL",
+    "State": "ANG",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -29922,10 +29922,10 @@
     "TotalDeviationCount": 27
   },
   {
-    "StoreID": "MP0369",
-    "StoreName": "Rajkot-East",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORANG00004",
+    "StoreName": "MEDPLUS ANGUL NARSINGHPUR ROAD",
+    "State": "ANG",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -29945,10 +29945,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0370",
-    "StoreName": "Bhavnagar-West",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORANG00003",
+    "StoreName": "MEDPLUS HULURISINGHA",
+    "State": "ANG",
+    "StateName": "Odisha",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -30006,10 +30006,10 @@
     "TotalDeviationCount": 57
   },
   {
-    "StoreID": "MP0371",
-    "StoreName": "Ahmedabad-Clock Tower",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORBBI00065",
+    "StoreName": "MEDPLUS KUHA",
+    "State": "BBI",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -30089,10 +30089,10 @@
     "TotalDeviationCount": 143
   },
   {
-    "StoreID": "MP0372",
-    "StoreName": "Surat-Market",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORBBI00012",
+    "StoreName": "MEDPLUS AIGINIA",
+    "State": "BBI",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -30261,10 +30261,10 @@
     "TotalDeviationCount": 279
   },
   {
-    "StoreID": "MP0373",
-    "StoreName": "Vadodara-Central",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORBBI00046",
+    "StoreName": "MEDPLUS ID MARKET 1",
+    "State": "BBI",
+    "StateName": "Odisha",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -30284,10 +30284,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0374",
-    "StoreName": "Rajkot-Main",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORBHC00002",
+    "StoreName": "MEDPLUS BHADRAK",
+    "State": "BHC",
+    "StateName": "Odisha",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -30409,10 +30409,10 @@
     "TotalDeviationCount": 140
   },
   {
-    "StoreID": "MP0375",
-    "StoreName": "Bhavnagar-Hub",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORBHC00004",
+    "StoreName": "MEDPLUS ARADI CHHAKA",
+    "State": "BHC",
+    "StateName": "Odisha",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -30432,10 +30432,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0376",
-    "StoreName": "Ahmedabad-East",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORBHC00003",
+    "StoreName": "MEDPLUS CHARAMPA",
+    "State": "BHC",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -30527,10 +30527,10 @@
     "TotalDeviationCount": 128
   },
   {
-    "StoreID": "MP0377",
-    "StoreName": "Surat-West",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORBLS00010",
+    "StoreName": "MEDPLUS IG Road BALASORE",
+    "State": "BLS",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -30615,10 +30615,10 @@
     "TotalDeviationCount": 122
   },
   {
-    "StoreID": "MP0378",
-    "StoreName": "Vadodara-Clock Tower",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORBLS00011",
+    "StoreName": "MEDPLUS INDIRA GANDHI MARG MALLIKASHPUR",
+    "State": "BLS",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -30638,10 +30638,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0379",
-    "StoreName": "Rajkot-Market",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORBLS00003",
+    "StoreName": "MEDPLUS CHIDIAPOLO BALASORE",
+    "State": "BLS",
+    "StateName": "Odisha",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -30661,10 +30661,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0380",
-    "StoreName": "Bhavnagar-Central",
-    "State": "GJ",
-    "StateName": "Gujarat",
+    "StoreID": "INORBLU00002",
+    "StoreName": "MEDPLUS BALUGAON",
+    "State": "BLU",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -30744,10 +30744,10 @@
     "TotalDeviationCount": 77
   },
   {
-    "StoreID": "MP0381",
-    "StoreName": "Jaipur-Central",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORBPO00003",
+    "StoreName": "MEDPLUS BAGHRA ROAD BARIPADA",
+    "State": "BPO",
+    "StateName": "Odisha",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -30767,10 +30767,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0382",
-    "StoreName": "Jodhpur-Main",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORBPO00002",
+    "StoreName": "MEDPLUS BADABAZAR BHANJPUR",
+    "State": "BPO",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -30914,10 +30914,10 @@
     "TotalDeviationCount": 296
   },
   {
-    "StoreID": "MP0383",
-    "StoreName": "Udaipur-Hub",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORBPO00001",
+    "StoreName": "MEDPLUS SAI NIKETAN BARIPADA",
+    "State": "BPO",
+    "StateName": "Odisha",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -31029,10 +31029,10 @@
     "TotalDeviationCount": 141
   },
   {
-    "StoreID": "MP0384",
-    "StoreName": "Kota-East",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORCTK00016",
+    "StoreName": "MEDPLUS ATHAGARH",
+    "State": "CTK",
+    "StateName": "Odisha",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -31159,10 +31159,10 @@
     "TotalDeviationCount": 102
   },
   {
-    "StoreID": "MP0385",
-    "StoreName": "Ajmer-West",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORCTK00018",
+    "StoreName": "MEDPLUS JHANJIRMAGALA",
+    "State": "CTK",
+    "StateName": "Odisha",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -31294,10 +31294,10 @@
     "TotalDeviationCount": 199
   },
   {
-    "StoreID": "MP0386",
-    "StoreName": "Jaipur-Clock Tower",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORCTK00014",
+    "StoreName": "MEDPLUS NIMCHOURI CUTTACK",
+    "State": "CTK",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -31345,10 +31345,10 @@
     "TotalDeviationCount": 89
   },
   {
-    "StoreID": "MP0387",
-    "StoreName": "Jodhpur-Market",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORDHE00001",
+    "StoreName": "MEDPLUS DHENKANAL",
+    "State": "DHE",
+    "StateName": "Odisha",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -31428,10 +31428,10 @@
     "TotalDeviationCount": 137
   },
   {
-    "StoreID": "MP0388",
-    "StoreName": "Udaipur-Central",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORDHE00003",
+    "StoreName": "MEDPLUS JAIL ROAD DHENKANAL",
+    "State": "DHE",
+    "StateName": "Odisha",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -31526,10 +31526,10 @@
     "TotalDeviationCount": 80
   },
   {
-    "StoreID": "MP0389",
-    "StoreName": "Kota-Main",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORDHE00002",
+    "StoreName": "MEDPLUS DAKHINAKALI ROAD DHENKANAL",
+    "State": "DHE",
+    "StateName": "Odisha",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -31641,10 +31641,10 @@
     "TotalDeviationCount": 167
   },
   {
-    "StoreID": "MP0390",
-    "StoreName": "Ajmer-Hub",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORJJP00005",
+    "StoreName": "MEDPLUS NR REDCROSS CHOWK",
+    "State": "JJP",
+    "StateName": "Odisha",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -31751,10 +31751,10 @@
     "TotalDeviationCount": 215
   },
   {
-    "StoreID": "MP0391",
-    "StoreName": "Jaipur-East",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORJJP00002",
+    "StoreName": "MEDPLUS CHORDA - JAJPUR ROAD",
+    "State": "JJP",
+    "StateName": "Odisha",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -31774,10 +31774,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0392",
-    "StoreName": "Jodhpur-West",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORJJP00004",
+    "StoreName": "MEDPLUS JAJPUR TOWN",
+    "State": "JJP",
+    "StateName": "Odisha",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -31830,10 +31830,10 @@
     "TotalDeviationCount": 51
   },
   {
-    "StoreID": "MP0393",
-    "StoreName": "Udaipur-Clock Tower",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORJSR00005",
+    "StoreName": "MEDPLUS RAHAMA JAGATSINGHAPUR",
+    "State": "JSR",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -31972,10 +31972,10 @@
     "TotalDeviationCount": 254
   },
   {
-    "StoreID": "MP0394",
-    "StoreName": "Kota-Market",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORJSR00004",
+    "StoreName": "MEDPLUS TIRTOL",
+    "State": "JSR",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -32117,10 +32117,10 @@
     "TotalDeviationCount": 229
   },
   {
-    "StoreID": "MP0395",
-    "StoreName": "Ajmer-Central",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORJSR00003",
+    "StoreName": "MEDPLUS DEULI JAGATSINGHPUR",
+    "State": "JSR",
+    "StateName": "Odisha",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -32232,10 +32232,10 @@
     "TotalDeviationCount": 216
   },
   {
-    "StoreID": "MP0396",
-    "StoreName": "Jaipur-Main",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORKJR00005",
+    "StoreName": "MEDPLUS BALADEVJEW ROAD",
+    "State": "KJR",
+    "StateName": "Odisha",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -32342,10 +32342,10 @@
     "TotalDeviationCount": 223
   },
   {
-    "StoreID": "MP0397",
-    "StoreName": "Jodhpur-Hub",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORKJR00004",
+    "StoreName": "MEDPLUS MINING ROAD",
+    "State": "KJR",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -32365,10 +32365,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0398",
-    "StoreName": "Udaipur-East",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORKPR00001",
+    "StoreName": "MEDPLUS BANIAMAL KENDRAPARA",
+    "State": "KPR",
+    "StateName": "Odisha",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -32433,10 +32433,10 @@
     "TotalDeviationCount": 122
   },
   {
-    "StoreID": "MP0399",
-    "StoreName": "Kota-West",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORPLH00001",
+    "StoreName": "MEDPLUS PARLAKHEMUNDI",
+    "State": "PLH",
+    "StateName": "Odisha",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -32558,10 +32558,10 @@
     "TotalDeviationCount": 183
   },
   {
-    "StoreID": "MP0400",
-    "StoreName": "Ajmer-Clock Tower",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORPRI00009",
+    "StoreName": "MEDPLUS LOKANATH ROAD",
+    "State": "PRI",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -32581,10 +32581,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0401",
-    "StoreName": "Jaipur-Market",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORPRI00005",
+    "StoreName": "MEDPLUS BALI GUALI",
+    "State": "PRI",
+    "StateName": "Odisha",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -32718,10 +32718,10 @@
     "TotalDeviationCount": 274
   },
   {
-    "StoreID": "MP0402",
-    "StoreName": "Jodhpur-Central",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INORPRI00008",
+    "StoreName": "MEDPLUS BRAHMAGIRI",
+    "State": "PRI",
+    "StateName": "Odisha",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -32833,10 +32833,10 @@
     "TotalDeviationCount": 167
   },
   {
-    "StoreID": "MP0403",
-    "StoreName": "Udaipur-Main",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTGHMK00012",
+    "StoreName": "MEDPLUS HOUSING BOARD COLONY BHEEMARAM",
+    "State": "HMK",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -32973,10 +32973,10 @@
     "TotalDeviationCount": 110
   },
   {
-    "StoreID": "MP0404",
-    "StoreName": "Kota-Hub",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTGHMK50006",
+    "StoreName": "MAHADEV GENERAL AND MEDICAL STORE SUBEDARI",
+    "State": "HMK",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -32996,10 +32996,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0405",
-    "StoreName": "Ajmer-East",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTGHMK00018",
+    "StoreName": "MEDPLUS GOPALPUR ROAD HANAMKONDA",
+    "State": "HMK",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -33052,10 +33052,10 @@
     "TotalDeviationCount": 88
   },
   {
-    "StoreID": "MP0406",
-    "StoreName": "Jaipur-West",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTGSPT00011",
+    "StoreName": "MEDPLUS THALLAGADDA ROAD SURYAPET",
+    "State": "SPT",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -33075,10 +33075,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0407",
-    "StoreName": "Jodhpur-Clock Tower",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTGSPT00012",
+    "StoreName": "MEDPLUS K K ROAD  SURYAPET",
+    "State": "SPT",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -33131,10 +33131,10 @@
     "TotalDeviationCount": 49
   },
   {
-    "StoreID": "MP0408",
-    "StoreName": "Udaipur-Market",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTGSPT00013",
+    "StoreName": "MEDPLUS CHURCH COMPOUND ROAD SURYAPET",
+    "State": "SPT",
+    "StateName": "Telangana",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -33154,10 +33154,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0409",
-    "StoreName": "Kota-Central",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTGSRD00004",
+    "StoreName": "MEDPLUS POTHIREDDY PALLY BY PASS ROAD",
+    "State": "SRD",
+    "StateName": "Telangana",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -33177,10 +33177,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0410",
-    "StoreName": "Ajmer-Main",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTGSRD50006",
+    "StoreName": "UMA MEDICAL AND GENERAL STORES SANGAREDDY",
+    "State": "SRD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -33200,10 +33200,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0411",
-    "StoreName": "Jaipur-Hub",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTGSRD00003",
+    "StoreName": "MEDPLUS KALVAKUNTA SANGAREDDY",
+    "State": "SRD",
+    "StateName": "Telangana",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -33330,10 +33330,10 @@
     "TotalDeviationCount": 206
   },
   {
-    "StoreID": "MP0412",
-    "StoreName": "Jodhpur-East",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNAJJ00002",
+    "StoreName": "MEDPLUS ARAKONAM GANDHI ROAD",
+    "State": "AJJ",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -33450,10 +33450,10 @@
     "TotalDeviationCount": 259
   },
   {
-    "StoreID": "MP0413",
-    "StoreName": "Udaipur-West",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNHSR00003",
+    "StoreName": "MEDPLUS ROYAKOTTAI ROAD KRISHNAGIRI",
+    "State": "HSR",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -33553,10 +33553,10 @@
     "TotalDeviationCount": 124
   },
   {
-    "StoreID": "MP0414",
-    "StoreName": "Kota-Clock Tower",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNHSR00004",
+    "StoreName": "MEDPLUS THALLY ROAD HOSUR",
+    "State": "HSR",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -33599,10 +33599,10 @@
     "TotalDeviationCount": 91
   },
   {
-    "StoreID": "MP0415",
-    "StoreName": "Ajmer-Market",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNHSR00002",
+    "StoreName": "MEDPLUS TALUK OFFICE ROAD HOSUR",
+    "State": "HSR",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -33622,10 +33622,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0416",
-    "StoreName": "Jaipur-Central",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNIXM00084",
+    "StoreName": "MEDPLUS APK MAIN ROAD MADURAI",
+    "State": "IXM",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -33688,10 +33688,10 @@
     "TotalDeviationCount": 63
   },
   {
-    "StoreID": "MP0417",
-    "StoreName": "Jodhpur-Main",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNIXM00085",
+    "StoreName": "MEDPLUS THIRUPARANKUNDRAM ROAD VISALAM",
+    "State": "IXM",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -33771,10 +33771,10 @@
     "TotalDeviationCount": 123
   },
   {
-    "StoreID": "MP0418",
-    "StoreName": "Udaipur-Hub",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNIXM00031",
+    "StoreName": "MEDPLUS MELUR",
+    "State": "IXM",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -33794,10 +33794,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0419",
-    "StoreName": "Kota-East",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNKCH00020",
+    "StoreName": "MEDPLUS OLD TOLLGATE KANCHEEPURAM",
+    "State": "KCH",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -33971,10 +33971,10 @@
     "TotalDeviationCount": 170
   },
   {
-    "StoreID": "MP0420",
-    "StoreName": "Ajmer-West",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNKCH00007",
+    "StoreName": "MEDPLUS KANCHIPURAM KAMARAJAR STREET",
+    "State": "KCH",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -34118,10 +34118,10 @@
     "TotalDeviationCount": 181
   },
   {
-    "StoreID": "MP0421",
-    "StoreName": "Jaipur-Clock Tower",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNKCH50002",
+    "StoreName": "BRINDHA MEDICALS PILLAIYARPALAYAM",
+    "State": "KCH",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -34211,10 +34211,10 @@
     "TotalDeviationCount": 182
   },
   {
-    "StoreID": "MP0422",
-    "StoreName": "Jodhpur-Market",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNRMT00009",
+    "StoreName": "MEDPLUS RAILWAY FEEDER ROAD VELIPATTINAM",
+    "State": "RMT",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -34284,10 +34284,10 @@
     "TotalDeviationCount": 88
   },
   {
-    "StoreID": "MP0423",
-    "StoreName": "Udaipur-Central",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNRMT00008",
+    "StoreName": "MEDPLUS BEACH ST THONDI",
+    "State": "RMT",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -34307,10 +34307,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0424",
-    "StoreName": "Kota-Main",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNRMT00005",
+    "StoreName": "MEDPLUS NADAR BAZAR KAMUDHI",
+    "State": "RMT",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -34330,10 +34330,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0425",
-    "StoreName": "Ajmer-Hub",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNTEN50004",
+    "StoreName": "SHREE PHARMACY THATCHANALLUR TIRUNELVELI",
+    "State": "TEN",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -34376,10 +34376,10 @@
     "TotalDeviationCount": 98
   },
   {
-    "StoreID": "MP0426",
-    "StoreName": "Jaipur-East",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNTEN00007",
+    "StoreName": "MEDPLUS NGO COLONY MAIN ROAD PERUMALPURAM",
+    "State": "TEN",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -34399,10 +34399,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0427",
-    "StoreName": "Jodhpur-West",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNTEN00006",
+    "StoreName": "MEDPLUS KARTHIGAIMADAM STREET KALLIDAIKURCHI",
+    "State": "TEN",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -34549,10 +34549,10 @@
     "TotalDeviationCount": 157
   },
   {
-    "StoreID": "MP0428",
-    "StoreName": "Udaipur-Clock Tower",
-    "State": "RJ",
-    "StateName": "Rajasthan",
+    "StoreID": "INTNTJR00019",
+    "StoreName": "MEDPLUS COLLECTOR MURUGARAJ NAGAR",
+    "State": "TJR",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -34615,10 +34615,10 @@
     "TotalDeviationCount": 40
   },
   {
-    "StoreID": "MP0429",
-    "StoreName": "Lucknow-Central",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNTJR00012",
+    "StoreName": "MEDPLUS PAPANASAM",
+    "State": "TJR",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -34638,10 +34638,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0430",
-    "StoreName": "Kanpur-Main",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNTJR00010",
+    "StoreName": "MEDPLUS PARISUTHAM NAGAR PUDUKKOTTAI ROAD",
+    "State": "TJR",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -34716,10 +34716,10 @@
     "TotalDeviationCount": 117
   },
   {
-    "StoreID": "MP0431",
-    "StoreName": "Varanasi-Hub",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNTLR00019",
+    "StoreName": "MEDPLUS PONNIAMMAN KOIL STREET TV PURAM EXP",
+    "State": "TLR",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -34739,10 +34739,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0432",
-    "StoreName": "Agra-East",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNTLR00016",
+    "StoreName": "MEDPLUS RAJAJIPURAM TIRUVALLUR EXP",
+    "State": "TLR",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -34832,10 +34832,10 @@
     "TotalDeviationCount": 138
   },
   {
-    "StoreID": "MP0433",
-    "StoreName": "Meerut-West",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNTLR00007",
+    "StoreName": "MEDPLUS MINJUR",
+    "State": "TLR",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -34925,10 +34925,10 @@
     "TotalDeviationCount": 149
   },
   {
-    "StoreID": "MP0434",
-    "StoreName": "Lucknow-Clock Tower",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNTRZ00058",
+    "StoreName": "MEDPLUS SAMAYAPURAM",
+    "State": "TRZ",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -35062,10 +35062,10 @@
     "TotalDeviationCount": 358
   },
   {
-    "StoreID": "MP0435",
-    "StoreName": "Kanpur-Market",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNTRZ00013",
+    "StoreName": "MEDPLUS SRIRANGAM",
+    "State": "TRZ",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -35085,10 +35085,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0436",
-    "StoreName": "Varanasi-Central",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNTRZ00030",
+    "StoreName": "MEDPLUS SRIRANGAM PULIMANDAPAM ROAD",
+    "State": "TRZ",
+    "StateName": "Tamil Nadu",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -35257,10 +35257,10 @@
     "TotalDeviationCount": 174
   },
   {
-    "StoreID": "MP0437",
-    "StoreName": "Agra-Main",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNVLR00015",
+    "StoreName": "MEDPLUS SALAVENPET",
+    "State": "VLR",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -35399,10 +35399,10 @@
     "TotalDeviationCount": 269
   },
   {
-    "StoreID": "MP0438",
-    "StoreName": "Meerut-Hub",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNVLR00010",
+    "StoreName": "MEDPLUS GUDIYATHAM",
+    "State": "VLR",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -35489,10 +35489,10 @@
     "TotalDeviationCount": 153
   },
   {
-    "StoreID": "MP0439",
-    "StoreName": "Lucknow-East",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNVLR00013",
+    "StoreName": "MEDPLUS KALNIJUR VELLORE CHITTOR SALAI",
+    "State": "VLR",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -35512,10 +35512,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0440",
-    "StoreName": "Kanpur-West",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNVPM00002",
+    "StoreName": "MEDPLUS VILLUPURAM KK ROAD",
+    "State": "VPM",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -35535,10 +35535,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0441",
-    "StoreName": "Varanasi-Clock Tower",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNVPM00009",
+    "StoreName": "MEDPLUS VALAVANUR VILLUPURAM",
+    "State": "VPM",
+    "StateName": "Tamil Nadu",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -35558,10 +35558,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0442",
-    "StoreName": "Agra-Market",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INTNVPM00001",
+    "StoreName": "MEDPLUS VILLUPURAM",
+    "State": "VPM",
+    "StateName": "Tamil Nadu",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -35658,10 +35658,10 @@
     "TotalDeviationCount": 178
   },
   {
-    "StoreID": "MP0443",
-    "StoreName": "Meerut-Central",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBASN00010",
+    "StoreName": "MEDPLUS PANCHGACHIA ASANSOL",
+    "State": "ASN",
+    "StateName": "West Bengal",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -35820,10 +35820,10 @@
     "TotalDeviationCount": 282
   },
   {
-    "StoreID": "MP0444",
-    "StoreName": "Lucknow-Main",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBASN00008",
+    "StoreName": "MEDPLUS DOMOHANI JAMURIA ROAD",
+    "State": "ASN",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -35937,10 +35937,10 @@
     "TotalDeviationCount": 317
   },
   {
-    "StoreID": "MP0445",
-    "StoreName": "Kanpur-Hub",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBASN00001",
+    "StoreName": "MEDPLUS USHAGRAM ASANSOL",
+    "State": "ASN",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -36089,10 +36089,10 @@
     "TotalDeviationCount": 249
   },
   {
-    "StoreID": "MP0446",
-    "StoreName": "Varanasi-East",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBBHP00007",
+    "StoreName": "MEDPLUS SRINIKETAN ROAD BOLPUR",
+    "State": "BHP",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -36172,10 +36172,10 @@
     "TotalDeviationCount": 153
   },
   {
-    "StoreID": "MP0447",
-    "StoreName": "Agra-West",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBBHP00002",
+    "StoreName": "MEDPLUS KIRNAHAR  BOLPUR",
+    "State": "BHP",
+    "StateName": "West Bengal",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -36195,10 +36195,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0448",
-    "StoreName": "Meerut-Clock Tower",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBBHP00004",
+    "StoreName": "MEDPLUS CHANDIDAS ROAD WEST BOLPUR",
+    "State": "BHP",
+    "StateName": "West Bengal",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -36337,10 +36337,10 @@
     "TotalDeviationCount": 319
   },
   {
-    "StoreID": "MP0449",
-    "StoreName": "Lucknow-Market",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBBQA00024",
+    "StoreName": "MEDPLUS BARJORA BANKURA",
+    "State": "BQA",
+    "StateName": "West Bengal",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -36360,10 +36360,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0450",
-    "StoreName": "Kanpur-Central",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBBQA00027",
+    "StoreName": "MEDPLUS KOTULPUR BANKURA",
+    "State": "BQA",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -36512,10 +36512,10 @@
     "TotalDeviationCount": 241
   },
   {
-    "StoreID": "MP0451",
-    "StoreName": "Varanasi-Main",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBBQA00022",
+    "StoreName": "MEDPLUS RAMKRISHNA MSN ROAD BANKURA",
+    "State": "BQA",
+    "StateName": "West Bengal",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -36535,10 +36535,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0452",
-    "StoreName": "Agra-Hub",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBBRP00002",
+    "StoreName": "MEDPLUS DAKSHIN BARASAT EXP",
+    "State": "BRP",
+    "StateName": "West Bengal",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -36608,10 +36608,10 @@
     "TotalDeviationCount": 66
   },
   {
-    "StoreID": "MP0453",
-    "StoreName": "Meerut-East",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBBRP00009",
+    "StoreName": "MEDPLUS JUGIBATTALA BARUIPUR",
+    "State": "BRP",
+    "StateName": "West Bengal",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -36755,10 +36755,10 @@
     "TotalDeviationCount": 196
   },
   {
-    "StoreID": "MP0454",
-    "StoreName": "Lucknow-West",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBBRP00008",
+    "StoreName": "MEDPLUS KULPI  SOUTH 24 PARGANAS",
+    "State": "BRP",
+    "StateName": "West Bengal",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -36801,10 +36801,10 @@
     "TotalDeviationCount": 23
   },
   {
-    "StoreID": "MP0455",
-    "StoreName": "Kanpur-Clock Tower",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBCCU00061",
+    "StoreName": "MEDPLUS KUMARPARA",
+    "State": "CCU",
+    "StateName": "West Bengal",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -36824,10 +36824,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0456",
-    "StoreName": "Varanasi-Market",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBCCU00181",
+    "StoreName": "MEDPLUS CHINSURAH KHADINAMORE",
+    "State": "CCU",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": false,
@@ -36847,10 +36847,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0457",
-    "StoreName": "Agra-Central",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBCCU00188",
+    "StoreName": "MEDPLUS ARIADAHA 34 BUSSTAND",
+    "State": "CCU",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -36893,10 +36893,10 @@
     "TotalDeviationCount": 24
   },
   {
-    "StoreID": "MP0458",
-    "StoreName": "Meerut-Main",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBCDH00006",
+    "StoreName": "MEDPLUS BALIA BAZAR CHAKDAH",
+    "State": "CDH",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -37023,10 +37023,10 @@
     "TotalDeviationCount": 190
   },
   {
-    "StoreID": "MP0459",
-    "StoreName": "Lucknow-Hub",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBCDH00004",
+    "StoreName": "MEDPLUS SILINDA BAZAR CHAKDAHA",
+    "State": "CDH",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -37168,10 +37168,10 @@
     "TotalDeviationCount": 175
   },
   {
-    "StoreID": "MP0460",
-    "StoreName": "Kanpur-East",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBCDH00005",
+    "StoreName": "MEDPLUS PALPARA CHAKDAH HOSPITAL ROAD",
+    "State": "CDH",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -37325,10 +37325,10 @@
     "TotalDeviationCount": 202
   },
   {
-    "StoreID": "MP0461",
-    "StoreName": "Varanasi-West",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBCNT00006",
+    "StoreName": "MEDPLUS CENTRAL BUS STAND PK COLLEGE ROAD",
+    "State": "CNT",
+    "StateName": "West Bengal",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": false,
@@ -37348,10 +37348,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0462",
-    "StoreName": "Agra-Clock Tower",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBCNT50002",
+    "StoreName": "KRISHNA MEDICAL BASANTIA CONTAI",
+    "State": "CNT",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -37371,10 +37371,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0463",
-    "StoreName": "Meerut-Market",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBCNT00001",
+    "StoreName": "MEDPLUS CONTAI HATABARI",
+    "State": "CNT",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -37394,10 +37394,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0464",
-    "StoreName": "Lucknow-Central",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBDGR00001",
+    "StoreName": "MEDPLUS ANDAL BAZAR",
+    "State": "DGR",
+    "StateName": "West Bengal",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -37504,10 +37504,10 @@
     "TotalDeviationCount": 180
   },
   {
-    "StoreID": "MP0465",
-    "StoreName": "Kanpur-Main",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBDGR00002",
+    "StoreName": "MEDPLUS MG ROAD UKHRA",
+    "State": "DGR",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -37587,10 +37587,10 @@
     "TotalDeviationCount": 134
   },
   {
-    "StoreID": "MP0466",
-    "StoreName": "Varanasi-Hub",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBDGR00004",
+    "StoreName": "MEDPLUS GOPALMATH DURGAPUR",
+    "State": "DGR",
+    "StateName": "West Bengal",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -37744,10 +37744,10 @@
     "TotalDeviationCount": 251
   },
   {
-    "StoreID": "MP0467",
-    "StoreName": "Agra-East",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBHBR00017",
+    "StoreName": "MEDPLUS HABRA  BARALIA ROAD",
+    "State": "HBR",
+    "StateName": "West Bengal",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -37881,10 +37881,10 @@
     "TotalDeviationCount": 202
   },
   {
-    "StoreID": "MP0468",
-    "StoreName": "Meerut-West",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBHBR00005",
+    "StoreName": "MEDPLUS MASLANDAPUR TENTULIA",
+    "State": "HBR",
+    "StateName": "West Bengal",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -37942,10 +37942,10 @@
     "TotalDeviationCount": 57
   },
   {
-    "StoreID": "MP0469",
-    "StoreName": "Lucknow-Clock Tower",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBHBR00012",
+    "StoreName": "MEDPLUS ASHOKNAGAR BUILDING MORE",
+    "State": "HBR",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -38094,10 +38094,10 @@
     "TotalDeviationCount": 285
   },
   {
-    "StoreID": "MP0470",
-    "StoreName": "Kanpur-Market",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBHGY00033",
+    "StoreName": "MEDPLUS HOOGHLY JANGIPARA",
+    "State": "HGY",
+    "StateName": "West Bengal",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -38117,10 +38117,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0471",
-    "StoreName": "Varanasi-Central",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBHGY00023",
+    "StoreName": "MEDPLUS AHILYABAI HOLKAR ROAD MOSAT",
+    "State": "HGY",
+    "StateName": "West Bengal",
     "StoreType": "STOCK HUB",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -38257,10 +38257,10 @@
     "TotalDeviationCount": 209
   },
   {
-    "StoreID": "MP0472",
-    "StoreName": "Agra-Main",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBHGY00003",
+    "StoreName": "MEDPLUS BANDEL BALLY MORE",
+    "State": "HGY",
+    "StateName": "West Bengal",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -38280,10 +38280,10 @@
     "TotalDeviationCount": 0
   },
   {
-    "StoreID": "MP0473",
-    "StoreName": "Meerut-Hub",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBHWH00005",
+    "StoreName": "MEDPLUS SAPUIPARA BELUR STATION ROAD",
+    "State": "HWH",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -38437,10 +38437,10 @@
     "TotalDeviationCount": 316
   },
   {
-    "StoreID": "MP0474",
-    "StoreName": "Lucknow-East",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBHWH00026",
+    "StoreName": "MEDPLUS HOWRAH AMTA",
+    "State": "HWH",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,
@@ -38537,10 +38537,10 @@
     "TotalDeviationCount": 90
   },
   {
-    "StoreID": "MP0475",
-    "StoreName": "Kanpur-West",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBHWH00018",
+    "StoreName": "MEDPLUS DEULTI STATION ROAD",
+    "State": "HWH",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -38642,10 +38642,10 @@
     "TotalDeviationCount": 157
   },
   {
-    "StoreID": "MP0476",
-    "StoreName": "Varanasi-Clock Tower",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBJRM00003",
+    "StoreName": "MEDPLUS RAGHUNATHPUR ROAD JHARGRAM",
+    "State": "JRM",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -38762,10 +38762,10 @@
     "TotalDeviationCount": 167
   },
   {
-    "StoreID": "MP0477",
-    "StoreName": "Agra-Market",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBJRM00002",
+    "StoreName": "MEDPLUS SILDA JHARGRAM",
+    "State": "JRM",
+    "StateName": "West Bengal",
     "StoreType": "NO STOCK HUB",
     "BoxMapping": "Non Box Mapping",
     "IsCovered": true,
@@ -38852,10 +38852,10 @@
     "TotalDeviationCount": 249
   },
   {
-    "StoreID": "MP0478",
-    "StoreName": "Meerut-Central",
-    "State": "UP",
-    "StateName": "Uttar Pradesh",
+    "StoreID": "INWBJRM00001",
+    "StoreName": "MEDPLUS JHARGRAM MAIN ROAD",
+    "State": "JRM",
+    "StateName": "West Bengal",
     "StoreType": "REGULAR",
     "BoxMapping": "Box Mapping",
     "IsCovered": true,

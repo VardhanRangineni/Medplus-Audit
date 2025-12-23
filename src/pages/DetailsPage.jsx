@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Container, Row, Col, Card, Form, InputGroup, Table, Button, Badge, Alert, Dropdown } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, InputGroup, Table, Button, Badge, Alert, Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -1014,19 +1014,48 @@ const DetailsPage = ({ filters = {} }) => {
                               </span>
                             ) : key === 'auditors' && value && value !== 'Not Assigned' ? (
                               <div className="d-flex align-items-center gap-2">
-                                <small className="text-muted" title={value} style={{ cursor: 'help' }}>
-                                  {(() => {
-                                    const auditorList = value.split(',');
-                                    const count = auditorList.length;
-                                    if (count > 3) {
-                                      return auditorList.slice(0, 3).map(a => a.trim()).join(', ') + '...';
+                                {value !== 'Not Assigned' ? (
+                                  <OverlayTrigger
+                                    placement="top"
+                                    overlay={
+                                      <Tooltip id={`tooltip-auditors-${row.storeId}`} style={{ maxWidth: '420px' }}>
+                                        <div style={{ textAlign: 'left', padding: '8px' }}>
+                                          {(() => {
+                                            const auditorList = value.split(',').map(a => a.trim());
+                                            const rows = [];
+                                            for (let i = 0; i < auditorList.length; i += 3) {
+                                              const chunk = auditorList.slice(i, i + 3);
+                                              rows.push(
+                                                <div key={i} style={{ marginBottom: '6px' }}>
+                                                  {chunk.join(', ')}
+                                                </div>
+                                              );
+                                            }
+                                            return rows;
+                                          })()}
+                                        </div>
+                                      </Tooltip>
                                     }
-                                    return value;
-                                  })()}
-                                </small>
-                                <Badge bg="info" pill>
-                                  {value.split(',').length}
-                                </Badge>
+                                  >
+                                    <span className="d-inline-flex align-items-center gap-2" style={{ cursor: 'pointer' }}>
+                                      <small className="text-muted mb-0">
+                                        {(() => {
+                                          const auditorList = value.split(',');
+                                          const count = auditorList.length;
+                                          if (count > 3) {
+                                            return auditorList.slice(0, 3).map(a => a.trim()).join(', ') + '...';
+                                          }
+                                          return value;
+                                        })()}
+                                      </small>
+                                      <Badge bg="info" pill style={{ cursor: 'pointer' }}>
+                                        {value.split(',').length}
+                                      </Badge>
+                                    </span>
+                                  </OverlayTrigger>
+                                ) : (
+                                  <Badge bg="secondary">{value}</Badge>
+                                )}
                               </div>
                             ) : (
                               value

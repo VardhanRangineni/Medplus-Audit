@@ -46,7 +46,6 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideF
   ];
 
   const auditStatusOptions = [
-    { value: 'Created', label: 'Created' },
     { value: 'In Progress', label: 'In Progress' },
     { value: 'Pending', label: 'Pending' },
     { value: 'Completed', label: 'Completed' }

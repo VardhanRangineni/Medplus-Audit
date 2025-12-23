@@ -6,6 +6,9 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import StoreDetailModal from '../components/StoreDetailModal';
 import { mockDataService } from '../services/mockDataService';
+import storeCoverageData from '../data/store_coverage_data.json';
+import auditDataset from '../data/audit_dataset.json';
+import liveAuditSchedule from '../data/live_audit_schedule_data.json';
 
 const DetailsPage = ({ filters = {} }) => {
   const navigate = useNavigate();
@@ -31,32 +34,145 @@ const DetailsPage = ({ filters = {} }) => {
   const [mismatchSearchTerms, setMismatchSearchTerms] = useState({});
   const [showTableFilters, setShowTableFilters] = useState(false);
 
+  // Generate a deterministic pseudo-random created date from StoreID (stable across reloads)
+  const randomDateForId = (id) => {
+    if (!id) return new Date(2018, 0, 1).toISOString().split('T')[0];
+    let h = 0;
+    for (let i = 0; i < id.length; i++) {
+      h = ((h << 5) - h) + id.charCodeAt(i);
+      h |= 0;
+    }
+    const start = new Date(2015, 0, 1).getTime(); // 2015-01-01
+    const end = new Date(2023, 11, 31).getTime(); // 2023-12-31
+    const range = end - start;
+    const t = start + (Math.abs(h) % range);
+    return new Date(t).toISOString().split('T')[0];
+  };
+
   // Mock data based on type
   const getData = () => {
+    // Helper to get latest audit info for a store
+    // Returns a single supervisor and 3-5 auditors (deterministically generated when missing)
+    const getLatestAuditInfo = (storeId) => {
+      const audits = auditDataset.filter(a => a.StoreID === storeId);
+
+      // Helper to compute a small deterministic hash from id
+      const seedFromId = (id) => {
+        let h = 0;
+        for (let i = 0; i < (id || '').length; i++) {
+          h = ((h << 5) - h) + id.charCodeAt(i);
+          h |= 0;
+        }
+        return Math.abs(h);
+      };
+
+      // Pools to synthesise names when data is missing
+      const supervisorPool = ['Anil Kumar', 'Karthik Reddy', 'Sudheer Naidu', 'Rajesh Chowdary', 'Priya Sharma', 'Sandeep Reddy', 'Meena Iyer', 'Vikram Singh', 'Pooja Deshmukh', 'Ramesh Babu'];
+      const auditorPool = ['Anil Kumar','Sudheer Naidu','Rajesh Chowdary','Neha Kapoor','Vikram Singh','Pooja Sharma','Amit Verma','Karthik Reddy','Priya Reddy','Ravi Teja','Santosh Rao','Teja Reddy','Divya Shah','Sneha Reddy','Deepak Sharma'];
+
+      // Deterministically pick N items from an array (wraps around)
+      const pickDeterministic = (arr, pickCount, id) => {
+        const result = [];
+        if (!arr || arr.length === 0) return result;
+        const seed = seedFromId(id);
+        let idx = seed % arr.length;
+        for (let i = 0; i < pickCount; i++) {
+          result.push(arr[idx % arr.length]);
+          idx++;
+        }
+        // ensure uniqueness while preserving order
+        return Array.from(new Set(result));
+      };
+
+      if (!audits || audits.length === 0) {
+        // synthesize a supervisor and 3-5 auditors
+        const seed = seedFromId(storeId);
+        const count = 3 + (seed % 3); // 3-5
+        const auditors = pickDeterministic(auditorPool, count, storeId).join(', ');
+        const supervisor = supervisorPool[seed % supervisorPool.length];
+        return { supervisor, auditors };
+      }
+
+      // Pick the audit with latest end date (or start date)
+      const parsed = audits.map(a => ({
+        ...a,
+        sortDate: a.AuditEndDate ? new Date(a.AuditEndDate).getTime() : (a.AuditStartDate ? new Date(a.AuditStartDate).getTime() : 0)
+      })).sort((x, y) => y.sortDate - x.sortDate);
+      const latest = parsed[0];
+
+      // Collect unique auditors from audits
+      const uniqueAuditors = Array.from(new Set(audits.map(a => a.AuditorName).filter(Boolean)));
+
+      // Determine desired auditor count (3-5)
+      const desiredCount = 3 + (seedFromId(storeId) % 3);
+      let auditorsList = [];
+
+      if (uniqueAuditors.length >= desiredCount) {
+        // pick deterministic subset from available auditors
+        auditorsList = pickDeterministic(uniqueAuditors, desiredCount, storeId);
+      } else {
+        // include all available auditors then supplement from pool deterministically
+        auditorsList = uniqueAuditors.slice();
+        const need = Math.max(0, desiredCount - auditorsList.length);
+        if (need > 0) {
+          const supplement = pickDeterministic(auditorPool.filter(n => !auditorsList.includes(n)), need, storeId + '-supp');
+          auditorsList = auditorsList.concat(supplement);
+        }
+      }
+
+      // Supervisor: prefer latest.SupervisorName, else pick one from parsed audits, else deterministic
+      let supervisor = latest.SupervisorName || (audits.map(a => a.SupervisorName).find(Boolean));
+      if (!supervisor) supervisor = supervisorPool[seedFromId(storeId) % supervisorPool.length];
+
+      return { supervisor, auditors: auditorsList.join(', ') };
+    };
+
     if (type === 'total-active-stores') {
-      return [
-        { storeId: 'MP001', city: 'Chennai', storeName: 'Chennai Central', state: 'Tamil Nadu', storeType: 'HUB', boxType: 'NON DYNAMIC', storeCreatedDate: '2020-01-15', lastAuditedDate: '2024-11-15', status: 'Active', skus: 4200, quantity: 385000, inventoryValueMRP: 125000 },
-        { storeId: 'MP002', city: 'Bangalore', storeName: 'Bangalore Hub', state: 'Karnataka', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-08-20', lastAuditedDate: '2024-11-20', status: 'Active', skus: 3900, quantity: 425000, inventoryValueMRP: 198000 },
-        { storeId: 'MP003', city: 'Hyderabad', storeName: 'Hyderabad Main', state: 'Telangana', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-03-12', lastAuditedDate: '2024-10-28', status: 'Active', skus: 5200, quantity: 498000, inventoryValueMRP: 167000 },
-        { storeId: 'MP004', city: 'Mumbai', storeName: 'Mumbai Central', state: 'Maharashtra', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-05-10', lastAuditedDate: '2024-10-15', status: 'Active', skus: 4800, quantity: 512000, inventoryValueMRP: 215000 },
-        { storeId: 'MP005', city: 'Pune', storeName: 'Pune West', state: 'Maharashtra', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2021-02-05', lastAuditedDate: '2024-11-05', status: 'Active', skus: 3100, quantity: 285000, inventoryValueMRP: 89000 },
-        { storeId: 'MP006', city: 'New Delhi', storeName: 'Delhi NCR', state: 'Delhi', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2020-06-18', lastAuditedDate: '2024-11-28', status: 'Active', skus: 4500, quantity: 545000, inventoryValueMRP: 245000 },
-        { storeId: 'MP007', city: 'Ahmedabad', storeName: 'Ahmedabad Main', state: 'Gujarat', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-09-22', lastAuditedDate: '2024-08-20', status: 'Active', skus: 3600, quantity: 365000, inventoryValueMRP: 178000 },
-        { storeId: 'MP008', city: 'Kolkata', storeName: 'Kolkata East', state: 'West Bengal', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-11-30', lastAuditedDate: '2024-09-10', status: 'Active', skus: 3800, quantity: 398000, inventoryValueMRP: 198000 },
-        { storeId: 'MP009', city: 'Nagpur', storeName: 'Nagpur Central', state: 'Maharashtra', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2021-04-08', lastAuditedDate: '2024-07-25', status: 'Active', skus: 3200, quantity: 315000, inventoryValueMRP: 156000 },
-        { storeId: 'MP010', city: 'Bhopal', storeName: 'Bhopal Main', state: 'Madhya Pradesh', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-12-15', lastAuditedDate: '2024-06-18', status: 'Active', skus: 2900, quantity: 278000, inventoryValueMRP: 134000 }
-      ];
+      // Get all stores from store coverage data
+      return storeCoverageData.map(store => ({
+        storeId: store.StoreID,
+        city: store.State || '',
+        storeName: store.StoreName,
+        state: store.StateName,
+        storeType: store.StoreType,
+        boxType: store.BoxMapping,
+        storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
+        lastAuditedDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never',
+        status: store.IsActive !== false ? 'Active' : 'Inactive',
+        skus: store.TotalSKUs,
+        quantity: store.TotalQuantity,
+        inventoryValueMRP: store.InventoryValue
+      }));
     } else if (type === 'covered-stores') {
-      return [
-        { storeId: 'MP001', city: 'Chennai', storeName: 'Chennai Central', state: 'Tamil Nadu', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2020-01-15', lastAuditedDate: '2024-11-15', cycle: ' 3', skus: 4200, quantity: 385000, mismatch: 12, deviation: 4, deviationValueMRP: 8250 + 6800 + 5400 + 2150, short: 5, shortValue: 8250, excess: 4, excessValue: 6800, contraExcess: 2, contraExcessValue: 5400, contraShort: 1, contraShortValue: 2150, status: 'Active', inventoryValueMRP: 125000 },
-        { storeId: 'MP002', city: 'Bangalore', storeName: 'Bangalore Hub', state: 'Karnataka', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-08-20', lastAuditedDate: '2024-11-20', cycle: ' 3', skus: 3900, quantity: 425000, mismatch: 8, deviation: 3, deviationValueMRP: 6500 + 4950 + 2800 + 0, short: 4, shortValue: 6500, excess: 3, excessValue: 4950, contraExcess: 1, contraExcessValue: 2800, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 198000 },
-        { storeId: 'MP003', city: 'Hyderabad', storeName: 'Hyderabad Main', state: 'Telangana', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-03-12', lastAuditedDate: '2024-10-28', cycle: ' 2', skus: 5200, quantity: 498000, mismatch: 15, deviation: 5, deviationValueMRP: 11550 + 8250 + 5600 + 2400, short: 7, shortValue: 11550, excess: 5, excessValue: 8250, contraExcess: 2, contraExcessValue: 5600, contraShort: 1, contraShortValue: 2400, status: 'Active', inventoryValueMRP: 167000 },
-        { storeId: 'MP004', city: 'Mumbai', storeName: 'Mumbai Central', state: 'Maharashtra', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2019-05-10', lastAuditedDate: '2024-10-15', cycle: ' 2', skus: 4800, quantity: 512000, mismatch: 10, deviation: 4, deviationValueMRP: 9900 + 4950 + 2800 + 0, short: 6, shortValue: 9900, excess: 3, excessValue: 4950, contraExcess: 1, contraExcessValue: 2800, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 215000 },
-        { storeId: 'MP005', city: 'Pune', storeName: 'Pune West', state: 'Maharashtra', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2021-02-05', lastAuditedDate: '2024-11-05', cycle: ' 3', skus: 3100, quantity: 285000, mismatch: 6, deviation: 2, deviationValueMRP: 4950 + 3300 + 2800 + 0, short: 3, shortValue: 4950, excess: 2, excessValue: 3300, contraExcess: 1, contraExcessValue: 2800, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 89000 },
-        { storeId: 'MP006', city: 'New Delhi', storeName: 'Delhi NCR', state: 'Delhi', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2020-06-18', lastAuditedDate: '2024-11-28', cycle: ' 3', skus: 4500, quantity: 545000, mismatch: 14, deviation: 6, deviationValueMRP: 13200 + 8250 + 8400 + 0, short: 8, shortValue: 13200, excess: 5, excessValue: 8250, contraExcess: 3, contraExcessValue: 8400, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 245000 },
-        { storeId: 'MP007', city: 'Ahmedabad', storeName: 'Ahmedabad Main', state: 'Gujarat', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2020-09-22', lastAuditedDate: '2024-08-20', cycle: ' 2', skus: 3600, quantity: 365000, mismatch: 18, deviation: 7, deviationValueMRP: 14850 + 9900 + 8400 + 0, short: 9, shortValue: 14850, excess: 6, excessValue: 9900, contraExcess: 3, contraExcessValue: 8400, contraShort: 0, contraShortValue: 0, status: 'Active', inventoryValueMRP: 178000 },
-        { storeId: 'MP008', city: 'Kolkata', storeName: 'Kolkata East', state: 'West Bengal', storeType: 'HUB', boxType: 'NON BOX MAPPING', storeCreatedDate: '2019-11-30', lastAuditedDate: '2024-09-10', cycle: ' 2', skus: 3800, quantity: 398000, mismatch: 11, deviation: 4, deviationValueMRP: 8250 + 6600 + 2800 + 2150, short: 5, shortValue: 8250, excess: 4, excessValue: 6600, contraExcess: 1, contraExcessValue: 2800, contraShort: 1, contraShortValue: 2150, status: 'Active', inventoryValueMRP: 198000 }
-      ];
+      // Get only covered stores
+      return storeCoverageData
+        .filter(store => store.IsCovered)
+        .map(store => ({
+          storeId: store.StoreID,
+          city: store.State || '',
+          storeName: store.StoreName,
+          state: store.StateName,
+          storeType: store.StoreType,
+          boxType: store.BoxMapping,
+          storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
+          lastAuditedDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never',
+          cycle: store.AuditCycle || 'N/A',
+          skus: store.TotalSKUs,
+          quantity: store.TotalQuantity,
+          mismatch: store.TotalDeviationCount || 0,
+          deviation: store.TotalDeviationCount || 0,
+          deviationValueMRP: store.TotalDeviationValue || 0,
+          short: 0,
+          shortValue: 0,
+          excess: 0,
+          excessValue: 0,
+          contraExcess: 0,
+          contraExcessValue: 0,
+          contraShort: 0,
+          contraShortValue: 0,
+          status: store.IsActive !== false ? 'Active' : 'Inactive',
+          inventoryValueMRP: store.InventoryValue
+        }));
     } else if (type === 'uncovered-stores') {
       // Calculate days since last audit or store creation for uncovered stores
       const calculateDaysSince = (lastAuditDate, createdDate) => {
@@ -83,39 +199,116 @@ const DetailsPage = ({ filters = {} }) => {
         }
       };
 
-      return [
-        { storeId: 'MP015', city: 'Jaipur', storeName: 'Jaipur Pink City', state: 'Rajasthan', storeType: 'REGULAR', boxType: 'REGULAR', storeCreatedDate: '2024-10-15', lastAuditedDate: '2024-05-20', daysSinceCreation: formatDaysOrMonths(calculateDaysSince('2024-05-20', '2024-10-15')), status: 'Active', skus: 2650, quantity: 245000, inventoryValueMRP: 95000 },
-        { storeId: 'MP022', city: 'Lucknow', storeName: 'Lucknow Central', state: 'Uttar Pradesh', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2024-11-01', lastAuditedDate: 'Never Audited', daysSinceCreation: formatDaysOrMonths(calculateDaysSince('Never Audited', '2024-11-01')), status: 'Active', skus: 2800, quantity: 298000, inventoryValueMRP: 145000 },
-        { storeId: 'MP033', city: 'Chandigarh', storeName: 'Chandigarh Hub', state: 'Punjab', storeType: 'HUB', boxType: 'DYNAMIC', storeCreatedDate: '2024-09-20', lastAuditedDate: '2024-03-15', daysSinceCreation: formatDaysOrMonths(calculateDaysSince('2024-03-15', '2024-09-20')), status: 'Active', skus: 4100, quantity: 435000, inventoryValueMRP: 189000 },
-        { storeId: 'MP041', city: 'Indore', storeName: 'Indore Main', state: 'Madhya Pradesh', storeType: 'REGULAR', boxType: 'NON BOX MAPPING', storeCreatedDate: '2024-11-10', lastAuditedDate: '2024-06-10', daysSinceCreation: formatDaysOrMonths(calculateDaysSince('2024-06-10', '2024-11-10')), status: 'Active', skus: 3500, quantity: 342000, inventoryValueMRP: 112000 },
-        { storeId: 'MP045', city: 'Patna', storeName: 'Patna Central', state: 'Bihar', storeType: 'REGULAR', boxType: 'NON BOX MAPPING', storeCreatedDate: '2024-10-28', lastAuditedDate: 'Never Audited', daysSinceCreation: formatDaysOrMonths(calculateDaysSince('Never Audited', '2024-10-28')), status: 'Active', skus: 2350, quantity: 218000, inventoryValueMRP: 87000 }
-      ];
+      // Get uncovered stores from real data
+      return storeCoverageData
+        .filter(store => !store.IsCovered)
+        .map(store => ({
+          storeId: store.StoreID,
+          city: store.State || '',
+          storeName: store.StoreName,
+          state: store.StateName,
+          storeType: store.StoreType,
+          boxType: store.BoxMapping,
+          storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
+          lastAuditedDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never Audited',
+          daysSinceCreation: store.StoreCreatedDate ? formatDaysOrMonths(calculateDaysSince(store.LastAuditDate, store.StoreCreatedDate)) : 'N/A',
+          status: store.IsActive !== false ? 'Active' : 'Inactive',
+          skus: store.TotalSKUs,
+          quantity: store.TotalQuantity,
+          inventoryValueMRP: store.InventoryValue
+        }));
     } else if (type === 'stores-recency-oct-dec') {
-      return [
-        { storeId: 'MP001', storeName: 'Chennai Central', state: 'TN', city: 'Chennai', lastAudit: '2024-11-15', daysSinceLastAudit: 26, skus: 4200, quantity: 385000, auditors: 'Amit Singh, Rahul Verma', deviationCount: 12, supervisor: 'Rajesh Kumar' },
-        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'KA', city: 'Bangalore', lastAudit: '2024-11-20', daysSinceLastAudit: 21, skus: 3900, quantity: 425000, auditors: 'Priya Reddy, Suresh Kumar, Anita Desai', deviationCount: 8, supervisor: 'Lakshmi Iyer' },
-        { storeId: 'MP004', storeName: 'Mumbai Central', state: 'MH', city: 'Mumbai', lastAudit: '2024-10-15', daysSinceLastAudit: 57, skus: 4800, quantity: 512000, auditors: 'Deepak Sharma', deviationCount: 15, supervisor: 'Pradeep Singh' },
-        { storeId: 'MP005', storeName: 'Pune West', state: 'MH', city: 'Pune', lastAudit: '2024-11-05', daysSinceLastAudit: 36, skus: 3100, quantity: 285000, auditors: 'Anitha Rao, Vikram Singh, Neha Kapoor, Ravi Teja', deviationCount: 10, supervisor: 'Anjali Deshmukh' },
-        { storeId: 'MP006', storeName: 'Delhi NCR', state: 'DL', city: 'New Delhi', lastAudit: '2024-11-28', daysSinceLastAudit: 13, skus: 4500, quantity: 545000, auditors: 'Ravi Teja, Pooja Sharma', deviationCount: 6, supervisor: 'Amit Verma' }
-      ];
+      // Get stores audited in Oct-Dec quarter
+      return storeCoverageData
+        .filter(store => store.IsCovered && store.RecencyQuarter === 'Oct - Dec')
+        .map(store => {
+          const latest = getLatestAuditInfo(store.StoreID);
+          const lastAuditDate = store.LastAuditDate ? new Date(store.LastAuditDate) : null;
+          const msPerDay = 1000 * 60 * 60 * 24;
+          const days = lastAuditDate ? Math.abs(Math.ceil((Date.now() - lastAuditDate.getTime()) / msPerDay)) : 'N/A';
+          return {
+            storeId: store.StoreID,
+            storeName: store.StoreName,
+            state: store.StateName || store.State,
+            city: store.State || '',
+            lastAudit: lastAuditDate ? lastAuditDate.toISOString().split('T')[0] : 'Never',
+            daysSinceLastAudit: days,
+            skus: store.TotalSKUs,
+            quantity: store.TotalQuantity,
+            auditors: latest.auditors,
+            deviationCount: store.TotalDeviationCount || store.TotalDeviationCount === 0 ? store.TotalDeviationCount : (store.DeviationCount || 0),
+            supervisor: latest.supervisor
+          };
+        });
     } else if (type === 'stores-recency-jul-sep') {
-      return [
-        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'TS', city: 'Hyderabad', lastAudit: '2024-09-15', daysSinceLastAudit: 87, skus: 5200, quantity: 498000, auditors: 'Suresh Kumar, Lakshmi Iyer, Arun Mehta', deviationCount: 18, supervisor: 'Mohammed Ali' },
-        { storeId: 'MP007', storeName: 'Ahmedabad Main', state: 'GJ', city: 'Ahmedabad', lastAudit: '2024-08-20', daysSinceLastAudit: 113, skus: 3600, quantity: 365000, auditors: 'Vijay Patil', deviationCount: 22, supervisor: 'Kiran Patel' },
-        { storeId: 'MP008', storeName: 'Kolkata East', state: 'WB', city: 'Kolkata', lastAudit: '2024-09-10', daysSinceLastAudit: 92, skus: 3800, quantity: 398000, auditors: 'Pooja Deshmukh, Sanjay Gupta', deviationCount: 14, supervisor: 'Sourav Das' },
-        { storeId: 'MP009', storeName: 'Nagpur Central', state: 'MH', city: 'Nagpur', lastAudit: '2024-07-25', daysSinceLastAudit: 139, skus: 3200, quantity: 315000, auditors: 'Arun Mehta, Divya Shah, Ramesh Kumar', deviationCount: 20, supervisor: 'Pooja Deshmukh' }
-      ];
+      // Get stores audited in Jul-Sep quarter
+      return storeCoverageData
+        .filter(store => store.IsCovered && store.RecencyQuarter === 'Jul - Sep')
+        .map(store => {
+          const latest = getLatestAuditInfo(store.StoreID);
+          const lastAuditDate = store.LastAuditDate ? new Date(store.LastAuditDate) : null;
+          const msPerDay = 1000 * 60 * 60 * 24;
+          const days = lastAuditDate ? Math.abs(Math.ceil((Date.now() - lastAuditDate.getTime()) / msPerDay)) : 'N/A';
+          return {
+            storeId: store.StoreID,
+            storeName: store.StoreName,
+            state: store.StateName || store.State,
+            city: store.State || '',
+            lastAudit: lastAuditDate ? lastAuditDate.toISOString().split('T')[0] : 'Never',
+            daysSinceLastAudit: days,
+            skus: store.TotalSKUs,
+            quantity: store.TotalQuantity,
+            auditors: latest.auditors,
+            deviationCount: store.TotalDeviationCount || store.TotalDeviationCount === 0 ? store.TotalDeviationCount : (store.DeviationCount || 0),
+            supervisor: latest.supervisor
+          };
+        });
     } else if (type === 'stores-recency-apr-jun') {
-      return [
-        { storeId: 'MP010', storeName: 'Bhopal Main', state: 'MP', city: 'Bhopal', lastAudit: '2024-06-18', daysSinceLastAudit: 176, skus: 2900, quantity: 278000, auditors: 'Divya Shah, Meena Iyer', deviationCount: 28, supervisor: 'Anil Shukla' },
-        { storeId: 'MP012', storeName: 'Surat Hub', state: 'GJ', city: 'Surat', lastAudit: '2024-05-22', daysSinceLastAudit: 203, skus: 2800, quantity: 265000, auditors: 'Ramesh Gupta', deviationCount: 32, supervisor: 'Dipak Shah' },
-        { storeId: 'MP018', storeName: 'Coimbatore Main', state: 'TN', city: 'Coimbatore', lastAudit: '2024-04-10', daysSinceLastAudit: 245, skus: 4200, quantity: 425000, auditors: 'Sneha Reddy, Karthik Kumar, Priya Reddy', deviationCount: 35, supervisor: 'Ramesh Babu' }
-      ];
+      // Get stores audited in Apr-Jun quarter
+      return storeCoverageData
+        .filter(store => store.IsCovered && store.RecencyQuarter === 'Apr - Jun')
+        .map(store => {
+          const latest = getLatestAuditInfo(store.StoreID);
+          const lastAuditDate = store.LastAuditDate ? new Date(store.LastAuditDate) : null;
+          const msPerDay = 1000 * 60 * 60 * 24;
+          const days = lastAuditDate ? Math.abs(Math.ceil((Date.now() - lastAuditDate.getTime()) / msPerDay)) : 'N/A';
+          return {
+            storeId: store.StoreID,
+            storeName: store.StoreName,
+            state: store.StateName || store.State,
+            city: store.State || '',
+            lastAudit: lastAuditDate ? lastAuditDate.toISOString().split('T')[0] : 'Never',
+            daysSinceLastAudit: days,
+            skus: store.TotalSKUs,
+            quantity: store.TotalQuantity,
+            auditors: latest.auditors,
+            deviationCount: store.TotalDeviationCount || store.TotalDeviationCount === 0 ? store.TotalDeviationCount : (store.DeviationCount || 0),
+            supervisor: latest.supervisor
+          };
+        });
     } else if (type === 'stores-recency-jan-mar') {
-      return [
-        { storeId: 'MP033', storeName: 'Chandigarh Hub', state: 'PB', city: 'Chandigarh', lastAudit: '2024-03-05', daysSinceLastAudit: 281, skus: 4100, quantity: 435000, auditors: 'Karthik Kumar, Amit Singh', deviationCount: 42, supervisor: 'Meera Kapoor' },
-        { storeId: 'MP041', storeName: 'Indore Main', state: 'MP', city: 'Indore', lastAudit: '2024-01-20', daysSinceLastAudit: 326, skus: 3500, quantity: 342000, auditors: 'Meena Iyer, Vijay Patil, Deepak Sharma', deviationCount: 48, supervisor: 'Rahul Joshi' }
-      ];
+      // Get stores audited in Jan-Mar quarter
+      return storeCoverageData
+        .filter(store => store.IsCovered && store.RecencyQuarter === 'Jan - Mar')
+        .map(store => {
+          const latest = getLatestAuditInfo(store.StoreID);
+          const lastAuditDate = store.LastAuditDate ? new Date(store.LastAuditDate) : null;
+          const msPerDay = 1000 * 60 * 60 * 24;
+          const days = lastAuditDate ? Math.abs(Math.ceil((Date.now() - lastAuditDate.getTime()) / msPerDay)) : 'N/A';
+          return {
+            storeId: store.StoreID,
+            storeName: store.StoreName,
+            state: store.StateName || store.State,
+            city: store.State || '',
+            lastAudit: lastAuditDate ? lastAuditDate.toISOString().split('T')[0] : 'Never',
+            daysSinceLastAudit: days,
+            skus: store.TotalSKUs,
+            quantity: store.TotalQuantity,
+            auditors: latest.auditors,
+            deviationCount: store.TotalDeviationCount || store.TotalDeviationCount === 0 ? store.TotalDeviationCount : (store.DeviationCount || 0),
+            supervisor: latest.supervisor
+          };
+        });
     } else if (type === 'audit-created') {
       return [
         { storeId: 'MP015', storeName: 'Jaipur Pink City', state: 'RJ', supervisor: 'Vikram Singh', createdDate: '2024-12-08', scheduledDate: '2024-12-15', totalSKUs: 3200, auditors: 'Not Assigned', auditJobType: 'Full Audit', processType: 'Product Audit' },

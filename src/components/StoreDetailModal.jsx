@@ -490,6 +490,127 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
       utils.book_append_sheet(wb, wsDeviations, "Deviations");
     }
 
+    // ===== SHEET 3: Remarks (Contra Short, Contra Excess, Excess Submitted with Remarks column) =====
+    const remarksData = [];
+
+    // Add header row with Remarks and Description columns
+    remarksData.push([
+      "Product Form", "Product ID", "SKU", "Product Name",
+      "Batch No", "System Qty", "Physical Qty", "Difference", "Unit Price (₹)",
+      "Total Value (₹)", "Expiry Date", "Remarks", "Description"
+    ]);
+
+    // Add data for specific deviation types: Contra Short, Contra Excess, Excess Submitted
+    const remarksDeviationTypes = ['Contra Short', 'Contra Excess', 'Excess Submitted'];
+
+    remarksDeviationTypes.forEach(deviationType => {
+      const deviationData = detailedProductData[deviationType];
+
+      if (deviationData) {
+        if (typeof deviationData === 'object' && !Array.isArray(deviationData)) {
+          // Has product forms (like Contra Short)
+          const remarksOptions = ['Transit Issues', 'Sale', 'Mis-arrangement of Stock', 'Wrong Count', 'Others / Miscellaneous'];
+          const sampleDescriptions = [
+            'Item found in different location during count',
+            'Product was sold during audit period',
+            'Batch moved to different shelf',
+            'Recount showed different quantity',
+            'Product expired and replaced',
+            'Damaged items removed from inventory',
+            'Stock transferred to another store',
+            ''
+          ];
+
+          let productIndex = 0;
+          Object.keys(deviationData).forEach(productForm => {
+            deviationData[productForm].forEach(product => {
+              const remarkIndex = productIndex % remarksOptions.length;
+              const descIndex = productIndex % sampleDescriptions.length;
+              remarksData.push([
+                productForm,
+                product.productId,
+                product.sku,
+                product.productName,
+                product.batchNo,
+                product.systemQty,
+                product.physicalQty,
+                product.difference || 0,
+                product.unitPrice,
+                product.totalValue,
+                product.expiryDate,
+                remarksOptions[remarkIndex],
+                sampleDescriptions[descIndex]
+              ]);
+              productIndex++;
+            });
+          });
+        } else if (Array.isArray(deviationData)) {
+          // Direct array (like Contra Excess, Excess Submitted)
+          const remarksOptions = ['Transit Issues', 'Sale', 'Mis-arrangement of Stock', 'Wrong Count', 'Others / Miscellaneous'];
+          const sampleDescriptions = [
+            'Recently received shipment not yet recorded',
+            'Counted multiple times with same result',
+            'Stock found in receiving area',
+            'System quantity needs update',
+            'Product moved from damaged section',
+            ''
+          ];
+
+          deviationData.forEach((product, index) => {
+            const remarkIndex = index % remarksOptions.length;
+            const descIndex = index % sampleDescriptions.length;
+            remarksData.push([
+              "N/A",
+              product.productId,
+              product.sku,
+              product.productName,
+              product.batchNo,
+              product.systemQty,
+              product.physicalQty,
+              product.difference || 0,
+              product.unitPrice,
+              product.totalValue,
+              product.expiryDate,
+              remarksOptions[remarkIndex],
+              sampleDescriptions[descIndex]
+            ]);
+          });
+        }
+      }
+    });
+
+    if (remarksData.length > 1) { // More than just header
+      const wsRemarks = utils.aoa_to_sheet(remarksData);
+      wsRemarks['!cols'] = [
+        { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 30 },
+        { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 },
+        { wch: 15 }, { wch: 12 }, { wch: 30 }, { wch: 35 } // Widths for columns
+      ];
+
+      // Add data validation for Remarks column (column L, index 11)
+      const remarksOptions = ['Transit Issues', 'Sale', 'Mis-arrangement of Stock', 'Wrong Count', 'Others / Miscellaneous'];
+      const remarksColumnLetter = 'L';
+
+      // Add data validation for all data rows (starting from row 2)
+      for (let i = 2; i <= remarksData.length; i++) {
+        const cellAddress = `${remarksColumnLetter}${i}`;
+        if (!wsRemarks[cellAddress]) {
+          wsRemarks[cellAddress] = { t: 's', v: '' };
+        }
+        if (!wsRemarks['!dataValidation']) {
+          wsRemarks['!dataValidation'] = [];
+        }
+        wsRemarks['!dataValidation'].push({
+          type: 'list',
+          allowBlank: true,
+          sqref: cellAddress,
+          formulas: [remarksOptions.join(',')]
+        });
+      }
+
+      utils.book_append_sheet(wb, wsRemarks, "Revised Deviations");
+    }
+
     writeFile(wb, `Store_${storeId}_${storeName.replace(/\s+/g, '_')}_Report.xlsx`);
   };
 
@@ -955,21 +1076,21 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
               <Card.Body className="text-center">
                 <div className="text-muted small mb-1">Inventory Value at MRP</div>
                 <h3 className="mb-0 text-success">
-                  {inventorySummary.totalValue >= 10000000 
+                  {inventorySummary.totalValue >= 10000000
                     ? `₹${(inventorySummary.totalValue / 10000000).toFixed(2)}Cr`
                     : inventorySummary.totalValue >= 100000
-                    ? `₹${(inventorySummary.totalValue / 100000).toFixed(2)}L`
-                    : `₹${formatIndianNumber(inventorySummary.totalValue || 0)}`}
+                      ? `₹${(inventorySummary.totalValue / 100000).toFixed(2)}L`
+                      : `₹${formatIndianNumber(inventorySummary.totalValue || 0)}`}
                 </h3>
                 {auditStatus === 'completed' && (
                   <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
                     <small className="text-muted d-block">Deviation Value at MRP</small>
                     <span className="text-danger fw-bold">
-                      {totalDeviationValue >= 10000000 
+                      {totalDeviationValue >= 10000000
                         ? `₹${(totalDeviationValue / 10000000).toFixed(2)}Cr`
                         : totalDeviationValue >= 100000
-                        ? `₹${(totalDeviationValue / 100000).toFixed(2)}L`
-                        : `₹${formatIndianNumber(totalDeviationValue || 0)}`}
+                          ? `₹${(totalDeviationValue / 100000).toFixed(2)}L`
+                          : `₹${formatIndianNumber(totalDeviationValue || 0)}`}
                     </span>
                   </div>
                 )}

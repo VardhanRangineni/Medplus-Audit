@@ -490,12 +490,12 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
       utils.book_append_sheet(wb, wsDeviations, "Deviations");
     }
 
-    // ===== SHEET 3: Remarks (Contra Short, Contra Excess, Excess Submitted with Remarks column) =====
+    // ===== SHEET 3: Revised Deviations (Contra Short, Contra Excess, Excess Submitted with Remarks column) =====
     const remarksData = [];
 
-    // Add header row with Remarks and Description columns
+    // Add header row with Initial Auditor, User ID, Remarks and Description columns
     remarksData.push([
-      "Product Form", "Product ID", "SKU", "Product Name",
+      "Initial Auditor", "User ID", "Product Form", "Product ID", "SKU", "Product Name",
       "Batch No", "System Qty", "Physical Qty", "Difference", "Unit Price (₹)",
       "Total Value (₹)", "Expiry Date", "Remarks", "Description"
     ]);
@@ -503,30 +503,36 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     // Add data for specific deviation types: Contra Short, Contra Excess, Excess Submitted
     const remarksDeviationTypes = ['Contra Short', 'Contra Excess', 'Excess Submitted'];
 
+    // Define options and mock data outside the loop
+    const remarksOptions = ['Transit Issues', 'Sale', 'Mis-arrangement of Stock', 'Wrong Count', 'Others / Miscellaneous'];
+    const sampleDescriptions = [
+      'Item found in different location during count',
+      'Product was sold during audit period',
+      'Batch moved to different shelf',
+      'Recount showed different quantity',
+      'Product expired and replaced',
+      'Damaged items removed from inventory',
+      'Stock transferred to another store',
+      ''
+    ];
+    const auditorNames = ['Auditor A', 'Auditor B', 'Auditor C', 'Auditor D'];
+    const userIds = ['USR001', 'USR002', 'USR003', 'USR004', 'USR005'];
+
     remarksDeviationTypes.forEach(deviationType => {
       const deviationData = detailedProductData[deviationType];
 
       if (deviationData) {
         if (typeof deviationData === 'object' && !Array.isArray(deviationData)) {
           // Has product forms (like Contra Short)
-          const remarksOptions = ['Transit Issues', 'Sale', 'Mis-arrangement of Stock', 'Wrong Count', 'Others / Miscellaneous'];
-          const sampleDescriptions = [
-            'Item found in different location during count',
-            'Product was sold during audit period',
-            'Batch moved to different shelf',
-            'Recount showed different quantity',
-            'Product expired and replaced',
-            'Damaged items removed from inventory',
-            'Stock transferred to another store',
-            ''
-          ];
-
           let productIndex = 0;
           Object.keys(deviationData).forEach(productForm => {
             deviationData[productForm].forEach(product => {
               const remarkIndex = productIndex % remarksOptions.length;
               const descIndex = productIndex % sampleDescriptions.length;
+
               remarksData.push([
+                auditorNames[productIndex % auditorNames.length],
+                userIds[productIndex % userIds.length],
                 productForm,
                 product.productId,
                 product.sku,
@@ -546,20 +552,13 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
           });
         } else if (Array.isArray(deviationData)) {
           // Direct array (like Contra Excess, Excess Submitted)
-          const remarksOptions = ['Transit Issues', 'Sale', 'Mis-arrangement of Stock', 'Wrong Count', 'Others / Miscellaneous'];
-          const sampleDescriptions = [
-            'Recently received shipment not yet recorded',
-            'Counted multiple times with same result',
-            'Stock found in receiving area',
-            'System quantity needs update',
-            'Product moved from damaged section',
-            ''
-          ];
-
           deviationData.forEach((product, index) => {
             const remarkIndex = index % remarksOptions.length;
             const descIndex = index % sampleDescriptions.length;
+
             remarksData.push([
+              auditorNames[index % auditorNames.length],
+              userIds[index % userIds.length],
               "N/A",
               product.productId,
               product.sku,
@@ -582,14 +581,13 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     if (remarksData.length > 1) { // More than just header
       const wsRemarks = utils.aoa_to_sheet(remarksData);
       wsRemarks['!cols'] = [
-        { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 30 },
+        { wch: 18 }, { wch: 12 }, { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 30 },
         { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 },
-        { wch: 15 }, { wch: 12 }, { wch: 30 }, { wch: 35 } // Widths for columns
+        { wch: 15 }, { wch: 12 }, { wch: 30 }, { wch: 35 } // Widths for all columns including Initial Investor, User ID, Remarks, Description
       ];
 
-      // Add data validation for Remarks column (column L, index 11)
-      const remarksOptions = ['Transit Issues', 'Sale', 'Mis-arrangement of Stock', 'Wrong Count', 'Others / Miscellaneous'];
-      const remarksColumnLetter = 'L';
+      // Add data validation for Remarks column (column N, index 13)
+      const remarksColumnLetter = 'N';
 
       // Add data validation for all data rows (starting from row 2)
       for (let i = 2; i <= remarksData.length; i++) {

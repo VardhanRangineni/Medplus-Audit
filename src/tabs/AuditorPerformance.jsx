@@ -247,17 +247,17 @@ const AuditorPerformance = ({ filters = {} }) => {
 
     if (type === 'top') {
       setPerformersModalData({
-        title: 'Deviation Match Rate',
+        title: 'Audit Accuracy Ranking',
         items: items,
         initialSort: 'desc', // High to Low
-        metricLabel: 'Match Rate'
+        metricLabel: 'Audit Accuracy'
       });
     } else {
       setPerformersModalData({
-        title: 'Deviation Match Rate',
+        title: 'Audit Accuracy Ranking',
         items: items,
         initialSort: 'asc', // Low to High
-        metricLabel: 'Match Rate'
+        metricLabel: 'Audit Accuracy'
       });
     }
     setShowPerformersModal(true);
@@ -658,10 +658,6 @@ const AuditorPerformance = ({ filters = {} }) => {
           </Card>
         </Col>
       </Row>
-
-      {/* Performance Insights */}
-      <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>DEVIATION MATCH RATE</h6>
-
       <Row className="mb-4">
         <Col md={6}>
           <Card className="border-0 shadow-sm">

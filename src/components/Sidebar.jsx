@@ -10,12 +10,12 @@ const Sidebar = () => {
     {
       path: '/',
       icon: 'fas fa-store',
-      label: 'Store Coverage',
+      label: 'Audit Summary',
     },
     {
       path: '/live-audit',
       icon: 'fas fa-clipboard-list',
-      label: 'Live Audit',
+      label: 'Live Audits',
     },
     {
       path: '/auditor-performance',
@@ -25,18 +25,18 @@ const Sidebar = () => {
     {
       path: '/supervisor-approvals',
       icon: 'fas fa-user-shield',
-      label: 'Supervisor',
+      label: 'Supervisor Performance',
     },
     {
       path: '/store-pid-allotment',
       icon: 'fas fa-tasks',
-      label: 'Store PID Allotment',
+      label: 'PID Allotment',
       supervisorOnly: true
     }
   ];
 
   return (
-    <aside 
+    <aside
       className={`sidebar ${isExpanded ? 'expanded' : 'collapsed'}`}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}

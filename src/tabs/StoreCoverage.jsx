@@ -19,7 +19,7 @@ const StoreCoverage = ({ filters = {} }) => {
     if (num === null || num === undefined) return '0';
     const numStr = num.toString();
     const [intPart, decPart] = numStr.split('.');
-    
+
     // Format integer part with Indian numbering
     let lastThree = intPart.substring(intPart.length - 3);
     const otherNumbers = intPart.substring(0, intPart.length - 3);
@@ -27,7 +27,7 @@ const StoreCoverage = ({ filters = {} }) => {
       lastThree = ',' + lastThree;
     }
     const result = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ',') + lastThree;
-    
+
     return decPart ? result + '.' + decPart : result;
   };
 
@@ -88,11 +88,11 @@ const StoreCoverage = ({ filters = {} }) => {
     const activeAuditedStores = 410;
     const inactiveAuditedStores = 8;
     const uncovered = 60;
-    
+
     // Assume all stores in data are active (can be enhanced with IsActive field if available)
     const activeStores = filteredStoreData.filter(s => s.IsActive !== false).length;
     const inactiveStores = filteredStoreData.filter(s => s.IsActive === false).length;
-    const totalStores = activeAuditedStores + uncovered; 
+    const totalStores = activeAuditedStores + uncovered;
 
     const coveredPercentage = totalStores > 0 ? ((activeAuditedStores / totalStores) * 100).toFixed(1) : 0;
     const uncoveredPercentage = totalStores > 0 ? ((uncovered / totalStores) * 100).toFixed(1) : 0;
@@ -638,12 +638,10 @@ const StoreCoverage = ({ filters = {} }) => {
             subtitle={(() => {
               const activeAudited = storeStats.activeAuditedStores;
               const inactiveAudited = storeStats.inactiveAuditedStores;
-              const totalPercentage = storeStats.coveredPercentage; // Percentage of audited stores out of total (audited + non-audited)
               return (
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
                   <div style={{ textAlign: 'left' }}>
-                    <div>Active: <strong style={{color:'black'}}>{activeAudited}</strong></div>
-                    <div style={{ fontSize: '0.85em', marginTop: '2px' }}>{totalPercentage}% of total</div>
+                    <div>Active: <strong style={{ color: 'black' }}>{activeAudited}</strong></div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     Inactive: {inactiveAudited}
@@ -660,7 +658,7 @@ const StoreCoverage = ({ filters = {} }) => {
           <KPICard
             title="Non Audited Stores"
             value={storeStats.uncovered}
-            subtitle={`${storeStats.uncoveredPercentage}% of total`}
+            // subtitle={`${storeStats.uncoveredPercentage}% of total`}
             icon="fas fa-exclamation-triangle"
             color="danger"
             onClick={() => showStoreDetails('Non Audited Stores')}

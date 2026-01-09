@@ -440,7 +440,7 @@ const StorePIDAllotment = () => {
                   <div className="fw-semibold">{option.store.storeName}</div>
                   <small className="text-muted">{option.store.state} | {option.store.storeId}</small>
                 </div>
-                <Badge bg="info" className="ms-2">{option.store.totalPIDs} PIDs</Badge>
+                <Badge bg="info" className="ms-2">{allPIDs[option.value]?.length || 0} PIDs</Badge>
               </div>
             )}
             isSearchable

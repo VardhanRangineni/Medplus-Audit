@@ -619,7 +619,7 @@ const StorePIDAllotment = () => {
                           )}
                         />
                       </th>
-                      <th>PID Number</th>
+                      <th>PID</th>
                       <th>SKU Count</th>
                       <th>Description</th>
                       <th

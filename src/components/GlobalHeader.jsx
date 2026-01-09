@@ -129,6 +129,7 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideF
                 <i className="fas fa-sync-alt me-2"></i>
                 Last Refreshed: <strong>{formatTimestamp(lastRefreshed)}</strong>
               </div>
+
               <Button
                 variant="outline-primary"
                 size="sm"
@@ -138,20 +139,10 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideF
                 <i className="fas fa-refresh"></i>
                 Refresh Now
               </Button>
-            </div>
-          </Col>
-        </Row>
-
-        {/* Filters Section - Conditionally rendered */}
-        {!hideFilters && (
-          <>
-            <Row className="g-3 mb-2">
-              {!hideFinancialYear && (
-                <Col md={2}>
-                  <Form.Group>
-                    <Form.Label className="small fw-semibold mb-1">
-                      Financial year <span className="text-danger">*</span>
-                    </Form.Label>
+              <div className="d-flex align-items-center gap-1">
+                <label className="form-label mb-0"><strong>Financial Year:</strong></label>
+                {!hideFinancialYear && !hideFilters && (
+                  <div style={{ width: '150px' }}>
                     <Select
                       options={showLimitedFinancialYears ? [
                         { value: '2025-26', label: '2025-26' },
@@ -169,97 +160,14 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideF
                       className="react-select-container"
                       classNamePrefix="react-select"
                     />
-                  </Form.Group>
-                </Col>
-              )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </Col>
+        </Row>
 
-              <Col md={2}>
-                <Form.Group>
-                  <Form.Label className="small fw-semibold mb-1">State</Form.Label>
-                  <Select
-                    isMulti
-                    options={stateOptions}
-                    value={stateOptions.filter(option => filters.state?.includes(option.value))}
-                    onChange={(selected) => handleMultiSelectChange('state', selected)}
-                    styles={customSelectStyles}
-                    placeholder="All States"
-                    isClearable
-                    className="react-select-container"
-                    classNamePrefix="react-select"
-                  />
-                </Form.Group>
-              </Col>
-
-              <Col md={2}>
-                <Form.Group>
-                  <Form.Label className="small fw-semibold mb-1">Hub Type</Form.Label>
-                  <Select
-                    isMulti
-                    options={storeOptions}
-                    value={storeOptions.filter(option => filters.store?.includes(option.value))}
-                    onChange={(selected) => handleMultiSelectChange('store', selected)}
-                    styles={customSelectStyles}
-                    placeholder="All Stores"
-                    isClearable
-                    className="react-select-container"
-                    classNamePrefix="react-select"
-                  />
-                </Form.Group>
-              </Col>
-
-              <Col md={2}>
-                <Form.Group>
-                  <Form.Label className="small fw-semibold mb-1">Audit Job Type</Form.Label>
-                  <Select
-                    isMulti
-                    options={auditJobTypeOptions}
-                    value={auditJobTypeOptions.filter(option => filters.auditJobType?.includes(option.value))}
-                    onChange={(selected) => handleMultiSelectChange('auditJobType', selected)}
-                    styles={customSelectStyles}
-                    placeholder="All Types"
-                    isClearable
-                    className="react-select-container"
-                    classNamePrefix="react-select"
-                  />
-                </Form.Group>
-              </Col>
-
-              <Col md={2}>
-                <Form.Group>
-                  <Form.Label className="small fw-semibold mb-1">Process Type</Form.Label>
-                  <Select
-                    isMulti
-                    options={processTypeOptions}
-                    value={processTypeOptions.filter(option => filters.auditProcessType?.includes(option.value))}
-                    onChange={(selected) => handleMultiSelectChange('auditProcessType', selected)}
-                    styles={customSelectStyles}
-                    placeholder="All Processes"
-                    isClearable
-                    className="react-select-container"
-                    classNamePrefix="react-select"
-                  />
-                </Form.Group>
-              </Col>
-
-              <Col md={2}>
-                <Form.Group>
-                  <Form.Label className="small fw-semibold mb-1">Audit Status</Form.Label>
-                  <Select
-                    isMulti
-                    options={auditStatusOptions}
-                    value={auditStatusOptions.filter(option => filters.auditStatus?.includes(option.value))}
-                    onChange={(selected) => handleMultiSelectChange('auditStatus', selected)}
-                    styles={customSelectStyles}
-                    placeholder="All Statuses"
-                    isClearable
-                    className="react-select-container"
-                    classNamePrefix="react-select"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-          </>
-        )}
+        {/* Filters Section - Removed as per requirement, moving financial year to top */}
       </Container>
     </div>
   );

@@ -631,7 +631,7 @@ const StoreCoverage = ({ filters = {} }) => {
     <Container fluid className="store-coverage-tab py-4">
       {/* KPI Summary Cards */}
       <Row className="g-3 mb-4">
-        <Col md={6}>
+        <Col md={4}>
           <KPICard
             title="Audited Stores"
             value={storeStats.covered}
@@ -654,7 +654,26 @@ const StoreCoverage = ({ filters = {} }) => {
             onClick={() => showStoreDetails('Audited Stores')}
           />
         </Col>
-        <Col md={6}>
+        <Col md={4}>
+          <KPICard
+            title="Audit in progress"
+            value={47}
+            subtitle={
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
+                <div style={{ textAlign: 'left' }}>
+                  <div>Live: <strong style={{ color: 'black' }}>12</strong></div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div>Scheduled: <strong style={{ color: 'black' }}>35</strong></div>
+                </div>
+              </div>
+            }
+            icon="fas fa-clock"
+            color="primary"
+            onClick={() => navigate('/live-audit')}
+          />
+        </Col>
+        <Col md={4}>
           <KPICard
             title="Non Audited Stores"
             value={storeStats.uncovered}

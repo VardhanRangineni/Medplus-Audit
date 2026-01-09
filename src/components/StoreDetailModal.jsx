@@ -1027,32 +1027,63 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         {/* Store Info Header */}
         <Card className="mb-3 border-0 shadow-sm">
           <Card.Body>
-            <Row>
-              <Col md={3}>
-                <div className="text-muted small">Store ID</div>
-                <div className="fw-bold fs-5">
+            <Row className="mb-4 align-items-center">
+              <Col md={4}>
+                <div className="d-flex align-items-center mb-2">
+                  <div className="text-muted small me-2">Store ID</div>
                   <Badge bg="dark" className="font-monospace">{storeId}</Badge>
                 </div>
               </Col>
-              <Col md={3}>
-                <div className="text-muted small">State</div>
-                <div className="fw-bold fs-5">{state}</div>
-              </Col>
-              <Col md={3}>
-                <div className="text-muted small">Audit Supervisor</div>
-                <div className="fw-bold fs-5">
-                  <i className="fas fa-user-tie me-2 text-primary"></i>
-                  {supervisor || 'N/A'}
+
+              <Col md={4}>
+                <div className="d-flex align-items-center mb-2">
+                  <div className="text-muted small me-2">State</div>
+                  <div className="fw-bold fs-5">{state}</div>
                 </div>
               </Col>
-              <Col md={3}>
-                <div className="text-muted small">Audit Progress</div>
-                <div className="fw-bold fs-5">{auditProgress.percentage || 0}%</div>
-                <ProgressBar
-                  now={auditProgress.percentage || 0}
-                  variant={auditProgress.percentage >= 80 ? 'success' : auditProgress.percentage >= 60 ? 'warning' : 'danger'}
-                  style={{ height: '8px' }}
-                />
+
+              <Col md={4}>
+                <div className="d-flex align-items-center mb-2">
+                  <div className="text-muted small me-2">Audit Supervisor</div>
+                  <div className="fw-bold fs-5">
+                    <i className="fas fa-user-tie me-2 text-primary"></i>
+                    {supervisor || 'N/A'}
+                  </div>
+                </div>
+              </Col>
+            </Row>
+
+            {/* Second Row: Audit Progress and Duration side by side */}
+            <Row className="align-items-center">
+              <Col md={4}>
+                <div className="text-muted small mb-1">Audit Progress</div>
+                <div className="d-flex align-items-center">
+                  <h4 className="fw-bold text-primary mb-0 me-3">{auditProgress.percentage || 0}%</h4>
+                  <ProgressBar
+                    className="flex-grow-1"
+                    now={auditProgress.percentage || 0}
+                    variant="primary"
+                    style={{ height: '8px', maxWidth: '150px' }}
+                  />
+                </div>
+              </Col>
+              <Col md={4}>
+                <div className="d-flex gap-5">
+                  <div>
+                    <div className="text-muted small mb-1">Start Date</div>
+                    <div className="fw-bold fs-5">
+                      <i className="far fa-calendar-alt me-2 text-primary"></i>
+                      20/08/2026
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-muted small mb-1">End Date</div>
+                    <div className="fw-bold fs-5">
+                      <i className="far fa-calendar-check me-2 text-primary"></i>
+                      {auditStatus === 'completed' ? '25/08/2026' : '-'}
+                    </div>
+                  </div>
+                </div>
               </Col>
             </Row>
           </Card.Body>
@@ -1378,8 +1409,10 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                     <th>Auditor Name</th>
                     {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
                       <>
-                        <th>Assigned SKUs (count)</th>
-                        <th>Completed SKUs (count)</th>
+                        <th>Assigned SKUs</th>
+                        <th>Completed SKUs</th>
+                        <th>Audit Quantity</th>
+                        <th>Audit Value</th>
                         <th>Progress (%)</th>
                         <th>Audit Accuracy (%)</th>
                       </>
@@ -1395,19 +1428,21 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                     return (
                       <>
                         {/* Main Auditor Row */}
-                        <tr key={auditorIdx} style={{ cursor: auditStatus === 'in-progress' ? 'pointer' : 'default' }}>
-                          <td onClick={() => auditStatus === 'in-progress' && toggleAuditor(auditorIdx)}>
-                            {auditStatus === 'in-progress' && (
+                        <tr key={auditorIdx} style={{ cursor: (auditStatus === 'in-progress' || auditStatus === 'completed') ? 'pointer' : 'default' }}>
+                          <td onClick={() => (auditStatus === 'in-progress' || auditStatus === 'completed') && toggleAuditor(auditorIdx)}>
+                            {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
                               <i className={`fas fa-chevron-${isExpanded ? 'down' : 'right'} text-primary`}></i>
                             )}
                           </td>
-                          <td className="fw-semibold" onClick={() => auditStatus === 'in-progress' && toggleAuditor(auditorIdx)}>
+                          <td className="fw-semibold" onClick={() => (auditStatus === 'in-progress' || auditStatus === 'completed') && toggleAuditor(auditorIdx)}>
                             {auditor.name}
                           </td>
                           {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
                             <>
                               <td>{auditor.assignedSKUs?.toLocaleString()}</td>
                               <td>{auditor.completedSKUs?.toLocaleString()}</td>
+                              <td>{Math.floor((auditor.completedSKUs || 0) * 10.5).toLocaleString()}</td>
+                              <td>{formatIndianCurrency((auditor.completedSKUs || 0) * 450)}</td>
                               <td style={{ minWidth: '150px' }}>
                                 <ProgressBar
                                   now={auditor.completionRate || 0}
@@ -1424,6 +1459,47 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                             </>
                           )}
                         </tr>
+
+                        {/* Re-audit Summary for Completed Audit */}
+                        {isExpanded && auditStatus === 'completed' && (
+                          <tr key={`${auditorIdx}-summary`} style={{ backgroundColor: '#f8f9fa' }}>
+                            <td colSpan="6" className="p-4">
+                              <div className="border-start border-4 border-primary ps-3 mb-3">
+                                <h6 className="fw-bold text-primary mb-0 text-uppercase">Re-Audit Summary</h6>
+                              </div>
+                              <Table bordered size="sm" className="mb-0 bg-white" style={{ maxWidth: '800px' }}>
+                                <thead className="bg-light">
+                                  <tr>
+                                    <th className="py-2 text-primary">CATEGORY</th>
+                                    <th className="py-2 text-end text-primary">SKUS</th>
+                                    <th className="py-2 text-end text-primary">QTY</th>
+                                    <th className="py-2 text-end text-primary">VALUE</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td className="py-2 fw-semibold">Appeared</td>
+                                    <td className="py-2 text-end">{auditor.assignedSKUs || 70}</td>
+                                    <td className="py-2 text-end">{Math.floor((auditor.assignedSKUs || 70) * 10.5)}</td>
+                                    <td className="py-2 text-end fw-bold">₹2.29 L</td>
+                                  </tr>
+                                  <tr>
+                                    <td className="py-2 fw-semibold">Matched</td>
+                                    <td className="py-2 text-end">{auditor.completedSKUs || 67}</td>
+                                    <td className="py-2 text-end">{Math.floor((auditor.completedSKUs || 67) * 10.5)}</td>
+                                    <td className="py-2 text-end fw-bold text-success">₹2.20 L</td>
+                                  </tr>
+                                  <tr>
+                                    <td className="py-2 fw-semibold">Deviations</td>
+                                    <td className="py-2 text-end">{(auditor.assignedSKUs - auditor.completedSKUs) || 3}</td>
+                                    <td className="py-2 text-end">{Math.floor(((auditor.assignedSKUs - auditor.completedSKUs) || 3) * 10)}</td>
+                                    <td className="py-2 text-end fw-bold text-warning">₹9,174</td>
+                                  </tr>
+                                </tbody>
+                              </Table>
+                            </td>
+                          </tr>
+                        )}
 
                         {/* Expanded PID Rows */}
                         {isExpanded && pidData.map((pid, pidIdx) => (

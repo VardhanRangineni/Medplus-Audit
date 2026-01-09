@@ -23,7 +23,7 @@ const StorePIDAllotment = () => {
   const availableAuditors = [
     { id: 'AUD001', name: 'Amit Singh', totalAssignedSKUs: 1245, completedCount: 843, isSupervisor: true },
     { id: 'AUD002', name: 'Priya Reddy', totalAssignedSKUs: 956, completedCount: 723 },
-    { id: 'AUD003', name: 'Suresh Kumar', totalAssignedSKUs: 1534, completedCount: 1102 },
+    { id: 'AUD003', name: 'Suresh Kumar', totalAssignedSKUs: 1534, completedCount: 1102, isLeadSupervisor: true },
     { id: 'AUD004', name: 'Deepak Sharma', totalAssignedSKUs: 1089, completedCount: 892 },
     { id: 'AUD005', name: 'Anitha Rao', totalAssignedSKUs: 734, completedCount: 589 }
   ];
@@ -253,6 +253,40 @@ const StorePIDAllotment = () => {
 
     setShowAssignModal(true);
   };
+
+  const formatAuditorOptionLabel = (option) => (
+    <div className="d-flex justify-content-between align-items-center">
+      <div className="d-flex align-items-center">
+        {option.auditor.isLeadSupervisor && (
+          <span
+            className="rounded-circle bg-danger text-white d-inline-flex align-items-center justify-content-center me-2"
+            style={{ width: '24px', height: '24px', fontSize: '12px', fontWeight: 'bold' }}
+            title="Lead Supervisor"
+          >
+            LS
+          </span>
+        )}
+        {option.auditor.isSupervisor && !option.auditor.isLeadSupervisor && (
+          <span
+            className="rounded-circle bg-warning text-dark d-inline-flex align-items-center justify-content-center me-2"
+            style={{ width: '24px', height: '24px', fontSize: '12px', fontWeight: 'bold' }}
+            title="Supervisor"
+          >
+            S
+          </span>
+        )}
+        <div>
+          <div className="fw-semibold">
+            <span className="text-muted small me-1">{option.auditor.id} -</span>
+            {option.auditor.name}
+          </div>
+          <small className="text-muted">
+            Assigned SKUs: {option.auditor.totalAssignedSKUs.toLocaleString()} | Completed: {option.auditor.completedCount.toLocaleString()}
+          </small>
+        </div>
+      </div>
+    </div>
+  );
 
   const openBulkReassignModal = () => {
     if (selectedPIDs.length === 0) {
@@ -642,7 +676,7 @@ const StorePIDAllotment = () => {
                           <i className={`fas fa-sort-${sortOrder === 'asc' ? 'up' : 'down'} ms-1`}></i>
                         )}
                       </th>
-                      <th>Auditor Name</th>
+                      <th>Auditor</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -674,12 +708,37 @@ const StorePIDAllotment = () => {
                           <td>{getAuditStatusBadge(pid.auditStatus)}</td>
                           <td>
                             {pid.auditorName ? (
-                              <span>
-                                {availableAuditors.find(a => a.id === pid.auditorId)?.isSupervisor && (
-                                  <i className="fas fa-user-tie me-2 text-warning" title="Supervisor"></i>
-                                )}
-                                {pid.auditorName}
-                              </span>
+                              <div className="d-flex align-items-center">
+                                {(() => {
+                                  const auditor = availableAuditors.find(a => a.id === pid.auditorId);
+                                  return (
+                                    <>
+                                      {auditor?.isLeadSupervisor && (
+                                        <span
+                                          className="rounded-circle bg-danger text-white d-inline-flex align-items-center justify-content-center me-2"
+                                          style={{ width: '24px', height: '24px', fontSize: '12px', fontWeight: 'bold' }}
+                                          title="Lead Supervisor"
+                                        >
+                                          LS
+                                        </span>
+                                      )}
+                                      {auditor?.isSupervisor && !auditor?.isLeadSupervisor && (
+                                        <span
+                                          className="rounded-circle bg-warning text-dark d-inline-flex align-items-center justify-content-center me-2"
+                                          style={{ width: '24px', height: '24px', fontSize: '12px', fontWeight: 'bold' }}
+                                          title="Supervisor"
+                                        >
+                                          S
+                                        </span>
+                                      )}
+                                      <span>
+                                        <span className="text-muted small me-1">{pid.auditorId} -</span>
+                                        {pid.auditorName}
+                                      </span>
+                                    </>
+                                  );
+                                })()}
+                              </div>
                             ) : (
                               <span className="text-muted">-</span>
                             )}
@@ -738,23 +797,29 @@ const StorePIDAllotment = () => {
         </Modal.Header>
         <Modal.Body>
           <Alert variant="info">
-            <strong>Selected PIDs for Assignment:</strong> {selectedCounts.assignable}
-            <br />
-            <small className="text-muted">{pids.filter(p => selectedPIDs.includes(p.pid) && p.assignStatus === 'Not Assigned').map(p => p.pid).join(', ')}</small>
+            <div className="d-flex align-items-start">
+              <strong className="text-nowrap me-2">Selected PIDs ({selectedCounts.assignable}):</strong>
+              <span className="text-muted">{pids.filter(p => selectedPIDs.includes(p.pid) && p.assignStatus === 'Not Assigned').map(p => p.pid).join(', ')}</span>
+            </div>
           </Alert>
           <Form.Group>
             <Form.Label>Select Auditor <span className="text-danger">*</span></Form.Label>
-            <Form.Select
-              value={selectedAuditor}
-              onChange={(e) => setSelectedAuditor(e.target.value)}
-            >
-              <option value="">Choose auditor...</option>
-              {availableAuditors.map(auditor => (
-                <option key={auditor.id} value={auditor.id}>
-                  {auditor.isSupervisor ? '👔 ' : ''}{auditor.name} - Assigned SKUs: {auditor.totalAssignedSKUs.toLocaleString()} | Completed: {auditor.completedCount.toLocaleString()}
-                </option>
-              ))}
-            </Form.Select>
+            <Select
+              options={availableAuditors.map(auditor => ({
+                value: auditor.id,
+                label: `${auditor.id} - ${auditor.name}`,
+                auditor: auditor
+              }))}
+              value={selectedAuditor ? {
+                value: selectedAuditor,
+                label: `${selectedAuditor} - ${availableAuditors.find(a => a.id === selectedAuditor)?.name}`,
+                auditor: availableAuditors.find(a => a.id === selectedAuditor)
+              } : null}
+              onChange={(option) => setSelectedAuditor(option ? option.value : '')}
+              formatOptionLabel={formatAuditorOptionLabel}
+              placeholder="Choose auditor..."
+              isSearchable
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -782,25 +847,61 @@ const StorePIDAllotment = () => {
               <Alert variant="info">
                 <strong>PID:</strong> {reassignPID.pid}
                 <br />
-                <strong>Description:</strong> {reassignPID.description}
-                <br />
-                <strong>Current Auditor:</strong> {reassignPID.auditorName}
+                <div className="d-flex align-items-center">
+                  <strong className="me-2">Current Auditor:</strong>
+                  {(() => {
+                    const auditor = availableAuditors.find(a => a.id === reassignPID.auditorId);
+                    if (!auditor) return reassignPID.auditorName;
+
+                    return (
+                      <>
+                        {auditor.isLeadSupervisor && (
+                          <span
+                            className="rounded-circle bg-danger text-white d-inline-flex align-items-center justify-content-center me-2"
+                            style={{ width: '24px', height: '24px', fontSize: '12px', fontWeight: 'bold' }}
+                            title="Lead Supervisor"
+                          >
+                            LS
+                          </span>
+                        )}
+                        {auditor.isSupervisor && !auditor.isLeadSupervisor && (
+                          <span
+                            className="rounded-circle bg-warning text-dark d-inline-flex align-items-center justify-content-center me-2"
+                            style={{ width: '24px', height: '24px', fontSize: '12px', fontWeight: 'bold' }}
+                            title="Supervisor"
+                          >
+                            S
+                          </span>
+                        )}
+                        <span>
+                          <span className="text-muted small me-1">{auditor.id} -</span>
+                          {auditor.name}
+                        </span>
+                      </>
+                    );
+                  })()}
+                </div>
               </Alert>
               <Form.Group>
                 <Form.Label>Select New Auditor <span className="text-danger">*</span></Form.Label>
-                <Form.Select
-                  value={selectedAuditor}
-                  onChange={(e) => setSelectedAuditor(e.target.value)}
-                >
-                  <option value="">Choose auditor...</option>
-                  {availableAuditors
+                <Select
+                  options={availableAuditors
                     .filter(a => a.id !== reassignPID.auditorId)
-                    .map(auditor => (
-                      <option key={auditor.id} value={auditor.id}>
-                        {auditor.name}{auditor.isSupervisor ? ' 👔' : ''} - Total Assigned SKUs: {auditor.totalAssignedSKUs.toLocaleString()} | Completed: {auditor.completedCount.toLocaleString()}
-                      </option>
-                    ))}
-                </Form.Select>
+                    .map(auditor => ({
+                      value: auditor.id,
+                      label: `${auditor.id} - ${auditor.name}`,
+                      auditor: auditor
+                    }))}
+                  value={selectedAuditor ? {
+                    value: selectedAuditor,
+                    label: `${selectedAuditor} - ${availableAuditors.find(a => a.id === selectedAuditor)?.name}`,
+                    auditor: availableAuditors.find(a => a.id === selectedAuditor)
+                  } : null}
+                  onChange={(option) => setSelectedAuditor(option ? option.value : '')}
+                  formatOptionLabel={formatAuditorOptionLabel}
+                  placeholder="Choose auditor..."
+                  isSearchable
+                />
               </Form.Group>
             </>
           )}

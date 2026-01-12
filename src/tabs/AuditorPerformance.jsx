@@ -288,8 +288,8 @@ const AuditorPerformance = ({ filters = {} }) => {
 
     // Detailed Data Sheet
     const detailedData = auditorData.map(a => ({
-      "Auditor ID": a.auditorId,
-      "Auditor Name": a.auditorName,
+      "EMP ID": a.auditorId,
+      "Name": a.auditorName,
       "Total Audits": a.totalAudits,
       "Allotted PIDs": a.allottedPIDs.toLocaleString('en-IN'),
       "Allotted SKUs": a.allottedSKUs.toLocaleString('en-IN'),
@@ -400,12 +400,12 @@ const AuditorPerformance = ({ filters = {} }) => {
         <tr className="align-middle">
           <th onClick={() => requestSort('auditorId')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
-              Auditor ID {getSortIcon('auditorId')}
+              EMP ID {getSortIcon('auditorId')}
             </div>
           </th>
           <th onClick={() => requestSort('auditorName')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
-              Auditor Name {getSortIcon('auditorName')}
+              Name {getSortIcon('auditorName')}
             </div>
           </th>
           <th onClick={() => requestSort('totalAudits')} style={{ cursor: 'pointer' }}>
@@ -425,7 +425,7 @@ const AuditorPerformance = ({ filters = {} }) => {
           </th>
           <th onClick={() => requestSort('totalAppearedQty')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
-              Allotted Qty {getSortIcon('totalAppearedQty')}
+              Allotted Qty (Units) {getSortIcon('totalAppearedQty')}
             </div>
           </th>
           <th onClick={() => requestSort('avgTimePID')} style={{ cursor: 'pointer' }}>

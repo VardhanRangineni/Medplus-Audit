@@ -415,17 +415,17 @@ const AuditorPerformance = ({ filters = {} }) => {
           </th>
           <th onClick={() => requestSort('allottedPIDs')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
-              Allotted PIDs {getSortIcon('allottedPIDs')}
+              Audited PIDs {getSortIcon('allottedPIDs')}
             </div>
           </th>
           <th onClick={() => requestSort('allottedSKUs')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
-              Allotted SKUs {getSortIcon('allottedSKUs')}
+              Audited SKUs {getSortIcon('allottedSKUs')}
             </div>
           </th>
           <th onClick={() => requestSort('totalAppearedQty')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
-              Allotted Qty (Units) {getSortIcon('totalAppearedQty')}
+              Audited Qty (Units) {getSortIcon('totalAppearedQty')}
             </div>
           </th>
           <th onClick={() => requestSort('avgTimePID')} style={{ cursor: 'pointer' }}>

@@ -77,12 +77,12 @@ export const mockDataService = {
     return {
       store: { id: storeId, name: 'Chennai Central' },
       auditors: [
-        { 
-          name: 'Amit Singh', 
-          assignedSKUs: 1200, 
-          completedSKUs: 950, 
-          completionRate: 79.2, 
-          valueCovered: 125000 
+        {
+          name: 'Amit Singh',
+          assignedSKUs: 1200,
+          completedSKUs: 950,
+          completionRate: 79.2,
+          valueCovered: 125000
         },
         // ... more auditors
       ]
@@ -119,12 +119,12 @@ export const mockDataService = {
   getAuditorPIDDetails: async (_auditorId, _filters) => {
     // Replace with: return await api.get(`/api/auditors/${auditorId}/pids`, { params: filters })
     return [
-      { 
-        pid: 'PID12345', 
-        productName: 'Aspirin 100mg', 
-        assignedQty: 250, 
-        completedQty: 250, 
-        timeSpent: '18 min', 
+      {
+        pid: 'PID12345',
+        productName: 'Aspirin 100mg',
+        assignedQty: 250,
+        completedQty: 250,
+        timeSpent: '18 min',
         status: 'Completed',
         deviations: 2,
         delay: 'On Time'
@@ -163,12 +163,12 @@ export const mockDataService = {
   getContraApprovalData: async (_filters) => {
     // Replace with: return await api.get('/api/contra/approvals', { params: filters })
     return [
-      { 
-        storeId: 'MP001', 
-        storeName: 'Chennai Central', 
-        contraType: 'Short', 
-        itemCount: 45, 
-        quantity: 1250, 
+      {
+        storeId: 'MP001',
+        storeName: 'Chennai Central',
+        contraType: 'Short',
+        itemCount: 45,
+        quantity: 1250,
         value: 125000,
         priority: 'High'
       },
@@ -180,14 +180,14 @@ export const mockDataService = {
   getStoreDetails: async (_type, _filters) => {
     // Replace with: return await api.get('/api/stores/details', { params: { type, ...filters } })
     return [
-      { 
-        storeId: 'MP001', 
-        storeName: 'Chennai Central', 
-        state: 'TN', 
-        lastAudit: '2024-11-15', 
-        auditAge: 25, 
-        deviationCount: 45, 
-        inventoryValue: 125000 
+      {
+        storeId: 'MP001',
+        storeName: 'Chennai Central',
+        state: 'TN',
+        lastAudit: '2024-11-15',
+        auditAge: 25,
+        deviationCount: 45,
+        inventoryValue: 125000
       },
       // ... more stores
     ];
@@ -196,14 +196,14 @@ export const mockDataService = {
   getSKUDeviationDetails: async (_deviationType, _filters) => {
     // Replace with: return await api.get('/api/deviations/sku-details', { params: { deviationType, ...filters } })
     return [
-      { 
-        storeId: 'MP001', 
-        storeName: 'Chennai Central', 
-        skuCode: 'SKU12345', 
-        productName: 'Product A', 
-        quantity: 150, 
-        value: 12500, 
-        deviationType: 'Invoiced' 
+      {
+        storeId: 'MP001',
+        storeName: 'Chennai Central',
+        skuCode: 'SKU12345',
+        productName: 'Product A',
+        quantity: 150,
+        value: 12500,
+        deviationType: 'Invoiced'
       },
       // ... more SKUs
     ];
@@ -212,22 +212,22 @@ export const mockDataService = {
   // Store-Specific Details for Nested Drill-down
   getStoreDetailedInfo: async (storeId, _filters) => {
     // Replace with: return await api.get(`/api/stores/${storeId}/details`, { params: filters })
-    
+
     // Normalize store ID format (handle both MP001 and MP0001 formats)
-    const normalizedStoreId = storeId.startsWith('MP') && storeId.length === 5 
-      ? storeId.replace('MP', 'MP0') 
+    const normalizedStoreId = storeId.startsWith('MP') && storeId.length === 5
+      ? storeId.replace('MP', 'MP0')
       : storeId;
-    
+
     // Find store in actual data - try both formats
     let store = storeCoverageData.find(s => s.StoreID === storeId);
     if (!store && normalizedStoreId !== storeId) {
       store = storeCoverageData.find(s => s.StoreID === normalizedStoreId);
     }
-    
+
     console.log('getStoreDetailedInfo called with storeId:', storeId);
     console.log('Normalized storeId:', normalizedStoreId);
     console.log('Found store:', store ? store.StoreID : 'Not found');
-    
+
     if (store && store.IsCovered) {
       // Generate realistic supervisor names based on state
       const supervisorNames = {
@@ -243,7 +243,7 @@ export const mockDataService = {
         'UP': ['Sanjay Gupta', 'Rakesh Verma', 'Anjali Mishra'],
         'PB': ['Meera Kapoor', 'Harpreet Singh', 'Simran Kaur']
       };
-      
+
       // Generate realistic auditor names
       const auditorNames = [
         'Amit Singh', 'Priya Reddy', 'Suresh Kumar', 'Deepak Sharma', 'Anitha Rao',
@@ -251,27 +251,27 @@ export const mockDataService = {
         'Pooja Desai', 'Arun Mehta', 'Divya Shah', 'Ramesh Gupta', 'Sachin Bhosale',
         'Madhuri Joshi', 'Rajat Tiwari', 'Kavita Singh', 'Kumar Raja', 'Lakshmi Priya'
       ];
-      
+
       // Determine supervisor based on state
       const supervisors = supervisorNames[store.State] || ['Supervisor Name'];
       const supervisor = supervisors[Math.floor(Math.random() * supervisors.length)];
-      
+
       // For covered stores, audit should be 100% complete
       const completionRate = 100;
       const completedSKUs = store.TotalSKUs;
-      
+
       // Generate auditors (2-4 auditors per store)
       const numAuditors = Math.floor(Math.random() * 3) + 2;
       const skusPerAuditor = Math.floor(store.TotalSKUs / numAuditors);
       const auditors = [];
-      
+
       for (let i = 0; i < numAuditors; i++) {
         const auditorName = auditorNames[Math.floor(Math.random() * auditorNames.length)];
-        const assigned = i === numAuditors - 1 
-          ? store.TotalSKUs - (skusPerAuditor * i) 
+        const assigned = i === numAuditors - 1
+          ? store.TotalSKUs - (skusPerAuditor * i)
           : skusPerAuditor;
         const matchRate = 90 + Math.random() * 8; // 90-98%
-        
+
         auditors.push({
           name: auditorName,
           assignedSKUs: assigned,
@@ -280,14 +280,14 @@ export const mockDataService = {
           matchRate: parseFloat(matchRate.toFixed(1))
         });
       }
-      
+
       // Transform deviations to expected format
       const deviations = (store.Deviations || []).map(dev => ({
         type: dev.DeviationType,
         count: dev.Count,
         value: Math.round(dev.Value)
       }));
-      
+
       // Generate product form data from deviations
       const productFormData = {};
       (store.Deviations || []).forEach(dev => {
@@ -299,7 +299,21 @@ export const mockDataService = {
           })).sort((a, b) => b.value - a.value);
         }
       });
-      
+
+      // Calculate derived deviation metrics
+      const totalSKUs = store.TotalSKUs;
+      const appearedSKUs = Math.floor(totalSKUs * 0.05) + Math.floor(Math.random() * 20);
+      const matchedSKUs = Math.floor(appearedSKUs * 0.8) + Math.floor(Math.random() * 10);
+      const revisedSKUs = appearedSKUs - matchedSKUs;
+
+      const appearedQty = Math.floor(store.TotalQuantity * 0.02) + Math.floor(Math.random() * 100);
+      const matchedQty = Math.floor(appearedQty * 0.85);
+      const revisedQty = appearedQty - matchedQty;
+
+      const appearedValue = Math.floor(store.InventoryValue * 0.03);
+      const matchedValue = Math.floor(appearedValue * 0.7);
+      const revisedValue = appearedValue - matchedValue;
+
       return {
         storeId: store.StoreID,
         storeName: store.StoreName,
@@ -317,13 +331,22 @@ export const mockDataService = {
           totalValue: Math.round(store.InventoryValue),
           totalQuantity: store.TotalQuantity
         },
+        AppearedSKUs: appearedSKUs,
+        MatchedSKUs: matchedSKUs,
+        RevisedSKUs: revisedSKUs,
+        AppearedQty: appearedQty,
+        MatchedQty: matchedQty,
+        RevisedQty: revisedQty,
+        AppearedValue: appearedValue,
+        MatchedValue: matchedValue,
+        RevisedValue: revisedValue,
         auditors: auditors,
         deviations: deviations,
         productFormData: productFormData,
         contra: [] // This would come from a separate API in production
       };
     }
-    
+
     // Fallback to hardcoded data if store not found in JSON
     const storeDataMap = {
       'MP001': {

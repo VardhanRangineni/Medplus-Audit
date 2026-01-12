@@ -1,28 +1,5 @@
 [
   {
-    "StoreID": "INTGHYD01093",
-    "StoreName": "MEDPLUS DWARKAPURI COLONY CHINTAL",
-    "State": "HYD",
-    "StateName": "Telangana",
-    "StoreType": "STOCK HUB",
-    "BoxMapping": "Box Mapping",
-    "IsCovered": true,
-    "TotalSKUs": 3803,
-    "TotalPIDs": 1257,
-    "TotalQuantity": 86579,
-    "InventoryValue": 3814120.46,
-    "LastAuditDate": 1735880235560,
-    "DaysSinceLastAudit": 347,
-    "RecencyCategory": "9-12 Months",
-    "RecencyQuarter": "Jan - Mar",
-    "LastAuditJobType": "Select SKUs",
-    "LastAuditProcessType": "Box Audit",
-    "LastAuditStatus": "Completed",
-    "Deviations": [],
-    "TotalDeviationValue": 0,
-    "TotalDeviationCount": 0
-  },
-  {
     "StoreID": "INTGHYD50061",
     "StoreName": "SWARAJYA ENGINEERS AND TRADERS QUTHBULLAPUR",
     "State": "HYD",

@@ -599,14 +599,37 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
           wsRemarks['!dataValidation'] = [];
         }
         wsRemarks['!dataValidation'].push({
-          type: 'list',
-          allowBlank: true,
           sqref: cellAddress,
-          formulas: [remarksOptions.join(',')]
+          type: 'list',
+          operator: 'equal',
+          formula1: `"${remarksOptions.join(',')}"`,
+          showDropDown: true
         });
       }
 
       utils.book_append_sheet(wb, wsRemarks, "Revised Deviations");
+    }
+
+    // ===== SHEET 4: Product Form Analysis =====
+    const productFormSummary = [];
+    productFormSummary.push(["Product Form Analysis"]);
+    productFormSummary.push(["Variation Type", "Product Form", "Count", "Value (₹)"]);
+
+    Object.keys(productFormData).forEach(type => {
+      const typeData = productFormData[type];
+      if (typeData && Array.isArray(typeData)) {
+        typeData.forEach(item => {
+          if (item.form) {
+            productFormSummary.push([type, item.form, item.count || 0, item.value || 0]);
+          }
+        });
+      }
+    });
+
+    if (productFormSummary.length > 2) {
+      const wsProductForm = utils.aoa_to_sheet(productFormSummary);
+      wsProductForm['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 10 }, { wch: 15 }];
+      utils.book_append_sheet(wb, wsProductForm, "Product Form Analysis");
     }
 
     writeFile(wb, `Store_${storeId}_${storeName.replace(/\s+/g, '_')}_Report.xlsx`);

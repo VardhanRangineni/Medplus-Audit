@@ -191,6 +191,7 @@ const DetailsPage = ({ filters = {} }) => {
           auditStartDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never',
           auditJobType: getAuditJobType(store.StoreID),
           leadSupervisor: getLatestAuditInfo(store.StoreID).supervisor,
+          auditorsCount: getLatestAuditInfo(store.StoreID).auditors ? getLatestAuditInfo(store.StoreID).auditors.split(',').length : 0,
           cycle: store.AuditCycle || getAuditCount(store.StoreID),
           skus: store.TotalSKUs,
           quantity: store.TotalQuantity,
@@ -579,8 +580,8 @@ const DetailsPage = ({ filters = {} }) => {
     const wb = utils.book_new();
     const headers = [
       "Store ID-Name", "CITY", "STATE", "HUB TYPE", "STORE STATUS", "BOX TYPE",
-      "STORE CREATED DATE", "AUDIT START DATE", "AUDIT JOB TYPE", "LEAD SUPERVISOR", "AUDIT SKUS (count)",
-      "AUDIT QUANTITY (units)", "DEVIATION ITEMS VALUE MRP (₹)", "AUDIT VALUE MRP (₹)", "MISMATCH ITEMS", "DEVIATION ITEMS"
+      "STORE CREATED DATE", "AUDIT START DATE", "AUDIT JOB TYPE", "LEAD SUPERVISOR", "AUDITORS (count)", "AUDITED SKUS",
+      "AUDITED QTY (units)", "AUDITED VALUE MRP (₹)", "DEVIATION VALUE MRP (₹)", "MISMATCH ITEMS", "DEVIATION ITEMS"
     ];
 
     const dataToExport = filteredData.map(row => {
@@ -597,10 +598,11 @@ const DetailsPage = ({ filters = {} }) => {
           "AUDIT START DATE": row.auditStartDate,
           "AUDIT JOB TYPE": row.auditJobType,
           "LEAD SUPERVISOR": row.leadSupervisor,
-          "AUDIT SKUS (count)": row.skus,
-          "AUDIT QUANTITY (units)": row.quantity,
-          "DEVIATION ITEMS VALUE MRP (₹)": row.deviationValueMRP || 0,
-          "AUDIT VALUE MRP (₹)": row.inventoryValueMRP,
+          "AUDITORS (count)": row.auditorsCount,
+          "AUDITED SKUS": row.skus,
+          "AUDITED QTY (units)": row.quantity,
+          "AUDITED VALUE MRP (₹)": row.inventoryValueMRP,
+          "DEVIATION VALUE MRP (₹)": row.deviationValueMRP || 0,
           "MISMATCH ITEMS": row.mismatch || 0,
           "DEVIATION ITEMS": row.deviation || 0
         };
@@ -625,8 +627,8 @@ const DetailsPage = ({ filters = {} }) => {
       dataToExport.forEach(r => {
         aoaData.push([
           r["Store ID-Name"], r["CITY"], r["STATE"], r["HUB TYPE"], r["STORE STATUS"], r["BOX TYPE"],
-          r["STORE CREATED DATE"], r["AUDIT START DATE"], r["AUDIT JOB TYPE"], r["LEAD SUPERVISOR"], r["AUDIT SKUS (count)"],
-          r["AUDIT QUANTITY (units)"], r["DEVIATION ITEMS VALUE MRP (₹)"], r["AUDIT VALUE MRP (₹)"], r["MISMATCH ITEMS"], r["DEVIATION ITEMS"]
+          r["STORE CREATED DATE"], r["AUDIT START DATE"], r["AUDIT JOB TYPE"], r["LEAD SUPERVISOR"], r["AUDITORS (count)"], r["AUDITED SKUS"],
+          r["AUDITED QTY (units)"], r["AUDITED VALUE MRP (₹)"], r["DEVIATION VALUE MRP (₹)"], r["MISMATCH ITEMS"], r["DEVIATION ITEMS"]
         ]);
       });
       ws = utils.aoa_to_sheet(aoaData);
@@ -651,16 +653,16 @@ const DetailsPage = ({ filters = {} }) => {
     if (type === 'covered-stores' || type === 'uncovered-stores') {
       // Use abbreviated headers for PDF to fit
       headers = [
-        "ID-Name", "City", "State", "Type", "Status", "Box",
-        "Created", "Start Date", "Job Type", "Sup", "SKUs",
-        "Qty", "Dev Val", "Aud Val", "Mis", "Dev"
+        "ID-Name", "City", "State", "Type", "Store Status", "Box",
+        "Created", "Start Date", "Job Type", "Sup", "Auds", "SKUs",
+        "Qty", "Aud Val", "Dev Val", "Mis", "Dev"
       ];
 
       tableData = filteredData.map(row => {
         return [
           row.storeIdName, row.city, row.state, row.storeType, row.status, row.boxType,
-          row.storeCreatedDate, row.auditStartDate, row.auditJobType, row.leadSupervisor, row.skus,
-          row.quantity, '₹' + (row.deviationValueMRP || 0).toLocaleString('en-IN'), '₹' + (row.inventoryValueMRP || 0).toLocaleString('en-IN'),
+          row.storeCreatedDate, row.auditStartDate, row.auditJobType, row.leadSupervisor, row.auditorsCount, row.skus,
+          row.quantity, '₹' + (row.inventoryValueMRP || 0).toLocaleString('en-IN'), '₹' + (row.deviationValueMRP || 0).toLocaleString('en-IN'),
           row.mismatch || 0, row.deviation || 0
         ];
       });
@@ -766,12 +768,13 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'cycle') return 'NO.OF AUDITS';
     if (key === 'auditJobType') return 'AUDIT JOB TYPE';
     if (key === 'leadSupervisor') return 'LEAD SUPERVISOR';
-    if (key === 'skus') return 'AUDIT SKUS (count)';
-    if (key === 'quantity') return 'AUDIT QUANTITY (units)';
-    if (key === 'inventoryValueMRP') return 'AUDIT VALUE MRP (₹)';
+    if (key === 'auditorsCount') return 'AUDITORS (count)';
+    if (key === 'skus') return 'AUDITED SKUS';
+    if (key === 'quantity') return 'AUDITED QTY (units)';
+    if (key === 'inventoryValueMRP') return 'AUDITED VALUE MRP (₹)';
     if (key === 'mismatch') return 'MISMATCH ITEMS';
     if (key === 'deviation') return 'DEVIATION ITEMS';
-    if (key === 'deviationValueMRP') return 'DEVIATION ITEMS VALUE MRP (₹)';
+    if (key === 'deviationValueMRP') return 'DEVIATION VALUE MRP (₹)';
     if (key === 'deviationCount') return 'DEVIATION ITEMS COUNT (items)';
 
     // First, handle the splitting while preserving common acronyms
@@ -821,10 +824,11 @@ const DetailsPage = ({ filters = {} }) => {
         'auditStartDate',
         'auditJobType',
         'leadSupervisor',
+        'auditorsCount',
         'skus',
         'quantity',
-        'deviationValueMRP',
         'inventoryValueMRP',
+        'deviationValueMRP',
         'mismatch',
         'deviation'
       ];
@@ -881,6 +885,9 @@ const DetailsPage = ({ filters = {} }) => {
       const storeData = await mockDataService.getStoreDetailedInfo(row.storeId);
       console.log('Store data received:', storeData);
       if (storeData) {
+        // Overlay properties from the table row for consistency
+        if (row.leadSupervisor) storeData.supervisor = row.leadSupervisor;
+
         setSelectedStoreData(storeData);
         setShowStoreDetail(true);
       } else {
@@ -985,14 +992,14 @@ const DetailsPage = ({ filters = {} }) => {
                   </Form.Select>
                 </Col>
               )}
-              {/* Store Type Filter (Derived from StoreType) */}
+              {/* Hub Type Filter (Derived from StoreType) */}
               {(() => {
                 const storeTypes = [...new Set(data.map(item => item.storeType).filter(Boolean))];
                 return storeTypes.length > 0 && (
                   <Col md={2}>
-                    <Form.Label className="small mb-1">Store Type</Form.Label>
+                    <Form.Label className="small mb-1">Hub Type</Form.Label>
                     <Form.Select size="sm" value={filterStore} onChange={(e) => setFilterStore(e.target.value)}>
-                      <option value="">Select Store Type</option>
+                      <option value="">Select Hub Type</option>
                       {storeTypes.map(type => (
                         <option key={type} value={type}>{type}</option>
                       ))}
@@ -1002,9 +1009,9 @@ const DetailsPage = ({ filters = {} }) => {
               })()}
               {auditJobTypes.length > 0 && (
                 <Col md={2}>
-                  <Form.Label className="small mb-1">Audit Type</Form.Label>
+                  <Form.Label className="small mb-1">Audit Job Type</Form.Label>
                   <Form.Select size="sm" value={filterAuditJobType} onChange={(e) => setFilterAuditJobType(e.target.value)}>
-                    <option value="">Select Audit Type</option>
+                    <option value="">Select Audit Job Type</option>
                     {auditJobTypes.map(type => (
                       <option key={type} value={type}>{type}</option>
                     ))}
@@ -1022,17 +1029,17 @@ const DetailsPage = ({ filters = {} }) => {
                   </Form.Select>
                 </Col>
               )}
-              {storeStatuses.length > 0 && (
+              {/* {storeStatuses.length > 0 && (
                 <Col md={2}>
-                  <Form.Label className="small mb-1">Status</Form.Label>
+                  <Form.Label className="small mb-1">Store Status</Form.Label>
                   <Form.Select size="sm" value={filterStoreStatus} onChange={(e) => setFilterStoreStatus(e.target.value)}>
-                    <option value="">Select Status</option>
+                    <option value="">Select Store Status</option>
                     {storeStatuses.map(status => (
                       <option key={status} value={status}>{status}</option>
                     ))}
                   </Form.Select>
                 </Col>
-              )}
+              )} */}
 
               {processTypes.length > 0 && (
                 <Col md={2}>

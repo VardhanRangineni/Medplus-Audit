@@ -765,30 +765,41 @@ const StoreCoverage = ({ filters = {} }) => {
               </h5>
             </Card.Header>
             <Card.Body>
-              <ResponsiveContainer width="100%" height={450}>
-                <BarChart data={deviationData} barSize={40}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="category" dataKey="type" />
-                  <YAxis type="number" tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}K`} />
-                  <Tooltip
-                    formatter={(value) => `₹${formatIndianNumber(value)}`}
-                    contentStyle={{ fontSize: '12px' }}
-                  />
-                  <Bar
-                    dataKey="value"
-                    onClick={(data) => setSelectedDeviation(data)}
-                    cursor="pointer"
-                    radius={[5, 5, 0, 0]}
-                  >
+              <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                <Table hover size="sm" className="mb-0">
+                  <thead className="bg-light sticky-top">
+                    <tr>
+                      <th>Type</th>
+                      <th className="text-end">SKUs (Count)</th>
+                      <th className="text-end">Value (MRP)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                     {deviationData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <tr
+                        key={index}
+                        onClick={() => setSelectedDeviation(entry)}
+                        style={{
+                          cursor: 'pointer',
+                          backgroundColor: selectedDeviation?.type === entry.type ? 'rgba(13, 110, 253, 0.1)' : 'transparent'
+                        }}
+                        className="deviation-row"
+                      >
+                        <td className="small">{entry.type}</td>
+                        <td className="text-end">
+                          <Badge bg="secondary" pill>{entry.count}</Badge>
+                        </td>
+                        <td className="text-end fw-semibold text-danger">
+                          ₹{formatIndianNumber(entry.value)}
+                        </td>
+                      </tr>
                     ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+                  </tbody>
+                </Table>
+              </div>
               <div className="text-center mt-3 text-muted small">
                 <i className="fas fa-info-circle me-1"></i>
-                Click on any deviation bar to see product form breakdown
+                Click on any deviation type to see product form breakdown
               </div>
             </Card.Body>
           </Card>
@@ -849,38 +860,44 @@ const StoreCoverage = ({ filters = {} }) => {
                       Total: ₹{formatIndianNumber(selectedDeviation.value)} | {selectedDeviation.count} items
                     </div>
                   </div>
-                  <div style={{ maxHeight: '450px', overflowY: 'auto' }}>
-                    {productFormData[selectedDeviation.type]
-                      .sort((a, b) => b.value - a.value)
-                      .map((form, idx) => (
-                        <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
-                          <div className="d-flex align-items-center">
-                            <div
-                              style={{
-                                width: '12px',
-                                height: '12px',
-                                backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
-                                borderRadius: '2px',
-                                marginRight: '8px'
-                              }}
-                            />
-                            <span className="fw-semibold">{form.form}</span>
-                          </div>
-                          <div className="text-end">
-                            {form.count > 0 ? (
-                              <>
-                                <div className="fw-bold text-success">₹{formatIndianNumber(form.value)}</div>
-                                <div className="text-muted small">{form.count} items</div>
-                              </>
-                            ) : (
-                              <>
-                                <div className="fw-bold text-muted">-</div>
-                                <div className="text-muted small">No data</div>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      ))}
+                  <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                    <Table hover size="sm" className="mb-0">
+                      <thead className="bg-light sticky-top">
+                        <tr>
+                          <th>Form</th>
+                          <th className="text-end">SKUs (Count)</th>
+                          <th className="text-end">Value (MRP)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {productFormData[selectedDeviation.type]
+                          .sort((a, b) => b.value - a.value)
+                          .map((form, idx) => (
+                            <tr key={idx}>
+                              <td className="small">
+                                <div className="d-flex align-items-center">
+                                  <div
+                                    style={{
+                                      width: '12px',
+                                      height: '12px',
+                                      backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
+                                      borderRadius: '2px',
+                                      marginRight: '8px'
+                                    }}
+                                  />
+                                  <span>{form.form}</span>
+                                </div>
+                              </td>
+                              <td className="text-end">
+                                <Badge bg="secondary" pill>{form.count > 0 ? form.count : '-'}</Badge>
+                              </td>
+                              <td className="text-end fw-semibold text-success">
+                                {form.count > 0 ? `₹${formatIndianNumber(form.value)}` : '-'}
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </Table>
                   </div>
                 </div>
               ) : (
@@ -914,27 +931,42 @@ const StoreCoverage = ({ filters = {} }) => {
                         </div>
                       </div>
                       {overallFormArray.length > 0 ? (
-                        <div style={{ maxHeight: '450px', overflowY: 'auto' }}>
-                          {overallFormArray.map((form, idx) => (
-                            <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
-                              <div className="d-flex align-items-center">
-                                <div
-                                  style={{
-                                    width: '12px',
-                                    height: '12px',
-                                    backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
-                                    borderRadius: '2px',
-                                    marginRight: '8px'
-                                  }}
-                                />
-                                <span className="fw-semibold">{form.form}</span>
-                              </div>
-                              <div className="text-end">
-                                <div className="fw-bold text-success">₹{formatIndianNumber(form.value)}</div>
-                                <div className="text-muted small">{form.count} items</div>
-                              </div>
-                            </div>
-                          ))}
+                        <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                          <Table hover size="sm" className="mb-0">
+                            <thead className="bg-light sticky-top">
+                              <tr>
+                                <th>Form</th>
+                                <th className="text-end">SKUs (Count)</th>
+                                <th className="text-end">Value (MRP)</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {overallFormArray.map((form, idx) => (
+                                <tr key={idx}>
+                                  <td className="small">
+                                    <div className="d-flex align-items-center">
+                                      <div
+                                        style={{
+                                          width: '12px',
+                                          height: '12px',
+                                          backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
+                                          borderRadius: '2px',
+                                          marginRight: '8px'
+                                        }}
+                                      />
+                                      <span>{form.form}</span>
+                                    </div>
+                                  </td>
+                                  <td className="text-end">
+                                    <Badge bg="secondary" pill>{form.count}</Badge>
+                                  </td>
+                                  <td className="text-end fw-semibold text-success">
+                                    ₹{formatIndianNumber(form.value)}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </Table>
                         </div>
                       ) : (
                         <div className="text-center text-muted py-5">

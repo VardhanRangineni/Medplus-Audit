@@ -924,7 +924,7 @@ const StoreCoverage = ({ filters = {} }) => {
                     <div>
                       <div className="mb-3">
                         <h6 className="text-primary mb-2">
-                          Overall Product Form Distribution
+                          Overall Audit Form Distribution
                         </h6>
                         <div className="text-muted small">
                           Across all deviation types

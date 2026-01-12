@@ -413,86 +413,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     wsSummary['!cols'] = [{ wch: 25 }, { wch: 20 }, { wch: 15 }, { wch: 18 }, { wch: 15 }];
     utils.book_append_sheet(wb, wsSummary, "Summary");
 
-    // ===== SHEET 2: Deviations (All deviation-related data) =====
-    const allDeviationsData = [];
-
-    // Add deviation summary section
-    if (deviations && deviations.length > 0) {
-      allDeviationsData.push(["Audit Accuracy"]);
-      allDeviationsData.push(["Deviation Type", "Count", "Value (₹)"]);
-      deviations.forEach(d => {
-        allDeviationsData.push([d.type, d.count || 0, d.value || 0]);
-      });
-      allDeviationsData.push([]);
-      allDeviationsData.push([]);
-    }
-
-    // Add detailed product-level deviations
-    Object.keys(detailedProductData).forEach(deviationType => {
-      const deviationData = detailedProductData[deviationType];
-
-      allDeviationsData.push([`${deviationType} - Detailed Products`]);
-      allDeviationsData.push([
-        "Deviation Type", "Product Form", "Product ID", "SKU", "Product Name",
-        "Batch No", "System Qty", "Physical Qty", "Difference", "Unit Price (₹)",
-        "Total Value (₹)", "Expiry Date"
-      ]);
-
-      if (typeof deviationData === 'object' && !Array.isArray(deviationData)) {
-        // Has product forms (like Invoiced, Contra Short)
-        Object.keys(deviationData).forEach(productForm => {
-          deviationData[productForm].forEach(product => {
-            allDeviationsData.push([
-              deviationType,
-              productForm,
-              product.productId,
-              product.sku,
-              product.productName,
-              product.batchNo,
-              product.systemQty,
-              product.physicalQty,
-              product.difference || 0,
-              product.unitPrice,
-              product.totalValue,
-              product.expiryDate
-            ]);
-          });
-        });
-      } else if (Array.isArray(deviationData)) {
-        // Direct array (like Contra Excess, Excess Submitted)
-        deviationData.forEach(product => {
-          allDeviationsData.push([
-            deviationType,
-            "N/A",
-            product.productId,
-            product.sku,
-            product.productName,
-            product.batchNo,
-            product.systemQty,
-            product.physicalQty,
-            product.difference || 0,
-            product.unitPrice,
-            product.totalValue,
-            product.expiryDate
-          ]);
-        });
-      }
-
-      allDeviationsData.push([]);
-      allDeviationsData.push([]);
-    });
-
-    if (allDeviationsData.length > 0) {
-      const wsDeviations = utils.aoa_to_sheet(allDeviationsData);
-      wsDeviations['!cols'] = [
-        { wch: 20 }, { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 30 },
-        { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 },
-        { wch: 15 }, { wch: 12 }
-      ];
-      utils.book_append_sheet(wb, wsDeviations, "Deviations");
-    }
-
-    // ===== SHEET 3: Revised Deviations (Contra Short, Contra Excess, Excess Submitted with Remarks column) =====
+    // ===== SHEET 2: Mismatches (Contra Short, Contra Excess, Excess Submitted with Remarks column) =====
     const remarksData = [];
 
     // Add header row with Initial Auditor, User ID, Remarks and Description columns
@@ -609,7 +530,86 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         });
       }
 
-      utils.book_append_sheet(wb, wsRemarks, "Revised Deviations");
+      utils.book_append_sheet(wb, wsRemarks, "Mismatches");
+    }
+
+    // ===== SHEET 3: Deviations (All deviation-related data) =====
+    const allDeviationsData = [];
+
+    // Add deviation summary section
+    if (deviations && deviations.length > 0) {
+      allDeviationsData.push(["Audit Accuracy"]);
+      allDeviationsData.push(["Deviation Type", "Count", "Value (₹)"]);
+      deviations.forEach(d => {
+        allDeviationsData.push([d.type, d.count || 0, d.value || 0]);
+      });
+      allDeviationsData.push([]);
+      allDeviationsData.push([]);
+    }
+
+    // Add detailed product-level deviations
+    Object.keys(detailedProductData).forEach(deviationType => {
+      const deviationData = detailedProductData[deviationType];
+
+      allDeviationsData.push([`${deviationType} - Detailed Products`]);
+      allDeviationsData.push([
+        "Deviation Type", "Product Form", "Product ID", "SKU", "Product Name",
+        "Batch No", "System Qty", "Physical Qty", "Difference", "Unit Price (₹)",
+        "Total Value (₹)", "Expiry Date"
+      ]);
+
+      if (typeof deviationData === 'object' && !Array.isArray(deviationData)) {
+        // Has product forms (like Invoiced, Contra Short)
+        Object.keys(deviationData).forEach(productForm => {
+          deviationData[productForm].forEach(product => {
+            allDeviationsData.push([
+              deviationType,
+              productForm,
+              product.productId,
+              product.sku,
+              product.productName,
+              product.batchNo,
+              product.systemQty,
+              product.physicalQty,
+              product.difference || 0,
+              product.unitPrice,
+              product.totalValue,
+              product.expiryDate
+            ]);
+          });
+        });
+      } else if (Array.isArray(deviationData)) {
+        // Direct array (like Contra Excess, Excess Submitted)
+        deviationData.forEach(product => {
+          allDeviationsData.push([
+            deviationType,
+            "N/A",
+            product.productId,
+            product.sku,
+            product.productName,
+            product.batchNo,
+            product.systemQty,
+            product.physicalQty,
+            product.difference || 0,
+            product.unitPrice,
+            product.totalValue,
+            product.expiryDate
+          ]);
+        });
+      }
+
+      allDeviationsData.push([]);
+      allDeviationsData.push([]);
+    });
+
+    if (allDeviationsData.length > 0) {
+      const wsDeviations = utils.aoa_to_sheet(allDeviationsData);
+      wsDeviations['!cols'] = [
+        { wch: 20 }, { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 30 },
+        { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 },
+        { wch: 15 }, { wch: 12 }
+      ];
+      utils.book_append_sheet(wb, wsDeviations, "Deviations");
     }
 
     // ===== SHEET 4: Product Form Analysis =====
@@ -631,7 +631,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     if (productFormSummary.length > 2) {
       const wsProductForm = utils.aoa_to_sheet(productFormSummary);
       wsProductForm['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 10 }, { wch: 15 }];
-      utils.book_append_sheet(wb, wsProductForm, "Product Form Analysis");
+      utils.book_append_sheet(wb, wsProductForm, "Audit Form wise");
     }
 
     writeFile(wb, `Store_${storeId}_${storeName.replace(/\s+/g, '_')}_Report.xlsx`);
@@ -1719,7 +1719,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                     <div>
                       <div className="mb-3">
                         <h6 className="text-primary mb-2">
-                          Overall Product Form Distribution
+                          Overall Audit Form Distribution
                         </h6>
                         <div className="text-muted small">
                           Across all deviation types

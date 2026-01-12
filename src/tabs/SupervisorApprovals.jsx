@@ -35,7 +35,7 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
         <tr>
           <th onClick={() => requestSort('supervisorId')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
-              ID {getSortIcon('supervisorId')}
+              EMP ID {getSortIcon('supervisorId')}
             </div>
           </th>
           <th onClick={() => requestSort('supervisorName')} style={{ cursor: 'pointer' }}>
@@ -70,7 +70,17 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
           </th>
           <th onClick={() => requestSort('totalValue')} style={{ cursor: 'pointer' }}>
             <div className="d-flex align-items-center gap-1">
-              Total Value (MRP) {getSortIcon('totalValue')}
+              Audited Value (MRP) {getSortIcon('totalValue')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('mismatchValue')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Mismatch Value (MRP) {getSortIcon('mismatchValue')}
+            </div>
+          </th>
+          <th onClick={() => requestSort('deviationValue')} style={{ cursor: 'pointer' }}>
+            <div className="d-flex align-items-center gap-1">
+              Deviation Value (MRP) {getSortIcon('deviationValue')}
             </div>
           </th>
         </tr>
@@ -93,6 +103,8 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
             <td className="fw-semibold">{sup.auditorsSupervised}</td>
             <td className="fw-semibold">{formatIndianNumber(sup.totalSKUs, true)}</td>
             <td className="fw-semibold">{formatIndianCurrency(sup.totalValue)}</td>
+            <td className="fw-semibold text-warning">{formatIndianCurrency(sup.mismatchValue)}</td>
+            <td className="fw-semibold text-danger">{formatIndianCurrency(sup.deviationValue)}</td>
           </tr>
         ))}
       </tbody>
@@ -145,6 +157,8 @@ const SupervisorApprovals = ({ filters = {} }) => {
           completion: [],
           auditors: new Set(),
           totalValue: 0,
+          mismatchValue: 0,
+          deviationValue: 0,
           supervisedDates: new Set()
         };
         supervisorAuditMap[sId] = new Set();
@@ -157,6 +171,8 @@ const SupervisorApprovals = ({ filters = {} }) => {
       sup.completion.push(record.CompletionPercent || 0);
       if (record.AuditorID) sup.auditors.add(record.AuditorID);
       sup.totalValue += record.AppearedValue || 0;
+      sup.mismatchValue += record.MatchedValue || 0;
+      sup.deviationValue += record.RevisedValue || 0;
       supervisorAuditMap[sId].add(record.AUDIT_ID);
 
       if (record.DayWiseSummary) {
@@ -188,6 +204,8 @@ const SupervisorApprovals = ({ filters = {} }) => {
         totalPIDs,
         totalSKUs,
         totalValue: sup.totalValue,
+        mismatchValue: sup.mismatchValue,
+        deviationValue: sup.deviationValue,
         unallocatedPIDs: Math.max(0, totalPIDs - sup.allocatedPIDs)
       };
     });
@@ -227,98 +245,38 @@ const SupervisorApprovals = ({ filters = {} }) => {
     }));
   };
 
+  const handleDownloadExcel = () => {
+    const wb = utils.book_new();
+    const detailedData = supervisorData.map(s => ({
+      "Supervisor ID": s.supervisorId,
+      "Supervisor Name": s.supervisorName,
+      "Stores Managed": s.storesManaged,
+      "Total Audits": s.totalAudits,
+      "Days Supervised": s.daysSupervised,
+      "Auditors Supervised": s.auditorsSupervised,
+      "Total SKUs": s.totalSKUs,
+      "Total Value (₹)": s.totalValue,
+      "Mismatch Value (₹)": s.mismatchValue,
+      "Deviation Value (₹)": s.deviationValue,
+      "Unallocated PIDs": s.unallocatedPIDs,
+    }));
+    const wsDetails = utils.json_to_sheet(detailedData);
+    wsDetails['!cols'] = [
+      { wch: 15 }, { wch: 25 }, { wch: 18 }, { wch: 15 },
+      { wch: 18 }, { wch: 20 }, { wch: 15 }, { wch: 18 },
+      { wch: 18 }, { wch: 18 }, { wch: 18 }
+    ];
+    utils.book_append_sheet(wb, wsDetails, "Supervisor Details");
+    writeFile(wb, `Supervisor_Performance_Summary_${new Date().toISOString().split('T')[0]}.xlsx`);
+  };
+
   return (
     <Container fluid className="supervisor-approvals-tab py-4">
-      {/* Export Button */}
-      <div className="d-flex justify-content-end mb-3">
-        <Dropdown>
-          <Dropdown.Toggle
-            size="sm"
-            className="d-flex align-items-center gap-2 fw-bold shadow-sm"
-            style={{ backgroundColor: '#0d6efd', color: 'white', border: 'none' }}
-            id="supervisor-export-dropdown"
-          >
-            <i className="fas fa-download"></i> Export Report
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item onClick={() => {
-              const wb = utils.book_new();
-              const detailedData = supervisorData.map(s => ({
-                "Supervisor ID": s.supervisorId,
-                "Supervisor Name": s.supervisorName,
-                "Stores Managed": s.storesManaged,
-                "Total Audits": s.totalAudits,
-                "Days Supervised": s.daysSupervised,
-                "Auditors Supervised": s.auditorsSupervised,
-                "Total SKUs": s.totalSKUs,
-                "Total Value (₹)": s.totalValue,
-                "Unallocated PIDs": s.unallocatedPIDs,
-              }));
-              const wsDetails = utils.json_to_sheet(detailedData);
-              wsDetails['!cols'] = [
-                { wch: 15 }, { wch: 25 }, { wch: 18 }, { wch: 15 },
-                { wch: 18 }, { wch: 20 }, { wch: 15 }, { wch: 18 },
-                { wch: 18 }
-              ];
-              utils.book_append_sheet(wb, wsDetails, "Supervisor Details");
-              writeFile(wb, `Supervisor_Performance_Summary_${new Date().toISOString().split('T')[0]}.xlsx`);
-            }}>
-              <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => {
-              const doc = new jsPDF();
-              doc.setFontSize(16);
-              doc.text("Supervisor Performance Summary", 14, 20);
-              doc.setFontSize(10);
-              doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
-              doc.text(`Financial Year: ${filters.financialYear || 'All-time'}`, 14, 34);
-              autoTable(doc, {
-                startY: 42,
-                head: [['Metric', 'Value']],
-                body: [
-                  ['Total Supervisors', supervisorData.length],
-                  ['Total Audits', overallMetrics.totalAudits.toLocaleString()],
-                  ['Total Value', `Rs. ${formatIndianCurrency(overallMetrics.totalValue)}`],
-                ],
-                theme: 'striped',
-                headStyles: { fillColor: [41, 128, 185] }
-              });
-
-              // Use filtered data for the table if search is active
-              const dataToExport = searchQuery
-                ? supervisorData.filter(s => (s.supervisorName || '').toLowerCase().includes(searchQuery.toLowerCase()))
-                : supervisorData;
-
-              autoTable(doc, {
-                startY: doc.lastAutoTable.finalY + 10,
-                head: [['ID', 'Name', 'Stores', 'Audits', 'Days', 'Auditors', 'SKUs', 'Value (Rs.)']],
-                body: dataToExport.map(s => [
-                  s.supervisorId,
-                  s.supervisorName,
-                  s.storesManaged,
-                  s.totalAudits,
-                  s.daysSupervised,
-                  s.auditorsSupervised,
-                  s.totalSKUs?.toLocaleString('en-IN'),
-                  (s.totalValue || 0).toLocaleString('en-IN')
-                ]),
-                theme: 'grid',
-                styles: { fontSize: 8 },
-                headStyles: { fillColor: [52, 73, 94], textColor: 255 }
-              });
-              doc.save(`Supervisor_Performance_Summary_${new Date().toISOString().split('T')[0]}.pdf`);
-            }}>
-              <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-
       <Row className="g-3 mb-4">
         <Col md={3}><KPICard title="Total Supervisors" value={supervisorData.length} /></Col>
         <Col md={3}><KPICard title="Total Audits Supervised" value={overallMetrics.totalAudits?.toLocaleString()} /></Col>
         <Col md={3}><KPICard title="Total Stores Supervised" value={overallMetrics.totalStores} /></Col>
-        <Col md={3}><KPICard title="Total Value (MRP)" value={formatIndianCurrency(overallMetrics.totalValue)} /></Col>
+        <Col md={3}><KPICard title="Audited Value (MRP)" value={formatIndianCurrency(overallMetrics.totalValue)} /></Col>
       </Row>
 
       <Card className="border-0 shadow-sm">
@@ -339,6 +297,13 @@ const SupervisorApprovals = ({ filters = {} }) => {
                 <i className="fas fa-filter me-1"></i>
                 Table Filters
                 <i className={`fas fa-chevron-${showTableFilters ? 'up' : 'down'} ms-1`}></i>
+              </button>
+              <button
+                className="btn btn-success btn-sm"
+                onClick={handleDownloadExcel}
+              >
+                <i className="fas fa-file-excel me-1"></i>
+                Export Excel
               </button>
             </div>
           </div>

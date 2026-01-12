@@ -219,10 +219,13 @@ const AuditorPerformance = ({ filters = {} }) => {
       revised: { qty: 0, value: 0, skus: 0 }
     });
 
+    const avgPIDTime = (auditorData.reduce((sum, a) => sum + a.avgTimePID, 0) / count);
+    
     return {
       avgTimePerSKU: `${(totalAvgTime / count).toFixed(1)} min`,
       avgTimePerSKUProduct: `${((totalAvgTime / count) * 2.4).toFixed(1)} min`,
-      avgTimePerPID: `${(auditorData.reduce((sum, a) => sum + a.avgTimePID, 0) / count).toFixed(1)} min`,
+      avgTimePerPID: `${avgPIDTime.toFixed(1)} min`,
+      avgTimePerPIDProduct: `${(avgPIDTime * 2.4).toFixed(1)} min`,
       deviations
     };
   }, [auditorData]);
@@ -522,7 +525,7 @@ const AuditorPerformance = ({ filters = {} }) => {
         </Col>
 
         {/* Avg Time / PID Card */}
-        <Col md={3}>
+        <Col md={4}>
           <Card className="border-0 shadow-sm h-100">
             <Card.Body className="d-flex justify-content-between align-items-start flex-column">
               <div className="d-flex w-100 justify-content-between align-items-start">
@@ -530,8 +533,16 @@ const AuditorPerformance = ({ filters = {} }) => {
                   <h6 className="text-primary fw-bold text-uppercase mb-3">
                     AVG TIME / PID
                   </h6>
-                  <div className="text-secondary text-uppercase mb-1 small fw-semibold" style={{ visibility: 'hidden' }}>SPACER</div>
-                  <h2 className="fw-bold text-primary mb-0" style={{ fontSize: '2rem' }}>{performanceMetrics.avgTimePerPID}</h2>
+                  <div className="d-flex">
+                    <div className="me-4 pe-4 border-end">
+                      <div className="text-secondary text-uppercase mb-1 small fw-semibold">PRODUCT AUDITS</div>
+                      <h2 className="fw-bold text-primary mb-0" style={{ fontSize: '2rem' }}>{performanceMetrics.avgTimePerPID}</h2>
+                    </div>
+                    <div>
+                      <div className="text-secondary text-uppercase mb-1 small fw-semibold">BATCH AUDITS</div>
+                      <h2 className="fw-bold text-primary mb-0" style={{ fontSize: '2rem' }}>{performanceMetrics.avgTimePerPIDProduct}</h2>
+                    </div>
+                  </div>
                 </div>
                 <div className="bg-primary bg-opacity-10 p-3 rounded-3 text-primary">
                   <i className="fas fa-hourglass-half fa-lg"></i>
@@ -545,7 +556,7 @@ const AuditorPerformance = ({ filters = {} }) => {
         </Col>
 
         {/* Avg Time / SKU Card (Combined) */}
-        <Col md={4}>
+        <Col md={5}>
           <Card className="border-0 shadow-sm h-100">
             <Card.Body className="d-flex justify-content-between align-items-start flex-column">
               <div className="d-flex w-100 justify-content-between align-items-start">
@@ -555,11 +566,11 @@ const AuditorPerformance = ({ filters = {} }) => {
                   </h6>
                   <div className="d-flex">
                     <div className="me-4 pe-4 border-end">
-                      <div className="text-secondary text-uppercase mb-1 small fw-semibold">PER PRODUCT</div>
+                      <div className="text-secondary text-uppercase mb-1 small fw-semibold">PRODUCT AUDITS</div>
                       <h2 className="fw-bold text-primary mb-0" style={{ fontSize: '2rem' }}>{performanceMetrics.avgTimePerSKU}</h2>
                     </div>
                     <div>
-                      <div className="text-secondary text-uppercase mb-1 small fw-semibold">PER BATCH</div>
+                      <div className="text-secondary text-uppercase mb-1 small fw-semibold">BATCH AUDITS</div>
                       <h2 className="fw-bold text-primary mb-0" style={{ fontSize: '2rem' }}>{performanceMetrics.avgTimePerSKUProduct}</h2>
                     </div>
                   </div>
@@ -572,28 +583,6 @@ const AuditorPerformance = ({ filters = {} }) => {
             </Card.Body>
           </Card>
         </Col>
-
-        {/* Export Button Column */}
-        <Col md={2} className="d-flex align-items-start justify-content-end">
-          <Dropdown>
-            <Dropdown.Toggle
-              size="sm"
-              className="d-flex align-items-center gap-2 fw-bold shadow-sm"
-              style={{ backgroundColor: '#0d6efd', color: 'white', border: 'none' }}
-              id="auditor-export-dropdown"
-            >
-              <i className="fas fa-download"></i> Export Report
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={handleDownloadExcel}>
-                <i className="fas fa-file-excel text-success me-2"></i> Export as Excel
-              </Dropdown.Item>
-              <Dropdown.Item onClick={handleDownloadPDF}>
-                <i className="fas fa-file-pdf text-danger me-2"></i> Export as PDF
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </Col>
       </Row>
 
 
@@ -603,14 +592,10 @@ const AuditorPerformance = ({ filters = {} }) => {
         <Col md={3}>
           <Card className="border-0 shadow-sm border-start border-4 border-primary">
             <Card.Body>
-              <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED DEVIATIONS</h6>
+              <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED MISMATCHES</h6>
               <div className="d-flex justify-content-between mb-1 text-muted small">
                 <span>SKUs</span>
                 <span className="fw-bold text-dark">{formatIndianNumber(performanceMetrics.deviations.appeared.skus, true)}</span>
-              </div>
-              <div className="d-flex justify-content-between mb-1 text-muted small">
-                <span>Qty</span>
-                <span className="fw-bold text-dark">{formatIndianNumber(performanceMetrics.deviations.appeared.qty, true)}</span>
               </div>
               <div className="d-flex justify-content-between text-muted small">
                 <span>Value</span>
@@ -622,14 +607,10 @@ const AuditorPerformance = ({ filters = {} }) => {
         <Col md={3}>
           <Card className="border-0 shadow-sm border-start border-4 border-success">
             <Card.Body>
-              <h6 className="text-success fw-bold text-uppercase mb-3">MATCHED DEVIATIONS</h6>
+              <h6 className="text-success fw-bold text-uppercase mb-3">REVISED MISMATCHES</h6>
               <div className="d-flex justify-content-between mb-1 text-muted small">
                 <span>SKUs</span>
                 <span className="fw-bold text-dark">{formatIndianNumber(performanceMetrics.deviations.matched.skus, true)}</span>
-              </div>
-              <div className="d-flex justify-content-between mb-1 text-muted small">
-                <span>Qty</span>
-                <span className="fw-bold text-dark">{formatIndianNumber(performanceMetrics.deviations.matched.qty, true)}</span>
               </div>
               <div className="d-flex justify-content-between text-muted small">
                 <span>Value</span>
@@ -641,79 +622,14 @@ const AuditorPerformance = ({ filters = {} }) => {
         <Col md={3}>
           <Card className="border-0 shadow-sm border-start border-4 border-warning">
             <Card.Body>
-              <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED DEVIATIONS</h6>
+              <h6 className="text-warning fw-bold text-uppercase mb-3">FINAL DEVIATIONS</h6>
               <div className="d-flex justify-content-between mb-1 text-muted small">
                 <span>SKUs</span>
                 <span className="fw-bold text-dark">{formatIndianNumber(performanceMetrics.deviations.revised.skus, true)}</span>
               </div>
-              <div className="d-flex justify-content-between mb-1 text-muted small">
-                <span>Qty</span>
-                <span className="fw-bold text-dark">{formatIndianNumber(performanceMetrics.deviations.revised.qty, true)}</span>
-              </div>
               <div className="d-flex justify-content-between text-muted small">
                 <span>Value</span>
                 <span className="fw-bold text-dark">{formatIndianCurrency(performanceMetrics.deviations.revised.value)}</span>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-      <Row className="mb-4">
-        <Col md={6}>
-          <Card className="border-0 shadow-sm">
-            <Card.Header className="bg-white border-0 py-3 d-flex justify-content-between align-items-center">
-              <h6 className="mb-0 fw-bold text-success">
-                <i className="fas fa-trophy me-2"></i>
-                Top Performers
-              </h6>
-              <Button variant="link" className="p-0 text-success small text-decoration-none fw-bold" onClick={() => handleShowMorePerformers('top')}>
-                View More <i className="fas fa-arrow-right ms-1"></i>
-              </Button>
-            </Card.Header>
-            <Card.Body>
-              <div className="performance-list">
-                {[...auditorData]
-                  .sort((a, b) => b.matchRate - a.matchRate)
-                  .slice(0, 3)
-                  .map((auditor, idx) => (
-                    <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
-                      <div>
-                        <Badge bg="success" className="me-2">{idx + 1}</Badge>
-                        <strong>{auditor.auditorName}</strong>
-                      </div>
-                      <Badge bg="success" pill>{auditor.matchRate.toFixed(1)}%</Badge>
-                    </div>
-                  ))}
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={6}>
-          <Card className="border-0 shadow-sm">
-            <Card.Header className="bg-white border-0 py-3 d-flex justify-content-between align-items-center">
-              <h6 className="mb-0 fw-bold text-warning">
-                <i className="fas fa-exclamation-triangle me-2"></i>
-                Needs Attention
-              </h6>
-              <Button variant="link" className="p-0 text-warning small text-decoration-none fw-bold" onClick={() => handleShowMorePerformers('low')}>
-                View More <i className="fas fa-arrow-right ms-1"></i>
-              </Button>
-            </Card.Header>
-            <Card.Body>
-              <div className="performance-list">
-                {[...auditorData]
-                  .sort((a, b) => a.matchRate - b.matchRate)
-                  .slice(0, 3)
-                  .map((auditor, idx) => (
-                    <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
-                      <div>
-                        <Badge bg="warning" className="me-2">{idx + 1}</Badge>
-                        <strong>{auditor.auditorName}</strong>
-                      </div>
-                      <Badge bg="warning" pill>{auditor.matchRate.toFixed(1)}%</Badge>
-                    </div>
-                  ))}
               </div>
             </Card.Body>
           </Card>
@@ -741,6 +657,13 @@ const AuditorPerformance = ({ filters = {} }) => {
                     <i className="fas fa-filter me-1"></i>
                     Table Filters
                     <i className={`fas fa-chevron-${showTableFilters ? 'up' : 'down'} ms-1`}></i>
+                  </button>
+                  <button
+                    className="btn btn-success btn-sm"
+                    onClick={handleDownloadExcel}
+                  >
+                    <i className="fas fa-file-excel me-1"></i>
+                    Export Excel
                   </button>
                 </div>
               </div>

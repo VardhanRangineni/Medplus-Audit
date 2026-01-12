@@ -759,19 +759,20 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'storeName') return 'STORE NAME';
     if (key === 'city') return 'CITY';
     if (key === 'state') return 'STATE';
-    if (key === 'state') return 'STATE';
     if (key === 'storeType') return 'HUB TYPE';
+    if (key === 'status') return 'STORE STATUS';
     if (key === 'boxType') return 'BOX TYPE';
     if (key === 'storeCreatedDate') return 'STORE CREATED DATE';
+    if (key === 'lastAuditedDate') return 'PREVIOUS AUDIT DATE';
     if (key === 'auditStartDate') return 'AUDIT START DATE';
     if (key === 'lastAudit') return 'LAST AUDIT';
     if (key === 'cycle') return 'NO.OF AUDITS';
     if (key === 'auditJobType') return 'AUDIT JOB TYPE';
     if (key === 'leadSupervisor') return 'LEAD SUPERVISOR';
     if (key === 'auditorsCount') return 'AUDITORS (count)';
-    if (key === 'skus') return 'AUDITED SKUS';
-    if (key === 'quantity') return 'AUDITED QTY (units)';
-    if (key === 'inventoryValueMRP') return 'AUDITED VALUE MRP (₹)';
+    if (key === 'skus') return 'TOTAL SKUS';
+    if (key === 'quantity') return 'TOTAL QUANTITY (UNITS)';
+    if (key === 'inventoryValueMRP') return 'INVENTORY VALUE (MRP)';
     if (key === 'mismatch') return 'TOTAL MISMATCH ITEMS';
     if (key === 'deviation') return 'TOTAL DEVIATION ITEMS';
     if (key === 'deviationValueMRP') return 'DEVIATION VALUE MRP (₹)';
@@ -813,26 +814,41 @@ const DetailsPage = ({ filters = {} }) => {
 
     // For covered-stores and uncovered-stores, use specific order
     if (type === 'covered-stores' || type === 'uncovered-stores') {
-      const orderedKeys = [
-        'storeId',
-        'storeName',
-        'city',
-        'state',
-        'storeType',
-        'status',
-        'boxType',
-        'storeCreatedDate',
-        'auditStartDate',
-        'auditJobType',
-        'leadSupervisor',
-        'auditorsCount',
-        'skus',
-        'quantity',
-        'inventoryValueMRP',
-        'deviationValueMRP',
-        'mismatch',
-        'deviation'
-      ];
+      const orderedKeys = type === 'uncovered-stores' 
+        ? [
+            'storeId',
+            'storeName',
+            'city',
+            'state',
+            'storeType',
+            'status',
+            'boxType',
+            'storeCreatedDate',
+            'lastAuditedDate',
+            'skus',
+            'quantity',
+            'inventoryValueMRP'
+          ]
+        : [
+            'storeId',
+            'storeName',
+            'city',
+            'state',
+            'storeType',
+            'status',
+            'boxType',
+            'storeCreatedDate',
+            'auditStartDate',
+            'auditJobType',
+            'leadSupervisor',
+            'auditorsCount',
+            'skus',
+            'quantity',
+            'inventoryValueMRP',
+            'deviationValueMRP',
+            'mismatch',
+            'deviation'
+          ];
 
       // Include only columns that exist in the data and match the ordered list
       return orderedKeys.filter(key => allKeys.includes(key));

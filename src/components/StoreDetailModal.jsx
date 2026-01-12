@@ -1085,7 +1085,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
             <Row className="mb-3 align-items-center">
               <Col md={4}>
                 <div className="d-flex align-items-center mb-2">
-                  <div className="text-muted small me-2 fw-bold">LEAD SUPERVISOR:</div>
+                  <div className="text-muted small me-2 fw-bold" style={{ minWidth: '150px' }}>LEAD SUPERVISOR:</div>
                   <div className="fw-bold">
                     <i className="fas fa-user-tie me-2 text-primary"></i>
                     {supervisor || 'N/A'}
@@ -1093,18 +1093,17 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                 </div>
               </Col>
 
-              <Col md={3}>
+              <Col md={4}>
                 <div className="d-flex align-items-center mb-2">
-                  <div className="text-muted small me-2 fw-bold">AUDITOR COUNT:</div>
+                  <div className="text-muted small me-2 fw-bold" style={{ minWidth: '180px' }}>AUDITOR COUNT:</div>
                   <div className="fw-bold">{auditors?.length || 0}</div>
                 </div>
               </Col>
 
-              <Col md={5}>
+              <Col md={4}>
                 <div className="d-flex align-items-center mb-2">
-                  <div className="text-muted small me-2 fw-bold">DURATION:</div>
+                  <div className="text-muted small me-2 fw-bold" style={{ minWidth: '100px' }}>DURATION:</div>
                   <div className="fw-bold">
-                    <i className="far fa-calendar me-2 text-primary"></i>
                     20/08/2026 - {auditStatus === 'completed' ? '25/08/2026' : 'Ongoing'}
                   </div>
                 </div>
@@ -1115,14 +1114,14 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
             <Row className="align-items-center">
               <Col md={4}>
                 <div className="d-flex align-items-center mb-2">
-                  <div className="text-muted small me-2 fw-bold">AUDIT JOB TYPE:</div>
+                  <div className="text-muted small me-2 fw-bold" style={{ minWidth: '150px' }}>AUDIT JOB TYPE:</div>
                   <div className="fw-bold">Full Audit</div>
                 </div>
               </Col>
 
               <Col md={4}>
                 <div className="d-flex align-items-center mb-2">
-                  <div className="text-muted small me-2 fw-bold">AUDIT PROCESS TYPE:</div>
+                  <div className="text-muted small me-2 fw-bold" style={{ minWidth: '180px' }}>AUDIT PROCESS TYPE:</div>
                   <div className="fw-bold">
                     <i className="fas fa-tasks me-2 text-primary"></i>
                     {auditProcessType || 'Batch Audit'}
@@ -1132,16 +1131,25 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
               <Col md={4}>
                 <div className="mb-2">
-                  <div className="text-muted small mb-1 fw-bold">PROGRESS:</div>
-                  <div className="d-flex align-items-center">
-                    <h5 className="fw-bold text-primary mb-0 me-3">{auditProgress.percentage || 0}%</h5>
-                    <ProgressBar
-                      className="flex-grow-1"
-                      now={auditProgress.percentage || 0}
-                      variant="primary"
-                      style={{ height: '8px' }}
-                    />
-                  </div>
+                  {auditStatus === 'completed' ? (
+                    <div className="d-flex align-items-center">
+                      <div className="text-muted small me-2 fw-bold" style={{ minWidth: '100px' }}>PROGRESS:</div>
+                      <h5 className="fw-bold text-success mb-0">Completed</h5>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="text-muted small mb-1 fw-bold">PROGRESS:</div>
+                      <div className="d-flex align-items-center">
+                        <h5 className="fw-bold text-primary mb-0 me-3">{auditProgress.percentage || 0}%</h5>
+                        <ProgressBar
+                          className="flex-grow-1"
+                          now={auditProgress.percentage || 0}
+                          variant="primary"
+                          style={{ height: '8px' }}
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               </Col>
             </Row>
@@ -1151,7 +1159,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         {/* Mini Dashboard - KPIs */}
         <Row className="g-3 mb-4">
           {/* Card 1: Audited SKUs */}
-          <Col md={4}>
+          <Col md={3}>
             <Card className="h-100 border-0 shadow-sm">
               <Card.Body className="text-center">
                 <div className="text-muted small mb-1 fw-bold">AUDITED SKUS</div>
@@ -1164,8 +1172,22 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
             </Card>
           </Col>
 
-          {/* Card 2: Audited Value at MRP */}
-          <Col md={4}>
+          {/* Card 2: Audited Qty */}
+          <Col md={3}>
+            <Card className="h-100 border-0 shadow-sm">
+              <Card.Body className="text-center">
+                <div className="text-muted small mb-1 fw-bold">AUDITED QTY</div>
+                <h3 className="mb-0 text-info">{formatIndianNumber(AppearedQty || 0, true)}</h3>
+                <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
+                  <small className="text-muted d-block fw-bold">TOTAL QTY</small>
+                  <span className="fw-bold text-dark">{formatIndianNumber(inventorySummary.totalQuantity || AppearedQty || 0, true)}</span>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          {/* Card 3: Audited Value at MRP */}
+          <Col md={3}>
             <Card className="h-100 border-0 shadow-sm">
               <Card.Body className="text-center">
                 <div className="text-muted small mb-1 fw-bold">AUDITED VALUE AT MRP</div>
@@ -1190,8 +1212,8 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
             </Card>
           </Col>
 
-          {/* Card 3: Total Deviations */}
-          <Col md={4}>
+          {/* Card 4: Total Deviations */}
+          <Col md={3}>
             <Card className="h-100 border-0 shadow-sm">
               <Card.Body className="text-center">
                 <div className="text-muted small mb-1 fw-bold">TOTAL DEVIATIONS</div>
@@ -1216,61 +1238,48 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         {/* Audit Accuracy Section */}
         {auditStatus === 'completed' && (
           <>
-            <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>Audit Accuracy</h6>
             <Row className="g-3 mb-4">
-                <Col md={3}>
+                <Col md={4}>
                   <Card className="border-0 shadow-sm border-start border-4 border-primary">
                     <Card.Body>
-                      <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED MISSMATCHS</h6>
+                      <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED MISMATCHES</h6>
                       <div className="d-flex justify-content-between mb-1 text-muted small">
                         <span>SKUs</span>
                         <span className="fw-bold text-dark">{formatIndianNumber(storeData.AppearedSKUs || 0, true)}</span>
                       </div>
-                      <div className="d-flex justify-content-between mb-1 text-muted small">
-                        <span>Qty</span>
-                        <span className="fw-bold text-dark">{formatIndianNumber(storeData.AppearedQty || 0, true)}</span>
-                      </div>
                       <div className="d-flex justify-content-between text-muted small">
-                        <span>Value</span>
+                        <span>Value (MRP)</span>
                         <span className="fw-bold text-dark">{formatIndianCurrency(storeData.AppearedValue || 0)}</span>
                       </div>
                     </Card.Body>
                   </Card>
                 </Col>
-                <Col md={3}>
-                  <Card className="border-0 shadow-sm border-start border-4 border-success">
-                    <Card.Body>
-                      <h6 className="text-success fw-bold text-uppercase mb-3">MATCHED MISSMATCHES</h6>
-                      <div className="d-flex justify-content-between mb-1 text-muted small">
-                        <span>SKUs</span>
-                        <span className="fw-bold text-dark">{formatIndianNumber(storeData.MatchedSKUs || 0, true)}</span>
-                      </div>
-                      <div className="d-flex justify-content-between mb-1 text-muted small">
-                        <span>Qty</span>
-                        <span className="fw-bold text-dark">{formatIndianNumber(storeData.MatchedQty || 0, true)}</span>
-                      </div>
-                      <div className="d-flex justify-content-between text-muted small">
-                        <span>Value</span>
-                        <span className="fw-bold text-dark">{formatIndianCurrency(storeData.MatchedValue || 0)}</span>
-                      </div>
-                    </Card.Body>
-                  </Card>
-                </Col>
-                <Col md={3}>
+                <Col md={4}>
                   <Card className="border-0 shadow-sm border-start border-4 border-warning">
                     <Card.Body>
-                      <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED MISSMATCHES</h6>
+                      <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED MISMATCHES</h6>
                       <div className="d-flex justify-content-between mb-1 text-muted small">
                         <span>SKUs</span>
                         <span className="fw-bold text-dark">{formatIndianNumber(storeData.RevisedSKUs || 0, true)}</span>
                       </div>
+                      <div className="d-flex justify-content-between text-muted small">
+                        <span>Value (MRP)</span>
+                        <span className="fw-bold text-dark">{formatIndianCurrency(storeData.RevisedValue || 0)}</span>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+                <Col md={4}>
+                  <Card className="border-0 shadow-sm border-start border-4 border-success">
+                    <Card.Body>
+                      <h6 className="text-success fw-bold text-uppercase mb-3">FINAL DEVIATIONS</h6>
                       <div className="d-flex justify-content-between mb-1 text-muted small">
-                        <span>Qty</span>
-                        <span className="fw-bold text-dark">{formatIndianNumber(storeData.RevisedQty || 0, true)}</span>
+                        <span>SKUs</span>
+                        <span className="fw-bold text-dark">{formatIndianNumber(storeData.MatchedSKUs || 0, true)}</span>
                       </div>
                       <div className="d-flex justify-content-between text-muted small">
-                        <span>Value</span>
-                        <span className="fw-bold text-dark">{formatIndianCurrency(storeData.RevisedValue || 0)}</span>
+                        <span>Value (MRP)</span>
+                        <span className="fw-bold text-dark">{formatIndianCurrency(storeData.MatchedValue || 0)}</span>
                       </div>
                     </Card.Body>
                   </Card>
@@ -1447,7 +1456,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                         <th>Assigned SKUs</th>
                         <th>Completed SKUs</th>
                         <th>Audited Qty</th>
-                        <th>Audited Val</th>
+                        <th>Audited Val (MRP)</th>
                         <th>Progress (%)</th>
                         <th>Audit Accuracy (%)</th>
                       </>
@@ -1519,7 +1528,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                                     <td className="py-2 text-end fw-bold">₹2.29 L</td>
                                   </tr>
                                   <tr>
-                                    <td className="py-2 fw-semibold">Matched</td>
+                                    <td className="py-2 fw-semibold">Revised</td>
                                     <td className="py-2 text-end">{auditor.completedSKUs || 67}</td>
                                     <td className="py-2 text-end">{Math.floor((auditor.completedSKUs || 67) * 10.5)}</td>
                                     <td className="py-2 text-end fw-bold text-success">₹2.20 L</td>
@@ -1584,14 +1593,16 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
         {/* Deviations and Contra Side by Side - Show only for completed */}
         {auditStatus === 'completed' && (
-          <Row className="g-3">
-            {/* Deviations Section */}
-            <Col lg={6}>
+          <>
+            <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>Deviation analysis</h6>
+            <Row className="g-3">
+              {/* Deviations Section */}
+              <Col lg={6}>
               <Card className="border-0 shadow-sm h-100">
                 <Card.Header className="bg-light">
                   <h6 className="mb-0 fw-bold">
                     <i className="fas fa-exclamation-triangle me-2 text-danger"></i>
-                    Deviations Breakdown
+                    Deviations Summary
                   </h6>
                 </Card.Header>
                 <Card.Body>
@@ -1664,7 +1675,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                       ) : (
                         <>
                           <i className="fas fa-chart-pie me-2 text-info"></i>
-                          Product Form Analysis
+                          Deviation Details
                         </>
                       )}
                     </h6>
@@ -1749,6 +1760,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
               </Card>
             </Col>
           </Row>
+          </>
         )}
       </Modal.Body>
       <Modal.Footer className="bg-light">

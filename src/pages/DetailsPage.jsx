@@ -195,8 +195,9 @@ const DetailsPage = ({ filters = {} }) => {
           cycle: store.AuditCycle || getAuditCount(store.StoreID),
           skus: store.TotalSKUs,
           quantity: store.TotalQuantity,
-          mismatch: store.TotalDeviationCount || 0,
-          deviation: store.TotalDeviationCount || 0,
+          mismatch: store.MatchedSKUs || 0,
+          deviation: store.RevisedSKUs || 0,
+          deviationValueMRP: store.RevisedValue || 0,
           deviations: store.Deviations || [],
           rawLastAuditDate: store.LastAuditDate,
           recencyQuarter: store.RecencyQuarter,
@@ -885,8 +886,91 @@ const DetailsPage = ({ filters = {} }) => {
       const storeData = await mockDataService.getStoreDetailedInfo(row.storeId);
       console.log('Store data received:', storeData);
       if (storeData) {
-        // Overlay properties from the table row for consistency
+        // OVERLAY TABLE DATA TO ENSURE CONSISTENCY
         if (row.leadSupervisor) storeData.supervisor = row.leadSupervisor;
+
+        // Sync Deviations (Revised = Table Deviation)
+        storeData.RevisedSKUs = row.deviation || 0;
+        storeData.RevisedValue = row.deviationValueMRP || 0;
+
+        // Sync Mismatches (Matched = Table Mismatch)
+        storeData.MatchedSKUs = row.mismatch || 0;
+        // Estimate Matched Value
+        const avgVal = storeData.RevisedSKUs > 0 ? (storeData.RevisedValue / storeData.RevisedSKUs) : 500;
+        storeData.MatchedValue = Math.round(storeData.MatchedSKUs * avgVal);
+
+        // Sync Appeared (Total = Revised + Matched)
+        storeData.AppearedSKUs = storeData.RevisedSKUs + storeData.MatchedSKUs;
+        storeData.AppearedValue = storeData.RevisedValue + storeData.MatchedValue;
+
+        // Sync Qty (Appeared = Revised + Matched)
+        storeData.RevisedQty = Math.round(storeData.RevisedSKUs * 3.5);
+        storeData.MatchedQty = Math.round(storeData.MatchedSKUs * 3.5);
+        storeData.AppearedQty = storeData.RevisedQty + storeData.MatchedQty;
+
+        // Sync Inventory
+        if (row.inventoryValueMRP) storeData.inventorySummary.totalValue = row.inventoryValueMRP;
+        if (row.skus) storeData.inventorySummary.auditedSKUs = row.skus;
+        // Ensure totalSKUs >= auditedSKUs
+        if (storeData.inventorySummary.totalSKUs < row.skus) storeData.inventorySummary.totalSKUs = row.skus;
+
+        // Sync Audit Process Type if store has it
+        if (!storeData.auditProcessType && row.auditJobType) {
+          storeData.auditProcessType = row.auditJobType.includes('Box') ? 'Batch Audit' : 'Product Audit';
+        }
+
+        // Use existing deviations from store data (don't regenerate)
+        // The deviations are already properly formatted by mockDataService
+
+        // Reset Product Form Data to match deviation types from actual data
+        const forms = ['Tablets', 'Liquids', 'Injection', 'Ointments', 'Powders', 'Drops', 'Inhalers', 'Containers', 'General', 'Surgicals'];
+        const newProductFormData = {};
+
+        // Use actual deviations from store data
+        const actualDeviations = storeData.deviations || [];
+        actualDeviations.forEach(dev => {
+          const devType = dev.type;
+          const totalCount = dev.count;
+          const totalValue = dev.value;
+
+          // Distribute count across forms
+          let remainingCount = totalCount;
+          let remainingValue = totalValue;
+          const formEntries = [];
+
+          forms.forEach((form, idx) => {
+            if (remainingCount <= 0) return;
+
+            // Last item gets the rest
+            const isLast = idx === forms.length - 1;
+            const count = isLast ? remainingCount : Math.floor(remainingCount * (Math.random() * 0.4 + 0.1)); // 10-50%
+
+            // Calculate value proportional to count but with slight random variance
+            let value = 0;
+            if (totalCount > 0) {
+              value = Math.floor((count / totalCount) * totalValue);
+            }
+
+            // Adjust last value to match total exactly
+            if (isLast) {
+              value = remainingValue;
+            }
+
+            if (count > 0) {
+              formEntries.push({
+                form: form,
+                count: count,
+                value: value
+              });
+              remainingCount -= count;
+              remainingValue -= value;
+            }
+          });
+
+          newProductFormData[devType] = formEntries;
+        });
+
+        storeData.productFormData = newProductFormData;
 
         setSelectedStoreData(storeData);
         setShowStoreDetail(true);

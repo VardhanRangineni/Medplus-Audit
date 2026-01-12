@@ -283,16 +283,17 @@ export const mockDataService = {
 
       // Transform deviations to expected format
       const deviations = (store.Deviations || []).map(dev => ({
-        type: dev.DeviationType,
-        count: dev.Count,
-        value: Math.round(dev.Value)
+        type: dev.type || dev.DeviationType,
+        count: dev.count || dev.Count,
+        value: Math.round(dev.value || dev.Value)
       }));
 
       // Generate product form data from deviations
       const productFormData = {};
       (store.Deviations || []).forEach(dev => {
+        const devType = dev.type || dev.DeviationType;
         if (dev.ProductForms && dev.ProductForms.length > 0) {
-          productFormData[dev.DeviationType] = dev.ProductForms.map(pf => ({
+          productFormData[devType] = dev.ProductForms.map(pf => ({
             form: pf.ProductForm,
             value: Math.round(pf.Value),
             count: pf.Count
@@ -340,6 +341,7 @@ export const mockDataService = {
         AppearedValue: appearedValue,
         MatchedValue: matchedValue,
         RevisedValue: revisedValue,
+        auditProcessType: store.LastAuditProcessType === 'Box Audit' ? 'Batch Audit' : (store.LastAuditProcessType || (Math.random() > 0.5 ? 'Batch Audit' : 'Product Audit')),
         auditors: auditors,
         deviations: deviations,
         productFormData: productFormData,

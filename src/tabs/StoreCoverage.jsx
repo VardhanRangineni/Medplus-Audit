@@ -209,18 +209,19 @@ const StoreCoverage = ({ filters = {} }) => {
   const deviationData = useMemo(() => {
     const coveredStores = filteredStoreData.filter(s => s.IsCovered);
     const deviationMap = {
-      'Invoiced': { value: 0, count: 0 },
+      'Short': { value: 0, count: 0 },
+      'Excess': { value: 0, count: 0 },
       'Contra Short': { value: 0, count: 0 },
-      'Contra Excess': { value: 0, count: 0 },
-      'Excess Submitted': { value: 0, count: 0 }
+      'Contra Excess': { value: 0, count: 0 }
     };
 
     coveredStores.forEach(store => {
       if (store.Deviations && store.Deviations.length > 0) {
         store.Deviations.forEach(dev => {
-          if (deviationMap[dev.DeviationType]) {
-            deviationMap[dev.DeviationType].value += dev.Value;
-            deviationMap[dev.DeviationType].count += dev.Count;
+          // Use dev.type from JSON
+          if (deviationMap[dev.type]) {
+            deviationMap[dev.type].value += dev.value || 0;
+            deviationMap[dev.type].count += dev.count || 0;
           }
         });
       }
@@ -236,23 +237,35 @@ const StoreCoverage = ({ filters = {} }) => {
   // Calculate product form data from filtered stores
   const productFormData = useMemo(() => {
     const coveredStores = filteredStoreData.filter(s => s.IsCovered);
+    
+    // All possible product forms
+    const ALL_PRODUCT_FORMS = ["Tablets", "Liquids", "Injection", "Ointments", "Powders", "Drops", "Inhalers", "Containers", "General", "Surgicals"];
+    
     const formDataMap = {
-      'Invoiced': {},
+      'Short': {},
+      'Excess': {},
       'Contra Short': {},
-      'Contra Excess': {},
-      'Excess Submitted': {}
+      'Contra Excess': {}
     };
+
+    // Initialize all product forms with 0 for each deviation type
+    Object.keys(formDataMap).forEach(devType => {
+      ALL_PRODUCT_FORMS.forEach(form => {
+        formDataMap[devType][form] = { value: 0, count: 0 };
+      });
+    });
 
     coveredStores.forEach(store => {
       if (store.Deviations && store.Deviations.length > 0) {
         store.Deviations.forEach(dev => {
-          if (formDataMap[dev.DeviationType] && dev.ProductForms) {
+          // Use dev.type (from JSON) instead of dev.DeviationType
+          const devType = dev.type;
+          if (formDataMap[devType] && dev.ProductForms && Array.isArray(dev.ProductForms)) {
             dev.ProductForms.forEach(pf => {
-              if (!formDataMap[dev.DeviationType][pf.ProductForm]) {
-                formDataMap[dev.DeviationType][pf.ProductForm] = { value: 0, count: 0 };
+              if (formDataMap[devType][pf.ProductForm]) {
+                formDataMap[devType][pf.ProductForm].value += pf.Value || 0;
+                formDataMap[devType][pf.ProductForm].count += pf.Count || 0;
               }
-              formDataMap[dev.DeviationType][pf.ProductForm].value += pf.Value;
-              formDataMap[dev.DeviationType][pf.ProductForm].count += pf.Count;
             });
           }
         });
@@ -262,11 +275,14 @@ const StoreCoverage = ({ filters = {} }) => {
     // Convert to array format
     const result = {};
     Object.keys(formDataMap).forEach(devType => {
-      result[devType] = Object.entries(formDataMap[devType]).map(([form, data]) => ({
-        form,
-        value: Math.round(data.value),
-        count: data.count
-      })).sort((a, b) => b.value - a.value);
+      // Include ALL forms - both with and without data
+      result[devType] = Object.entries(formDataMap[devType])
+        .map(([form, data]) => ({
+          form,
+          value: Math.round(data.value),
+          count: data.count
+        }))
+        .sort((a, b) => b.value - a.value); // Sort by value descending
     });
 
     return result;
@@ -757,7 +773,7 @@ const StoreCoverage = ({ filters = {} }) => {
                   />
                   <Bar
                     dataKey="value"
-                    onClick={(data) => navigate(`/details?title=${encodeURIComponent(`Deviation: ${data.type}`)}&type=covered-stores&deviationType=${encodeURIComponent(data.type)}`)}
+                    onClick={(data) => setSelectedDeviation(data)}
                     cursor="pointer"
                     radius={[5, 5, 0, 0]}
                   >
@@ -769,7 +785,7 @@ const StoreCoverage = ({ filters = {} }) => {
               </ResponsiveContainer>
               <div className="text-center mt-3 text-muted small">
                 <i className="fas fa-info-circle me-1"></i>
-                Click on any deviation bar to see specific breakdown
+                Click on any deviation bar to see product form breakdown
               </div>
             </Card.Body>
           </Card>
@@ -819,7 +835,7 @@ const StoreCoverage = ({ filters = {} }) => {
               </div>
             </Card.Header>
             <Card.Body>
-              {selectedDeviation && productFormData[selectedDeviation.type] && productFormData[selectedDeviation.type].length > 0 ? (
+              {selectedDeviation && productFormData[selectedDeviation.type] ? (
                 <div>
                   <div className="mb-3">
                     <h6 className="text-primary mb-2">
@@ -830,9 +846,10 @@ const StoreCoverage = ({ filters = {} }) => {
                       Total: ₹{formatIndianNumber(selectedDeviation.value)} | {selectedDeviation.count} items
                     </div>
                   </div>
-                  {productFormData[selectedDeviation.type].length > 0 ? (
-                    <div style={{ maxHeight: '450px', overflowY: 'auto' }}>
-                      {productFormData[selectedDeviation.type].sort((a, b) => b.value - a.value).map((form, idx) => (
+                  <div style={{ maxHeight: '450px', overflowY: 'auto' }}>
+                    {productFormData[selectedDeviation.type]
+                      .sort((a, b) => b.value - a.value)
+                      .map((form, idx) => (
                         <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
                           <div className="d-flex align-items-center">
                             <div
@@ -847,18 +864,21 @@ const StoreCoverage = ({ filters = {} }) => {
                             <span className="fw-semibold">{form.form}</span>
                           </div>
                           <div className="text-end">
-                            <div className="fw-bold text-success">₹{formatIndianNumber(form.value)}</div>
-                            <div className="text-muted small">{form.count} items</div>
+                            {form.count > 0 ? (
+                              <>
+                                <div className="fw-bold text-success">₹{formatIndianNumber(form.value)}</div>
+                                <div className="text-muted small">{form.count} items</div>
+                              </>
+                            ) : (
+                              <>
+                                <div className="fw-bold text-muted">-</div>
+                                <div className="text-muted small">No data</div>
+                              </>
+                            )}
                           </div>
                         </div>
                       ))}
-                    </div>
-                  ) : (
-                    <div className="text-center text-muted py-5">
-                      <i className="fas fa-inbox fa-3x mb-3 d-block"></i>
-                      <p>No product form data available for this deviation type</p>
-                    </div>
-                  )}
+                  </div>
                 </div>
               ) : (
                 /* Show Overall Product Form Distribution by default */
@@ -876,6 +896,7 @@ const StoreCoverage = ({ filters = {} }) => {
                   });
 
                   const overallFormArray = Object.entries(overallData)
+                    .filter(([form, data]) => data.count > 0) // Only show forms with data in overall view
                     .map(([form, data]) => ({ form, value: data.value, count: data.count }))
                     .sort((a, b) => b.value - a.value);
 

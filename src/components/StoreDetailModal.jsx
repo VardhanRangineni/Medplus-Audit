@@ -48,7 +48,8 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     productFormData: passedProductFormData = {},
     AppearedSKUs = 0, MatchedSKUs = 0, RevisedSKUs = 0,
     AppearedQty = 0, MatchedQty = 0, RevisedQty = 0,
-    AppearedValue = 0, MatchedValue = 0, RevisedValue = 0
+    AppearedValue = 0, MatchedValue = 0, RevisedValue = 0,
+    auditProcessType
   } = storeData;
 
   // Calculate total deviation value
@@ -1090,7 +1091,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                   />
                 </div>
               </Col>
-              <Col md={4}>
+              <Col md={8}>
                 <div className="d-flex gap-5">
                   <div>
                     <div className="text-muted small mb-1">Start Date</div>
@@ -1104,6 +1105,13 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                     <div className="fw-bold fs-5">
                       <i className="far fa-calendar-check me-2 text-primary"></i>
                       {auditStatus === 'completed' ? '25/08/2026' : '-'}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-muted small mb-1 text-nowrap">Audit Process Type</div>
+                    <div className="fw-bold fs-5 text-nowrap">
+                      <i className="fas fa-tasks me-2 text-primary"></i>
+                      {auditProcessType || 'Batch Audit'}
                     </div>
                   </div>
                 </div>
@@ -1157,15 +1165,15 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
               <Col md={3}>
                 <Card className="h-100 border-0 shadow-sm">
                   <Card.Body className="text-center">
-                    <div className="text-muted small mb-1">Total Deviations</div>
-                    <h3 className="mb-0 text-danger">{deviations.length}</h3>
+                    <div className="text-muted small mb-1"><strong>Total Missmatches</strong></div>
+                                        <h3 className="mb-0 text-danger">{deviations.length}</h3>
                     <div className="d-flex justify-content-around mt-2">
                       <div>
-                        <small className="text-muted d-block">Deviations</small>
+                        <small className="text-muted d-block">Revised</small>
                         <Badge bg="danger">{deviationsByType.deviations}</Badge>
                       </div>
                       <div>
-                        <small className="text-muted d-block">Mismatch</small>
+                        <small className="text-muted d-block">Matched</small>
                         <Badge bg="warning">{deviationsByType.mismatch}</Badge>
                       </div>
                     </div>
@@ -1175,7 +1183,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
               <Col md={3}>
                 <Card className="h-100 border-0 shadow-sm">
                   <Card.Body className="text-center">
-                    <div className="text-muted small mb-1">Breakdown</div>
+                    <div className="text-muted small mb-1"><strong>Total Deviations</strong></div>
                     <div className="row g-2 mt-1">
                       <div className="col-6">
                         <small className="text-muted d-block" style={{ fontSize: '0.7rem' }}>Contra Short</small>
@@ -1208,7 +1216,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                 <Col md={3}>
                   <Card className="border-0 shadow-sm border-start border-4 border-primary">
                     <Card.Body>
-                      <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED DEVIATIONS</h6>
+                      <h6 className="text-primary fw-bold text-uppercase mb-3">APPEARED MISSMATCHS</h6>
                       <div className="d-flex justify-content-between mb-1 text-muted small">
                         <span>SKUs</span>
                         <span className="fw-bold text-dark">{formatIndianNumber(storeData.AppearedSKUs || 0, true)}</span>
@@ -1227,7 +1235,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                 <Col md={3}>
                   <Card className="border-0 shadow-sm border-start border-4 border-success">
                     <Card.Body>
-                      <h6 className="text-success fw-bold text-uppercase mb-3">MATCHED DEVIATIONS</h6>
+                      <h6 className="text-success fw-bold text-uppercase mb-3">MATCHED MISSMATCHES</h6>
                       <div className="d-flex justify-content-between mb-1 text-muted small">
                         <span>SKUs</span>
                         <span className="fw-bold text-dark">{formatIndianNumber(storeData.MatchedSKUs || 0, true)}</span>
@@ -1246,7 +1254,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                 <Col md={3}>
                   <Card className="border-0 shadow-sm border-start border-4 border-warning">
                     <Card.Body>
-                      <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED DEVIATIONS</h6>
+                      <h6 className="text-warning fw-bold text-uppercase mb-3">REVISED MISSMATCHES</h6>
                       <div className="d-flex justify-content-between mb-1 text-muted small">
                         <span>SKUs</span>
                         <span className="fw-bold text-dark">{formatIndianNumber(storeData.RevisedSKUs || 0, true)}</span>
@@ -1586,39 +1594,8 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                   {deviations.length > 0 ? (
                     <>
                       {/* Deviation Chart */}
-                      <ResponsiveContainer width="100%" height={350}>
-                        <PieChart>
-                          <Pie
-                            data={deviationChartData}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={50}
-                            outerRadius={70}
-                            labelLine={false}
-                            label={renderDeviationLabel}
-                            fill="#8884d8"
-                            dataKey="value"
-                            nameKey="name"
-                            onClick={(data) => handleDeviationClick(data.name)}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            {deviationChartData.map((entry, index) => (
-                              <Cell
-                                key={`cell-${index}`}
-                                fill={COLORS[index % COLORS.length]}
-                                style={{ cursor: 'pointer' }}
-                              />
-                            ))}
-                          </Pie>
-                          <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle">
-                            <tspan x="50%" dy="-1em" fontSize="12" fill="#666">Total</tspan>
-                            <tspan x="50%" dy="1.5em" fontSize="16" fontWeight="bold" fill="#333">
-                              {`₹${(deviationChartData.reduce((sum, item) => sum + (item.value || 0), 0) / 1000).toFixed(1)}k`}
-                            </tspan>
-                          </text>
-                          <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                        </PieChart>
-                      </ResponsiveContainer>
+                      {/* Deviation Chart Removed */}
+
 
                       {/* Deviation Table */}
                       <div className="mt-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
@@ -1653,6 +1630,10 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                           </tbody>
                         </Table>
                       </div>
+                      <div className="text-center mt-3 text-muted small">
+                        <i className="fas fa-info-circle me-1"></i>
+                        Click on any deviation type to see specific breakdown
+                      </div>
                     </>
                   ) : (
                     <div className="text-center text-muted py-4">
@@ -1683,25 +1664,6 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                         </>
                       )}
                     </h6>
-                    <div className="d-flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="success"
-                        onClick={exportProductDetailsToExcel}
-                      >
-                        <i className="fas fa-file-excel me-1"></i>
-                        Export Products
-                      </Button>
-                      {selectedDeviationType && (
-                        <Button
-                          size="sm"
-                          variant="outline-secondary"
-                          onClick={() => setSelectedDeviationType(null)}
-                        >
-                          Clear Filter
-                        </Button>
-                      )}
-                    </div>
                   </div>
                 </Card.Header>
                 <Card.Body>
@@ -1715,33 +1677,8 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                         })()}
                       </div>
 
-                      <ResponsiveContainer width="100%" height={350}>
-                        <PieChart>
-                          <Pie
-                            data={activeData}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={70}
-                            outerRadius={100}
-                            labelLine={false}
-                            label={renderProductLabel}
-                            fill="#8884d8"
-                            dataKey="value"
-                            nameKey="form"
-                          >
-                            {activeData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle">
-                            <tspan x="50%" dy="-1em" fontSize="14" fill="#666">Total</tspan>
-                            <tspan x="50%" dy="1.5em" fontSize="20" fontWeight="bold" fill="#333">
-                              {`₹${(activeData.reduce((sum, item) => sum + item.value, 0) / 1000).toFixed(1)}k`}
-                            </tspan>
-                          </text>
-                          <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                        </PieChart>
-                      </ResponsiveContainer>
+                      {/* Product Form Chart Removed */}
+
 
                       <div className="mt-3">
                         {activeData.map((form, idx) => (
@@ -1777,33 +1714,8 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                           Across all deviation types
                         </div>
                       </div>
-                      <ResponsiveContainer width="100%" height={350}>
-                        <PieChart>
-                          <Pie
-                            data={activeData}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={70}
-                            outerRadius={100}
-                            labelLine={false}
-                            label={renderProductLabel}
-                            fill="#8884d8"
-                            dataKey="value"
-                            nameKey="form"
-                          >
-                            {activeData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={FORM_COLORS[index % FORM_COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle">
-                            <tspan x="50%" dy="-1em" fontSize="14" fill="#666">Total</tspan>
-                            <tspan x="50%" dy="1.5em" fontSize="20" fontWeight="bold" fill="#333">
-                              {`₹${(activeData.reduce((sum, item) => sum + item.value, 0) / 1000).toFixed(1)}k`}
-                            </tspan>
-                          </text>
-                          <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-                        </PieChart>
-                      </ResponsiveContainer>
+                      {/* Overall Product Form Chart Removed */}
+
                       <div className="mt-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
                         {activeData.map((form, idx) => (
                           <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
@@ -1826,10 +1738,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                           </div>
                         ))}
                       </div>
-                      <div className="text-center mt-3 text-muted small">
-                        <i className="fas fa-info-circle me-1"></i>
-                        Click on any deviation segment to see specific breakdown
-                      </div>
+
                     </div>
                   )}
                 </Card.Body>

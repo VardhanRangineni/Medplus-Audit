@@ -1411,8 +1411,8 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                       <>
                         <th>Assigned SKUs</th>
                         <th>Completed SKUs</th>
-                        <th>Audit Quantity</th>
-                        <th>Audit Value</th>
+                        <th>Audited Qty</th>
+                        <th>Audited Val</th>
                         <th>Progress (%)</th>
                         <th>Audit Accuracy (%)</th>
                       </>

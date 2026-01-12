@@ -188,7 +188,7 @@ const DetailsPage = ({ filters = {} }) => {
           storeType: store.StoreType,
           boxType: getBoxType(store.StoreID),
           storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
-          lastAuditedDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never',
+          auditStartDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never',
           auditJobType: getAuditJobType(store.StoreID),
           leadSupervisor: getLatestAuditInfo(store.StoreID).supervisor,
           cycle: store.AuditCycle || getAuditCount(store.StoreID),
@@ -579,7 +579,7 @@ const DetailsPage = ({ filters = {} }) => {
     const wb = utils.book_new();
     const headers = [
       "Store ID-Name", "CITY", "STATE", "HUB TYPE", "STORE STATUS", "BOX TYPE",
-      "STORE CREATED DATE", "LAST AUDITED DATE", "AUDIT JOB TYPE", "LEAD SUPERVISOR", "NO.OF AUDITS", "AUDIT SKUS (count)",
+      "STORE CREATED DATE", "AUDIT START DATE", "AUDIT JOB TYPE", "LEAD SUPERVISOR", "AUDIT SKUS (count)",
       "AUDIT QUANTITY (units)", "DEVIATION ITEMS VALUE MRP (₹)", "AUDIT VALUE MRP (₹)", "MISMATCH ITEMS", "DEVIATION ITEMS"
     ];
 
@@ -594,10 +594,9 @@ const DetailsPage = ({ filters = {} }) => {
           "STORE STATUS": row.status,
           "BOX TYPE": row.boxType,
           "STORE CREATED DATE": row.storeCreatedDate,
-          "LAST AUDITED DATE": row.lastAuditedDate,
+          "AUDIT START DATE": row.auditStartDate,
           "AUDIT JOB TYPE": row.auditJobType,
           "LEAD SUPERVISOR": row.leadSupervisor,
-          "NO.OF AUDITS": row.cycle || 0,
           "AUDIT SKUS (count)": row.skus,
           "AUDIT QUANTITY (units)": row.quantity,
           "DEVIATION ITEMS VALUE MRP (₹)": row.deviationValueMRP || 0,
@@ -626,7 +625,7 @@ const DetailsPage = ({ filters = {} }) => {
       dataToExport.forEach(r => {
         aoaData.push([
           r["Store ID-Name"], r["CITY"], r["STATE"], r["HUB TYPE"], r["STORE STATUS"], r["BOX TYPE"],
-          r["STORE CREATED DATE"], r["LAST AUDITED DATE"], r["AUDIT JOB TYPE"], r["LEAD SUPERVISOR"], r["NO.OF AUDITS"], r["AUDIT SKUS (count)"],
+          r["STORE CREATED DATE"], r["AUDIT START DATE"], r["AUDIT JOB TYPE"], r["LEAD SUPERVISOR"], r["AUDIT SKUS (count)"],
           r["AUDIT QUANTITY (units)"], r["DEVIATION ITEMS VALUE MRP (₹)"], r["AUDIT VALUE MRP (₹)"], r["MISMATCH ITEMS"], r["DEVIATION ITEMS"]
         ]);
       });
@@ -653,14 +652,14 @@ const DetailsPage = ({ filters = {} }) => {
       // Use abbreviated headers for PDF to fit
       headers = [
         "ID-Name", "City", "State", "Type", "Status", "Box",
-        "Created", "Audited", "Job Type", "Sup", "Cnt", "SKUs",
+        "Created", "Start Date", "Job Type", "Sup", "SKUs",
         "Qty", "Dev Val", "Aud Val", "Mis", "Dev"
       ];
 
       tableData = filteredData.map(row => {
         return [
           row.storeIdName, row.city, row.state, row.storeType, row.status, row.boxType,
-          row.storeCreatedDate, row.lastAuditedDate, row.auditJobType, row.leadSupervisor, row.cycle || 0, row.skus,
+          row.storeCreatedDate, row.auditStartDate, row.auditJobType, row.leadSupervisor, row.skus,
           row.quantity, '₹' + (row.deviationValueMRP || 0).toLocaleString('en-IN'), '₹' + (row.inventoryValueMRP || 0).toLocaleString('en-IN'),
           row.mismatch || 0, row.deviation || 0
         ];
@@ -762,7 +761,7 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'storeType') return 'HUB TYPE';
     if (key === 'boxType') return 'BOX TYPE';
     if (key === 'storeCreatedDate') return 'STORE CREATED DATE';
-    if (key === 'lastAuditedDate') return 'LAST AUDITED DATE';
+    if (key === 'auditStartDate') return 'AUDIT START DATE';
     if (key === 'lastAudit') return 'LAST AUDIT';
     if (key === 'cycle') return 'NO.OF AUDITS';
     if (key === 'auditJobType') return 'AUDIT JOB TYPE';
@@ -819,10 +818,9 @@ const DetailsPage = ({ filters = {} }) => {
         'status',
         'boxType',
         'storeCreatedDate',
-        'lastAuditedDate',
+        'auditStartDate',
         'auditJobType',
         'leadSupervisor',
-        'cycle',
         'skus',
         'quantity',
         'deviationValueMRP',

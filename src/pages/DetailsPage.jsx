@@ -15,6 +15,9 @@ const DetailsPage = ({ filters = {} }) => {
   const [searchParams] = useSearchParams();
   const title = searchParams.get('title') || 'Details';
   const type = searchParams.get('type') || '';
+  const deviationParam = searchParams.get('deviationType');
+  const recencyRangeParam = searchParams.get('recencyRange');
+  const recencyViewParam = searchParams.get('recencyView');
 
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
@@ -161,6 +164,9 @@ const DetailsPage = ({ filters = {} }) => {
           quantity: store.TotalQuantity,
           mismatch: store.TotalDeviationCount || 0,
           deviation: store.TotalDeviationCount || 0,
+          deviations: store.Deviations || [],
+          rawLastAuditDate: store.LastAuditDate,
+          recencyQuarter: store.RecencyQuarter,
           deviationValueMRP: store.TotalDeviationValue || 0,
           short: 0,
           shortValue: 0,
@@ -508,7 +514,26 @@ const DetailsPage = ({ filters = {} }) => {
     const matchesBoxType = !filterBoxType || item.boxType === filterBoxType;
     const matchesStoreStatus = !filterStoreStatus || item.status === filterStoreStatus;
     const matchesCity = !filterCity || item.city === filterCity;
-    return matchesSearch && matchesStore && matchesState && matchesAuditJobType && matchesProcessType && matchesBoxType && matchesStoreStatus && matchesCity;
+
+    // URL Parameter Filters
+    const matchesDeviationParam = !deviationParam || (item.deviations && item.deviations.some(d => d.DeviationType === deviationParam));
+
+    let matchesRecencyParam = true;
+    if (recencyRangeParam) {
+      if (recencyViewParam === 'monthly' && item.rawLastAuditDate) {
+        const date = new Date(item.rawLastAuditDate);
+        const month = date.toLocaleString('default', { month: 'short' });
+        matchesRecencyParam = month === recencyRangeParam;
+      } else if (recencyViewParam === 'quarterly') {
+        matchesRecencyParam = item.recencyQuarter === recencyRangeParam;
+      } else if (recencyViewParam === 'half-yearly') {
+        const q = item.recencyQuarter;
+        if (recencyRangeParam === 'Apr - Sep') matchesRecencyParam = (q === 'Apr - Jun' || q === 'Jul - Sep');
+        if (recencyRangeParam === 'Oct - Mar') matchesRecencyParam = (q === 'Oct - Dec' || q === 'Jan - Mar');
+      }
+    }
+
+    return matchesSearch && matchesStore && matchesState && matchesAuditJobType && matchesProcessType && matchesBoxType && matchesStoreStatus && matchesCity && matchesDeviationParam && matchesRecencyParam;
   });
 
   const states = [...new Set(data.map(item => item.state).filter(Boolean))];
@@ -848,10 +873,7 @@ const DetailsPage = ({ filters = {} }) => {
               <p className="text-muted">
                 Showing {filteredData.length} of {data.length} records
                 {isStoreClickable && (
-                  <span className="ms-2 text-primary">
-                    <i className="fas fa-info-circle me-1"></i>
-                    Click on any store row to view detailed information
-                  </span>
+                  <span></span>
                 )}
               </p>
             </div>
@@ -900,10 +922,54 @@ const DetailsPage = ({ filters = {} }) => {
                   />
                 </InputGroup>
               </Col>
+              {states.length > 0 && (
+                <Col md={2}>
+                  <Form.Select size="sm" value={filterState} onChange={(e) => setFilterState(e.target.value)}>
+                    <option value="">Select State</option>
+                    {states.map(state => (
+                      <option key={state} value={state}>{state}</option>
+                    ))}
+                  </Form.Select>
+                </Col>
+              )}
+              {cities.length > 0 && (
+                <Col md={2}>
+                  <Form.Select size="sm" value={filterCity} onChange={(e) => setFilterCity(e.target.value)}>
+                    <option value="">Select City</option>
+                    {cities.map(city => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </Form.Select>
+                </Col>
+              )}
+              {/* Store Type Filter (Derived from StoreType) */}
+              {(() => {
+                const storeTypes = [...new Set(data.map(item => item.storeType).filter(Boolean))];
+                return storeTypes.length > 0 && (
+                  <Col md={2}>
+                    <Form.Select size="sm" value={filterStore} onChange={(e) => setFilterStore(e.target.value)}>
+                      <option value="">Select Store Type</option>
+                      {storeTypes.map(type => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                    </Form.Select>
+                  </Col>
+                );
+              })()}
+              {auditJobTypes.length > 0 && (
+                <Col md={2}>
+                  <Form.Select size="sm" value={filterAuditJobType} onChange={(e) => setFilterAuditJobType(e.target.value)}>
+                    <option value="">Select Audit Type</option>
+                    {auditJobTypes.map(type => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
+                  </Form.Select>
+                </Col>
+              )}
               {boxTypes.length > 0 && (
                 <Col md={2}>
                   <Form.Select size="sm" value={filterBoxType} onChange={(e) => setFilterBoxType(e.target.value)}>
-                    <option value="">All Box Types</option>
+                    <option value="">All Hub Types</option>
                     {boxTypes.map(type => (
                       <option key={type} value={type}>{type}</option>
                     ))}
@@ -913,33 +979,14 @@ const DetailsPage = ({ filters = {} }) => {
               {storeStatuses.length > 0 && (
                 <Col md={2}>
                   <Form.Select size="sm" value={filterStoreStatus} onChange={(e) => setFilterStoreStatus(e.target.value)}>
-                    <option value="">All Store Statuses</option>
+                    <option value="">Select Status</option>
                     {storeStatuses.map(status => (
                       <option key={status} value={status}>{status}</option>
                     ))}
                   </Form.Select>
                 </Col>
               )}
-              {cities.length > 0 && (
-                <Col md={2}>
-                  <Form.Select size="sm" value={filterCity} onChange={(e) => setFilterCity(e.target.value)}>
-                    <option value="">All Cities</option>
-                    {cities.map(city => (
-                      <option key={city} value={city}>{city}</option>
-                    ))}
-                  </Form.Select>
-                </Col>
-              )}
-              {auditJobTypes.length > 0 && (
-                <Col md={2}>
-                  <Form.Select size="sm" value={filterAuditJobType} onChange={(e) => setFilterAuditJobType(e.target.value)}>
-                    <option value="">All Audit Types</option>
-                    {auditJobTypes.map(type => (
-                      <option key={type} value={type}>{type}</option>
-                    ))}
-                  </Form.Select>
-                </Col>
-              )}
+
               {processTypes.length > 0 && (
                 <Col md={2}>
                   <Form.Select size="sm" value={filterProcessType} onChange={(e) => setFilterProcessType(e.target.value)}>
@@ -952,7 +999,7 @@ const DetailsPage = ({ filters = {} }) => {
               )}
             </Row>
           </Card.Body>
-        </Card>
+        </Card >
       )}
 
       <Card>
@@ -1176,7 +1223,7 @@ const DetailsPage = ({ filters = {} }) => {
         storeData={selectedStoreData}
         auditStatus="completed"
       />
-    </Container>
+    </Container >
   );
 };
 

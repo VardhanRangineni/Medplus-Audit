@@ -141,25 +141,41 @@ const StoreCoverage = ({ filters = {} }) => {
   const recencyDataSets = useMemo(() => {
     const coveredStores = filteredStoreData.filter(s => s.IsCovered);
 
+    const monthly = {
+      'Apr': 0, 'May': 0, 'Jun': 0, 'Jul': 0, 'Aug': 0, 'Sep': 0,
+      'Oct': 0, 'Nov': 0, 'Dec': 0, 'Jan': 0, 'Feb': 0, 'Mar': 0
+    };
+
+    coveredStores.forEach(store => {
+      if (store.LastAuditDate) {
+        const date = new Date(store.LastAuditDate);
+        const month = date.toLocaleString('default', { month: 'short' });
+        if (monthly[month] !== undefined) {
+          monthly[month]++;
+        }
+      }
+    });
+
     const quarterly = {
-      'Oct - Dec': coveredStores.filter(s => s.RecencyQuarter === 'Oct - Dec').length,
-      'Jul - Sep': coveredStores.filter(s => s.RecencyQuarter === 'Jul - Sep').length,
       'Apr - Jun': coveredStores.filter(s => s.RecencyQuarter === 'Apr - Jun').length,
+      'Jul - Sep': coveredStores.filter(s => s.RecencyQuarter === 'Jul - Sep').length,
+      'Oct - Dec': coveredStores.filter(s => s.RecencyQuarter === 'Oct - Dec').length,
       'Jan - Mar': coveredStores.filter(s => s.RecencyQuarter === 'Jan - Mar').length
     };
 
     const halfYearly = {
-      'Jul - Dec': quarterly['Oct - Dec'] + quarterly['Jul - Sep'],
-      'Jan - Jun': quarterly['Apr - Jun'] + quarterly['Jan - Mar']
-    };
-
-    const yearly = {
-      '2024': coveredStores.length
+      'Apr - Sep': quarterly['Apr - Jun'] + quarterly['Jul - Sep'],
+      'Oct - Mar': quarterly['Oct - Dec'] + quarterly['Jan - Mar']
     };
 
     const total = coveredStores.length;
 
     return {
+      monthly: Object.entries(monthly).map(([range, stores]) => ({
+        range,
+        stores,
+        percentage: total > 0 ? parseFloat(((stores / total) * 100).toFixed(1)) : 0
+      })),
       quarterly: Object.entries(quarterly).map(([range, stores]) => ({
         range,
         stores,
@@ -169,11 +185,6 @@ const StoreCoverage = ({ filters = {} }) => {
         range,
         stores,
         percentage: total > 0 ? parseFloat(((stores / total) * 100).toFixed(1)) : 0
-      })),
-      yearly: Object.entries(yearly).map(([range, stores]) => ({
-        range,
-        stores,
-        percentage: 100
       }))
     };
   }, [filteredStoreData]);
@@ -634,7 +645,7 @@ const StoreCoverage = ({ filters = {} }) => {
         <Col md={4}>
           <KPICard
             title="Audited Stores"
-            value={storeStats.covered}
+            value={storeStats.activeAuditedStores + storeStats.inactiveAuditedStores}
             subtitle={(() => {
               const activeAudited = storeStats.activeAuditedStores;
               const inactiveAudited = storeStats.inactiveAuditedStores;
@@ -689,7 +700,7 @@ const StoreCoverage = ({ filters = {} }) => {
       <Row className="g-3 mb-4">
         <Col md={4}>
           <KPICard
-            title="Total SKUs"
+            title="Total Audited SKUs"
             value={formatIndianNumber(inventoryData.totalSKUs)}
             subtitle="Across all audited stores"
             icon="fas fa-box"
@@ -698,31 +709,28 @@ const StoreCoverage = ({ filters = {} }) => {
         </Col>
         <Col md={4}>
           <KPICard
-            title="Total Quantity (in Units)"
-            value={inventoryData.totalQuantity >= 10000000 ? `${(inventoryData.totalQuantity / 10000000).toFixed(1)}Cr` : `${(inventoryData.totalQuantity / 100000).toFixed(1)}L`}
-            subtitle="Across all audited stores"
-            icon="fas fa-cubes"
-            color="warning"
+            title="Total Audited Value (MRP)"
+            value={`₹${(inventoryData.totalValueMRP / 10000000).toFixed(2)}Cr`}
+            icon="fas fa-rupee-sign"
+            color="success"
           />
         </Col>
-        <Col md={4}>
+        {/* <Col md={3}>
           <KPICard
             title="Total Value (MRP)"
             value={`₹${(inventoryData.totalValueMRP / 10000000).toFixed(2)}Cr`}
-            subtitle={(() => {
-              const costInCrores = (inventoryData.totalValueCost / 10000000).toFixed(2);
-              const mrpInCrores = (inventoryData.totalValueMRP / 10000000).toFixed(2);
-              return (
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: '8px' }}>
-                  <div style={{ textAlign: 'left' }}>
-                    <span style={{ fontSize: '0.9rem', color: '#666' }}>At Cost: </span>
-                    <span style={{ fontWeight: '600', color: '#000' }}>₹{costInCrores}Cr</span>
-                  </div>
-                </div>
-              );
-            })()}
-            icon="fas fa-rupee-sign"
-            color="success"
+            subtitle="Including non-audited stores"
+            icon="fas fa-money-bill-wave"
+            color="warning"
+          />
+        </Col> */}
+        <Col md={4}>
+          <KPICard
+            title="Total Deviation Value (MRP)"
+            value={`₹${(deviationData.reduce((sum, item) => sum + item.value, 0) / 10000000).toFixed(2)}Cr`}
+            subtitle="Across all deviations"
+            icon="fas fa-chart-line"
+            color="danger"
           />
         </Col>
       </Row>
@@ -749,7 +757,7 @@ const StoreCoverage = ({ filters = {} }) => {
                   />
                   <Bar
                     dataKey="value"
-                    onClick={(data) => setSelectedDeviation(data)}
+                    onClick={(data) => navigate(`/details?title=${encodeURIComponent(`Deviation: ${data.type}`)}&type=covered-stores&deviationType=${encodeURIComponent(data.type)}`)}
                     cursor="pointer"
                     radius={[5, 5, 0, 0]}
                   >
@@ -759,6 +767,10 @@ const StoreCoverage = ({ filters = {} }) => {
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
+              <div className="text-center mt-3 text-muted small">
+                <i className="fas fa-info-circle me-1"></i>
+                Click on any deviation bar to see specific breakdown
+              </div>
             </Card.Body>
           </Card>
         </Col>
@@ -899,10 +911,6 @@ const StoreCoverage = ({ filters = {} }) => {
                               </div>
                             </div>
                           ))}
-                          <div className="text-center mt-3 text-muted small">
-                            <i className="fas fa-info-circle me-1"></i>
-                            Click on any deviation bar to see specific breakdown
-                          </div>
                         </div>
                       ) : (
                         <div className="text-center text-muted py-5">
@@ -931,7 +939,7 @@ const StoreCoverage = ({ filters = {} }) => {
                     <i className="fas fa-calendar-alt me-2 text-primary"></i>
                     Store Recency Analysis
                   </h5>
-                  <small className="text-muted">Breakdown of audited stores by days since last audit</small>
+                  <small className="text-muted">Breakdown of audited stores in selected duration</small>
                 </div>
                 <div className="d-flex gap-2">
                   {/* <Dropdown>
@@ -957,6 +965,14 @@ const StoreCoverage = ({ filters = {} }) => {
                   <div className="btn-group" role="group">
                     <Button
                       size="sm"
+                      variant={recencyView === 'monthly' ? 'primary' : 'outline-primary'}
+                      onClick={() => setRecencyView('monthly')}
+                    >
+                      <i className="fas fa-calendar-alt me-1"></i>
+                      Monthly
+                    </Button>
+                    <Button
+                      size="sm"
                       variant={recencyView === 'quarterly' ? 'primary' : 'outline-primary'}
                       onClick={() => setRecencyView('quarterly')}
                     >
@@ -968,16 +984,8 @@ const StoreCoverage = ({ filters = {} }) => {
                       variant={recencyView === 'half-yearly' ? 'primary' : 'outline-primary'}
                       onClick={() => setRecencyView('half-yearly')}
                     >
-                      <i className="fas fa-calendar-alt me-1"></i>
-                      Half-Yearly
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={recencyView === 'yearly' ? 'primary' : 'outline-primary'}
-                      onClick={() => setRecencyView('yearly')}
-                    >
                       <i className="fas fa-calendar me-1"></i>
-                      Yearly
+                      Half-Yearly
                     </Button>
                   </div>
                 </div>
@@ -994,7 +1002,7 @@ const StoreCoverage = ({ filters = {} }) => {
                     dataKey="stores"
                     fill="#0d6efd"
                     radius={[5, 5, 0, 0]}
-                    onClick={(data) => showStoreDetails(`Stores - ${data.range}`)}
+                    onClick={(data) => navigate(`/details?title=${encodeURIComponent(`Recency: ${data.range}`)}&type=covered-stores&recencyRange=${encodeURIComponent(data.range)}&recencyView=${recencyView}`)}
                     cursor="pointer"
                     label={{ position: 'top', fill: '#000', fontSize: 14 }}
                   />
@@ -1004,7 +1012,7 @@ const StoreCoverage = ({ filters = {} }) => {
           </Card>
         </Col>
       </Row>
-    </Container>
+    </Container >
   );
 };
 

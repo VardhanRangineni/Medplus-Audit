@@ -1450,14 +1450,14 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                 <thead>
                   <tr>
                     <th style={{ width: '30px' }}></th>
+                    <th>Emp ID</th>
                     <th>Auditor Name</th>
                     {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
                       <>
-                        <th>Assigned SKUs</th>
-                        <th>Completed SKUs</th>
-                        <th>Audited Qty</th>
+                        <th>Audited SKUs</th>
+                        <th>Audited Qty (Units)</th>
                         <th>Audited Val (MRP)</th>
-                        <th>Progress (%)</th>
+                        {auditStatus === 'in-progress' && <th>Progress (%)</th>}
                         <th>Audit Accuracy (%)</th>
                       </>
                     )}
@@ -1478,23 +1478,25 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                               <i className={`fas fa-chevron-${isExpanded ? 'down' : 'right'} text-primary`}></i>
                             )}
                           </td>
+                          <td className="fw-semibold">{auditor.empId || `EMP${String(auditorIdx + 1).padStart(3, '0')}`}</td>
                           <td className="fw-semibold" onClick={() => (auditStatus === 'in-progress' || auditStatus === 'completed') && toggleAuditor(auditorIdx)}>
                             {auditor.name}
                           </td>
                           {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
                             <>
-                              <td>{auditor.assignedSKUs?.toLocaleString()}</td>
                               <td>{auditor.completedSKUs?.toLocaleString()}</td>
                               <td>{Math.floor((auditor.completedSKUs || 0) * 10.5).toLocaleString()}</td>
                               <td>{formatIndianCurrency((auditor.completedSKUs || 0) * 450)}</td>
-                              <td style={{ minWidth: '150px' }}>
-                                <ProgressBar
-                                  now={auditor.completionRate || 0}
-                                  label={`${(auditor.completionRate || 0).toFixed(1)}%`}
-                                  variant={auditor.completionRate >= 80 ? 'success' : 'warning'}
-                                  style={{ height: '20px' }}
-                                />
-                              </td>
+                              {auditStatus === 'in-progress' && (
+                                <td style={{ minWidth: '150px' }}>
+                                  <ProgressBar
+                                    now={auditor.completionRate || 0}
+                                    label={`${(auditor.completionRate || 0).toFixed(1)}%`}
+                                    variant={auditor.completionRate >= 80 ? 'success' : 'warning'}
+                                    style={{ height: '20px' }}
+                                  />
+                                </td>
+                              )}
                               <td>
                                 <Badge bg={auditor.matchRate >= 95 ? 'success' : auditor.matchRate >= 90 ? 'warning' : 'danger'}>
                                   {auditor.matchRate?.toFixed(1)}%
@@ -1507,7 +1509,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                         {/* Re-audit Summary for Completed Audit */}
                         {isExpanded && auditStatus === 'completed' && (
                           <tr key={`${auditorIdx}-summary`} style={{ backgroundColor: '#f8f9fa' }}>
-                            <td colSpan="6" className="p-4">
+                            <td colSpan="7" className="p-4">
                               <div className="border-start border-4 border-primary ps-3 mb-3">
                                 <h6 className="fw-bold text-primary mb-0 text-uppercase">Re-Audit Summary</h6>
                               </div>
@@ -1516,7 +1518,6 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                                   <tr>
                                     <th className="py-2 text-primary">CATEGORY</th>
                                     <th className="py-2 text-end text-primary">SKUS</th>
-                                    <th className="py-2 text-end text-primary">QTY</th>
                                     <th className="py-2 text-end text-primary">VALUE</th>
                                   </tr>
                                 </thead>
@@ -1524,19 +1525,16 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                                   <tr>
                                     <td className="py-2 fw-semibold">Appeared</td>
                                     <td className="py-2 text-end">{auditor.assignedSKUs || 70}</td>
-                                    <td className="py-2 text-end">{Math.floor((auditor.assignedSKUs || 70) * 10.5)}</td>
                                     <td className="py-2 text-end fw-bold">₹2.29 L</td>
                                   </tr>
                                   <tr>
                                     <td className="py-2 fw-semibold">Revised</td>
                                     <td className="py-2 text-end">{auditor.completedSKUs || 67}</td>
-                                    <td className="py-2 text-end">{Math.floor((auditor.completedSKUs || 67) * 10.5)}</td>
                                     <td className="py-2 text-end fw-bold text-success">₹2.20 L</td>
                                   </tr>
                                   <tr>
                                     <td className="py-2 fw-semibold">Deviations</td>
                                     <td className="py-2 text-end">{(auditor.assignedSKUs - auditor.completedSKUs) || 3}</td>
-                                    <td className="py-2 text-end">{Math.floor(((auditor.assignedSKUs - auditor.completedSKUs) || 3) * 10)}</td>
                                     <td className="py-2 text-end fw-bold text-warning">₹9,174</td>
                                   </tr>
                                 </tbody>

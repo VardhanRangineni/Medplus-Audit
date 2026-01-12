@@ -751,6 +751,9 @@ const StoreCoverage = ({ filters = {} }) => {
         </Col>
       </Row>
 
+      {/* Deviation analysis */}
+      <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>Deviation analysis</h6>
+
       {/* Deviation Breakdown */}
       <Row>
         <Col lg={6} className="mb-4">
@@ -798,7 +801,7 @@ const StoreCoverage = ({ filters = {} }) => {
                 <div>
                   <h5 className="mb-0 fw-bold">
                     <i className="fas fa-info-circle me-2 text-primary"></i>
-                    {selectedDeviation ? 'Deviation Details' : 'Deviation Summary'}
+                    {selectedDeviation ? 'Deviation Details' : 'Deviation Details'}
                   </h5>
                 </div>
                 <div className="d-flex gap-2">

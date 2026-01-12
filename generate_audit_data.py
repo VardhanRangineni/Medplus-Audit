@@ -184,7 +184,7 @@ def generate_store_coverage_data():
             else:
                 store_data["LastAuditDate"] = None
                 store_data["DaysSinceLastAudit"] = None
-                store_data["RecencyCategory"] = "Never Audited"
+                store_data["RecencyCategory"] = "N/A"
                 store_data["RecencyQuarter"] = None
                 store_data["LastAuditJobType"] = None
                 store_data["LastAuditProcessType"] = None

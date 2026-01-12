@@ -68,7 +68,7 @@ const DetailsPage = ({ filters = {} }) => {
 
       // Pools to synthesise names when data is missing
       const supervisorPool = ['Anil Kumar', 'Karthik Reddy', 'Sudheer Naidu', 'Rajesh Chowdary', 'Priya Sharma', 'Sandeep Reddy', 'Meena Iyer', 'Vikram Singh', 'Pooja Deshmukh', 'Ramesh Babu'];
-      const auditorPool = ['Anil Kumar','Sudheer Naidu','Rajesh Chowdary','Neha Kapoor','Vikram Singh','Pooja Sharma','Amit Verma','Karthik Reddy','Priya Reddy','Ravi Teja','Santosh Rao','Teja Reddy','Divya Shah','Sneha Reddy','Deepak Sharma'];
+      const auditorPool = ['Anil Kumar', 'Sudheer Naidu', 'Rajesh Chowdary', 'Neha Kapoor', 'Vikram Singh', 'Pooja Sharma', 'Amit Verma', 'Karthik Reddy', 'Priya Reddy', 'Ravi Teja', 'Santosh Rao', 'Teja Reddy', 'Divya Shah', 'Sneha Reddy', 'Deepak Sharma'];
 
       // Deterministically pick N items from an array (wraps around)
       const pickDeterministic = (arr, pickCount, id) => {
@@ -179,7 +179,7 @@ const DetailsPage = ({ filters = {} }) => {
         const today = new Date('2024-12-18'); // Current date
         let referenceDate;
 
-        if (lastAuditDate && lastAuditDate !== 'Never Audited') {
+        if (lastAuditDate && lastAuditDate !== 'N/A') {
           referenceDate = new Date(lastAuditDate);
         } else {
           referenceDate = new Date(createdDate);
@@ -210,7 +210,7 @@ const DetailsPage = ({ filters = {} }) => {
           storeType: store.StoreType,
           boxType: store.BoxMapping,
           storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
-          lastAuditedDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never Audited',
+          lastAuditedDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'N/A',
           daysSinceCreation: store.StoreCreatedDate ? formatDaysOrMonths(calculateDaysSince(store.LastAuditDate, store.StoreCreatedDate)) : 'N/A',
           status: store.IsActive !== false ? 'Active' : 'Inactive',
           skus: store.TotalSKUs,
@@ -748,9 +748,9 @@ const DetailsPage = ({ filters = {} }) => {
   // Define column order for store coverage views
   const getOrderedColumns = (data) => {
     if (!data || data.length === 0) return [];
-    
+
     const allKeys = Object.keys(data[0]);
-    
+
     // For covered-stores and uncovered-stores, use specific order
     if (type === 'covered-stores' || type === 'uncovered-stores') {
       const orderedKeys = [
@@ -771,11 +771,11 @@ const DetailsPage = ({ filters = {} }) => {
         'deviation',
         'deviationValueMRP'
       ];
-      
+
       // Include only columns that exist in the data and match the ordered list
       return orderedKeys.filter(key => allKeys.includes(key));
     }
-    
+
     // For store recency analysis views, use specific order
     if (type.startsWith('stores-recency-')) {
       const orderedKeys = [
@@ -791,11 +791,11 @@ const DetailsPage = ({ filters = {} }) => {
         'quantity',
         'deviationCount'
       ];
-      
+
       // Include only columns that exist in the data and match the ordered list
       return orderedKeys.filter(key => allKeys.includes(key));
     }
-    
+
     // For other views, use default order but exclude hidden columns
     return allKeys.filter(key => key !== 'mismatchDetails' && !shouldHideColumn(key));
   };
@@ -856,8 +856,8 @@ const DetailsPage = ({ filters = {} }) => {
               </p>
             </div>
             <div className="d-flex gap-2">
-              <Button 
-                variant="outline-primary" 
+              <Button
+                variant="outline-primary"
                 size="sm"
                 onClick={() => setShowTableFilters(!showTableFilters)}
               >
@@ -885,74 +885,74 @@ const DetailsPage = ({ filters = {} }) => {
       </Row>
 
       {showTableFilters && (
-      <Card className="mb-3">
-        <Card.Body>
-          <Row className="g-2">
-            <Col md={2}>
-              <InputGroup size="sm">
-                <InputGroup.Text>
-                  <i className="fas fa-search"></i>
-                </InputGroup.Text>
-                <Form.Control
-                  placeholder="Search across all fields..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </InputGroup>
-            </Col>
-            {boxTypes.length > 0 && (
+        <Card className="mb-3">
+          <Card.Body>
+            <Row className="g-2">
               <Col md={2}>
-                <Form.Select size="sm" value={filterBoxType} onChange={(e) => setFilterBoxType(e.target.value)}>
-                  <option value="">All Box Types</option>
-                  {boxTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </Form.Select>
+                <InputGroup size="sm">
+                  <InputGroup.Text>
+                    <i className="fas fa-search"></i>
+                  </InputGroup.Text>
+                  <Form.Control
+                    placeholder="Search across all fields..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </InputGroup>
               </Col>
-            )}
-            {storeStatuses.length > 0 && (
-              <Col md={2}>
-                <Form.Select size="sm" value={filterStoreStatus} onChange={(e) => setFilterStoreStatus(e.target.value)}>
-                  <option value="">All Store Statuses</option>
-                  {storeStatuses.map(status => (
-                    <option key={status} value={status}>{status}</option>
-                  ))}
-                </Form.Select>
-              </Col>
-            )}
-            {cities.length > 0 && (
-              <Col md={2}>
-                <Form.Select size="sm" value={filterCity} onChange={(e) => setFilterCity(e.target.value)}>
-                  <option value="">All Cities</option>
-                  {cities.map(city => (
-                    <option key={city} value={city}>{city}</option>
-                  ))}
-                </Form.Select>
-              </Col>
-            )}
-            {auditJobTypes.length > 0 && (
-              <Col md={2}>
-                <Form.Select size="sm" value={filterAuditJobType} onChange={(e) => setFilterAuditJobType(e.target.value)}>
-                  <option value="">All Audit Types</option>
-                  {auditJobTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </Form.Select>
-              </Col>
-            )}
-            {processTypes.length > 0 && (
-              <Col md={2}>
-                <Form.Select size="sm" value={filterProcessType} onChange={(e) => setFilterProcessType(e.target.value)}>
-                  <option value="">All Process Types</option>
-                  {processTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </Form.Select>
-              </Col>
-            )}
-          </Row>
-        </Card.Body>
-      </Card>
+              {boxTypes.length > 0 && (
+                <Col md={2}>
+                  <Form.Select size="sm" value={filterBoxType} onChange={(e) => setFilterBoxType(e.target.value)}>
+                    <option value="">All Box Types</option>
+                    {boxTypes.map(type => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
+                  </Form.Select>
+                </Col>
+              )}
+              {storeStatuses.length > 0 && (
+                <Col md={2}>
+                  <Form.Select size="sm" value={filterStoreStatus} onChange={(e) => setFilterStoreStatus(e.target.value)}>
+                    <option value="">All Store Statuses</option>
+                    {storeStatuses.map(status => (
+                      <option key={status} value={status}>{status}</option>
+                    ))}
+                  </Form.Select>
+                </Col>
+              )}
+              {cities.length > 0 && (
+                <Col md={2}>
+                  <Form.Select size="sm" value={filterCity} onChange={(e) => setFilterCity(e.target.value)}>
+                    <option value="">All Cities</option>
+                    {cities.map(city => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </Form.Select>
+                </Col>
+              )}
+              {auditJobTypes.length > 0 && (
+                <Col md={2}>
+                  <Form.Select size="sm" value={filterAuditJobType} onChange={(e) => setFilterAuditJobType(e.target.value)}>
+                    <option value="">All Audit Types</option>
+                    {auditJobTypes.map(type => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
+                  </Form.Select>
+                </Col>
+              )}
+              {processTypes.length > 0 && (
+                <Col md={2}>
+                  <Form.Select size="sm" value={filterProcessType} onChange={(e) => setFilterProcessType(e.target.value)}>
+                    <option value="">All Process Types</option>
+                    {processTypes.map(type => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
+                  </Form.Select>
+                </Col>
+              )}
+            </Row>
+          </Card.Body>
+        </Card>
       )}
 
       <Card>
@@ -988,80 +988,80 @@ const DetailsPage = ({ filters = {} }) => {
                         {getOrderedColumns(filteredData).map((key, i) => {
                           const value = row[key];
                           return (
-                          <td
-                            key={i}
-                            onClick={(e) => {
-                              if (key === 'mismatch' && row.mismatchDetails) {
-                                e.stopPropagation();
-                                toggleMismatchDetails(row.storeId);
-                              } else if (isStoreClickable && row.storeId) {
-                                handleRowClick(row);
-                              }
-                            }}
-                            style={{
-                              cursor: key === 'mismatch' && row.mismatchDetails ? 'pointer' : 'inherit',
-                              color: key === 'mismatch' && row.mismatchDetails ? '#0d6efd' : 'inherit',
-                              fontWeight: key === 'mismatch' && row.mismatchDetails ? '600' : 'inherit'
-                            }}
-                          >
-                            {key === 'status' ? (
-                              <Badge bg="success">{value}</Badge>
-                            ) : key === 'inventoryValue' || key === 'inventoryValueMRP' || key === 'value' || key === 'deviationValueMRP' ? (
-                              `₹${Number(value).toLocaleString()}`
-                            ) : key === 'mismatch' && row.mismatchDetails ? (
-                              <span>
-                                {value} <i className={`fas fa-chevron-${expandedRows[row.storeId] ? 'up' : 'down'} ms-2`}></i>
-                              </span>
-                            ) : key === 'auditors' && value && value !== 'Not Assigned' ? (
-                              <div className="d-flex align-items-center gap-2">
-                                {value !== 'Not Assigned' ? (
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={
-                                      <Tooltip id={`tooltip-auditors-${row.storeId}`} style={{ maxWidth: '420px' }}>
-                                        <div style={{ textAlign: 'left', padding: '8px' }}>
+                            <td
+                              key={i}
+                              onClick={(e) => {
+                                if (key === 'mismatch' && row.mismatchDetails) {
+                                  e.stopPropagation();
+                                  toggleMismatchDetails(row.storeId);
+                                } else if (isStoreClickable && row.storeId) {
+                                  handleRowClick(row);
+                                }
+                              }}
+                              style={{
+                                cursor: key === 'mismatch' && row.mismatchDetails ? 'pointer' : 'inherit',
+                                color: key === 'mismatch' && row.mismatchDetails ? '#0d6efd' : 'inherit',
+                                fontWeight: key === 'mismatch' && row.mismatchDetails ? '600' : 'inherit'
+                              }}
+                            >
+                              {key === 'status' ? (
+                                <Badge bg="success">{value}</Badge>
+                              ) : key === 'inventoryValue' || key === 'inventoryValueMRP' || key === 'value' || key === 'deviationValueMRP' ? (
+                                `₹${Number(value).toLocaleString()}`
+                              ) : key === 'mismatch' && row.mismatchDetails ? (
+                                <span>
+                                  {value} <i className={`fas fa-chevron-${expandedRows[row.storeId] ? 'up' : 'down'} ms-2`}></i>
+                                </span>
+                              ) : key === 'auditors' && value && value !== 'Not Assigned' ? (
+                                <div className="d-flex align-items-center gap-2">
+                                  {value !== 'Not Assigned' ? (
+                                    <OverlayTrigger
+                                      placement="top"
+                                      overlay={
+                                        <Tooltip id={`tooltip-auditors-${row.storeId}`} style={{ maxWidth: '420px' }}>
+                                          <div style={{ textAlign: 'left', padding: '8px' }}>
+                                            {(() => {
+                                              const auditorList = value.split(',').map(a => a.trim());
+                                              const rows = [];
+                                              for (let i = 0; i < auditorList.length; i += 3) {
+                                                const chunk = auditorList.slice(i, i + 3);
+                                                rows.push(
+                                                  <div key={i} style={{ marginBottom: '6px' }}>
+                                                    {chunk.join(', ')}
+                                                  </div>
+                                                );
+                                              }
+                                              return rows;
+                                            })()}
+                                          </div>
+                                        </Tooltip>
+                                      }
+                                    >
+                                      <span className="d-inline-flex align-items-center gap-2" style={{ cursor: 'pointer' }}>
+                                        <small className="text-muted mb-0">
                                           {(() => {
-                                            const auditorList = value.split(',').map(a => a.trim());
-                                            const rows = [];
-                                            for (let i = 0; i < auditorList.length; i += 3) {
-                                              const chunk = auditorList.slice(i, i + 3);
-                                              rows.push(
-                                                <div key={i} style={{ marginBottom: '6px' }}>
-                                                  {chunk.join(', ')}
-                                                </div>
-                                              );
+                                            const auditorList = value.split(',');
+                                            const count = auditorList.length;
+                                            if (count > 3) {
+                                              return auditorList.slice(0, 3).map(a => a.trim()).join(', ') + '...';
                                             }
-                                            return rows;
+                                            return value;
                                           })()}
-                                        </div>
-                                      </Tooltip>
-                                    }
-                                  >
-                                    <span className="d-inline-flex align-items-center gap-2" style={{ cursor: 'pointer' }}>
-                                      <small className="text-muted mb-0">
-                                        {(() => {
-                                          const auditorList = value.split(',');
-                                          const count = auditorList.length;
-                                          if (count > 3) {
-                                            return auditorList.slice(0, 3).map(a => a.trim()).join(', ') + '...';
-                                          }
-                                          return value;
-                                        })()}
-                                      </small>
-                                      <Badge bg="info" pill style={{ cursor: 'pointer' }}>
-                                        {value.split(',').length}
-                                      </Badge>
-                                    </span>
-                                  </OverlayTrigger>
-                                ) : (
-                                  <Badge bg="secondary">{value}</Badge>
-                                )}
-                              </div>
-                            ) : (
-                              value
-                            )}
-                          </td>
-                        );
+                                        </small>
+                                        <Badge bg="info" pill style={{ cursor: 'pointer' }}>
+                                          {value.split(',').length}
+                                        </Badge>
+                                      </span>
+                                    </OverlayTrigger>
+                                  ) : (
+                                    <Badge bg="secondary">{value}</Badge>
+                                  )}
+                                </div>
+                              ) : (
+                                value
+                              )}
+                            </td>
+                          );
                         })}
                       </tr>
                       {expandedRows[row.storeId] && row.mismatchDetails && (

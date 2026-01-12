@@ -54,6 +54,25 @@ const DetailsPage = ({ filters = {} }) => {
 
   // Mock data based on type
   const getData = () => {
+    // Helper to get deterministic box type
+    const getBoxType = (id) => {
+      let h = 0;
+      for (let i = 0; i < (id || '').length; i++) {
+        h = ((h << 5) - h) + id.charCodeAt(i);
+        h |= 0;
+      }
+      return ['Dynamic', 'Non Dynamic', 'Regular'][Math.abs(h) % 3];
+    };
+
+    const getAuditCount = (id) => {
+      let h = 0;
+      for (let i = 0; i < (id || '').length; i++) {
+        h = ((h << 5) - h) + id.charCodeAt(i);
+        h |= 0;
+      }
+      return (Math.abs(h) % 4) + 1;
+    };
+
     // Helper to get latest audit info for a store
     // Returns a single supervisor and 3-5 auditors (deterministically generated when missing)
     const getLatestAuditInfo = (storeId) => {
@@ -138,7 +157,7 @@ const DetailsPage = ({ filters = {} }) => {
         storeName: store.StoreName,
         state: store.StateName,
         storeType: store.StoreType,
-        boxType: store.BoxMapping,
+        boxType: getBoxType(store.StoreID),
         storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
         lastAuditedDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never',
         status: store.IsActive !== false ? 'Active' : 'Inactive',
@@ -156,10 +175,11 @@ const DetailsPage = ({ filters = {} }) => {
           storeName: store.StoreName,
           state: store.StateName,
           storeType: store.StoreType,
-          boxType: store.BoxMapping,
+          boxType: getBoxType(store.StoreID),
           storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
           lastAuditedDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never',
-          cycle: store.AuditCycle || 'N/A',
+          auditJobType: store.LastAuditJobType || 'Full Audit',
+          cycle: store.AuditCycle || getAuditCount(store.StoreID),
           skus: store.TotalSKUs,
           quantity: store.TotalQuantity,
           mismatch: store.TotalDeviationCount || 0,
@@ -214,7 +234,7 @@ const DetailsPage = ({ filters = {} }) => {
           storeName: store.StoreName,
           state: store.StateName,
           storeType: store.StoreType,
-          boxType: store.BoxMapping,
+          boxType: getBoxType(store.StoreID),
           storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
           lastAuditedDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'N/A',
           daysSinceCreation: store.StoreCreatedDate ? formatDaysOrMonths(calculateDaysSince(store.LastAuditDate, store.StoreCreatedDate)) : 'N/A',
@@ -720,17 +740,15 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'storeName') return 'STORE NAME';
     if (key === 'city') return 'CITY';
     if (key === 'state') return 'STATE';
-    if (key === 'storeType') return 'HUB TYPE';
+    if (key === 'state') return 'STATE';
+    if (key === 'storeType') return 'STORE TYPE';
     if (key === 'boxType') return 'BOX TYPE';
     if (key === 'storeCreatedDate') return 'STORE CREATED DATE';
     if (key === 'lastAuditedDate') return 'LAST AUDITED DATE';
     if (key === 'lastAudit') return 'LAST AUDIT';
     if (key === 'cycle') return 'NO.OF AUDITS';
+    if (key === 'auditJobType') return 'AUDIT TYPE';
     if (key === 'inventoryValueMRP') return 'INVENTORY VALUE MRP (₹)';
-    if (key === 'storeType') return 'STORE TYPE';
-    if (key === 'boxType') return 'BOX TYPE';
-    if (key === 'storeCreatedDate') return 'STORE CREATED DATE';
-    if (key === 'lastAuditedDate') return 'LAST AUDITED DATE';
     if (key === 'daysSinceCreation') return 'NO. OF DAYS/MONTHS';
     if (key === 'daysSinceLastAudit') return 'DAYS SINCE LAST AUDIT';
     if (key === 'status') return 'STORE STATUS';
@@ -788,6 +806,7 @@ const DetailsPage = ({ filters = {} }) => {
         'boxType',
         'storeCreatedDate',
         'lastAuditedDate',
+        'auditJobType',
         'cycle',
         'skus',
         'quantity',
@@ -911,6 +930,7 @@ const DetailsPage = ({ filters = {} }) => {
           <Card.Body>
             <Row className="g-2">
               <Col md={2}>
+                <Form.Label className="small mb-1">Search</Form.Label>
                 <InputGroup size="sm">
                   <InputGroup.Text>
                     <i className="fas fa-search"></i>
@@ -924,6 +944,7 @@ const DetailsPage = ({ filters = {} }) => {
               </Col>
               {states.length > 0 && (
                 <Col md={2}>
+                  <Form.Label className="small mb-1">State</Form.Label>
                   <Form.Select size="sm" value={filterState} onChange={(e) => setFilterState(e.target.value)}>
                     <option value="">Select State</option>
                     {states.map(state => (
@@ -934,6 +955,7 @@ const DetailsPage = ({ filters = {} }) => {
               )}
               {cities.length > 0 && (
                 <Col md={2}>
+                  <Form.Label className="small mb-1">City</Form.Label>
                   <Form.Select size="sm" value={filterCity} onChange={(e) => setFilterCity(e.target.value)}>
                     <option value="">Select City</option>
                     {cities.map(city => (
@@ -947,6 +969,7 @@ const DetailsPage = ({ filters = {} }) => {
                 const storeTypes = [...new Set(data.map(item => item.storeType).filter(Boolean))];
                 return storeTypes.length > 0 && (
                   <Col md={2}>
+                    <Form.Label className="small mb-1">Store Type</Form.Label>
                     <Form.Select size="sm" value={filterStore} onChange={(e) => setFilterStore(e.target.value)}>
                       <option value="">Select Store Type</option>
                       {storeTypes.map(type => (
@@ -958,6 +981,7 @@ const DetailsPage = ({ filters = {} }) => {
               })()}
               {auditJobTypes.length > 0 && (
                 <Col md={2}>
+                  <Form.Label className="small mb-1">Audit Type</Form.Label>
                   <Form.Select size="sm" value={filterAuditJobType} onChange={(e) => setFilterAuditJobType(e.target.value)}>
                     <option value="">Select Audit Type</option>
                     {auditJobTypes.map(type => (
@@ -968,8 +992,9 @@ const DetailsPage = ({ filters = {} }) => {
               )}
               {boxTypes.length > 0 && (
                 <Col md={2}>
+                  <Form.Label className="small mb-1">Box Type</Form.Label>
                   <Form.Select size="sm" value={filterBoxType} onChange={(e) => setFilterBoxType(e.target.value)}>
-                    <option value="">All Hub Types</option>
+                    <option value="">Select Box Type</option>
                     {boxTypes.map(type => (
                       <option key={type} value={type}>{type}</option>
                     ))}
@@ -978,6 +1003,7 @@ const DetailsPage = ({ filters = {} }) => {
               )}
               {storeStatuses.length > 0 && (
                 <Col md={2}>
+                  <Form.Label className="small mb-1">Status</Form.Label>
                   <Form.Select size="sm" value={filterStoreStatus} onChange={(e) => setFilterStoreStatus(e.target.value)}>
                     <option value="">Select Status</option>
                     {storeStatuses.map(status => (
@@ -989,6 +1015,7 @@ const DetailsPage = ({ filters = {} }) => {
 
               {processTypes.length > 0 && (
                 <Col md={2}>
+                  <Form.Label className="small mb-1">Process Type</Form.Label>
                   <Form.Select size="sm" value={filterProcessType} onChange={(e) => setFilterProcessType(e.target.value)}>
                     <option value="">All Process Types</option>
                     {processTypes.map(type => (

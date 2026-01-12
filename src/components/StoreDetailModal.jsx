@@ -1056,7 +1056,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
             <Row className="mb-3 align-items-center">
               <Col md={8}>
                 <div className="d-flex align-items-center mb-2">
-                  <div className="text-muted small me-2 fw-bold">STORE NAME:</div>
+                  <div className="text-muted small me-2 fw-bold" style={{ minWidth: '150px' }}>STORE NAME:</div>
                   <OverlayTrigger
                     placement="top"
                     overlay={<BootstrapTooltip>{storeName}</BootstrapTooltip>}
@@ -1075,7 +1075,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
               <Col md={4}>
                 <div className="d-flex align-items-center mb-2">
-                  <div className="text-muted small me-2 fw-bold">STATE:</div>
+                  <div className="text-muted small me-2 fw-bold" style={{ minWidth: '100px' }}>STATE:</div>
                   <div className="fw-bold">{state}</div>
                 </div>
               </Col>
@@ -1087,7 +1087,6 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                 <div className="d-flex align-items-center mb-2">
                   <div className="text-muted small me-2 fw-bold" style={{ minWidth: '150px' }}>LEAD SUPERVISOR:</div>
                   <div className="fw-bold">
-                    <i className="fas fa-user-tie me-2 text-primary"></i>
                     {supervisor || 'N/A'}
                   </div>
                 </div>
@@ -1123,7 +1122,6 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                 <div className="d-flex align-items-center mb-2">
                   <div className="text-muted small me-2 fw-bold" style={{ minWidth: '180px' }}>AUDIT PROCESS TYPE:</div>
                   <div className="fw-bold">
-                    <i className="fas fa-tasks me-2 text-primary"></i>
                     {auditProcessType || 'Batch Audit'}
                   </div>
                 </div>
@@ -1518,7 +1516,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                                   <tr>
                                     <th className="py-2 text-primary">CATEGORY</th>
                                     <th className="py-2 text-end text-primary">SKUS</th>
-                                    <th className="py-2 text-end text-primary">VALUE</th>
+                                    <th className="py-2 text-end text-primary">VALUE (MRP)</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -1611,13 +1609,13 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
 
                       {/* Deviation Table */}
-                      <div className="mt-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
+                      <div className="mt-3" style={{ maxHeight: '350px', overflowY: 'auto' }}>
                         <Table hover size="sm" className="mb-0">
                           <thead className="bg-light sticky-top">
                             <tr>
                               <th>Type</th>
-                              <th className="text-end">Count (items)</th>
-                              <th className="text-end">Value (₹)</th>
+                              <th className="text-end">SKUs (Count)</th>
+                              <th className="text-end">Value (MRP)</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -1729,27 +1727,42 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                       </div>
                       {/* Overall Product Form Chart Removed */}
 
-                      <div className="mt-3" style={{ maxHeight: '250px', overflowY: 'auto' }}>
-                        {activeData.map((form, idx) => (
-                          <div key={idx} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
-                            <div className="d-flex align-items-center">
-                              <div
-                                style={{
-                                  width: '12px',
-                                  height: '12px',
-                                  backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
-                                  borderRadius: '2px',
-                                  marginRight: '8px'
-                                }}
-                              />
-                              <span className="fw-semibold">{form.form}</span>
-                            </div>
-                            <div className="text-end">
-                              <div className="fw-bold text-success">₹{form.value.toLocaleString()}</div>
-                              <div className="text-muted small">{form.count} items</div>
-                            </div>
-                          </div>
-                        ))}
+                      <div className="mt-3" style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                        <Table hover size="sm" className="mb-0">
+                          <thead className="bg-light sticky-top">
+                            <tr>
+                              <th>Form</th>
+                              <th className="text-end">SKUs (Count)</th>
+                              <th className="text-end">Value (MRP)</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {activeData.map((form, idx) => (
+                              <tr key={idx}>
+                                <td className="small">
+                                  <div className="d-flex align-items-center">
+                                    <div
+                                      style={{
+                                        width: '12px',
+                                        height: '12px',
+                                        backgroundColor: FORM_COLORS[idx % FORM_COLORS.length],
+                                        borderRadius: '2px',
+                                        marginRight: '8px'
+                                      }}
+                                    />
+                                    <span>{form.form}</span>
+                                  </div>
+                                </td>
+                                <td className="text-end">
+                                  <Badge bg="secondary" pill>{form.count}</Badge>
+                                </td>
+                                <td className="text-end fw-semibold text-success">
+                                  ₹{form.value.toLocaleString()}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </Table>
                       </div>
 
                     </div>

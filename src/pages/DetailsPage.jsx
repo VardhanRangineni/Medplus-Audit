@@ -74,7 +74,7 @@ const DetailsPage = ({ filters = {} }) => {
     };
 
     const getAuditJobType = (id) => {
-      const options = ['Expensive Category SKUs', 'Expiry', 'Full', 'partial', 'Returnable', 'Selected Skus', 'Slow Moving'];
+      const options = ['Expensive Category SKUs', 'Expiry', 'Full', 'Partial', 'Returnable', 'Selected Skus', 'Slow Moving'];
       let h = 0;
       for (let i = 0; i < (id || '').length; i++) {
         h = ((h << 5) - h) + id.charCodeAt(i);
@@ -582,7 +582,7 @@ const DetailsPage = ({ filters = {} }) => {
     const headers = [
       "Store ID-Name", "CITY", "STATE", "HUB TYPE", "STORE STATUS", "BOX TYPE",
       "STORE CREATED DATE", "AUDIT START DATE", "AUDIT JOB TYPE", "LEAD SUPERVISOR", "AUDITORS (count)", "AUDITED SKUS",
-      "AUDITED QTY (units)", "AUDITED VALUE MRP (₹)", "DEVIATION VALUE MRP (₹)", "MISMATCH ITEMS", "DEVIATION ITEMS"
+      "AUDITED QTY (units)", "AUDITED VALUE MRP (₹)", "DEVIATION VALUE MRP (₹)", "TOTAL MISMATCH ITEMS", "TOTAL DEVIATION ITEMS"
     ];
 
     const dataToExport = filteredData.map(row => {
@@ -604,8 +604,8 @@ const DetailsPage = ({ filters = {} }) => {
           "AUDITED QTY (units)": row.quantity,
           "AUDITED VALUE MRP (₹)": row.inventoryValueMRP,
           "DEVIATION VALUE MRP (₹)": row.deviationValueMRP || 0,
-          "MISMATCH ITEMS": row.mismatch || 0,
-          "DEVIATION ITEMS": row.deviation || 0
+          "TOTAL MISMATCH ITEMS": row.mismatch || 0,
+          "TOTAL DEVIATION ITEMS": row.deviation || 0
         };
       } else {
         // Default generic export for other views
@@ -629,7 +629,7 @@ const DetailsPage = ({ filters = {} }) => {
         aoaData.push([
           r["Store ID-Name"], r["CITY"], r["STATE"], r["HUB TYPE"], r["STORE STATUS"], r["BOX TYPE"],
           r["STORE CREATED DATE"], r["AUDIT START DATE"], r["AUDIT JOB TYPE"], r["LEAD SUPERVISOR"], r["AUDITORS (count)"], r["AUDITED SKUS"],
-          r["AUDITED QTY (units)"], r["AUDITED VALUE MRP (₹)"], r["DEVIATION VALUE MRP (₹)"], r["MISMATCH ITEMS"], r["DEVIATION ITEMS"]
+          r["AUDITED QTY (units)"], r["AUDITED VALUE MRP (₹)"], r["DEVIATION VALUE MRP (₹)"], r["TOTAL MISMATCH ITEMS"], r["TOTAL DEVIATION ITEMS"]
         ]);
       });
       ws = utils.aoa_to_sheet(aoaData);
@@ -773,10 +773,10 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'skus') return 'AUDITED SKUS';
     if (key === 'quantity') return 'AUDITED QTY (units)';
     if (key === 'inventoryValueMRP') return 'AUDITED VALUE MRP (₹)';
-    if (key === 'mismatch') return 'MISMATCH ITEMS';
-    if (key === 'deviation') return 'DEVIATION ITEMS';
+    if (key === 'mismatch') return 'TOTAL MISMATCH ITEMS';
+    if (key === 'deviation') return 'TOTAL DEVIATION ITEMS';
     if (key === 'deviationValueMRP') return 'DEVIATION VALUE MRP (₹)';
-    if (key === 'deviationCount') return 'DEVIATION ITEMS COUNT (items)';
+    if (key === 'deviationCount') return 'TOTAL DEVIATION ITEMS COUNT (items)';
 
     // First, handle the splitting while preserving common acronyms
     let label = key

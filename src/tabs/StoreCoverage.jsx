@@ -392,7 +392,7 @@ const StoreCoverage = ({ filters = {} }) => {
         });
 
       doc.setFontSize(16);
-      doc.text('Overall Product Form Distribution', 14, 20);
+      doc.text('Audit Form Wise Deviation', 14, 20);
 
       doc.setFontSize(10);
       doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 28);
@@ -799,7 +799,7 @@ const StoreCoverage = ({ filters = {} }) => {
               </div>
               <div className="text-center mt-3 text-muted small">
                 <i className="fas fa-info-circle me-1"></i>
-                Click on any deviation type to see product form breakdown
+                Click on any deviation type to see Audit form breakdown
               </div>
             </Card.Body>
           </Card>
@@ -854,7 +854,7 @@ const StoreCoverage = ({ filters = {} }) => {
                   <div className="mb-3">
                     <h6 className="text-primary mb-2">
                       <Badge bg="primary" className="me-2">{selectedDeviation.type}</Badge>
-                      Product Form Breakdown
+                      Audit Form Wise Deviation
                     </h6>
                     <div className="text-muted small">
                       Total: ₹{formatIndianNumber(selectedDeviation.value)} | {selectedDeviation.count} items
@@ -924,7 +924,7 @@ const StoreCoverage = ({ filters = {} }) => {
                     <div>
                       <div className="mb-3">
                         <h6 className="text-primary mb-2">
-                          Overall Audit Form Distribution
+                         Overall Audit Form Wise Deviation
                         </h6>
                         <div className="text-muted small">
                           Across all deviation types

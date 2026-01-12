@@ -1027,9 +1027,7 @@ const DetailsPage = ({ filters = {} }) => {
                   <Dropdown.Item onClick={handleDownloadExcel}>
                     <i className="fas fa-file-excel text-success me-2"></i>Export as Excel
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={handleDownloadPDF}>
-                    <i className="fas fa-file-pdf text-danger me-2"></i>Export as PDF
-                  </Dropdown.Item>
+                  
                 </Dropdown.Menu>
               </Dropdown>
             </div>

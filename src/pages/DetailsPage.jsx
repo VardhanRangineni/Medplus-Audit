@@ -181,9 +181,8 @@ const DetailsPage = ({ filters = {} }) => {
         .filter(store => store.IsCovered)
         .map(store => ({
           storeId: store.StoreID,
-          storeIdName: `${store.StoreID}-${store.StoreName}`,
-          city: store.State || '',
           storeName: store.StoreName,
+          city: store.State || '',
           state: store.StateName,
           storeType: store.StoreType,
           boxType: getBoxType(store.StoreID),
@@ -589,7 +588,8 @@ const DetailsPage = ({ filters = {} }) => {
       // Logic for Covered Stores and Uncovered Stores specific headers
       if (type === 'covered-stores' || type === 'uncovered-stores') {
         return {
-          "Store ID-Name": row.storeIdName,
+          "Store ID": row.storeId,
+          "Store Name": row.storeName,
           "CITY": row.city,
           "STATE": row.state,
           "HUB TYPE": row.storeType,
@@ -661,7 +661,7 @@ const DetailsPage = ({ filters = {} }) => {
 
       tableData = filteredData.map(row => {
         return [
-          row.storeIdName, row.city, row.state, row.storeType, row.status, row.boxType,
+          row.storeId, row.storeName, row.city, row.state, row.storeType, row.status, row.boxType,
           row.storeCreatedDate, row.auditStartDate, row.auditJobType, row.leadSupervisor, row.auditorsCount, row.skus,
           row.quantity, '₹' + (row.inventoryValueMRP || 0).toLocaleString('en-IN'), '₹' + (row.deviationValueMRP || 0).toLocaleString('en-IN'),
           row.mismatch || 0, row.deviation || 0
@@ -756,7 +756,6 @@ const DetailsPage = ({ filters = {} }) => {
   const formatColumnHeader = (key) => {
     // Handle specific column name mappings
     if (key === 'storeId') return 'STORE ID';
-    if (key === 'storeIdName') return 'Store ID-Name';
     if (key === 'storeName') return 'STORE NAME';
     if (key === 'city') return 'CITY';
     if (key === 'state') return 'STATE';
@@ -815,7 +814,8 @@ const DetailsPage = ({ filters = {} }) => {
     // For covered-stores and uncovered-stores, use specific order
     if (type === 'covered-stores' || type === 'uncovered-stores') {
       const orderedKeys = [
-        'storeIdName',
+        'storeId',
+        'storeName',
         'city',
         'state',
         'storeType',

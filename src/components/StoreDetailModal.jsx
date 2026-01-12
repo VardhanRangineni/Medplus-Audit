@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, Button, Row, Col, Card, Table, Badge, ProgressBar, Dropdown } from 'react-bootstrap';
+import { Modal, Button, Row, Col, Card, Table, Badge, ProgressBar, Dropdown, OverlayTrigger, Tooltip as BootstrapTooltip } from 'react-bootstrap';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
@@ -19,7 +19,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         <Modal.Header closeButton className="bg-primary text-white">
           <Modal.Title>
             <i className="fas fa-store me-2"></i>
-            Store Details
+            Store Audit Details
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-4">
@@ -52,8 +52,9 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
     auditProcessType
   } = storeData;
 
-  // Calculate total deviation value
+  // Calculate total deviation value and count
   const totalDeviationValue = deviations.reduce((sum, dev) => sum + (dev.value || 0), 0);
+  const totalDeviations = deviations.reduce((sum, dev) => sum + (dev.count || 0), 0);
   const totalContraValue = contra.reduce((sum, item) => sum + (item.value || 0), 0);
 
   // Calculate breakdown by type
@@ -371,7 +372,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
     // ===== SHEET 1: Summary (Store Summary + Auditors) =====
     const summaryData = [
-      ["Store Details Report"],
+      ["Store Audit Details Report"],
       ["Store ID", storeId],
       ["Store Name", storeName],
       ["State", state],
@@ -642,7 +643,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
     // Title
     doc.setFontSize(16);
-    doc.text(`Store Details Report: ${storeName}`, 14, 20);
+    doc.text(`Store Audit Details Report: ${storeName}`, 14, 20);
 
     doc.setFontSize(10);
     doc.text(`Store ID: ${storeId}`, 14, 28);
@@ -1025,7 +1026,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         <div className="d-flex w-100 justify-content-between align-items-center pe-3">
           <Modal.Title>
             <i className="fas fa-store me-2"></i>
-            {storeName} - Store Details
+            {storeId} - Store Audit Details
           </Modal.Title>
           <Dropdown>
             <Dropdown.Toggle
@@ -1051,68 +1052,95 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         {/* Store Info Header */}
         <Card className="mb-3 border-0 shadow-sm">
           <Card.Body>
-            <Row className="mb-4 align-items-center">
-              <Col md={4}>
+            {/* First Row: Store Name and State */}
+            <Row className="mb-3 align-items-center">
+              <Col md={8}>
                 <div className="d-flex align-items-center mb-2">
-                  <div className="text-muted small me-2">Store ID</div>
-                  <Badge bg="dark" className="font-monospace">{storeId}</Badge>
+                  <div className="text-muted small me-2 fw-bold">STORE NAME:</div>
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<BootstrapTooltip>{storeName}</BootstrapTooltip>}
+                  >
+                    <div className="fw-bold" style={{ 
+                      maxWidth: '400px', 
+                      overflow: 'hidden', 
+                      textOverflow: 'ellipsis', 
+                      whiteSpace: 'nowrap' 
+                    }}>
+                      {storeName}
+                    </div>
+                  </OverlayTrigger>
                 </div>
               </Col>
 
               <Col md={4}>
                 <div className="d-flex align-items-center mb-2">
-                  <div className="text-muted small me-2">State</div>
-                  <div className="fw-bold fs-5">{state}</div>
+                  <div className="text-muted small me-2 fw-bold">STATE:</div>
+                  <div className="fw-bold">{state}</div>
                 </div>
               </Col>
+            </Row>
 
+            {/* Second Row: Lead Supervisor, Auditor Count, Duration */}
+            <Row className="mb-3 align-items-center">
               <Col md={4}>
                 <div className="d-flex align-items-center mb-2">
-                  <div className="text-muted small me-2">Audit Supervisor</div>
-                  <div className="fw-bold fs-5">
+                  <div className="text-muted small me-2 fw-bold">LEAD SUPERVISOR:</div>
+                  <div className="fw-bold">
                     <i className="fas fa-user-tie me-2 text-primary"></i>
                     {supervisor || 'N/A'}
                   </div>
                 </div>
               </Col>
-            </Row>
 
-            {/* Second Row: Audit Progress and Duration side by side */}
-            <Row className="align-items-center">
-              <Col md={4}>
-                <div className="text-muted small mb-1">Audit Progress</div>
-                <div className="d-flex align-items-center">
-                  <h4 className="fw-bold text-primary mb-0 me-3">{auditProgress.percentage || 0}%</h4>
-                  <ProgressBar
-                    className="flex-grow-1"
-                    now={auditProgress.percentage || 0}
-                    variant="primary"
-                    style={{ height: '8px', maxWidth: '150px' }}
-                  />
+              <Col md={3}>
+                <div className="d-flex align-items-center mb-2">
+                  <div className="text-muted small me-2 fw-bold">AUDITOR COUNT:</div>
+                  <div className="fw-bold">{auditors?.length || 0}</div>
                 </div>
               </Col>
-              <Col md={8}>
-                <div className="d-flex gap-5">
-                  <div>
-                    <div className="text-muted small mb-1">Start Date</div>
-                    <div className="fw-bold fs-5">
-                      <i className="far fa-calendar-alt me-2 text-primary"></i>
-                      20/08/2026
-                    </div>
+
+              <Col md={5}>
+                <div className="d-flex align-items-center mb-2">
+                  <div className="text-muted small me-2 fw-bold">DURATION:</div>
+                  <div className="fw-bold">
+                    <i className="far fa-calendar me-2 text-primary"></i>
+                    20/08/2026 - {auditStatus === 'completed' ? '25/08/2026' : 'Ongoing'}
                   </div>
-                  <div>
-                    <div className="text-muted small mb-1">End Date</div>
-                    <div className="fw-bold fs-5">
-                      <i className="far fa-calendar-check me-2 text-primary"></i>
-                      {auditStatus === 'completed' ? '25/08/2026' : '-'}
-                    </div>
+                </div>
+              </Col>
+            </Row>
+
+            {/* Third Row: Audit Job Type, Audit Process Type, Progress */}
+            <Row className="align-items-center">
+              <Col md={4}>
+                <div className="d-flex align-items-center mb-2">
+                  <div className="text-muted small me-2 fw-bold">AUDIT JOB TYPE:</div>
+                  <div className="fw-bold">Full Audit</div>
+                </div>
+              </Col>
+
+              <Col md={4}>
+                <div className="d-flex align-items-center mb-2">
+                  <div className="text-muted small me-2 fw-bold">AUDIT PROCESS TYPE:</div>
+                  <div className="fw-bold">
+                    <i className="fas fa-tasks me-2 text-primary"></i>
+                    {auditProcessType || 'Batch Audit'}
                   </div>
-                  <div>
-                    <div className="text-muted small mb-1 text-nowrap">Audit Process Type</div>
-                    <div className="fw-bold fs-5 text-nowrap">
-                      <i className="fas fa-tasks me-2 text-primary"></i>
-                      {auditProcessType || 'Batch Audit'}
-                    </div>
+                </div>
+              </Col>
+
+              <Col md={4}>
+                <div className="mb-2">
+                  <div className="text-muted small mb-1 fw-bold">PROGRESS:</div>
+                  <div className="d-flex align-items-center">
+                    <h5 className="fw-bold text-primary mb-0 me-3">{auditProgress.percentage || 0}%</h5>
+                    <ProgressBar
+                      className="flex-grow-1"
+                      now={auditProgress.percentage || 0}
+                      variant="primary"
+                      style={{ height: '8px' }}
+                    />
                   </div>
                 </div>
               </Col>
@@ -1122,19 +1150,25 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
         {/* Mini Dashboard - KPIs */}
         <Row className="g-3 mb-4">
-          <Col md={auditStatus === 'completed' ? 3 : 6}>
+          {/* Card 1: Audited SKUs */}
+          <Col md={4}>
             <Card className="h-100 border-0 shadow-sm">
               <Card.Body className="text-center">
-                <div className="text-muted small mb-1">Total SKUs</div>
-                <h3 className="mb-0 text-primary">{inventorySummary.totalSKUs?.toLocaleString() || '0'}</h3>
-                <small className="text-muted">Audited: {inventorySummary.auditedSKUs?.toLocaleString() || '0'}</small>
+                <div className="text-muted small mb-1 fw-bold">AUDITED SKUS</div>
+                <h3 className="mb-0 text-primary">{inventorySummary.auditedSKUs?.toLocaleString() || '0'}</h3>
+                <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
+                  <small className="text-muted d-block fw-bold">TOTAL SKUS</small>
+                  <span className="fw-bold text-dark">{inventorySummary.totalSKUs?.toLocaleString() || '0'}</span>
+                </div>
               </Card.Body>
             </Card>
           </Col>
-          <Col md={auditStatus === 'completed' ? 3 : 6}>
+
+          {/* Card 2: Audited Value at MRP */}
+          <Col md={4}>
             <Card className="h-100 border-0 shadow-sm">
               <Card.Body className="text-center">
-                <div className="text-muted small mb-1">Inventory Value at MRP</div>
+                <div className="text-muted small mb-1 fw-bold">AUDITED VALUE AT MRP</div>
                 <h3 className="mb-0 text-success">
                   {inventorySummary.totalValue >= 10000000
                     ? `₹${(inventorySummary.totalValue / 10000000).toFixed(2)}Cr`
@@ -1142,77 +1176,48 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                       ? `₹${(inventorySummary.totalValue / 100000).toFixed(2)}L`
                       : `₹${formatIndianNumber(inventorySummary.totalValue || 0)}`}
                 </h3>
-                {auditStatus === 'completed' && (
-                  <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
-                    <small className="text-muted d-block">Deviation Value at MRP</small>
-                    <span className="text-danger fw-bold">
-                      {totalDeviationValue >= 10000000
-                        ? `₹${(totalDeviationValue / 10000000).toFixed(2)}Cr`
-                        : totalDeviationValue >= 100000
-                          ? `₹${(totalDeviationValue / 100000).toFixed(2)}L`
-                          : `₹${formatIndianNumber(totalDeviationValue || 0)}`}
-                    </span>
-                  </div>
-                )}
-                {auditStatus !== 'completed' && (
-                  <small className="text-muted">Total Value</small>
-                )}
+                <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
+                  <small className="text-muted d-block fw-bold">INVENTORY VALUE AT MRP</small>
+                  <span className="fw-bold text-dark">
+                    {inventorySummary.totalValue >= 10000000
+                      ? `₹${(inventorySummary.totalValue / 10000000).toFixed(2)}Cr`
+                      : inventorySummary.totalValue >= 100000
+                        ? `₹${(inventorySummary.totalValue / 100000).toFixed(2)}L`
+                        : `₹${formatIndianNumber(inventorySummary.totalValue || 0)}`}
+                  </span>
+                </div>
               </Card.Body>
             </Card>
           </Col>
-          {auditStatus === 'completed' && (
-            <>
-              <Col md={3}>
-                <Card className="h-100 border-0 shadow-sm">
-                  <Card.Body className="text-center">
-                    <div className="text-muted small mb-1"><strong>Total Missmatches</strong></div>
-                                        <h3 className="mb-0 text-danger">{deviations.length}</h3>
-                    <div className="d-flex justify-content-around mt-2">
-                      <div>
-                        <small className="text-muted d-block">Revised</small>
-                        <Badge bg="danger">{deviationsByType.deviations}</Badge>
-                      </div>
-                      <div>
-                        <small className="text-muted d-block">Matched</small>
-                        <Badge bg="warning">{deviationsByType.mismatch}</Badge>
-                      </div>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col md={3}>
-                <Card className="h-100 border-0 shadow-sm">
-                  <Card.Body className="text-center">
-                    <div className="text-muted small mb-1"><strong>Total Deviations</strong></div>
-                    <div className="row g-2 mt-1">
-                      <div className="col-6">
-                        <small className="text-muted d-block" style={{ fontSize: '0.7rem' }}>Contra Short</small>
-                        <Badge bg="dark">{contraBreakdown.contraShort}</Badge>
-                      </div>
-                      <div className="col-6">
-                        <small className="text-muted d-block" style={{ fontSize: '0.7rem' }}>Contra Excess</small>
-                        <Badge bg="secondary">{contraBreakdown.contraExcess}</Badge>
-                      </div>
-                      <div className="col-6">
-                        <small className="text-muted d-block" style={{ fontSize: '0.7rem' }}>Short</small>
-                        <Badge bg="danger">{contraBreakdown.short}</Badge>
-                      </div>
-                      <div className="col-6">
-                        <small className="text-muted d-block" style={{ fontSize: '0.7rem' }}>Excess</small>
-                        <Badge bg="warning">{contraBreakdown.excessShort}</Badge>
-                      </div>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            </>
-          )}
 
-          {/* New Deviation Summary Row (Appeared/Matched/Revised) */}
-          {auditStatus === 'completed' && (
-            <>
-              <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>Audit Accuracy</h6>
-              <Row className="g-3 mb-4">
+          {/* Card 3: Total Deviations */}
+          <Col md={4}>
+            <Card className="h-100 border-0 shadow-sm">
+              <Card.Body className="text-center">
+                <div className="text-muted small mb-1 fw-bold">TOTAL DEVIATIONS</div>
+                <h3 className="mb-0 text-danger">
+                  {RevisedSKUs || 0}
+                </h3>
+                <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
+                  <small className="text-muted d-block fw-bold">DEVIATION VALUE AT MRP</small>
+                  <span className="text-danger fw-bold">
+                    {RevisedValue >= 10000000
+                      ? `₹${(RevisedValue / 10000000).toFixed(2)}Cr`
+                      : RevisedValue >= 100000
+                        ? `₹${(RevisedValue / 100000).toFixed(2)}L`
+                        : `₹${formatIndianNumber(RevisedValue || 0)}`}
+                  </span>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+
+        {/* Audit Accuracy Section */}
+        {auditStatus === 'completed' && (
+          <>
+            <h6 className="text-muted text-uppercase mb-3 fw-bold" style={{ fontSize: '0.85rem' }}>Audit Accuracy</h6>
+            <Row className="g-3 mb-4">
                 <Col md={3}>
                   <Card className="border-0 shadow-sm border-start border-4 border-primary">
                     <Card.Body>
@@ -1273,7 +1278,6 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
               </Row>
             </>
           )}
-        </Row>
 
         {/* PIDs, Mismatches, Deviations Summary - Show for in-progress */}
         {auditStatus === 'in-progress' && (

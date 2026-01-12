@@ -73,6 +73,16 @@ const DetailsPage = ({ filters = {} }) => {
       return (Math.abs(h) % 4) + 1;
     };
 
+    const getAuditJobType = (id) => {
+      const options = ['Expensive Category SKUs', 'Expiry', 'Full', 'partial', 'Returnable', 'Selected Skus', 'Slow Moving'];
+      let h = 0;
+      for (let i = 0; i < (id || '').length; i++) {
+        h = ((h << 5) - h) + id.charCodeAt(i);
+        h |= 0;
+      }
+      return options[Math.abs(h) % options.length];
+    };
+
     // Helper to get latest audit info for a store
     // Returns a single supervisor and 3-5 auditors (deterministically generated when missing)
     const getLatestAuditInfo = (storeId) => {
@@ -171,6 +181,7 @@ const DetailsPage = ({ filters = {} }) => {
         .filter(store => store.IsCovered)
         .map(store => ({
           storeId: store.StoreID,
+          storeIdName: `${store.StoreID}-${store.StoreName}`,
           city: store.State || '',
           storeName: store.StoreName,
           state: store.StateName,
@@ -178,7 +189,8 @@ const DetailsPage = ({ filters = {} }) => {
           boxType: getBoxType(store.StoreID),
           storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
           lastAuditedDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never',
-          auditJobType: store.LastAuditJobType || 'Full Audit',
+          auditJobType: getAuditJobType(store.StoreID),
+          leadSupervisor: getLatestAuditInfo(store.StoreID).supervisor,
           cycle: store.AuditCycle || getAuditCount(store.StoreID),
           skus: store.TotalSKUs,
           quantity: store.TotalQuantity,
@@ -566,31 +578,32 @@ const DetailsPage = ({ filters = {} }) => {
   const handleDownloadExcel = () => {
     const wb = utils.book_new();
     const headers = [
-      "STORE ID", "STORE NAME", "CITY", "STATE", "HUB TYPE", "STATUS", "BOX TYPE",
-      "STORE CREATED DATE", "LAST AUDITED DATE", "NO.OF AUDITS", "SKUS (count)",
-      "QUANTITY (units)", "INVENTORY VALUE MRP (₹)", "MISMATCH ITEMS", "DEVIATION ITEMS", "DEVIATION ITEMS VALUE MRP (₹)"
+      "Store ID-Name", "CITY", "STATE", "HUB TYPE", "STORE STATUS", "BOX TYPE",
+      "STORE CREATED DATE", "LAST AUDITED DATE", "AUDIT JOB TYPE", "LEAD SUPERVISOR", "NO.OF AUDITS", "AUDIT SKUS (count)",
+      "AUDIT QUANTITY (units)", "DEVIATION ITEMS VALUE MRP (₹)", "AUDIT VALUE MRP (₹)", "MISMATCH ITEMS", "DEVIATION ITEMS"
     ];
 
     const dataToExport = filteredData.map(row => {
       // Logic for Covered Stores and Uncovered Stores specific headers
       if (type === 'covered-stores' || type === 'uncovered-stores') {
         return {
-          "STORE ID": row.storeId,
-          "STORE NAME": row.storeName,
+          "Store ID-Name": row.storeIdName,
           "CITY": row.city,
           "STATE": row.state,
           "HUB TYPE": row.storeType,
-          "STATUS": row.status,
+          "STORE STATUS": row.status,
           "BOX TYPE": row.boxType,
           "STORE CREATED DATE": row.storeCreatedDate,
           "LAST AUDITED DATE": row.lastAuditedDate,
+          "AUDIT JOB TYPE": row.auditJobType,
+          "LEAD SUPERVISOR": row.leadSupervisor,
           "NO.OF AUDITS": row.cycle || 0,
-          "SKUS (count)": row.skus,
-          "QUANTITY (units)": row.quantity,
-          "INVENTORY VALUE MRP (₹)": row.inventoryValueMRP,
+          "AUDIT SKUS (count)": row.skus,
+          "AUDIT QUANTITY (units)": row.quantity,
+          "DEVIATION ITEMS VALUE MRP (₹)": row.deviationValueMRP || 0,
+          "AUDIT VALUE MRP (₹)": row.inventoryValueMRP,
           "MISMATCH ITEMS": row.mismatch || 0,
-          "DEVIATION ITEMS": row.deviation || 0,
-          "DEVIATION ITEMS VALUE MRP (₹)": row.deviationValueMRP || 0
+          "DEVIATION ITEMS": row.deviation || 0
         };
       } else {
         // Default generic export for other views
@@ -612,9 +625,9 @@ const DetailsPage = ({ filters = {} }) => {
       const aoaData = [headers];
       dataToExport.forEach(r => {
         aoaData.push([
-          r["STORE ID"], r["STORE NAME"], r["CITY"], r["STATE"], r["HUB TYPE"], r["STATUS"], r["BOX TYPE"],
-          r["STORE CREATED DATE"], r["LAST AUDITED DATE"], r["NO.OF AUDITS"], r["SKUS (count)"],
-          r["QUANTITY (units)"], r["INVENTORY VALUE MRP (₹)"], r["MISMATCH ITEMS"], r["DEVIATION ITEMS"]
+          r["Store ID-Name"], r["CITY"], r["STATE"], r["HUB TYPE"], r["STORE STATUS"], r["BOX TYPE"],
+          r["STORE CREATED DATE"], r["LAST AUDITED DATE"], r["AUDIT JOB TYPE"], r["LEAD SUPERVISOR"], r["NO.OF AUDITS"], r["AUDIT SKUS (count)"],
+          r["AUDIT QUANTITY (units)"], r["DEVIATION ITEMS VALUE MRP (₹)"], r["AUDIT VALUE MRP (₹)"], r["MISMATCH ITEMS"], r["DEVIATION ITEMS"]
         ]);
       });
       ws = utils.aoa_to_sheet(aoaData);
@@ -639,16 +652,16 @@ const DetailsPage = ({ filters = {} }) => {
     if (type === 'covered-stores' || type === 'uncovered-stores') {
       // Use abbreviated headers for PDF to fit
       headers = [
-        "ID", "Store", "City", "State", "Hub Type", "Status", "Box",
-        "Created", "Audited", "Audits", "SKUs",
-        "Qty", "Inv Value", "Mis", "Dev"
+        "ID-Name", "City", "State", "Type", "Status", "Box",
+        "Created", "Audited", "Job Type", "Sup", "Cnt", "SKUs",
+        "Qty", "Dev Val", "Aud Val", "Mis", "Dev"
       ];
 
       tableData = filteredData.map(row => {
         return [
-          row.storeId, row.storeName, row.city, row.state, row.storeType, row.status, row.boxType,
-          row.storeCreatedDate, row.lastAuditedDate, row.cycle || 0, row.skus,
-          row.quantity, '₹' + (row.inventoryValueMRP || 0).toLocaleString('en-IN'),
+          row.storeIdName, row.city, row.state, row.storeType, row.status, row.boxType,
+          row.storeCreatedDate, row.lastAuditedDate, row.auditJobType, row.leadSupervisor, row.cycle || 0, row.skus,
+          row.quantity, '₹' + (row.deviationValueMRP || 0).toLocaleString('en-IN'), '₹' + (row.inventoryValueMRP || 0).toLocaleString('en-IN'),
           row.mismatch || 0, row.deviation || 0
         ];
       });
@@ -696,6 +709,10 @@ const DetailsPage = ({ filters = {} }) => {
     setFilterCity('');
   };
 
+  const clearUrlFilters = () => {
+    navigate(`/details?title=${encodeURIComponent(title)}&type=${type}`, { replace: true });
+  };
+
   const toggleMismatchDetails = (storeId) => {
     setExpandedRows(prev => ({
       ...prev,
@@ -737,24 +754,22 @@ const DetailsPage = ({ filters = {} }) => {
   const formatColumnHeader = (key) => {
     // Handle specific column name mappings
     if (key === 'storeId') return 'STORE ID';
+    if (key === 'storeIdName') return 'Store ID-Name';
     if (key === 'storeName') return 'STORE NAME';
     if (key === 'city') return 'CITY';
     if (key === 'state') return 'STATE';
     if (key === 'state') return 'STATE';
-    if (key === 'storeType') return 'STORE TYPE';
+    if (key === 'storeType') return 'HUB TYPE';
     if (key === 'boxType') return 'BOX TYPE';
     if (key === 'storeCreatedDate') return 'STORE CREATED DATE';
     if (key === 'lastAuditedDate') return 'LAST AUDITED DATE';
     if (key === 'lastAudit') return 'LAST AUDIT';
     if (key === 'cycle') return 'NO.OF AUDITS';
-    if (key === 'auditJobType') return 'AUDIT TYPE';
-    if (key === 'inventoryValueMRP') return 'INVENTORY VALUE MRP (₹)';
-    if (key === 'daysSinceCreation') return 'NO. OF DAYS/MONTHS';
-    if (key === 'daysSinceLastAudit') return 'DAYS SINCE LAST AUDIT';
-    if (key === 'status') return 'STORE STATUS';
-    if (key === 'supervisor') return 'SUPERVISOR';
-    if (key === 'auditors') return 'AUDITORS';
-    if (key === 'inventoryValueMRP') return 'INVENTORY VALUE MRP (₹)';
+    if (key === 'auditJobType') return 'AUDIT JOB TYPE';
+    if (key === 'leadSupervisor') return 'LEAD SUPERVISOR';
+    if (key === 'skus') return 'AUDIT SKUS (count)';
+    if (key === 'quantity') return 'AUDIT QUANTITY (units)';
+    if (key === 'inventoryValueMRP') return 'AUDIT VALUE MRP (₹)';
     if (key === 'mismatch') return 'MISMATCH ITEMS';
     if (key === 'deviation') return 'DEVIATION ITEMS';
     if (key === 'deviationValueMRP') return 'DEVIATION ITEMS VALUE MRP (₹)';
@@ -797,8 +812,7 @@ const DetailsPage = ({ filters = {} }) => {
     // For covered-stores and uncovered-stores, use specific order
     if (type === 'covered-stores' || type === 'uncovered-stores') {
       const orderedKeys = [
-        'storeId',
-        'storeName',
+        'storeIdName',
         'city',
         'state',
         'storeType',
@@ -807,13 +821,14 @@ const DetailsPage = ({ filters = {} }) => {
         'storeCreatedDate',
         'lastAuditedDate',
         'auditJobType',
+        'leadSupervisor',
         'cycle',
         'skus',
         'quantity',
+        'deviationValueMRP',
         'inventoryValueMRP',
         'mismatch',
-        'deviation',
-        'deviationValueMRP'
+        'deviation'
       ];
 
       // Include only columns that exist in the data and match the ordered list
@@ -897,6 +912,14 @@ const DetailsPage = ({ filters = {} }) => {
               </p>
             </div>
             <div className="d-flex gap-2">
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={() => { resetFilters(); clearUrlFilters(); }}
+                className="me-1"
+              >
+                Clear
+              </Button>
               <Button
                 variant="outline-primary"
                 size="sm"
@@ -1024,6 +1047,13 @@ const DetailsPage = ({ filters = {} }) => {
                   </Form.Select>
                 </Col>
               )}
+            </Row>
+            <Row className="mt-3">
+              <Col className="d-flex justify-content-end gap-2">
+                <Button variant="primary" size="sm" onClick={() => setShowTableFilters(false)}>
+                  Apply
+                </Button>
+              </Col>
             </Row>
           </Card.Body>
         </Card >

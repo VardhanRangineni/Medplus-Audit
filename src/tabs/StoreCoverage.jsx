@@ -12,7 +12,7 @@ import './StoreCoverage.css';
 const StoreCoverage = ({ filters = {} }) => {
   const navigate = useNavigate();
   const [selectedDeviation, setSelectedDeviation] = useState(null);
-  const [recencyView, setRecencyView] = useState('quarterly'); // quarterly, half-yearly, yearly
+  const [recencyView, setRecencyView] = useState('monthly'); // quarterly, half-yearly, yearly
 
   // Helper function to format numbers in Indian numbering system
   const formatIndianNumber = (num) => {
@@ -1002,7 +1002,7 @@ const StoreCoverage = ({ filters = {} }) => {
                     dataKey="stores"
                     fill="#0d6efd"
                     radius={[5, 5, 0, 0]}
-                    onClick={(data) => navigate(`/details?title=${encodeURIComponent(`Recency: ${data.range}`)}&type=covered-stores&recencyRange=${encodeURIComponent(data.range)}&recencyView=${recencyView}`)}
+                    onClick={(data) => navigate(`/details?title=Audited%20Stores&type=covered-stores&recencyRange=${encodeURIComponent(data.range)}&recencyView=${recencyView}`)}
                     cursor="pointer"
                     label={{ position: 'top', fill: '#000', fontSize: 14 }}
                   />

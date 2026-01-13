@@ -418,7 +418,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
 
     // Add header row with Initial Auditor, User ID, Remarks and Description columns
     remarksData.push([
-      "Initial Auditor", "User ID", "Product Form", "Product ID", "SKU", "Product Name",
+      "Initial Auditor Name", "Initial Auditor Emp ID", "Product Form", "Product ID", "SKU", "Product Name",
       "Batch No", "System Qty", "Physical Qty", "Difference", "Unit Price (₹)",
       "Total Value (₹)", "Expiry Date", "Remarks", "Description"
     ]);
@@ -857,8 +857,16 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         duration = 'N/A';
       }
 
+      // Generate description similar to PID allotment (location codes)
+      const locationPrefixes = ['R', 'C', 'H', 'A', 'S', 'B'];
+      const locationPrefix = locationPrefixes[i % locationPrefixes.length];
+      const locationNumber = Math.floor(i / 6) + 1;
+      const locationSubNumber = 10 + (i * 13) % 90;
+      const description = `${locationPrefix}${locationNumber}-${locationSubNumber}`;
+
       pids.push({
         pid: `PID${(auditorIndex + 1) * 1000 + i + 1}`,
+        description: description,
         skuCount: skuCountForPID,
         status: status,
         startTime: status !== 'Created' ? startTime : 'N/A',
@@ -1546,6 +1554,9 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                             <td className="ps-4">
                               <i className="fas fa-box text-secondary me-2"></i>
                               <strong>{pid.pid}</strong>
+                            </td>
+                            <td>
+                              <span className="text-muted small">{pid.description}</span>
                             </td>
                             {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
                               <>

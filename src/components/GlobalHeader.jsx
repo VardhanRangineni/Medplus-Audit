@@ -139,9 +139,10 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideF
                 <i className="fas fa-refresh"></i>
                 Refresh Now
               </Button>
-              <div className="d-flex align-items-center gap-1">
-                <label className="form-label mb-0"><strong>Financial Year:</strong></label>
-                {!hideFinancialYear && !hideFilters && (
+              
+              {!hideFinancialYear && !hideFilters && (
+                <div className="d-flex align-items-center gap-1">
+                  <label className="form-label mb-0"><strong>Financial Year:</strong></label>
                   <div style={{ width: '150px' }}>
                     <Select
                       options={showLimitedFinancialYears ? [
@@ -161,8 +162,8 @@ const GlobalHeader = ({ filters, onFilterChange, lastRefreshed, onRefresh, hideF
                       classNamePrefix="react-select"
                     />
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </Col>
         </Row>

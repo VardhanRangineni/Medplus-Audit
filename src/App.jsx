@@ -34,8 +34,10 @@ function AppContent() {
 
   // Hide filters for Store PID Allotment page
   const hideFilters = location.pathname === '/store-pid-allotment';
-  // Hide Financial Year filter for Live Audit page
-  const hideFinancialYear = location.pathname === '/live-audit';
+  
+  // Show Financial Year ONLY for these 3 pages: auditor performance, supervisor approvals, and store coverage
+  const showFinancialYear = ['/', '/auditor-performance', '/supervisor-approvals'].includes(location.pathname);
+  const hideFinancialYear = !showFinancialYear;
 
   // Show limited financial years (Current/Client) for specific pages
   const showLimitedFinancialYears = ['/auditor-performance', '/supervisor-approvals'].includes(location.pathname);

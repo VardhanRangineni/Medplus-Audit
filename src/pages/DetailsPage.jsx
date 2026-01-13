@@ -45,13 +45,13 @@ const DetailsPage = ({ filters = {} }) => {
   const formatInventoryValue = (value) => {
     if (!value || isNaN(value)) return '₹0';
     const numValue = Number(value);
-    
+
     // If value is 1 crore or more, show in crores
     if (numValue >= 10000000) {
       const crores = (numValue / 10000000).toFixed(0);
       return `₹${crores}cr`;
     }
-    
+
     // Otherwise show exact value with Indian formatting
     return `₹${numValue.toLocaleString('en-IN')}`;
   };
@@ -100,6 +100,15 @@ const DetailsPage = ({ filters = {} }) => {
         h |= 0;
       }
       return options[Math.abs(h) % options.length];
+    };
+
+    const getProcessType = (id) => {
+      let h = 0;
+      for (let i = 0; i < (id || '').length; i++) {
+        h = ((h << 5) - h) + id.charCodeAt(i);
+        h |= 0;
+      }
+      return ['Product', 'Batch'][Math.abs(h) % 2];
     };
 
     // Helper to get latest audit info for a store
@@ -199,12 +208,12 @@ const DetailsPage = ({ filters = {} }) => {
           let supervisorInfo, auditInfo;
           if (type === 'supervisor' && supervisorIdParam) {
             // Find the audit by this specific supervisor for this store
-            const supervisorAudits = auditDataset.filter(a => 
+            const supervisorAudits = auditDataset.filter(a =>
               a.StoreID === store.StoreID && a.SupervisorID === supervisorIdParam
             );
             if (supervisorAudits.length > 0) {
               // Get the most recent audit by this supervisor
-              const latestSupervisorAudit = supervisorAudits.sort((a, b) => 
+              const latestSupervisorAudit = supervisorAudits.sort((a, b) =>
                 new Date(b.AuditEndDate || b.AuditStartDate) - new Date(a.AuditEndDate || a.AuditStartDate)
               )[0];
               supervisorInfo = latestSupervisorAudit.SupervisorName;
@@ -227,7 +236,7 @@ const DetailsPage = ({ filters = {} }) => {
             });
             if (auditorAudits.length > 0) {
               // Get the most recent audit by this auditor
-              const latestAuditorAudit = auditorAudits.sort((a, b) => 
+              const latestAuditorAudit = auditorAudits.sort((a, b) =>
                 new Date(b.AuditEndDate || b.AuditStartDate) - new Date(a.AuditEndDate || a.AuditStartDate)
               )[0];
               supervisorInfo = latestAuditorAudit.SupervisorName;
@@ -238,9 +247,15 @@ const DetailsPage = ({ filters = {} }) => {
               };
             }
           }
-          
+
           const latestInfo = getLatestAuditInfo(store.StoreID);
-          
+
+          // Extract deviation breakdown values from Deviations array
+          const getDeviationValue = (deviations, type) => {
+            const deviation = deviations?.find(d => d.type === type);
+            return deviation?.value || 0;
+          };
+
           return {
             storeId: store.StoreID,
             storeName: store.StoreName,
@@ -251,29 +266,30 @@ const DetailsPage = ({ filters = {} }) => {
             storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
             auditStartDate: auditInfo?.startDate || (store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never'),
             auditJobType: auditInfo?.jobType || getAuditJobType(store.StoreID),
+            processType: store.AuditProcessType || getProcessType(store.StoreID),
             leadSupervisor: supervisorInfo || latestInfo.supervisor,
             auditorsCount: latestInfo.auditors ? latestInfo.auditors.split(',').length : 0,
-          cycle: store.AuditCycle || getAuditCount(store.StoreID),
-          skus: store.TotalSKUs,
-          quantity: store.TotalQuantity,
-          mismatch: store.MatchedSKUs || 0,
-          deviation: store.RevisedSKUs || 0,
-          deviationValueMRP: store.TotalDeviationValue || store.RevisedValue || 0,
-          deviations: store.Deviations || [],
-          rawLastAuditDate: store.LastAuditDate,
-          recencyQuarter: store.RecencyQuarter,
-          short: 0,
-          shortValue: 0,
-          excess: 0,
-          excessValue: 0,
-          contraExcess: 0,
-          contraExcessValue: 0,
-          contraShort: 0,
-          contraShortValue: 0,
-          status: store.IsActive !== false ? 'Active' : 'Inactive',
-          inventoryValueMRP: store.InventoryValue
-        };
-      });
+            cycle: store.AuditCycle || getAuditCount(store.StoreID),
+            skus: store.TotalSKUs,
+            quantity: store.TotalQuantity,
+            mismatch: store.MatchedSKUs || 0,
+            deviation: store.RevisedSKUs || 0,
+            deviationValueMRP: store.TotalDeviationValue || store.RevisedValue || 0,
+            deviations: store.Deviations || [],
+            rawLastAuditDate: store.LastAuditDate,
+            recencyQuarter: store.RecencyQuarter,
+            short: getDeviationValue(store.Deviations, 'Short'),
+            shortValue: getDeviationValue(store.Deviations, 'Short'),
+            excess: getDeviationValue(store.Deviations, 'Excess'),
+            excessValue: getDeviationValue(store.Deviations, 'Excess'),
+            contraExcess: getDeviationValue(store.Deviations, 'Contra Excess'),
+            contraExcessValue: getDeviationValue(store.Deviations, 'Contra Excess'),
+            contraShort: getDeviationValue(store.Deviations, 'Contra Short'),
+            contraShortValue: getDeviationValue(store.Deviations, 'Contra Short'),
+            status: store.IsActive !== false ? 'Active' : 'Inactive',
+            inventoryValueMRP: store.InventoryValue
+          };
+        });
     } else if (type === 'uncovered-stores') {
       // Calculate days since last audit or store creation for uncovered stores
       const calculateDaysSince = (lastAuditDate, createdDate) => {
@@ -412,18 +428,18 @@ const DetailsPage = ({ filters = {} }) => {
         });
     } else if (type === 'audit-created') {
       return [
-        { storeId: 'MP015', storeName: 'Jaipur Pink City', state: 'RJ', supervisor: 'Vikram Singh', createdDate: '2024-12-08', scheduledDate: '2024-12-15', totalSKUs: 3200, auditors: 'Not Assigned', auditJobType: 'Full Audit', processType: 'Product Audit' },
-        { storeId: 'MP022', storeName: 'Lucknow Central', state: 'UP', supervisor: 'Sanjay Gupta', createdDate: '2024-12-09', scheduledDate: '2024-12-16', totalSKUs: 2800, auditors: 'Not Assigned', auditJobType: 'Partial/Random Audit', processType: 'Batch Audit' },
-        { storeId: 'MP033', storeName: 'Chandigarh Hub', state: 'PB', supervisor: 'Meera Kapoor', createdDate: '2024-12-10', scheduledDate: '2024-12-18', totalSKUs: 4100, auditors: 'Not Assigned', auditJobType: 'Full Audit', processType: 'Product Audit' },
-        { storeId: 'MP041', storeName: 'Indore Main', state: 'MP', supervisor: 'Rahul Joshi', createdDate: '2024-12-10', scheduledDate: '2024-12-20', totalSKUs: 3500, auditors: 'Not Assigned', auditJobType: 'Select SKUs', processType: 'Batch Audit' }
+        { storeId: 'MP015', storeName: 'Jaipur Pink City', state: 'RJ', supervisor: 'Vikram Singh', createdDate: '2024-12-08', scheduledDate: '2024-12-15', totalSKUs: 3200, auditors: 'Not Assigned', auditJobType: 'Full Audit', processType: 'Product' },
+        { storeId: 'MP022', storeName: 'Lucknow Central', state: 'UP', supervisor: 'Sanjay Gupta', createdDate: '2024-12-09', scheduledDate: '2024-12-16', totalSKUs: 2800, auditors: 'Not Assigned', auditJobType: 'Partial/Random Audit', processType: 'Batch' },
+        { storeId: 'MP033', storeName: 'Chandigarh Hub', state: 'PB', supervisor: 'Meera Kapoor', createdDate: '2024-12-10', scheduledDate: '2024-12-18', totalSKUs: 4100, auditors: 'Not Assigned', auditJobType: 'Full Audit', processType: 'Product' },
+        { storeId: 'MP041', storeName: 'Indore Main', state: 'MP', supervisor: 'Rahul Joshi', createdDate: '2024-12-10', scheduledDate: '2024-12-20', totalSKUs: 3500, auditors: 'Not Assigned', auditJobType: 'Select SKUs', processType: 'Batch' }
       ];
     } else if (type === 'audit-in-progress') {
       return [
-        { storeId: 'MP001', storeName: 'Chennai Central', state: 'TN', supervisor: 'Rajesh Kumar', startDate: '2024-12-01', progress: 77.4, completedSKUs: 3250, totalSKUs: 4200, daysRunning: 10, auditJobType: 'Full Audit', processType: 'Product Audit' },
-        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'KA', supervisor: 'Lakshmi Iyer', startDate: '2024-12-03', progress: 71.8, completedSKUs: 2800, totalSKUs: 3900, daysRunning: 8, auditJobType: 'Full Audit', processType: 'Batch Audit' },
-        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'TS', supervisor: 'Mohammed Ali', startDate: '2024-12-05', progress: 78.8, completedSKUs: 4100, totalSKUs: 5200, daysRunning: 6, auditJobType: 'Partial/Random Audit', processType: 'Product Audit' },
-        { storeId: 'MP004', storeName: 'Pune West', state: 'MH', supervisor: 'Pradeep Singh', startDate: '2024-12-07', progress: 59.7, completedSKUs: 1850, totalSKUs: 3100, daysRunning: 4, auditJobType: 'Select SKUs', processType: 'Batch Audit' },
-        { storeId: 'MP005', storeName: 'Mumbai Central', state: 'MH', supervisor: 'Neha Sharma', startDate: '2024-12-08', progress: 61.5, completedSKUs: 2950, totalSKUs: 4800, daysRunning: 3, auditJobType: 'Full Audit', processType: 'Product Audit' }
+        { storeId: 'MP001', storeName: 'Chennai Central', state: 'TN', supervisor: 'Rajesh Kumar', startDate: '2024-12-01', progress: 77.4, completedSKUs: 3250, totalSKUs: 4200, daysRunning: 10, auditJobType: 'Full Audit', processType: 'Product' },
+        { storeId: 'MP002', storeName: 'Bangalore Hub', state: 'KA', supervisor: 'Lakshmi Iyer', startDate: '2024-12-03', progress: 71.8, completedSKUs: 2800, totalSKUs: 3900, daysRunning: 8, auditJobType: 'Full Audit', processType: 'Batch' },
+        { storeId: 'MP003', storeName: 'Hyderabad Main', state: 'TS', supervisor: 'Mohammed Ali', startDate: '2024-12-05', progress: 78.8, completedSKUs: 4100, totalSKUs: 5200, daysRunning: 6, auditJobType: 'Partial/Random Audit', processType: 'Product' },
+        { storeId: 'MP004', storeName: 'Pune West', state: 'MH', supervisor: 'Pradeep Singh', startDate: '2024-12-07', progress: 59.7, completedSKUs: 1850, totalSKUs: 3100, daysRunning: 4, auditJobType: 'Select SKUs', processType: 'Batch' },
+        { storeId: 'MP005', storeName: 'Mumbai Central', state: 'MH', supervisor: 'Neha Sharma', startDate: '2024-12-08', progress: 61.5, completedSKUs: 2950, totalSKUs: 4800, daysRunning: 3, auditJobType: 'Full Audit', processType: 'Product' }
       ];
     } else if (type === 'audit-pending') {
       return [
@@ -665,8 +681,8 @@ const DetailsPage = ({ filters = {} }) => {
     const wb = utils.book_new();
     const headers = [
       "Store ID-Name", "CITY", "STATE", "HUB TYPE", "STORE STATUS", "BOX TYPE",
-      "STORE CREATED DATE", "AUDIT START DATE", "AUDIT JOB TYPE", "LEAD SUPERVISOR", "AUDITORS (count)", "AUDITED SKUS",
-      "AUDITED QTY (units)", "AUDITED VALUE MRP (₹)", "DEVIATION VALUE MRP (₹)", "TOTAL MISMATCH ITEMS", "TOTAL DEVIATION ITEMS"
+      "STORE CREATED DATE", "AUDIT START DATE", "AUDIT JOB TYPE", "AUDIT PROCESS TYPE", "LEAD SUPERVISOR", "AUDITORS (count)", "AUDITED SKUS",
+      "AUDITED QTY (units)", "AUDITED VALUE MRP (₹)", "DEVIATION VALUE MRP (₹)", "Deviation Short (MRP ₹)", "Deviation Contra Short (MRP ₹)", "Deviation Contra Excess (MRP ₹)", "Deviation Excess (MRP ₹)", "TOTAL MISMATCH ITEMS", "TOTAL DEVIATION ITEMS"
     ];
 
     const dataToExport = filteredData.map(row => {
@@ -683,12 +699,17 @@ const DetailsPage = ({ filters = {} }) => {
           "STORE CREATED DATE": row.storeCreatedDate,
           "AUDIT START DATE": row.auditStartDate,
           "AUDIT JOB TYPE": row.auditJobType,
+          "AUDIT PROCESS TYPE": row.processType || 'N/A',
           "LEAD SUPERVISOR": row.leadSupervisor,
           "AUDITORS (count)": row.auditorsCount,
           "AUDITED SKUS": row.skus,
           "AUDITED QTY (units)": row.quantity,
           "AUDITED VALUE MRP (₹)": row.inventoryValueMRP,
           "DEVIATION VALUE MRP (₹)": row.deviationValueMRP || 0,
+          "Deviation Short (MRP ₹)": row.shortValue || 0,
+          "Deviation Contra Short (MRP ₹)": row.contraShortValue || 0,
+          "Deviation Contra Excess (MRP ₹)": row.contraExcessValue || 0,
+          "Deviation Excess (MRP ₹)": row.excessValue || 0,
           "TOTAL MISMATCH ITEMS": row.mismatch || 0,
           "TOTAL DEVIATION ITEMS": row.deviation || 0
         };
@@ -714,7 +735,7 @@ const DetailsPage = ({ filters = {} }) => {
         aoaData.push([
           r["Store ID-Name"], r["CITY"], r["STATE"], r["HUB TYPE"], r["STORE STATUS"], r["BOX TYPE"],
           r["STORE CREATED DATE"], r["AUDIT START DATE"], r["AUDIT JOB TYPE"], r["LEAD SUPERVISOR"], r["AUDITORS (count)"], r["AUDITED SKUS"],
-          r["AUDITED QTY (units)"], r["AUDITED VALUE MRP (₹)"], r["DEVIATION VALUE MRP (₹)"], r["TOTAL MISMATCH ITEMS"], r["TOTAL DEVIATION ITEMS"]
+          r["AUDITED QTY (units)"], r["AUDITED VALUE MRP (₹)"], r["DEVIATION VALUE MRP (₹)"], r["Deviation Short (MRP ₹)"], r["Deviation Contra Short (MRP ₹)"], r["Deviation Contra Excess (MRP ₹)"], r["Deviation Excess (MRP ₹)"], r["TOTAL MISMATCH ITEMS"], r["TOTAL DEVIATION ITEMS"]
         ]);
       });
       ws = utils.aoa_to_sheet(aoaData);
@@ -861,6 +882,10 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'mismatch') return 'TOTAL MISMATCH ITEMS';
     if (key === 'deviation') return 'TOTAL DEVIATION ITEMS';
     if (key === 'deviationValueMRP') return 'DEVIATION VALUE MRP (₹)';
+    if (key === 'shortValue') return 'Deviation Short (MRP ₹)';
+    if (key === 'contraShortValue') return 'Deviation Contra Short (MRP ₹)';
+    if (key === 'contraExcessValue') return 'Deviation Contra Excess (MRP ₹)';
+    if (key === 'excessValue') return 'Deviation Excess (MRP ₹)';
     if (key === 'deviationCount') return 'TOTAL DEVIATION ITEMS COUNT (items)';
 
     // First, handle the splitting while preserving common acronyms
@@ -887,7 +912,8 @@ const DetailsPage = ({ filters = {} }) => {
 
   // Helper function to filter out deviation detail columns from table display
   const shouldHideColumn = (key) => {
-    const hiddenColumns = ['short', 'shortValue', 'excess', 'excessValue', 'contraExcess', 'contraExcessValue', 'contraShort', 'contraShortValue'];
+    // Only hide the count columns, not the value columns (we're now showing value columns)
+    const hiddenColumns = ['short', 'excess', 'contraExcess', 'contraShort'];
     return hiddenColumns.includes(key);
   };
 
@@ -899,41 +925,46 @@ const DetailsPage = ({ filters = {} }) => {
 
     // For covered-stores, supervisor view, auditor view, and uncovered-stores, use specific order
     if (type === 'covered-stores' || type === 'supervisor' || type === 'auditor' || type === 'uncovered-stores') {
-      const orderedKeys = type === 'uncovered-stores' 
+      const orderedKeys = type === 'uncovered-stores'
         ? [
-            'storeId',
-            'storeName',
-            'city',
-            'state',
-            'storeType',
-            'status',
-            'boxType',
-            'storeCreatedDate',
-            'lastAuditedDate',
-            'skus',
-            'quantity',
-            'inventoryValueMRP'
-          ]
+          'storeId',
+          'storeName',
+          'city',
+          'state',
+          'storeType',
+          'status',
+          'boxType',
+          'storeCreatedDate',
+          'lastAuditedDate',
+          'skus',
+          'quantity',
+          'inventoryValueMRP'
+        ]
         : [
-            'storeId',
-            'storeName',
-            'city',
-            'state',
-            'storeType',
-            'status',
-            'boxType',
-            'storeCreatedDate',
-            'auditStartDate',
-            'auditJobType',
-            'leadSupervisor',
-            'auditorsCount',
-            'skus',
-            'quantity',
-            'inventoryValueMRP',
-            'deviationValueMRP',
-            'mismatch',
-            'deviation'
-          ];
+          'storeId',
+          'storeName',
+          'city',
+          'state',
+          'storeType',
+          'status',
+          'boxType',
+          'storeCreatedDate',
+          'auditStartDate',
+          'auditJobType',
+          'processType',
+          'leadSupervisor',
+          'auditorsCount',
+          'skus',
+          'quantity',
+          'inventoryValueMRP',
+          'deviationValueMRP',
+          'shortValue',
+          'contraShortValue',
+          'contraExcessValue',
+          'excessValue',
+          'mismatch',
+          'deviation'
+        ];
 
       // Include only columns that exist in the data and match the ordered list
       return orderedKeys.filter(key => allKeys.includes(key));
@@ -1096,11 +1127,11 @@ const DetailsPage = ({ filters = {} }) => {
                 <i className="fas fa-arrow-left me-2"></i>Back
               </Button>
               <h2 className="mb-0">
-                {type === 'supervisor' && supervisorNameParam 
-                  ? `Audited Stores - ${supervisorNameParam}` 
-                  : type === 'auditor' && auditorNameParam 
-                  ? `Audited Stores - ${auditorNameParam}`
-                  : title}
+                {type === 'supervisor' && supervisorNameParam
+                  ? `Audited Stores - ${supervisorNameParam}`
+                  : type === 'auditor' && auditorNameParam
+                    ? `Audited Stores - ${auditorNameParam}`
+                    : title}
               </h2>
               <p className="text-muted">
                 Showing {filteredData.length} of {data.length} records
@@ -1136,7 +1167,7 @@ const DetailsPage = ({ filters = {} }) => {
                   <Dropdown.Item onClick={handleDownloadExcel}>
                     <i className="fas fa-file-excel text-success me-2"></i>Export as Excel
                   </Dropdown.Item>
-                  
+
                 </Dropdown.Menu>
               </Dropdown>
             </div>
@@ -1255,6 +1286,18 @@ const DetailsPage = ({ filters = {} }) => {
         </Card >
       )}
 
+      {/* Show Last Updated text for audited and non-audited stores */}
+      {(type === 'covered-stores' || type === 'uncovered-stores') && (
+        <Row className="mb-3">
+          <Col>
+            <div className="text-muted small">
+              <i className="fas fa-calendar-check me-2"></i>
+              Store Inventory details last updated on <strong>05 Jan 2026</strong>
+            </div>
+          </Col>
+        </Row>
+      )}
+
       <Card>
         <Card.Body className="p-0">
           <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
@@ -1308,8 +1351,8 @@ const DetailsPage = ({ filters = {} }) => {
                                 <Badge bg="success">{value}</Badge>
                               ) : key === 'inventoryValue' || key === 'inventoryValueMRP' ? (
                                 formatInventoryValue(value)
-                              ) : key === 'value' || key === 'deviationValueMRP' ? (
-                                `₹${Number(value).toLocaleString()}`
+                              ) : key === 'value' || key === 'deviationValueMRP' || key === 'shortValue' || key === 'contraShortValue' || key === 'contraExcessValue' || key === 'excessValue' ? (
+                                `₹${Number(value || 0).toLocaleString()}`
                               ) : key === 'mismatch' && row.mismatchDetails ? (
                                 <span>
                                   {value} <i className={`fas fa-chevron-${expandedRows[row.storeId] ? 'up' : 'down'} ms-2`}></i>

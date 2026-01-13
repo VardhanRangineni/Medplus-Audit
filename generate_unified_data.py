@@ -260,16 +260,30 @@ def generate_unified_dataset():
                 supervisor = random.choice(SUPERVISORS)
                 auditor = random.choice(AUDITORS)
                 
-                # Audit dates
-                days_ago = random.randint(30, 365)
-                audit_end = datetime.now() - timedelta(days=days_ago)
-                audit_start = audit_end - timedelta(days=random.randint(1, 5))
-                
                 status = random.choices(
                     AUDIT_STATUS,
                     weights=[70, 15, 10, 5],  # Mostly completed
                     k=1
                 )[0]
+                
+                # Audit dates based on status
+                if status == "Completed":
+                    # Some completed today, rest in the past
+                    if random.random() < 0.15:  # 15% completed today
+                        audit_end = datetime.now()
+                        audit_start = audit_end - timedelta(days=random.randint(1, 3))
+                    else:
+                        days_ago = random.randint(7, 90)
+                        audit_end = datetime.now() - timedelta(days=days_ago)
+                        audit_start = audit_end - timedelta(days=random.randint(1, 5))
+                elif status == "In Progress":
+                    # Started in recent past, ongoing
+                    audit_start = datetime.now() - timedelta(days=random.randint(1, 7))
+                    audit_end = datetime.now() + timedelta(days=random.randint(1, 3))
+                else:  # Created/Pending
+                    # Future audits
+                    audit_start = datetime.now() + timedelta(days=random.randint(5, 30))
+                    audit_end = audit_start + timedelta(days=random.randint(2, 5))
                 
                 # Auditor allocation (20-40% of store SKUs)
                 allotted_skus = int(store["TotalSKUs"] * random.uniform(0.2, 0.4))
@@ -483,9 +497,15 @@ def generate_unified_dataset():
     with open('src/data/auditors.json', 'w', encoding='utf-8') as f:
         json.dump(auditors_data, f, indent=2)
     
-    # Generate live audit schedule data (ongoing/upcoming audits)
+    # Generate live audit schedule data (ongoing/upcoming audits + today's completed)
     print("Generating live audit schedule...")
-    live_audits = [r for r in audit_records if r["Status"] in ["In Progress", "Created"]]
+    today = datetime.now().date()
+    live_audits = [
+        r for r in audit_records 
+        if r["Status"] in ["In Progress", "Created"] or 
+        (r["Status"] == "Completed" and r.get("AuditEndDate") and 
+         datetime.strptime(r["AuditEndDate"], "%Y-%m-%d").date() == today)
+    ]
     with open('src/data/live_audit_schedule_data.json', 'w', encoding='utf-8') as f:
         json.dump(live_audits, f, indent=2)
     

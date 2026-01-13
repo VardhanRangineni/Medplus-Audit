@@ -19,7 +19,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         <Modal.Header closeButton className="bg-primary text-white">
           <Modal.Title>
             <i className="fas fa-store me-2"></i>
-            Store Audit Details
+            {auditStatus === 'in-progress' ? 'Ongoing Store Audits' : 'Store Audit Details'}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-4">
@@ -1026,7 +1026,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         <div className="d-flex w-100 justify-content-between align-items-center pe-3">
           <Modal.Title>
             <i className="fas fa-store me-2"></i>
-            {storeId} - Store Audit Details
+            {storeId} - {auditStatus === 'in-progress' ? 'Ongoing Store Audits' : 'Store Audit Details'}
           </Modal.Title>
           <Dropdown>
             <Dropdown.Toggle

@@ -46,14 +46,19 @@ const LiveAuditSchedule = ({ filters = {} }) => {
 
       if (auditData) {
         // Transform auditor data to match modal expected structure
-        const transformedAuditors = auditData.AuditorID ? [{
-          name: auditData.AuditorName || 'Unknown',
-          assignedSKUs: auditData.AuditorAllottedSKUs || 0,
-          completedSKUs: auditData.CompletedSKUs || 0,
+        // Support multiple auditors
+        const auditorNames = auditData.AuditorNames ? auditData.AuditorNames.split(',').map(n => n.trim()) : [auditData.AuditorName];
+        const auditorIds = auditData.AuditorIDs ? auditData.AuditorIDs.split(',').map(id => id.trim()) : [auditData.AuditorID];
+        const auditorCount = auditData.AuditorCount || 1;
+        
+        const transformedAuditors = auditorNames.map((name, idx) => ({
+          name: name || 'Unknown',
+          assignedSKUs: Math.round((auditData.AuditorAllottedSKUs || 0) / auditorCount),
+          completedSKUs: Math.round((auditData.CompletedSKUs || 0) / auditorCount),
           completionRate: auditData.CompletionPercent || 0,
           matchRate: ((auditData.MatchedSKUs || 0) / (auditData.AppearedSKUs || 1)) * 100,
-          valueCovered: auditData.AuditorAuditedValue || 0
-        }] : [];
+          valueCovered: Math.round((auditData.AuditorAuditedValue || 0) / auditorCount)
+        }));
 
         // Transform deviation details to deviations and contra
         const deviationMap = {};
@@ -241,8 +246,8 @@ const LiveAuditSchedule = ({ filters = {} }) => {
         storeName: audit.StoreName,
         state: audit.State,
         supervisor: audit.SupervisorName,
-        noOfAuditors: 1, // Single auditor per audit in new structure
-        auditors: audit.AuditorName,
+        noOfAuditors: audit.AuditorCount || 1,
+        auditors: audit.AuditorNames || audit.AuditorName,
         startDate: startDate.toISOString().split('T')[0],
         endDate: endDate ? endDate.toISOString().split('T')[0] : null,
         totalPIDs: audit.StoreTotalPIDs,
@@ -537,9 +542,13 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                 <div>
                   <h5 className="mb-0 fw-bold">
                     <i className="fas fa-table me-2 text-primary"></i>
-                    Live Audit Schedule - {selectedStatus === 'in-progress' ? 'In Progress' : selectedStatus === 'pending' ? 'Yet to Start' : 'Completed'}
+                    {selectedStatus === 'in-progress' ? 'Audit in Progress' : selectedStatus === 'pending' ? 'Scheduled Audits' : 'Audits Completed Today'}
                   </h5>
-                  <small className="text-muted">Click on any row to view auditor-wise allocation and real-time progress</small>
+                  <small className="text-muted">
+                    {selectedStatus === 'in-progress' ? 'Click on any store to view real-time progress' : 
+                     selectedStatus === 'pending' ? 'Audits Yet To Start' : 
+                     'Click to view the details of the completed audits'}
+                  </small>
                 </div>
                 <div className="d-flex gap-2 align-items-center">
                   <Dropdown>
@@ -578,9 +587,9 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                       <th>Store Name</th>
                       <th>State</th>
                       <th>City</th>
-                      <th>Supervisor</th>
+                      <th>Lead Supervisor</th>
                       {selectedStatus === 'completed' ? <th>Auditors</th> : <th>Assigned Auditors</th>}
-                      <th>Start Date</th>
+                      <th>{selectedStatus === 'pending' ? 'Scheduled Date' : 'Start Date'}</th>
                       {selectedStatus === 'completed' && <th>End Date</th>}
                       {selectedStatus === 'completed' && <th>PIDs</th>}
                       {selectedStatus === 'completed' && <th>SKUs</th>}

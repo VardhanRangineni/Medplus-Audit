@@ -258,7 +258,15 @@ def generate_unified_dataset():
             
             for audit_num in range(num_audits):
                 supervisor = random.choice(SUPERVISORS)
-                auditor = random.choice(AUDITORS)
+                
+                # Select 1-5 auditors for this audit
+                num_auditors = random.randint(1, 5)
+                selected_auditors = random.sample(AUDITORS, num_auditors)
+                
+                # Primary auditor (first one)
+                primary_auditor = selected_auditors[0]
+                auditor_names = ", ".join([a["name"] for a in selected_auditors])
+                auditor_ids = ", ".join([a["id"] for a in selected_auditors])
                 
                 status = random.choices(
                     AUDIT_STATUS,
@@ -398,8 +406,11 @@ def generate_unified_dataset():
                     "StoreTotalQuantity": store["TotalQuantity"],
                     "StoreInventoryValue": store["InventoryValue"],
                     "StoreAuditValue": round(store["InventoryValue"], 2),
-                    "AuditorID": auditor["id"],
-                    "AuditorName": auditor["name"],
+                    "AuditorID": primary_auditor["id"],
+                    "AuditorName": primary_auditor["name"],
+                    "AuditorIDs": auditor_ids,
+                    "AuditorNames": auditor_names,
+                    "AuditorCount": num_auditors,
                     "AuditorAllottedPIDs": allotted_pids,
                     "AuditorAllottedSKUs": allotted_skus,
                     "AuditorAuditedValue": allotted_value,

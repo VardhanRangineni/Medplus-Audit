@@ -2,281 +2,281 @@
   {
     "id": "A001",
     "name": "Amit Singh",
-    "totalAudits": 5,
-    "totalSKUs": 13635,
-    "avgAccuracy": 94.3
+    "totalAudits": 4,
+    "totalSKUs": 18284,
+    "avgAccuracy": 93.1
   },
   {
     "id": "A002",
     "name": "Priya Sharma",
-    "totalAudits": 5,
-    "totalSKUs": 9253,
-    "avgAccuracy": 95.8
+    "totalAudits": 8,
+    "totalSKUs": 23094,
+    "avgAccuracy": 85.7
   },
   {
     "id": "A003",
     "name": "Suresh Kumar",
     "totalAudits": 6,
-    "totalSKUs": 24486,
-    "avgAccuracy": 85.2
+    "totalSKUs": 13161,
+    "avgAccuracy": 87.7
   },
   {
     "id": "A004",
     "name": "Deepak Reddy",
     "totalAudits": 4,
-    "totalSKUs": 11897,
-    "avgAccuracy": 86.4
+    "totalSKUs": 6444,
+    "avgAccuracy": 90.3
   },
   {
     "id": "A005",
     "name": "Anitha Rao",
-    "totalAudits": 5,
-    "totalSKUs": 11508,
-    "avgAccuracy": 87.7
+    "totalAudits": 3,
+    "totalSKUs": 10025,
+    "avgAccuracy": 96.1
   },
   {
     "id": "A006",
     "name": "Ravi Varma",
-    "totalAudits": 6,
-    "totalSKUs": 22688,
-    "avgAccuracy": 86.9
+    "totalAudits": 5,
+    "totalSKUs": 11569,
+    "avgAccuracy": 92.3
   },
   {
     "id": "A007",
     "name": "Sneha Patel",
-    "totalAudits": 7,
-    "totalSKUs": 16072,
-    "avgAccuracy": 94.4
+    "totalAudits": 2,
+    "totalSKUs": 5802,
+    "avgAccuracy": 93.0
   },
   {
     "id": "A008",
     "name": "Vijay Kumar",
-    "totalAudits": 7,
-    "totalSKUs": 19880,
+    "totalAudits": 5,
+    "totalSKUs": 12914,
     "avgAccuracy": 95.2
   },
   {
     "id": "A009",
     "name": "Pooja Desai",
     "totalAudits": 5,
-    "totalSKUs": 18895,
-    "avgAccuracy": 96.3
+    "totalSKUs": 14426,
+    "avgAccuracy": 85.2
   },
   {
     "id": "A010",
     "name": "Arun Nair",
-    "totalAudits": 6,
-    "totalSKUs": 13182,
-    "avgAccuracy": 89.2
+    "totalAudits": 9,
+    "totalSKUs": 17331,
+    "avgAccuracy": 93.1
   },
   {
     "id": "A011",
     "name": "Divya Singh",
     "totalAudits": 3,
-    "totalSKUs": 6038,
-    "avgAccuracy": 90.3
+    "totalSKUs": 13120,
+    "avgAccuracy": 93.3
   },
   {
     "id": "A012",
     "name": "Rohit Sharma",
-    "totalAudits": 5,
-    "totalSKUs": 15291,
-    "avgAccuracy": 93.6
+    "totalAudits": 7,
+    "totalSKUs": 22685,
+    "avgAccuracy": 97.2
   },
   {
     "id": "A013",
     "name": "Karan Mehta",
-    "totalAudits": 5,
-    "totalSKUs": 11417,
-    "avgAccuracy": 93.8
+    "totalAudits": 7,
+    "totalSKUs": 18192,
+    "avgAccuracy": 97.0
   },
   {
     "id": "A014",
     "name": "Meena Iyer",
     "totalAudits": 5,
-    "totalSKUs": 14968,
-    "avgAccuracy": 90.8
+    "totalSKUs": 19960,
+    "avgAccuracy": 87.4
   },
   {
     "id": "A015",
     "name": "Sanjay Gupta",
-    "totalAudits": 2,
-    "totalSKUs": 7375,
-    "avgAccuracy": 87.6
+    "totalAudits": 7,
+    "totalSKUs": 22464,
+    "avgAccuracy": 85.8
   },
   {
     "id": "A016",
     "name": "Rekha Nambiar",
-    "totalAudits": 8,
-    "totalSKUs": 27081,
-    "avgAccuracy": 93.3
+    "totalAudits": 14,
+    "totalSKUs": 25794,
+    "avgAccuracy": 88.5
   },
   {
     "id": "A017",
     "name": "Rahul Verma",
-    "totalAudits": 10,
-    "totalSKUs": 37995,
-    "avgAccuracy": 87.7
+    "totalAudits": 2,
+    "totalSKUs": 10680,
+    "avgAccuracy": 85.6
   },
   {
     "id": "A018",
     "name": "Manoj Naidu",
-    "totalAudits": 6,
-    "totalSKUs": 26554,
-    "avgAccuracy": 89.6
+    "totalAudits": 5,
+    "totalSKUs": 12317,
+    "avgAccuracy": 86.6
   },
   {
     "id": "A019",
     "name": "Swati Pillai",
-    "totalAudits": 5,
-    "totalSKUs": 7884,
-    "avgAccuracy": 96.3
+    "totalAudits": 10,
+    "totalSKUs": 18043,
+    "avgAccuracy": 90.1
   },
   {
     "id": "A020",
     "name": "Naveen Kumar",
-    "totalAudits": 5,
-    "totalSKUs": 6803,
-    "avgAccuracy": 96.2
+    "totalAudits": 3,
+    "totalSKUs": 9612,
+    "avgAccuracy": 95.9
   },
   {
     "id": "A021",
     "name": "Asha Reddy",
-    "totalAudits": 4,
-    "totalSKUs": 12618,
-    "avgAccuracy": 93.6
+    "totalAudits": 5,
+    "totalSKUs": 11663,
+    "avgAccuracy": 86.6
   },
   {
     "id": "A022",
     "name": "Venkat Rao",
-    "totalAudits": 3,
-    "totalSKUs": 9121,
-    "avgAccuracy": 91.4
+    "totalAudits": 2,
+    "totalSKUs": 9109,
+    "avgAccuracy": 92.2
   },
   {
     "id": "A023",
     "name": "Gayatri Menon",
-    "totalAudits": 10,
-    "totalSKUs": 30760,
-    "avgAccuracy": 97.3
+    "totalAudits": 4,
+    "totalSKUs": 12253,
+    "avgAccuracy": 91.9
   },
   {
     "id": "A024",
     "name": "Harish Chandra",
-    "totalAudits": 6,
-    "totalSKUs": 18042,
-    "avgAccuracy": 90.7
+    "totalAudits": 4,
+    "totalSKUs": 6176,
+    "avgAccuracy": 85.1
   },
   {
     "id": "A025",
     "name": "Shilpa Joshi",
-    "totalAudits": 6,
-    "totalSKUs": 21707,
-    "avgAccuracy": 88.3
+    "totalAudits": 4,
+    "totalSKUs": 12610,
+    "avgAccuracy": 93.1
   },
   {
     "id": "A026",
     "name": "Prakash Das",
     "totalAudits": 5,
-    "totalSKUs": 21441,
-    "avgAccuracy": 90.6
+    "totalSKUs": 18259,
+    "avgAccuracy": 88.4
   },
   {
     "id": "A027",
     "name": "Vidya Balan",
-    "totalAudits": 5,
-    "totalSKUs": 6378,
-    "avgAccuracy": 87.1
+    "totalAudits": 4,
+    "totalSKUs": 7863,
+    "avgAccuracy": 96.1
   },
   {
     "id": "A028",
     "name": "Srinivas Murthy",
-    "totalAudits": 5,
-    "totalSKUs": 6084,
-    "avgAccuracy": 95.2
+    "totalAudits": 4,
+    "totalSKUs": 12572,
+    "avgAccuracy": 87.3
   },
   {
     "id": "A029",
     "name": "Anjali Kapoor",
-    "totalAudits": 4,
-    "totalSKUs": 15562,
-    "avgAccuracy": 95.8
+    "totalAudits": 5,
+    "totalSKUs": 6619,
+    "avgAccuracy": 97.3
   },
   {
     "id": "A030",
     "name": "Krishna Prasad",
-    "totalAudits": 9,
-    "totalSKUs": 18556,
-    "avgAccuracy": 94.7
+    "totalAudits": 8,
+    "totalSKUs": 30809,
+    "avgAccuracy": 91.5
   },
   {
     "id": "A031",
     "name": "Leela Devi",
-    "totalAudits": 3,
-    "totalSKUs": 3869,
-    "avgAccuracy": 91.8
+    "totalAudits": 6,
+    "totalSKUs": 14296,
+    "avgAccuracy": 97.1
   },
   {
     "id": "A032",
     "name": "Subhash Gowda",
-    "totalAudits": 8,
-    "totalSKUs": 28237,
-    "avgAccuracy": 87.6
+    "totalAudits": 6,
+    "totalSKUs": 14751,
+    "avgAccuracy": 91.7
   },
   {
     "id": "A033",
     "name": "Madhavi Rao",
-    "totalAudits": 2,
-    "totalSKUs": 7022,
-    "avgAccuracy": 86.4
+    "totalAudits": 4,
+    "totalSKUs": 7428,
+    "avgAccuracy": 89.9
   },
   {
     "id": "A034",
     "name": "Raghav Sinha",
-    "totalAudits": 4,
-    "totalSKUs": 11783,
-    "avgAccuracy": 88.7
+    "totalAudits": 8,
+    "totalSKUs": 16973,
+    "avgAccuracy": 94.9
   },
   {
     "id": "A035",
     "name": "Sumitra Patil",
-    "totalAudits": 4,
-    "totalSKUs": 11257,
-    "avgAccuracy": 88.7
+    "totalAudits": 5,
+    "totalSKUs": 11824,
+    "avgAccuracy": 91.9
   },
   {
     "id": "A036",
     "name": "Gopal Krishnan",
-    "totalAudits": 5,
-    "totalSKUs": 18162,
-    "avgAccuracy": 87.3
+    "totalAudits": 3,
+    "totalSKUs": 9718,
+    "avgAccuracy": 85.8
   },
   {
     "id": "A037",
     "name": "Nandini Gupta",
-    "totalAudits": 7,
-    "totalSKUs": 22328,
-    "avgAccuracy": 95.0
+    "totalAudits": 3,
+    "totalSKUs": 12755,
+    "avgAccuracy": 88.5
   },
   {
     "id": "A038",
     "name": "Rajiv Malhotra",
-    "totalAudits": 5,
-    "totalSKUs": 11827,
-    "avgAccuracy": 91.2
+    "totalAudits": 7,
+    "totalSKUs": 23817,
+    "avgAccuracy": 87.0
   },
   {
     "id": "A039",
     "name": "Kavita Deshmukh",
-    "totalAudits": 5,
-    "totalSKUs": 14820,
-    "avgAccuracy": 94.9
+    "totalAudits": 10,
+    "totalSKUs": 33120,
+    "avgAccuracy": 85.9
   },
   {
     "id": "A040",
     "name": "Bharat Singh",
-    "totalAudits": 6,
-    "totalSKUs": 12623,
-    "avgAccuracy": 85.8
+    "totalAudits": 5,
+    "totalSKUs": 8589,
+    "avgAccuracy": 94.1
   }
 ]

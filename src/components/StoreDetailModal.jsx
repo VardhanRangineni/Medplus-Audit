@@ -1154,84 +1154,86 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
           </Card.Body>
         </Card>
 
-        {/* Mini Dashboard - KPIs */}
-        <Row className="g-3 mb-4">
-          {/* Card 1: Audited SKUs */}
-          <Col md={3}>
-            <Card className="h-100 border-0 shadow-sm">
-              <Card.Body className="text-center">
-                <div className="text-muted small mb-1 fw-bold">AUDITED SKUS</div>
-                <h3 className="mb-0 text-primary">{inventorySummary.auditedSKUs?.toLocaleString() || '0'}</h3>
-                <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
-                  <small className="text-muted d-block fw-bold">TOTAL SKUS</small>
-                  <span className="fw-bold text-dark">{inventorySummary.totalSKUs?.toLocaleString() || '0'}</span>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
+        {/* Mini Dashboard - KPIs - Only show for completed audits */}
+        {auditStatus === 'completed' && (
+          <Row className="g-3 mb-4">
+            {/* Card 1: Audited SKUs */}
+            <Col md={3}>
+              <Card className="h-100 border-0 shadow-sm">
+                <Card.Body className="text-center">
+                  <div className="text-muted small mb-1 fw-bold">AUDITED SKUS</div>
+                  <h3 className="mb-0 text-primary">{inventorySummary.auditedSKUs?.toLocaleString() || '0'}</h3>
+                  <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
+                    <small className="text-muted d-block fw-bold">TOTAL SKUS</small>
+                    <span className="fw-bold text-dark">{inventorySummary.totalSKUs?.toLocaleString() || '0'}</span>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
 
-          {/* Card 2: Audited Qty */}
-          <Col md={3}>
-            <Card className="h-100 border-0 shadow-sm">
-              <Card.Body className="text-center">
-                <div className="text-muted small mb-1 fw-bold">AUDITED QTY</div>
-                <h3 className="mb-0 text-info">{formatIndianNumber(AppearedQty || 0, true)}</h3>
-                <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
-                  <small className="text-muted d-block fw-bold">TOTAL QTY</small>
-                  <span className="fw-bold text-dark">{formatIndianNumber(inventorySummary.totalQuantity || AppearedQty || 0, true)}</span>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
+            {/* Card 2: Audited Qty */}
+            <Col md={3}>
+              <Card className="h-100 border-0 shadow-sm">
+                <Card.Body className="text-center">
+                  <div className="text-muted small mb-1 fw-bold">AUDITED QTY</div>
+                  <h3 className="mb-0 text-info">{formatIndianNumber(AppearedQty || 0, true)}</h3>
+                  <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
+                    <small className="text-muted d-block fw-bold">TOTAL QTY</small>
+                    <span className="fw-bold text-dark">{formatIndianNumber(inventorySummary.totalQuantity || AppearedQty || 0, true)}</span>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
 
-          {/* Card 3: Audited Value at MRP */}
-          <Col md={3}>
-            <Card className="h-100 border-0 shadow-sm">
-              <Card.Body className="text-center">
-                <div className="text-muted small mb-1 fw-bold">AUDITED VALUE AT MRP</div>
-                <h3 className="mb-0 text-success">
-                  {inventorySummary.totalValue >= 10000000
-                    ? `₹${(inventorySummary.totalValue / 10000000).toFixed(2)}Cr`
-                    : inventorySummary.totalValue >= 100000
-                      ? `₹${(inventorySummary.totalValue / 100000).toFixed(2)}L`
-                      : `₹${formatIndianNumber(inventorySummary.totalValue || 0)}`}
-                </h3>
-                <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
-                  <small className="text-muted d-block fw-bold">INVENTORY VALUE AT MRP</small>
-                  <span className="fw-bold text-dark">
+            {/* Card 3: Audited Value at MRP */}
+            <Col md={3}>
+              <Card className="h-100 border-0 shadow-sm">
+                <Card.Body className="text-center">
+                  <div className="text-muted small mb-1 fw-bold">AUDITED VALUE AT MRP</div>
+                  <h3 className="mb-0 text-success">
                     {inventorySummary.totalValue >= 10000000
                       ? `₹${(inventorySummary.totalValue / 10000000).toFixed(2)}Cr`
                       : inventorySummary.totalValue >= 100000
                         ? `₹${(inventorySummary.totalValue / 100000).toFixed(2)}L`
                         : `₹${formatIndianNumber(inventorySummary.totalValue || 0)}`}
-                  </span>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
+                  </h3>
+                  <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
+                    <small className="text-muted d-block fw-bold">INVENTORY VALUE AT MRP</small>
+                    <span className="fw-bold text-dark">
+                      {inventorySummary.totalValue >= 10000000
+                        ? `₹${(inventorySummary.totalValue / 10000000).toFixed(2)}Cr`
+                        : inventorySummary.totalValue >= 100000
+                          ? `₹${(inventorySummary.totalValue / 100000).toFixed(2)}L`
+                          : `₹${formatIndianNumber(inventorySummary.totalValue || 0)}`}
+                    </span>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
 
-          {/* Card 4: Total Deviations */}
-          <Col md={3}>
-            <Card className="h-100 border-0 shadow-sm">
-              <Card.Body className="text-center">
-                <div className="text-muted small mb-1 fw-bold">TOTAL DEVIATIONS</div>
-                <h3 className="mb-0 text-danger">
-                  {RevisedSKUs || 0}
-                </h3>
-                <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
-                  <small className="text-muted d-block fw-bold">DEVIATION VALUE AT MRP</small>
-                  <span className="text-danger fw-bold">
-                    {RevisedValue >= 10000000
-                      ? `₹${(RevisedValue / 10000000).toFixed(2)}Cr`
-                      : RevisedValue >= 100000
-                        ? `₹${(RevisedValue / 100000).toFixed(2)}L`
-                        : `₹${formatIndianNumber(RevisedValue || 0)}`}
-                  </span>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+            {/* Card 4: Total Deviations */}
+            <Col md={3}>
+              <Card className="h-100 border-0 shadow-sm">
+                <Card.Body className="text-center">
+                  <div className="text-muted small mb-1 fw-bold">TOTAL DEVIATIONS</div>
+                  <h3 className="mb-0 text-danger">
+                    {RevisedSKUs || 0}
+                  </h3>
+                  <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #eee' }}>
+                    <small className="text-muted d-block fw-bold">DEVIATION VALUE AT MRP</small>
+                    <span className="text-danger fw-bold">
+                      {RevisedValue >= 10000000
+                        ? `₹${(RevisedValue / 10000000).toFixed(2)}Cr`
+                        : RevisedValue >= 100000
+                          ? `₹${(RevisedValue / 100000).toFixed(2)}L`
+                          : `₹${formatIndianNumber(RevisedValue || 0)}`}
+                    </span>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        )}
 
         {/* Audit Accuracy Section */}
         {auditStatus === 'completed' && (

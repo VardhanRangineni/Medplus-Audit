@@ -39,6 +39,21 @@ const DetailsPage = ({ filters = {} }) => {
   const [mismatchSearchTerms, setMismatchSearchTerms] = useState({});
   const [showTableFilters, setShowTableFilters] = useState(false);
 
+  // Helper function to format inventory value (lakhs show exact, crores show as "24cr")
+  const formatInventoryValue = (value) => {
+    if (!value || isNaN(value)) return '₹0';
+    const numValue = Number(value);
+    
+    // If value is 1 crore or more, show in crores
+    if (numValue >= 10000000) {
+      const crores = (numValue / 10000000).toFixed(0);
+      return `₹${crores}cr`;
+    }
+    
+    // Otherwise show exact value with Indian formatting
+    return `₹${numValue.toLocaleString('en-IN')}`;
+  };
+
   // Generate a deterministic pseudo-random created date from StoreID (stable across reloads)
   const randomDateForId = (id) => {
     if (!id) return new Date(2018, 0, 1).toISOString().split('T')[0];
@@ -1249,7 +1264,9 @@ const DetailsPage = ({ filters = {} }) => {
                             >
                               {key === 'status' ? (
                                 <Badge bg="success">{value}</Badge>
-                              ) : key === 'inventoryValue' || key === 'inventoryValueMRP' || key === 'value' || key === 'deviationValueMRP' ? (
+                              ) : key === 'inventoryValue' || key === 'inventoryValueMRP' ? (
+                                formatInventoryValue(value)
+                              ) : key === 'value' || key === 'deviationValueMRP' ? (
                                 `₹${Number(value).toLocaleString()}`
                               ) : key === 'mismatch' && row.mismatchDetails ? (
                                 <span>

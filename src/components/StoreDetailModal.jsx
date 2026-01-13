@@ -1344,7 +1344,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                   <Row className="g-2">
                     <Col xs={6}>
                       <div className="p-3 bg-light rounded">
-                        <div className="text-muted small mb-1">Total Mismatches</div>
+                        <div className="text-muted small mb-1">Appeared</div>
                         <h5 className="mb-0 fw-bold">
                           {formatIndianNumber(deviations.filter(d => d.type === 'Contra Short' || d.type === 'Contra Excess').reduce((sum, d) => sum + (d.count || 0), 0), true)}
                         </h5>
@@ -1397,7 +1397,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                   <Row className="g-2">
                     <Col xs={6}>
                       <div className="p-3 bg-light rounded">
-                        <div className="text-muted small mb-1">Total Deviations</div>
+                        <div className="text-muted small mb-1">Total</div>
                         <h5 className="mb-0 fw-bold">
                           {deviations.filter(d => d.type === 'Short' || d.type === 'Excess').reduce((sum, d) => sum + (d.count || 0), 0).toLocaleString()}
                         </h5>

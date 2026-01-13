@@ -591,13 +591,11 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                       {selectedStatus === 'completed' ? <th>Auditors</th> : <th>Assigned Auditors</th>}
                       <th>{selectedStatus === 'pending' ? 'Scheduled Date' : 'Start Date'}</th>
                       {selectedStatus === 'completed' && <th>End Date</th>}
-                      {selectedStatus === 'completed' && <th>PIDs</th>}
-                      {selectedStatus === 'completed' && <th>SKUs</th>}
                       {selectedStatus === 'completed' && <th>Duration</th>}
                       {selectedStatus === 'completed' && <th>Deviations</th>}
                       {selectedStatus === 'completed' && <th>Mismatch</th>}
                       {selectedStatus === 'created' && <th>Status</th>}
-                      {selectedStatus !== 'completed' && <th>Audit Progress</th>}
+                      {selectedStatus === 'in-progress' && <th>Audit Progress</th>}
                       {selectedStatus === 'completed' && <th>Job Type</th>}
                       {selectedStatus === 'completed' && <th>Process</th>}
                     </tr>
@@ -686,12 +684,6 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                                   {audit.endDate}
                                 </td>
                                 <td>
-                                  <Badge bg="light" text="dark">{formatIndianNumber(audit.totalPIDs)}</Badge>
-                                </td>
-                                <td>
-                                  <Badge bg="light" text="dark">{formatIndianNumber(audit.totalSKUs)}</Badge>
-                                </td>
-                                <td>
                                   <Badge bg="primary">{audit.duration}</Badge>
                                 </td>
                                 <td
@@ -742,7 +734,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                                 )}
                               </td>
                             )}
-                            {selectedStatus !== 'completed' && (
+                            {selectedStatus !== 'completed' && selectedStatus !== 'pending' && (
                               <td style={{ minWidth: '250px' }}>
                                 <div className="mb-1">
                                   <small className="text-muted">

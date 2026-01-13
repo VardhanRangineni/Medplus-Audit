@@ -217,18 +217,27 @@ def generate_unified_dataset():
     print("Generating unified audit dataset...")
     print("=" * 60)
     
-    # Generate stores
-    num_stores = 150  # Total stores
+    # Generate stores - IMPORTANT: Total stores count must match across all tabs
+    # StoreCoverage shows: 478 total stores (470 covered + 8 uncovered)
+    num_stores = 538  # Total stores (478 active + 60 inactive/uncovered)
+    num_active_audited = 470  # Active stores that have been audited  
+    num_inactive_audited = 8  # Inactive stores that have been audited
+    num_uncovered = 60  # Stores not yet audited
+    
     stores = []
     audit_records = []
     audit_id_counter = 1
     
-    # Distribution: 70% covered, 30% uncovered
-    num_covered = int(num_stores * 0.7)
+    # Total covered stores (both active and inactive audited)
+    num_covered = num_active_audited + num_inactive_audited  # 478
     
     for store_num in range(1, num_stores + 1):
         state = random.choice(STATES)
         city = random.choice(CITIES[state])
+        
+        # Determine if store is covered and if it's active
+        is_covered = store_num <= num_covered
+        is_active = store_num <= num_active_audited or (store_num > num_covered and store_num <= (num_covered + num_uncovered))
         
         store = {
             "StoreID": generate_store_id(state, store_num),
@@ -238,7 +247,8 @@ def generate_unified_dataset():
             "StateName": STATE_NAMES[state],
             "StoreType": random.choice(STORE_TYPES),
             "BoxMapping": random.choice(BOX_MAPPING_TYPES),
-            "IsCovered": store_num <= num_covered,
+            "IsCovered": is_covered,
+            "IsActive": is_active,
             "StoreCreatedDate": int((datetime.now() - timedelta(days=random.randint(365, 1825))).timestamp() * 1000),
             "TotalPIDs": random.randint(1000, 5000),
             "TotalSKUs": 0,  # Will calculate
@@ -280,6 +290,7 @@ def generate_unified_dataset():
                     if random.random() < 0.15:  # 15% completed today
                         audit_end = datetime.now()
                         audit_start = audit_end - timedelta(days=random.randint(1, 3))
+                        days_ago = 0
                     else:
                         days_ago = random.randint(7, 90)
                         audit_end = datetime.now() - timedelta(days=days_ago)
@@ -288,10 +299,12 @@ def generate_unified_dataset():
                     # Started in recent past, ongoing
                     audit_start = datetime.now() - timedelta(days=random.randint(1, 7))
                     audit_end = datetime.now() + timedelta(days=random.randint(1, 3))
+                    days_ago = 0
                 else:  # Created/Pending
                     # Future audits
                     audit_start = datetime.now() + timedelta(days=random.randint(5, 30))
                     audit_end = audit_start + timedelta(days=random.randint(2, 5))
+                    days_ago = -(audit_start - datetime.now()).days
                 
                 # Auditor allocation (20-40% of store SKUs)
                 allotted_skus = int(store["TotalSKUs"] * random.uniform(0.2, 0.4))
@@ -313,18 +326,24 @@ def generate_unified_dataset():
                 avg_time_per_sku = round(random.uniform(2.5, 5.0), 1)
                 avg_time_per_pid = round(avg_time_per_sku * random.uniform(3, 5), 2)
                 
-                # Deviation metrics
-                appeared_skus = int(completed_skus * random.uniform(0.05, 0.15))  # 5-15%
-                matched_skus = int(appeared_skus * random.uniform(0.7, 0.9))  # 70-90% matched
+                # Deviation metrics - ensure we always have some deviations for completed audits
+                if status == "Completed":
+                    # 5-15% of completed SKUs have deviations
+                    appeared_skus = max(1, int(completed_skus * random.uniform(0.05, 0.15)))
+                else:
+                    # For in-progress, proportional to completion
+                    appeared_skus = max(0, int(completed_skus * random.uniform(0.03, 0.10)))
+                
+                matched_skus = int(appeared_skus * random.uniform(0.85, 0.98)) if appeared_skus > 0 else 0  # 85-98% matched for high accuracy
                 revised_skus = appeared_skus - matched_skus
                 
-                appeared_qty = appeared_skus * random.randint(5, 20)
-                matched_qty = int(appeared_qty * random.uniform(0.7, 0.9))
+                appeared_qty = appeared_skus * random.randint(5, 20) if appeared_skus > 0 else 0
+                matched_qty = int(appeared_qty * random.uniform(0.85, 0.98)) if appeared_qty > 0 else 0  # 85-98% matched for high accuracy
                 revised_qty = appeared_qty - matched_qty
                 
-                appeared_value = round(appeared_skus * avg_price, 2)
-                matched_value = round(matched_skus * avg_price, 2)
-                revised_value = appeared_value - matched_value
+                appeared_value = round(appeared_skus * avg_price, 2) if appeared_skus > 0 else 0
+                matched_value = round(matched_skus * avg_price, 2) if matched_skus > 0 else 0
+                revised_value = max(0, appeared_value - matched_value)
                 
                 # Pending
                 pending_skus = allotted_skus - completed_skus
@@ -337,11 +356,11 @@ def generate_unified_dataset():
                     allotted_pids, completed_skus, allotted_value
                 )
                 
-                # Deviation details
+                # Deviation details - only for audits with deviations
                 deviation_details = []
                 if revised_skus > 0:
-                    # Short deviations
-                    short_skus = int(revised_skus * random.uniform(0.4, 0.7))
+                    # Short deviations (40-70% of total deviations)
+                    short_skus = max(1, int(revised_skus * random.uniform(0.4, 0.7)))
                     short_value = round(short_skus * avg_price, 2)
                     if short_skus > 0:
                         deviation_details.append({
@@ -351,9 +370,9 @@ def generate_unified_dataset():
                             "ProductForms": generate_product_forms_breakdown(short_skus, short_value)
                         })
                     
-                    # Excess deviations
-                    excess_skus = revised_skus - short_skus
-                    excess_value = revised_value - short_value
+                    # Excess deviations (remaining)
+                    excess_skus = max(0, revised_skus - short_skus)
+                    excess_value = max(0, revised_value - short_value)
                     if excess_skus > 0:
                         deviation_details.append({
                             "type": "Excess",
@@ -363,8 +382,8 @@ def generate_unified_dataset():
                         })
                 
                 if matched_skus > 0:
-                    # Contra Short
-                    contra_short_skus = int(matched_skus * 0.5)
+                    # Contra Short (50% of matched)
+                    contra_short_skus = max(1, int(matched_skus * 0.5))
                     contra_short_value = round(contra_short_skus * avg_price, 2)
                     if contra_short_skus > 0:
                         deviation_details.append({
@@ -374,9 +393,9 @@ def generate_unified_dataset():
                             "ProductForms": generate_product_forms_breakdown(contra_short_skus, contra_short_value)
                         })
                     
-                    # Contra Excess
-                    contra_excess_skus = matched_skus - contra_short_skus
-                    contra_excess_value = matched_value - contra_short_value
+                    # Contra Excess (remaining)
+                    contra_excess_skus = max(0, matched_skus - contra_short_skus)
+                    contra_excess_value = max(0, matched_value - contra_short_value)
                     if contra_excess_skus > 0:
                         deviation_details.append({
                             "type": "Contra Excess",
@@ -430,6 +449,9 @@ def generate_unified_dataset():
                     "PendingCount": pending_skus,
                     "PendingQty": pending_qty,
                     "PendingValue": pending_value,
+                    "AppearedCount": appeared_skus,  # Added for supervisor metrics
+                    "MatchedCount": matched_skus,    # Added for supervisor metrics
+                    "RevisedCount": revised_skus,    # Added for supervisor metrics
                     "DayWiseSummary": day_wise,
                     "DeviationDetails": deviation_details
                 }
@@ -478,6 +500,78 @@ def generate_unified_dataset():
         
         if store_num % 10 == 0:
             print(f"Generated {store_num}/{num_stores} stores...")
+    
+    # Aggregate auditor details for each covered store
+    print("\nAggregating auditor details per store...")
+    for store in stores:
+        if store["IsCovered"]:
+            # Get all audit records for this store
+            store_audits = [r for r in audit_records if r["StoreID"] == store["StoreID"]]
+            
+            if store_audits:
+                # Aggregate auditor data
+                auditor_map = {}
+                
+                for audit in store_audits:
+                    auditor_ids = audit["AuditorIDs"].split(',') if audit["AuditorIDs"] else []
+                    auditor_names = audit["AuditorNames"].split(',') if audit["AuditorNames"] else []
+                    
+                    for idx, auditor_id in enumerate(auditor_ids):
+                        auditor_id = auditor_id.strip()
+                        auditor_name = auditor_names[idx].strip() if idx < len(auditor_names) else "Unknown"
+                        
+                        if auditor_id not in auditor_map:
+                            auditor_map[auditor_id] = {
+                                "id": auditor_id,
+                                "name": auditor_name,
+                                "assignedSKUs": 0,
+                                "completedSKUs": 0,
+                                "totalMatchedSKUs": 0,
+                                "totalRevisedSKUs": 0,
+                                "totalAppearedSKUs": 0,
+                                "totalAppearedValue": 0,
+                                "totalMatchedValue": 0,
+                                "totalRevisedValue": 0
+                            }
+                        
+                        # Aggregate metrics
+                        auditor_map[auditor_id]["assignedSKUs"] += audit["AuditorAllottedSKUs"]
+                        auditor_map[auditor_id]["completedSKUs"] += audit["CompletedSKUs"]
+                        auditor_map[auditor_id]["totalMatchedSKUs"] += audit["MatchedSKUs"]
+                        auditor_map[auditor_id]["totalRevisedSKUs"] += audit["RevisedSKUs"]
+                        auditor_map[auditor_id]["totalAppearedSKUs"] += audit["AppearedSKUs"]
+                        auditor_map[auditor_id]["totalAppearedValue"] += audit["AppearedValue"]
+                        auditor_map[auditor_id]["totalMatchedValue"] += audit["MatchedValue"]
+                        auditor_map[auditor_id]["totalRevisedValue"] += audit["RevisedValue"]
+                
+                # Convert to list with calculated rates
+                auditors_list = []
+                for auditor_data in auditor_map.values():
+                    completion_rate = round((auditor_data["completedSKUs"] / auditor_data["assignedSKUs"] * 100), 1) if auditor_data["assignedSKUs"] > 0 else 0
+                    # Match rate should be: matched / appeared * 100 (not matched / completed)
+                    match_rate = round((auditor_data["totalMatchedSKUs"] / auditor_data["totalAppearedSKUs"] * 100), 1) if auditor_data["totalAppearedSKUs"] > 0 else 0
+                    
+                    auditors_list.append({
+                        "empId": auditor_data["id"],
+                        "name": auditor_data["name"],
+                        "assignedSKUs": auditor_data["assignedSKUs"],
+                        "completedSKUs": auditor_data["completedSKUs"],
+                        "completionRate": completion_rate,
+                        "matchRate": match_rate,
+                        "appearedSKUs": auditor_data["totalAppearedSKUs"],
+                        "matchedSKUs": auditor_data["totalMatchedSKUs"],
+                        "revisedSKUs": auditor_data["totalRevisedSKUs"],
+                        "appearedValue": round(auditor_data["totalAppearedValue"], 2),
+                        "matchedValue": round(auditor_data["totalMatchedValue"], 2),
+                        "revisedValue": round(auditor_data["totalRevisedValue"], 2)
+                    })
+                
+                # Add auditors list to store data
+                store["AuditorsDetails"] = auditors_list
+            else:
+                store["AuditorsDetails"] = []
+        else:
+            store["AuditorsDetails"] = []
     
     # Save unified audit dataset (for Supervisor & Auditor tabs)
     print(f"\nSaving {len(audit_records)} audit records...")

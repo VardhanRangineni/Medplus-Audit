@@ -151,25 +151,21 @@ const DetailsPage = ({ filters = {} }) => {
       })).sort((x, y) => y.sortDate - x.sortDate);
       const latest = parsed[0];
 
-      // Collect unique auditors from audits
-      const uniqueAuditors = Array.from(new Set(audits.map(a => a.AuditorName).filter(Boolean)));
-
-      // Determine desired auditor count (3-5)
-      const desiredCount = 3 + (seedFromId(storeId) % 3);
-      let auditorsList = [];
-
-      if (uniqueAuditors.length >= desiredCount) {
-        // pick deterministic subset from available auditors
-        auditorsList = pickDeterministic(uniqueAuditors, desiredCount, storeId);
-      } else {
-        // include all available auditors then supplement from pool deterministically
-        auditorsList = uniqueAuditors.slice();
-        const need = Math.max(0, desiredCount - auditorsList.length);
-        if (need > 0) {
-          const supplement = pickDeterministic(auditorPool.filter(n => !auditorsList.includes(n)), need, storeId + '-supp');
-          auditorsList = auditorsList.concat(supplement);
+      // Collect ALL unique auditors from ALL audits for this store (no artificial limit)
+      const uniqueAuditorNames = new Set();
+      audits.forEach(audit => {
+        // Handle both comma-separated AuditorNames and single AuditorName
+        if (audit.AuditorNames) {
+          audit.AuditorNames.split(',').forEach(name => {
+            const trimmedName = name.trim();
+            if (trimmedName) uniqueAuditorNames.add(trimmedName);
+          });
+        } else if (audit.AuditorName) {
+          uniqueAuditorNames.add(audit.AuditorName);
         }
-      }
+      });
+
+      const auditorsList = Array.from(uniqueAuditorNames);
 
       // Supervisor: prefer latest.SupervisorName, else pick one from parsed audits, else deterministic
       let supervisor = latest.SupervisorName || (audits.map(a => a.SupervisorName).find(Boolean));
@@ -262,11 +258,10 @@ const DetailsPage = ({ filters = {} }) => {
           quantity: store.TotalQuantity,
           mismatch: store.MatchedSKUs || 0,
           deviation: store.RevisedSKUs || 0,
-          deviationValueMRP: store.RevisedValue || 0,
+          deviationValueMRP: store.TotalDeviationValue || store.RevisedValue || 0,
           deviations: store.Deviations || [],
           rawLastAuditDate: store.LastAuditDate,
           recencyQuarter: store.RecencyQuarter,
-          deviationValueMRP: store.TotalDeviationValue || 0,
           short: 0,
           shortValue: 0,
           excess: 0,

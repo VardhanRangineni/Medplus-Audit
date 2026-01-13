@@ -83,19 +83,22 @@ const StoreCoverage = ({ filters = {} }) => {
 
   // Calculate store stats from filtered data
   const storeStats = useMemo(() => {
-    // Hardcoded values for audited stores
-    const covered = 478;
-    const activeAuditedStores = 410;
-    const inactiveAuditedStores = 8;
-    const uncovered = 60;
+    // Calculate from actual data instead of hardcoded values
+    const coveredStores = filteredStoreData.filter(s => s.IsCovered);
+    const uncoveredStores = filteredStoreData.filter(s => !s.IsCovered);
+    
+    const activeAuditedStores = coveredStores.filter(s => s.IsActive !== false).length;
+    const inactiveAuditedStores = coveredStores.filter(s => s.IsActive === false).length;
+    const covered = coveredStores.length; // Total covered (active + inactive)
+    const uncovered = uncoveredStores.length;
+    
+    const totalStores = filteredStoreData.length;
 
-    // Assume all stores in data are active (can be enhanced with IsActive field if available)
+    const coveredPercentage = totalStores > 0 ? ((covered / totalStores) * 100).toFixed(1) : 0;
+    const uncoveredPercentage = totalStores > 0 ? ((uncovered / totalStores) * 100).toFixed(1) : 0;
+    
     const activeStores = filteredStoreData.filter(s => s.IsActive !== false).length;
     const inactiveStores = filteredStoreData.filter(s => s.IsActive === false).length;
-    const totalStores = activeAuditedStores + uncovered;
-
-    const coveredPercentage = totalStores > 0 ? ((activeAuditedStores / totalStores) * 100).toFixed(1) : 0;
-    const uncoveredPercentage = totalStores > 0 ? ((uncovered / totalStores) * 100).toFixed(1) : 0;
 
     return {
       totalStores,

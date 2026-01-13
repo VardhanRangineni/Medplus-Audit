@@ -2,6 +2,7 @@
 // src/services/mockDataService.js
 
 import storeCoverageData from '../data/store_coverage_data.json';
+import auditData from '../data/audit_dataset.json';
 
 export const mockDataService = {
   // Store Coverage Data
@@ -229,57 +230,30 @@ export const mockDataService = {
     console.log('Found store:', store ? store.StoreID : 'Not found');
 
     if (store && store.IsCovered) {
-      // Generate realistic supervisor names based on state
-      const supervisorNames = {
-        'TN': ['Rajesh Kumar', 'Ramesh Babu', 'Venkat Subramanian'],
-        'KA': ['Lakshmi Iyer', 'Suresh Reddy', 'Prakash Rao'],
-        'TS': ['Mohammed Ali', 'Srinivas Rao', 'Anjali Devi'],
-        'MH': ['Pradeep Singh', 'Neha Sharma', 'Pooja Deshmukh'],
-        'DL': ['Amit Verma', 'Meera Kapoor', 'Rajiv Gupta'],
-        'GJ': ['Kiran Patel', 'Dipak Shah', 'Hitesh Modi'],
-        'WB': ['Sourav Das', 'Tanmoy Sen', 'Debashis Roy'],
-        'MP': ['Anil Shukla', 'Rahul Joshi', 'Kavita Singh'],
-        'RJ': ['Vikram Singh', 'Priyanka Sharma', 'Arun Rathore'],
-        'UP': ['Sanjay Gupta', 'Rakesh Verma', 'Anjali Mishra'],
-        'PB': ['Meera Kapoor', 'Harpreet Singh', 'Simran Kaur']
-      };
+      // Get supervisor and auditors from pre-generated data
+      const storeAudits = auditData.filter(audit => 
+        audit.StoreID === storeId || audit.StoreID === normalizedStoreId
+      );
 
-      // Generate realistic auditor names
-      const auditorNames = [
-        'Amit Singh', 'Priya Reddy', 'Suresh Kumar', 'Deepak Sharma', 'Anitha Rao',
-        'Ravi Teja', 'Sneha Reddy', 'Karthik Kumar', 'Meena Iyer', 'Vijay Patil',
-        'Pooja Desai', 'Arun Mehta', 'Divya Shah', 'Ramesh Gupta', 'Sachin Bhosale',
-        'Madhuri Joshi', 'Rajat Tiwari', 'Kavita Singh', 'Kumar Raja', 'Lakshmi Priya'
-      ];
+      console.log('Found audits for store:', storeAudits.length);
 
-      // Determine supervisor based on state
-      const supervisors = supervisorNames[store.State] || ['Supervisor Name'];
-      const supervisor = supervisors[Math.floor(Math.random() * supervisors.length)];
+      // Get supervisor from first audit record (should be same for all audits of a store)
+      const supervisor = storeAudits.length > 0 ? storeAudits[0].SupervisorName : 'N/A';
 
-      // For covered stores, audit should be 100% complete
-      const completionRate = 100;
-      const completedSKUs = store.TotalSKUs;
-
-      // Generate auditors (2-4 auditors per store)
-      const numAuditors = Math.floor(Math.random() * 3) + 2;
-      const skusPerAuditor = Math.floor(store.TotalSKUs / numAuditors);
-      const auditors = [];
-
-      for (let i = 0; i < numAuditors; i++) {
-        const auditorName = auditorNames[Math.floor(Math.random() * auditorNames.length)];
-        const assigned = i === numAuditors - 1
-          ? store.TotalSKUs - (skusPerAuditor * i)
-          : skusPerAuditor;
-        const matchRate = 90 + Math.random() * 8; // 90-98%
-
-        auditors.push({
-          name: auditorName,
-          assignedSKUs: assigned,
-          completedSKUs: assigned, // 100% completed for covered stores
-          completionRate: 100,
-          matchRate: parseFloat(matchRate.toFixed(1))
-        });
-      }
+      // Use pre-generated auditor details from store data
+      const auditors = (store.AuditorsDetails || []).map(auditor => ({
+        name: auditor.name,
+        assignedSKUs: auditor.assignedSKUs,
+        completedSKUs: auditor.completedSKUs,
+        completionRate: auditor.completionRate,
+        matchRate: auditor.matchRate,
+        appearedSKUs: auditor.appearedSKUs,
+        matchedSKUs: auditor.matchedSKUs,
+        revisedSKUs: auditor.revisedSKUs,
+        appearedValue: auditor.appearedValue,
+        matchedValue: auditor.matchedValue,
+        revisedValue: auditor.revisedValue
+      }));
 
       // Transform deviations to expected format
       const deviations = (store.Deviations || []).map(dev => ({
@@ -301,19 +275,42 @@ export const mockDataService = {
         }
       });
 
-      // Calculate derived deviation metrics
-      const totalSKUs = store.TotalSKUs;
-      const appearedSKUs = Math.floor(totalSKUs * 0.05) + Math.floor(Math.random() * 20);
-      const matchedSKUs = Math.floor(appearedSKUs * 0.8) + Math.floor(Math.random() * 10);
-      const revisedSKUs = appearedSKUs - matchedSKUs;
+      // Aggregate metrics from audit records for this store
+      let totalAppearedSKUs = 0;
+      let totalMatchedSKUs = 0;
+      let totalRevisedSKUs = 0;
+      let totalAppearedQty = 0;
+      let totalMatchedQty = 0;
+      let totalRevisedQty = 0;
+      let totalAppearedValue = 0;
+      let totalMatchedValue = 0;
+      let totalRevisedValue = 0;
+      let totalCompletedSKUs = 0;
+      let totalAllottedSKUs = 0;
 
-      const appearedQty = Math.floor(store.TotalQuantity * 0.02) + Math.floor(Math.random() * 100);
-      const matchedQty = Math.floor(appearedQty * 0.85);
-      const revisedQty = appearedQty - matchedQty;
+      storeAudits.forEach(audit => {
+        totalAppearedSKUs += audit.AppearedSKUs || 0;
+        totalMatchedSKUs += audit.MatchedSKUs || 0;
+        totalRevisedSKUs += audit.RevisedSKUs || 0;
+        totalAppearedQty += audit.AppearedQty || 0;
+        totalMatchedQty += audit.MatchedQty || 0;
+        totalRevisedQty += audit.RevisedQty || 0;
+        totalAppearedValue += audit.AppearedValue || 0;
+        totalMatchedValue += audit.MatchedValue || 0;
+        totalRevisedValue += audit.RevisedValue || 0;
+        totalCompletedSKUs += audit.CompletedSKUs || 0;
+        totalAllottedSKUs += audit.AuditorAllottedSKUs || 0;
+      });
 
-      const appearedValue = Math.floor(store.InventoryValue * 0.03);
-      const matchedValue = Math.floor(appearedValue * 0.7);
-      const revisedValue = appearedValue - matchedValue;
+      // Calculate completion percentage
+      const completionPercentage = totalAllottedSKUs > 0 
+        ? parseFloat(((totalCompletedSKUs / totalAllottedSKUs) * 100).toFixed(1))
+        : 100;
+
+      // Get audit process type from first audit (should be consistent)
+      const auditProcessType = storeAudits.length > 0 
+        ? (storeAudits[0].AuditProcessType === 'Box Audit' ? 'Batch Audit' : storeAudits[0].AuditProcessType)
+        : 'Product Audit';
 
       return {
         storeId: store.StoreID,
@@ -321,27 +318,27 @@ export const mockDataService = {
         state: store.State,
         supervisor: supervisor,
         auditProgress: {
-          percentage: 100,
-          completedSKUs: store.TotalSKUs,
-          totalSKUs: store.TotalSKUs
+          percentage: completionPercentage,
+          completedSKUs: totalCompletedSKUs,
+          totalSKUs: totalAllottedSKUs || store.TotalSKUs
         },
         inventorySummary: {
           totalSKUs: store.TotalSKUs,
           totalPIDs: store.TotalPIDs,
-          auditedSKUs: store.TotalSKUs,
+          auditedSKUs: totalCompletedSKUs,
           totalValue: Math.round(store.InventoryValue),
           totalQuantity: store.TotalQuantity
         },
-        AppearedSKUs: appearedSKUs,
-        MatchedSKUs: matchedSKUs,
-        RevisedSKUs: revisedSKUs,
-        AppearedQty: appearedQty,
-        MatchedQty: matchedQty,
-        RevisedQty: revisedQty,
-        AppearedValue: appearedValue,
-        MatchedValue: matchedValue,
-        RevisedValue: revisedValue,
-        auditProcessType: store.LastAuditProcessType === 'Box Audit' ? 'Batch Audit' : (store.LastAuditProcessType || (Math.random() > 0.5 ? 'Batch Audit' : 'Product Audit')),
+        AppearedSKUs: totalAppearedSKUs,
+        MatchedSKUs: totalMatchedSKUs,
+        RevisedSKUs: totalRevisedSKUs,
+        AppearedQty: totalAppearedQty,
+        MatchedQty: totalMatchedQty,
+        RevisedQty: totalRevisedQty,
+        AppearedValue: Math.round(totalAppearedValue),
+        MatchedValue: Math.round(totalMatchedValue),
+        RevisedValue: Math.round(totalRevisedValue),
+        auditProcessType: auditProcessType,
         auditors: auditors,
         deviations: deviations,
         productFormData: productFormData,

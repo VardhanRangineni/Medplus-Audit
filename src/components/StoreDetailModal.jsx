@@ -1517,18 +1517,18 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                                 <tbody>
                                   <tr>
                                     <td className="py-2 fw-semibold">Appeared</td>
-                                    <td className="py-2 text-end">{auditor.assignedSKUs || 70}</td>
-                                    <td className="py-2 text-end fw-bold">₹2.29 L</td>
+                                    <td className="py-2 text-end">{formatIndianNumber(auditor.appearedSKUs || 0, true)}</td>
+                                    <td className="py-2 text-end fw-bold">{formatIndianCurrency(auditor.appearedValue || 0)}</td>
                                   </tr>
                                   <tr>
-                                    <td className="py-2 fw-semibold">Revised</td>
-                                    <td className="py-2 text-end">{auditor.completedSKUs || 67}</td>
-                                    <td className="py-2 text-end fw-bold text-success">₹2.20 L</td>
+                                    <td className="py-2 fw-semibold">Matched</td>
+                                    <td className="py-2 text-end">{formatIndianNumber(auditor.matchedSKUs || 0, true)}</td>
+                                    <td className="py-2 text-end fw-bold text-success">{formatIndianCurrency(auditor.matchedValue || 0)}</td>
                                   </tr>
                                   <tr>
                                     <td className="py-2 fw-semibold">Deviations</td>
-                                    <td className="py-2 text-end">{(auditor.assignedSKUs - auditor.completedSKUs) || 3}</td>
-                                    <td className="py-2 text-end fw-bold text-warning">₹9,174</td>
+                                    <td className="py-2 text-end">{formatIndianNumber(auditor.revisedSKUs || 0, true)}</td>
+                                    <td className="py-2 text-end fw-bold text-warning">{formatIndianCurrency(auditor.revisedValue || 0)}</td>
                                   </tr>
                                 </tbody>
                               </Table>

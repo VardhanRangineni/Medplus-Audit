@@ -13,7 +13,7 @@ const KPICard = ({ title, value, subtitle, icon, color = 'primary', onClick, tre
             <p className="text-muted small mb-1 fw-semibold text-uppercase">{title}</p>
             <h2 className={`mb-0 fw-bold text-${color}`}>{value}</h2>
             {subtitle && (
-              <p className="text-muted small mb-0 mt-1">{subtitle}</p>
+              <div className="text-muted small mb-0 mt-1">{subtitle}</div>
             )}
           </div>
           {icon && (

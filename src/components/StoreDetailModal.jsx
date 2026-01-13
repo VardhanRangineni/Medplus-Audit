@@ -854,7 +854,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         duration = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
       } else if (status === 'In Progress') {
         // For in-progress, show start time but no end time
-        duration = 'Ongoing';
+        duration = 'N/A';
       }
 
       pids.push({
@@ -1376,14 +1376,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                         </h5>
                       </div>
                     </Col>
-                    <Col xs={6}>
-                      <div className="p-3 bg-light rounded">
-                        <div className="text-muted small mb-1">Deviations</div>
-                        <h5 className="mb-0 fw-bold text-warning">
-                          {deviations.filter(d => d.type === 'Short' || d.type === 'Excess').reduce((sum, d) => sum + (d.count || 0), 0).toLocaleString()}
-                        </h5>
-                      </div>
-                    </Col>
+                    
                   </Row>
                 </Card.Body>
               </Card>
@@ -1399,7 +1392,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                   <Row className="g-2">
                     <Col xs={6}>
                       <div className="p-3 bg-light rounded">
-                        <div className="text-muted small mb-1">Total</div>
+                        <div className="text-muted small mb-1">Appeared</div>
                         <h5 className="mb-0 fw-bold">
                           {deviations.filter(d => d.type === 'Short' || d.type === 'Excess').reduce((sum, d) => sum + (d.count || 0), 0).toLocaleString()}
                         </h5>
@@ -1419,7 +1412,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                     </Col>
                     <Col xs={12}>
                       <div className="p-3 bg-light rounded">
-                        <div className="text-muted small mb-1">Submitted</div>
+                        <div className="text-muted small mb-1">Submitted Deviations</div>
                         <h5 className="mb-0 fw-bold text-success">
                           {(() => {
                             const totalDevCount = deviations.filter(d => d.type === 'Short' || d.type === 'Excess').reduce((sum, d) => sum + (d.count || 0), 0);
@@ -1451,7 +1444,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                   <tr>
                     <th style={{ width: '30px' }}></th>
                     <th>Emp ID</th>
-                    <th>Auditor Name</th>
+                    <th>Name</th>
                     {(auditStatus === 'in-progress' || auditStatus === 'completed') && (
                       <>
                         <th>Audited SKUs</th>
@@ -1563,16 +1556,16 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                                   <Badge bg={pid.status === 'Completed' ? 'success' : pid.status === 'In Progress' ? 'warning' : 'secondary'}>
                                     {pid.status}
                                   </Badge>
-                                  <div className="text-muted small mt-1">
-                                    <i className="far fa-clock me-1"></i>Start: {pid.startTime}
+                                  <div className="fw-semibold small mt-1">
+                                    <i className="fas fa-hourglass-half me-1 text-warning"></i>{pid.duration}
                                   </div>
                                 </td>
                                 <td>
+                                  <div className="text-muted small mt-1">
+                                    <i className="far fa-clock me-1"></i>Start: {pid.startTime}
+                                  </div>
                                   <div className="text-muted small">
                                     <i className="far fa-clock me-1 text-danger"></i>End: {pid.endTime}
-                                  </div>
-                                  <div className="fw-semibold small mt-1">
-                                    <i className="fas fa-hourglass-half me-1 text-warning"></i>{pid.duration}
                                   </div>
                                 </td>
                                 <td></td>

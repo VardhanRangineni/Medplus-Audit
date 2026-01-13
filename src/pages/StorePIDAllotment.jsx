@@ -3,11 +3,12 @@ import { Container, Row, Col, Card, Form, Button, Table, Badge, Modal, Alert } f
 import Select from 'react-select';
 import './StorePIDAllotment.css';
 import storesData from '../data/store_coverage_data.json';
+import pidDataJson from '../data/store_pid_data.json';
 
 const StorePIDAllotment = () => {
   // Supervisor's assigned stores - derived from imported data
   const supervisorStores = useMemo(() =>
-    storesData.map(store => ({
+    storesData.filter(store => store.IsCovered).map(store => ({
       storeId: store.StoreID,
       storeName: store.StoreName,
       state: store.StateName,
@@ -28,96 +29,8 @@ const StorePIDAllotment = () => {
     { id: 'AUD005', name: 'Anitha Rao', totalAssignedSKUs: 734, completedCount: 589 }
   ];
 
-  // Initial PID data with store IDs, descriptions and statuses
-  const allPIDsData = {
-    'INTGHYD01093': [
-      { pid: 'PID001', storeId: 'INTGHYD01093', description: 'A1-56', skuCount: 245, assignStatus: 'Assigned', auditStatus: 'In Progress', auditorId: 'AUD001', auditorName: 'Amit Singh' },
-      { pid: 'PID002', storeId: 'INTGHYD01093', description: 'B6-7', skuCount: 189, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID003', storeId: 'INTGHYD01093', description: 'C2-89', skuCount: 312, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID004', storeId: 'INTGHYD01093', description: 'A3-45', skuCount: 156, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD002', auditorName: 'Priya Reddy' },
-      { pid: 'PID005', storeId: 'INTGHYD01093', description: 'D1-23', skuCount: 278, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID006', storeId: 'INTGHYD01093', description: 'B8-90', skuCount: 201, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD003', auditorName: 'Suresh Kumar' },
-      { pid: 'PID007', storeId: 'INTGHYD01093', description: 'E5-67', skuCount: 167, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID008', storeId: 'INTGHYD01093', description: 'A2-34', skuCount: 234, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID009', storeId: 'INTGHYD01093', description: 'C7-12', skuCount: 198, assignStatus: 'Assigned', auditStatus: 'Completed', auditorId: 'AUD001', auditorName: 'Amit Singh' },
-      { pid: 'PID010', storeId: 'INTGHYD01093', description: 'F3-78', skuCount: 289, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID011', storeId: 'INTGHYD01093', description: 'B4-56', skuCount: 176, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID012', storeId: 'INTGHYD01093', description: 'D8-91', skuCount: 223, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD002', auditorName: 'Priya Reddy' },
-      { pid: 'PID013', storeId: 'INTGHYD01093', description: 'A5-23', skuCount: 145, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID014', storeId: 'INTGHYD01093', description: 'E2-45', skuCount: 267, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID015', storeId: 'INTGHYD01093', description: 'C9-67', skuCount: 192, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null }
-    ],
-    'INTGHYD50061': [
-      { pid: 'PID016', storeId: 'INTGHYD50061', description: 'A4-12', skuCount: 198, assignStatus: 'Assigned', auditStatus: 'In Progress', auditorId: 'AUD001', auditorName: 'Amit Singh' },
-      { pid: 'PID017', storeId: 'INTGHYD50061', description: 'B2-34', skuCount: 234, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID018', storeId: 'INTGHYD50061', description: 'C5-67', skuCount: 276, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID019', storeId: 'INTGHYD50061', description: 'D3-89', skuCount: 189, assignStatus: 'Assigned', auditStatus: 'Completed', auditorId: 'AUD003', auditorName: 'Suresh Kumar' },
-      { pid: 'PID020', storeId: 'INTGHYD50061', description: 'E1-45', skuCount: 312, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID021', storeId: 'INTGHYD50061', description: 'F6-23', skuCount: 156, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID022', storeId: 'INTGHYD50061', description: 'G2-78', skuCount: 245, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD002', auditorName: 'Priya Reddy' },
-      { pid: 'PID023', storeId: 'INTGHYD50061', description: 'H4-56', skuCount: 201, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID024', storeId: 'INTGHYD50061', description: 'I1-90', skuCount: 223, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID025', storeId: 'INTGHYD50061', description: 'J5-34', skuCount: 267, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID026', storeId: 'INTGHYD50061', description: 'K3-12', skuCount: 178, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID027', storeId: 'INTGHYD50061', description: 'L7-89', skuCount: 289, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null }
-    ],
-    'INTGHYD00601': [
-      { pid: 'PID028', storeId: 'INTGHYD00601', description: 'A2-78', skuCount: 234, assignStatus: 'Assigned', auditStatus: 'In Progress', auditorId: 'AUD004', auditorName: 'Deepak Sharma' },
-      { pid: 'PID029', storeId: 'INTGHYD00601', description: 'B5-23', skuCount: 198, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD005', auditorName: 'Anitha Rao' },
-      { pid: 'PID030', storeId: 'INTGHYD00601', description: 'C1-45', skuCount: 312, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID031', storeId: 'INTGHYD00601', description: 'D6-89', skuCount: 267, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID032', storeId: 'INTGHYD00601', description: 'E3-12', skuCount: 189, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID033', storeId: 'INTGHYD00601', description: 'F7-56', skuCount: 245, assignStatus: 'Assigned', auditStatus: 'Completed', auditorId: 'AUD001', auditorName: 'Amit Singh' },
-      { pid: 'PID034', storeId: 'INTGHYD00601', description: 'G4-34', skuCount: 278, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID035', storeId: 'INTGHYD00601', description: 'H1-67', skuCount: 201, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID036', storeId: 'INTGHYD00601', description: 'I5-90', skuCount: 223, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID037', storeId: 'INTGHYD00601', description: 'J2-23', skuCount: 156, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID038', storeId: 'INTGHYD00601', description: 'K6-78', skuCount: 289, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID039', storeId: 'INTGHYD00601', description: 'L3-45', skuCount: 234, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID040', storeId: 'INTGHYD00601', description: 'M7-12', skuCount: 198, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID041', storeId: 'INTGHYD00601', description: 'N4-89', skuCount: 267, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID042', storeId: 'INTGHYD00601', description: 'O1-56', skuCount: 176, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID043', storeId: 'INTGHYD00601', description: 'P5-34', skuCount: 245, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID044', storeId: 'INTGHYD00601', description: 'Q2-67', skuCount: 212, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID045', storeId: 'INTGHYD00601', description: 'R6-90', skuCount: 298, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null }
-    ],
-    'INTGHYD00921': [
-      { pid: 'PID046', storeId: 'INTGHYD00921', description: 'A6-45', skuCount: 256, assignStatus: 'Assigned', auditStatus: 'In Progress', auditorId: 'AUD002', auditorName: 'Priya Reddy' },
-      { pid: 'PID047', storeId: 'INTGHYD00921', description: 'B3-78', skuCount: 189, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID048', storeId: 'INTGHYD00921', description: 'C7-23', skuCount: 234, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID049', storeId: 'INTGHYD00921', description: 'D4-56', skuCount: 298, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD003', auditorName: 'Suresh Kumar' },
-      { pid: 'PID050', storeId: 'INTGHYD00921', description: 'E1-89', skuCount: 212, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID051', storeId: 'INTGHYD00921', description: 'F5-12', skuCount: 267, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID052', storeId: 'INTGHYD00921', description: 'G2-34', skuCount: 178, assignStatus: 'Assigned', auditStatus: 'Completed', auditorId: 'AUD004', auditorName: 'Deepak Sharma' },
-      { pid: 'PID053', storeId: 'INTGHYD00921', description: 'H6-67', skuCount: 245, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID054', storeId: 'INTGHYD00921', description: 'I3-90', skuCount: 223, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID055', storeId: 'INTGHYD00921', description: 'J7-45', skuCount: 289, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID056', storeId: 'INTGHYD00921', description: 'K4-78', skuCount: 201, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID057', storeId: 'INTGHYD00921', description: 'L1-23', skuCount: 234, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID058', storeId: 'INTGHYD00921', description: 'M5-56', skuCount: 198, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID059', storeId: 'INTGHYD00921', description: 'N2-89', skuCount: 276, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null }
-    ],
-    'INTGHYD00895': [
-      { pid: 'PID060', storeId: 'INTGHYD00895', description: 'A3-67', skuCount: 245, assignStatus: 'Assigned', auditStatus: 'In Progress', auditorId: 'AUD005', auditorName: 'Anitha Rao' },
-      { pid: 'PID061', storeId: 'INTGHYD00895', description: 'B7-12', skuCount: 198, assignStatus: 'Assigned', auditStatus: 'Pending', auditorId: 'AUD001', auditorName: 'Amit Singh' },
-      { pid: 'PID062', storeId: 'INTGHYD00895', description: 'C4-45', skuCount: 289, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID063', storeId: 'INTGHYD00895', description: 'D1-78', skuCount: 234, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID064', storeId: 'INTGHYD00895', description: 'E5-23', skuCount: 267, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID065', storeId: 'INTGHYD00895', description: 'F2-56', skuCount: 201, assignStatus: 'Assigned', auditStatus: 'Completed', auditorId: 'AUD002', auditorName: 'Priya Reddy' },
-      { pid: 'PID066', storeId: 'INTGHYD00895', description: 'G6-89', skuCount: 278, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID067', storeId: 'INTGHYD00895', description: 'H3-34', skuCount: 189, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID068', storeId: 'INTGHYD00895', description: 'I7-67', skuCount: 223, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID069', storeId: 'INTGHYD00895', description: 'J4-90', skuCount: 256, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID070', storeId: 'INTGHYD00895', description: 'K1-12', skuCount: 212, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID071', storeId: 'INTGHYD00895', description: 'L5-45', skuCount: 298, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID072', storeId: 'INTGHYD00895', description: 'M2-78', skuCount: 176, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID073', storeId: 'INTGHYD00895', description: 'N6-23', skuCount: 245, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID074', storeId: 'INTGHYD00895', description: 'O3-56', skuCount: 234, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null },
-      { pid: 'PID075', storeId: 'INTGHYD00895', description: 'P7-89', skuCount: 267, assignStatus: 'Not Assigned', auditStatus: 'Pending', auditorId: null, auditorName: null }
-    ]
-  };
-
-  const [allPIDs, setAllPIDs] = useState(allPIDsData);
+  // Use generated PID data from JSON file
+  const [allPIDs, setAllPIDs] = useState(pidDataJson);
 
   // Get PIDs for the selected store
   const pids = allPIDs[selectedStoreId] || [];

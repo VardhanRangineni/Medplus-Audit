@@ -18,6 +18,8 @@ const DetailsPage = ({ filters = {} }) => {
   const deviationParam = searchParams.get('deviationType');
   const recencyRangeParam = searchParams.get('recencyRange');
   const recencyViewParam = searchParams.get('recencyView');
+  const supervisorIdParam = searchParams.get('supervisorId');
+  const supervisorNameParam = searchParams.get('supervisorName');
 
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
@@ -175,22 +177,46 @@ const DetailsPage = ({ filters = {} }) => {
         quantity: store.TotalQuantity,
         inventoryValueMRP: store.InventoryValue
       }));
-    } else if (type === 'covered-stores') {
-      // Get only covered stores
+    } else if (type === 'covered-stores' || type === 'supervisor') {
+      // Get only covered stores (also used for supervisor filter)
       return storeCoverageData
         .filter(store => store.IsCovered)
-        .map(store => ({
-          storeId: store.StoreID,
-          storeName: store.StoreName,
-          city: store.State || '',
-          state: store.StateName,
-          storeType: store.StoreType,
-          boxType: getBoxType(store.StoreID),
-          storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
-          auditStartDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never',
-          auditJobType: getAuditJobType(store.StoreID),
-          leadSupervisor: getLatestAuditInfo(store.StoreID).supervisor,
-          auditorsCount: getLatestAuditInfo(store.StoreID).auditors ? getLatestAuditInfo(store.StoreID).auditors.split(',').length : 0,
+        .map(store => {
+          // If filtering by supervisor, get supervisor-specific audit info
+          let supervisorInfo, auditInfo;
+          if (type === 'supervisor' && supervisorIdParam) {
+            // Find the audit by this specific supervisor for this store
+            const supervisorAudits = auditDataset.filter(a => 
+              a.StoreID === store.StoreID && a.SupervisorID === supervisorIdParam
+            );
+            if (supervisorAudits.length > 0) {
+              // Get the most recent audit by this supervisor
+              const latestSupervisorAudit = supervisorAudits.sort((a, b) => 
+                new Date(b.AuditEndDate || b.AuditStartDate) - new Date(a.AuditEndDate || a.AuditStartDate)
+              )[0];
+              supervisorInfo = latestSupervisorAudit.SupervisorName;
+              auditInfo = {
+                startDate: latestSupervisorAudit.AuditStartDate,
+                jobType: latestSupervisorAudit.AuditJobType,
+                auditorName: latestSupervisorAudit.AuditorName
+              };
+            }
+          }
+          
+          const latestInfo = getLatestAuditInfo(store.StoreID);
+          
+          return {
+            storeId: store.StoreID,
+            storeName: store.StoreName,
+            city: store.State || '',
+            state: store.StateName,
+            storeType: store.StoreType,
+            boxType: getBoxType(store.StoreID),
+            storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
+            auditStartDate: auditInfo?.startDate || (store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never'),
+            auditJobType: auditInfo?.jobType || getAuditJobType(store.StoreID),
+            leadSupervisor: supervisorInfo || latestInfo.supervisor,
+            auditorsCount: latestInfo.auditors ? latestInfo.auditors.split(',').length : 0,
           cycle: store.AuditCycle || getAuditCount(store.StoreID),
           skus: store.TotalSKUs,
           quantity: store.TotalQuantity,
@@ -211,7 +237,8 @@ const DetailsPage = ({ filters = {} }) => {
           contraShortValue: 0,
           status: store.IsActive !== false ? 'Active' : 'Inactive',
           inventoryValueMRP: store.InventoryValue
-        }));
+        };
+      });
     } else if (type === 'uncovered-stores') {
       // Calculate days since last audit or store creation for uncovered stores
       const calculateDaysSince = (lastAuditDate, createdDate) => {
@@ -551,6 +578,14 @@ const DetailsPage = ({ filters = {} }) => {
     // URL Parameter Filters
     const matchesDeviationParam = !deviationParam || (item.deviations && item.deviations.some(d => d.DeviationType === deviationParam));
 
+    // Supervisor filter - check if this store was supervised by the selected supervisor
+    let matchesSupervisorParam = true;
+    if (supervisorIdParam && type === 'supervisor') {
+      // Get all audits for this store and check if the supervisor supervised any
+      const storeAudits = auditDataset.filter(a => a.StoreID === item.storeId);
+      matchesSupervisorParam = storeAudits.some(audit => audit.SupervisorID === supervisorIdParam);
+    }
+
     let matchesRecencyParam = true;
     if (recencyRangeParam) {
       if (recencyViewParam === 'monthly' && item.rawLastAuditDate) {
@@ -566,7 +601,7 @@ const DetailsPage = ({ filters = {} }) => {
       }
     }
 
-    return matchesSearch && matchesStore && matchesState && matchesAuditJobType && matchesProcessType && matchesBoxType && matchesStoreStatus && matchesCity && matchesDeviationParam && matchesRecencyParam;
+    return matchesSearch && matchesStore && matchesState && matchesAuditJobType && matchesProcessType && matchesBoxType && matchesStoreStatus && matchesCity && matchesDeviationParam && matchesRecencyParam && matchesSupervisorParam;
   });
 
   const states = [...new Set(data.map(item => item.state).filter(Boolean))];
@@ -812,8 +847,8 @@ const DetailsPage = ({ filters = {} }) => {
 
     const allKeys = Object.keys(data[0]);
 
-    // For covered-stores and uncovered-stores, use specific order
-    if (type === 'covered-stores' || type === 'uncovered-stores') {
+    // For covered-stores, supervisor view, and uncovered-stores, use specific order
+    if (type === 'covered-stores' || type === 'supervisor' || type === 'uncovered-stores') {
       const orderedKeys = type === 'uncovered-stores' 
         ? [
             'storeId',
@@ -884,7 +919,8 @@ const DetailsPage = ({ filters = {} }) => {
     'audit-in-progress',
     'audit-pending',
     'audit-completed',
-    'covered-stores'
+    'covered-stores',
+    'supervisor'
   ].includes(type);
 
   const handleRowClick = async (row) => {

@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Table, Badge, ProgressBar, Alert, Dropdown, Form, InputGroup } from 'react-bootstrap';
 import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
@@ -6,7 +7,6 @@ import autoTable from 'jspdf-autotable';
 import { formatIndianCurrency, formatIndianNumber } from '../utils/formatters';
 
 import KPICard from '../components/KPICard';
-import SupervisorDetailModal from '../components/SupervisorDetailModal';
 import auditData from '../data/audit_dataset.json';
 import './SupervisorApprovals.css';
 
@@ -116,10 +116,15 @@ const SupervisorTable = ({ data, onRowClick, sortConfig, requestSort }) => {
    Supervisor Approvals Page
 ================================ */
 const SupervisorApprovals = ({ filters = {} }) => {
-  const [selectedSupervisor, setSelectedSupervisor] = useState(null);
+  const navigate = useNavigate();
   const [sortConfig, setSortConfig] = useState({ key: 'supervisorId', direction: 'ascending' });
   const [searchQuery, setSearchQuery] = useState('');
   const [showTableFilters, setShowTableFilters] = useState(false);
+
+  const handleSupervisorClick = (supervisor) => {
+    // Navigate to details page with supervisor filter
+    navigate(`/details?type=supervisor&supervisorId=${supervisor.supervisorId}&supervisorName=${encodeURIComponent(supervisor.supervisorName)}&title=Stores Supervised by ${encodeURIComponent(supervisor.supervisorName)}`);
+  };
 
   const hasActiveFilters =
     (filters.state && filters.state.length > 0) ||
@@ -340,20 +345,13 @@ const SupervisorApprovals = ({ filters = {} }) => {
               data={supervisorData.filter(s =>
                 (s.supervisorName || '').toLowerCase().includes(searchQuery.toLowerCase())
               )}
-              onRowClick={setSelectedSupervisor}
+              onRowClick={handleSupervisorClick}
               sortConfig={sortConfig}
               requestSort={requestSort}
             />
           </div>
         </Card.Body>
       </Card>
-
-      <SupervisorDetailModal
-        show={!!selectedSupervisor}
-        onHide={() => setSelectedSupervisor(null)}
-        supervisorId={selectedSupervisor?.supervisorId}
-        allData={auditData}
-      />
     </Container>
   );
 };

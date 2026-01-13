@@ -530,7 +530,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
         });
       }
 
-      utils.book_append_sheet(wb, wsRemarks, "Mismatches");
+      utils.book_append_sheet(wb, wsRemarks, "Revised");
     }
 
     // ===== SHEET 3: Deviations (All deviation-related data) =====

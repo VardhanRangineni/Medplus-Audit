@@ -20,6 +20,8 @@ const DetailsPage = ({ filters = {} }) => {
   const recencyViewParam = searchParams.get('recencyView');
   const supervisorIdParam = searchParams.get('supervisorId');
   const supervisorNameParam = searchParams.get('supervisorName');
+  const auditorIdParam = searchParams.get('auditorId');
+  const auditorNameParam = searchParams.get('auditorName');
 
   // Check if any filters are active
   const hasActiveFilters = filters.state || filters.store || filters.auditJobType || filters.auditProcessType || filters.auditStatus;
@@ -192,12 +194,12 @@ const DetailsPage = ({ filters = {} }) => {
         quantity: store.TotalQuantity,
         inventoryValueMRP: store.InventoryValue
       }));
-    } else if (type === 'covered-stores' || type === 'supervisor') {
-      // Get only covered stores (also used for supervisor filter)
+    } else if (type === 'covered-stores' || type === 'supervisor' || type === 'auditor') {
+      // Get only covered stores (also used for supervisor and auditor filters)
       return storeCoverageData
         .filter(store => store.IsCovered)
         .map(store => {
-          // If filtering by supervisor, get supervisor-specific audit info
+          // If filtering by supervisor or auditor, get specific audit info
           let supervisorInfo, auditInfo;
           if (type === 'supervisor' && supervisorIdParam) {
             // Find the audit by this specific supervisor for this store
@@ -214,6 +216,29 @@ const DetailsPage = ({ filters = {} }) => {
                 startDate: latestSupervisorAudit.AuditStartDate,
                 jobType: latestSupervisorAudit.AuditJobType,
                 auditorName: latestSupervisorAudit.AuditorName
+              };
+            }
+          } else if (type === 'auditor' && auditorIdParam) {
+            // Find audits where this auditor participated
+            const auditorAudits = auditDataset.filter(a => {
+              if (a.StoreID !== store.StoreID) return false;
+              // Check if auditor is in AuditorIDs array
+              if (a.AuditorIDs && Array.isArray(a.AuditorIDs)) {
+                return a.AuditorIDs.includes(auditorIdParam);
+              }
+              // Fallback: check single AuditorID field
+              return a.AuditorID === auditorIdParam;
+            });
+            if (auditorAudits.length > 0) {
+              // Get the most recent audit by this auditor
+              const latestAuditorAudit = auditorAudits.sort((a, b) => 
+                new Date(b.AuditEndDate || b.AuditStartDate) - new Date(a.AuditEndDate || a.AuditStartDate)
+              )[0];
+              supervisorInfo = latestAuditorAudit.SupervisorName;
+              auditInfo = {
+                startDate: latestAuditorAudit.AuditStartDate,
+                jobType: latestAuditorAudit.AuditJobType,
+                auditorName: latestAuditorAudit.AuditorNames || latestAuditorAudit.AuditorName
               };
             }
           }
@@ -601,6 +626,21 @@ const DetailsPage = ({ filters = {} }) => {
       matchesSupervisorParam = storeAudits.some(audit => audit.SupervisorID === supervisorIdParam);
     }
 
+    // Auditor filter - check if this store was audited by the selected auditor
+    let matchesAuditorParam = true;
+    if (auditorIdParam && type === 'auditor') {
+      // Get all audits for this store and check if the auditor participated
+      const storeAudits = auditDataset.filter(a => a.StoreID === item.storeId);
+      matchesAuditorParam = storeAudits.some(audit => {
+        // Check if auditor is in AuditorIDs array
+        if (audit.AuditorIDs && Array.isArray(audit.AuditorIDs)) {
+          return audit.AuditorIDs.includes(auditorIdParam);
+        }
+        // Fallback: check single AuditorID field
+        return audit.AuditorID === auditorIdParam;
+      });
+    }
+
     let matchesRecencyParam = true;
     if (recencyRangeParam) {
       if (recencyViewParam === 'monthly' && item.rawLastAuditDate) {
@@ -616,7 +656,7 @@ const DetailsPage = ({ filters = {} }) => {
       }
     }
 
-    return matchesSearch && matchesStore && matchesState && matchesAuditJobType && matchesProcessType && matchesBoxType && matchesStoreStatus && matchesCity && matchesDeviationParam && matchesRecencyParam && matchesSupervisorParam;
+    return matchesSearch && matchesStore && matchesState && matchesAuditJobType && matchesProcessType && matchesBoxType && matchesStoreStatus && matchesCity && matchesDeviationParam && matchesRecencyParam && matchesSupervisorParam && matchesAuditorParam;
   });
 
   const states = [...new Set(data.map(item => item.state).filter(Boolean))];
@@ -862,8 +902,8 @@ const DetailsPage = ({ filters = {} }) => {
 
     const allKeys = Object.keys(data[0]);
 
-    // For covered-stores, supervisor view, and uncovered-stores, use specific order
-    if (type === 'covered-stores' || type === 'supervisor' || type === 'uncovered-stores') {
+    // For covered-stores, supervisor view, auditor view, and uncovered-stores, use specific order
+    if (type === 'covered-stores' || type === 'supervisor' || type === 'auditor' || type === 'uncovered-stores') {
       const orderedKeys = type === 'uncovered-stores' 
         ? [
             'storeId',
@@ -935,7 +975,8 @@ const DetailsPage = ({ filters = {} }) => {
     'audit-pending',
     'audit-completed',
     'covered-stores',
-    'supervisor'
+    'supervisor',
+    'auditor'
   ].includes(type);
 
   const handleRowClick = async (row) => {
@@ -1059,7 +1100,13 @@ const DetailsPage = ({ filters = {} }) => {
               <Button variant="outline-primary" onClick={() => navigate(-1)} className="mb-2">
                 <i className="fas fa-arrow-left me-2"></i>Back
               </Button>
-              <h2 className="mb-0">{title}</h2>
+              <h2 className="mb-0">
+                {type === 'supervisor' && supervisorNameParam 
+                  ? `Audited Stores - ${supervisorNameParam}` 
+                  : type === 'auditor' && auditorNameParam 
+                  ? `Audited Stores - ${auditorNameParam}`
+                  : title}
+              </h2>
               <p className="text-muted">
                 Showing {filteredData.length} of {data.length} records
                 {isStoreClickable && (

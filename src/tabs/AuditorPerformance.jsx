@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Table, ProgressBar, Badge, Alert, Dropdown, Form, InputGroup, Button } from 'react-bootstrap';
 import { utils, writeFile } from 'xlsx';
 import jsPDF from 'jspdf';
@@ -13,6 +14,7 @@ import './AuditorPerformance.css';
 import auditorsJson from '../data/auditors.json';
 
 const AuditorPerformance = ({ filters = {} }) => {
+  const navigate = useNavigate();
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [searchQuery, setSearchQuery] = useState('');
   const [showTableFilters, setShowTableFilters] = useState(false);
@@ -267,8 +269,8 @@ const AuditorPerformance = ({ filters = {} }) => {
   };
 
   const handleAuditorClick = (auditor) => {
-    setSelectedAuditorId(auditor.auditorId);
-    setShowAuditorDetail(true);
+    // Navigate to details page filtered by this auditor
+    navigate(`/details?type=auditor&auditorId=${auditor.auditorId}&auditorName=${encodeURIComponent(auditor.auditorName)}`);
   };
 
   const getCompletionColor = (rate) => {

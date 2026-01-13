@@ -45,47 +45,50 @@ const LiveAuditSchedule = ({ filters = {} }) => {
       const storeInventory = storeCoverageData.find(s => s.StoreID === selectedStore.storeId);
 
       if (auditData) {
-        // Transform auditors data to match modal expected structure
-        const transformedAuditors = auditData.Auditors ? auditData.Auditors.map(auditor => ({
-          name: auditor.AuditorName,
-          assignedSKUs: auditor.AllottedSKUs || 0,
-          completedSKUs: auditor.CompletedSKUs || 0,
-          completionRate: auditor.CompletionPercent || 0,
-          matchRate: auditor.MatchRate || 0,
-          valueCovered: auditor.ValueCovered || 0
-        })) : [];
+        // Transform auditor data to match modal expected structure
+        const transformedAuditors = auditData.AuditorID ? [{
+          name: auditData.AuditorName || 'Unknown',
+          assignedSKUs: auditData.AuditorAllottedSKUs || 0,
+          completedSKUs: auditData.CompletedSKUs || 0,
+          completionRate: auditData.CompletionPercent || 0,
+          matchRate: ((auditData.MatchedSKUs || 0) / (auditData.AppearedSKUs || 1)) * 100,
+          valueCovered: auditData.AuditorAuditedValue || 0
+        }] : [];
 
-        // Transform mismatch details to deviations and contra
+        // Transform deviation details to deviations and contra
         const deviationMap = {};
         const contraItems = [];
         const productFormDataMap = {};
 
-        if (auditData.MismatchDetails && Array.isArray(auditData.MismatchDetails)) {
-          auditData.MismatchDetails.forEach(item => {
-            const devType = item.Type || 'Other';
+        // Use DeviationDetails from new data structure
+        if (auditData.DeviationDetails && Array.isArray(auditData.DeviationDetails)) {
+          auditData.DeviationDetails.forEach(deviation => {
+            const devType = deviation.type || 'Other';
             if (!deviationMap[devType]) {
               deviationMap[devType] = { type: devType, count: 0, value: 0 };
             }
-            deviationMap[devType].count++;
-            // Calculate value based on difference and unit price
-            const value = Math.abs(item.Difference || 0) * (item.Value ? (item.Value / Math.abs(item.Difference || 1)) : 150);
-            deviationMap[devType].value += value;
+            deviationMap[devType].count += deviation.count || 0;
+            deviationMap[devType].value += deviation.value || 0;
 
-            // Add to contra items with proper structure
-            contraItems.push({
-              skuCode: item.SKU,
-              productName: item.ProductName,
-              type: item.Type,
-              quantity: Math.abs(item.Difference || 0),
-              value: value,
-              status: 'Pending'
-            });
+            // Map product forms
+            if (deviation.ProductForms && Array.isArray(deviation.ProductForms)) {
+              if (!productFormDataMap[devType]) {
+                productFormDataMap[devType] = [];
+              }
+              deviation.ProductForms.forEach(pf => {
+                productFormDataMap[devType].push({
+                  form: pf.ProductForm,
+                  count: pf.Count,
+                  value: Math.round(pf.Value)
+                });
+              });
+            }
           });
         }
 
-        // For in-progress audits, generate estimated deviations if none exist
-        if (Object.keys(deviationMap).length === 0 && auditData.Status === 'In Progress') {
-          const totalSKUs = auditData.TotalSKUs || 0;
+        // For in-progress audits, use actual data from audit record
+        if (Object.keys(deviationMap).length === 0) {
+          const totalSKUs = auditData.StoreTotalSKUs || 0;
           const estimatedDeviationRate = 0.03; // 3% deviation rate
           const estimatedMismatchRate = 0.02; // 2% mismatch rate
 
@@ -146,11 +149,11 @@ const LiveAuditSchedule = ({ filters = {} }) => {
           auditProgress: {
             percentage: auditData.CompletionPercent || 0,
             completedSKUs: auditData.CompletedSKUs || 0,
-            totalSKUs: auditData.TotalSKUs || 0
+            totalSKUs: auditData.StoreTotalSKUs || 0
           },
           inventorySummary: {
-            totalSKUs: auditData.TotalSKUs || storeInventory?.TotalSKUs || 0,
-            totalPIDs: auditData.TotalPIDs || storeInventory?.TotalPIDs || 0,
+            totalSKUs: auditData.StoreTotalSKUs || storeInventory?.TotalSKUs || 0,
+            totalPIDs: auditData.StoreTotalPIDs || storeInventory?.TotalPIDs || 0,
             auditedSKUs: auditData.CompletedSKUs || 0,
             totalValue: storeInventory?.InventoryValue || transformedAuditors.reduce((sum, a) => sum + (a.valueCovered || 0), 0) || 0,
             totalQuantity: storeInventory?.TotalQuantity || auditData.CompletedSKUs || 0
@@ -229,42 +232,30 @@ const LiveAuditSchedule = ({ filters = {} }) => {
   // Transform data to match component structure
   const transformedAuditData = useMemo(() => {
     return filteredAuditData.map(audit => {
-      const startDate = new Date(audit.StartDate);
-      const endDate = audit.EndDate ? new Date(audit.EndDate) : null;
+      const startDate = new Date(audit.AuditStartDate);
+      const endDate = audit.AuditEndDate ? new Date(audit.AuditEndDate) : null;
 
-      // Transform mismatch details to match component field names
-      const transformedMismatchDetails = (audit.MismatchDetails || []).map(item => ({
-        productId: item.ProductID,
-        sku: item.SKU,
-        productName: item.ProductName,
-        productForm: item.ProductForm,
-        type: item.Type,
-        systemQty: item.SystemQty,
-        physicalQty: item.PhysicalQty,
-        difference: item.Difference,
-        value: item.Value
-      }));
 
       return {
         storeId: audit.StoreID,
         storeName: audit.StoreName,
         state: audit.State,
         supervisor: audit.SupervisorName,
-        noOfAuditors: audit.NumberOfAuditors,
-        auditors: audit.AuditorNames,
+        noOfAuditors: 1, // Single auditor per audit in new structure
+        auditors: audit.AuditorName,
         startDate: startDate.toISOString().split('T')[0],
         endDate: endDate ? endDate.toISOString().split('T')[0] : null,
-        totalPIDs: audit.TotalPIDs,
-        totalSKUs: audit.TotalSKUs,
+        totalPIDs: audit.StoreTotalPIDs,
+        totalSKUs: audit.StoreTotalSKUs,
         completedSKUs: audit.CompletedSKUs,
         progress: audit.CompletionPercent,
-        duration: audit.DurationHours,
-        deviations: audit.DeviationCount || 0,
-        mismatch: audit.MismatchCount || 0,
-        mismatchDetails: transformedMismatchDetails,
+        duration: 0, // Calculate if needed
+        deviations: audit.RevisedSKUs || 0,
+        mismatch: audit.MatchedSKUs || 0,
+        mismatchDetails: [],
         auditJobType: audit.AuditJobType,
         processType: audit.AuditProcessType,
-        status: audit.Status.toLowerCase().replace(/\s+/g, '-')
+        status: audit.Status.toLowerCase() === 'created' ? 'pending' : audit.Status.toLowerCase().replace(/\s+/g, '-')
       };
     });
   }, [filteredAuditData]);
@@ -490,37 +481,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
     <Container fluid className="live-audit-tab py-4">
       {/* Audit Workflow Tiles */}
       <Row className="g-3 mb-4">
-        <Col md={3}>
-          <KPICard
-            title="Total"
-            value={workflowStats.created}
-            subtitle="Audits"
-            icon="fas fa-file-alt"
-            color={selectedStatus === 'created' ? 'secondary' : 'secondary'}
-            onClick={() => showWorkflowDetails('Created')}
-            style={{
-              border: selectedStatus === 'created' ? '2px solid #6c757d' : '1px solid #dee2e6',
-              boxShadow: selectedStatus === 'created' ? '0 0 10px rgba(108, 117, 125, 0.3)' : 'none',
-              opacity: selectedStatus === 'created' ? 1 : 0.6
-            }}
-          />
-        </Col>
-        <Col md={3}>
-          <KPICard
-            title="Yet to Start"
-            value={workflowStats.pending}
-            subtitle="Awaiting action"
-            icon="fas fa-pause-circle"
-            color={selectedStatus === 'pending' ? 'warning' : 'warning'}
-            onClick={() => showWorkflowDetails('Pending')}
-            style={{
-              border: selectedStatus === 'pending' ? '2px solid #ffc107' : '1px solid #dee2e6',
-              boxShadow: selectedStatus === 'pending' ? '0 0 10px rgba(255, 193, 7, 0.3)' : 'none',
-              opacity: selectedStatus === 'pending' ? 1 : 0.6
-            }}
-          />
-        </Col>
-        <Col md={3}>
+        <Col md={4}>
           <KPICard
             title="In Progress"
             value={workflowStats.inProgress}
@@ -535,7 +496,22 @@ const LiveAuditSchedule = ({ filters = {} }) => {
             }}
           />
         </Col>
-        <Col md={3}>
+        <Col md={4}>
+          <KPICard
+            title="Yet to Start"
+            value={workflowStats.pending}
+            subtitle="Awaiting action"
+            icon="fas fa-pause-circle"
+            color={selectedStatus === 'pending' ? 'warning' : 'warning'}
+            onClick={() => showWorkflowDetails('Pending')}
+            style={{
+              border: selectedStatus === 'pending' ? '2px solid #ffc107' : '1px solid #dee2e6',
+              boxShadow: selectedStatus === 'pending' ? '0 0 10px rgba(255, 193, 7, 0.3)' : 'none',
+              opacity: selectedStatus === 'pending' ? 1 : 0.6
+            }}
+          />
+        </Col>
+        <Col md={4}>
           <KPICard
             title="Completed (Today)"
             value={workflowStats.completed}
@@ -561,7 +537,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                 <div>
                   <h5 className="mb-0 fw-bold">
                     <i className="fas fa-table me-2 text-primary"></i>
-                    Live Audit Schedule - {selectedStatus === 'created' ? 'Total' : selectedStatus === 'in-progress' ? 'In Progress' : selectedStatus === 'pending' ? 'Yet to Start' : 'Completed'}
+                    Live Audit Schedule - {selectedStatus === 'in-progress' ? 'In Progress' : selectedStatus === 'pending' ? 'Yet to Start' : 'Completed'}
                   </h5>
                   <small className="text-muted">Click on any row to view auditor-wise allocation and real-time progress</small>
                 </div>
@@ -623,8 +599,8 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                         <React.Fragment key={idx}>
                           <tr
                             className="audit-row"
-                            onClick={() => showStoreDetails(audit)}
-                            style={{ cursor: 'pointer' }}
+                            onClick={selectedStatus !== 'pending' ? () => showStoreDetails(audit) : undefined}
+                            style={{ cursor: selectedStatus !== 'pending' ? 'pointer' : 'default' }}
                           >
                             <td>
                               <Badge bg="light" text="dark" className="font-monospace">

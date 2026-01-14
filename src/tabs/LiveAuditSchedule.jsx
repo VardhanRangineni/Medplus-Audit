@@ -57,7 +57,14 @@ const LiveAuditSchedule = ({ filters = {} }) => {
           completedSKUs: Math.round((auditData.CompletedSKUs || 0) / auditorCount),
           completionRate: auditData.CompletionPercent || 0,
           matchRate: ((auditData.MatchedSKUs || 0) / (auditData.AppearedSKUs || 1)) * 100,
-          valueCovered: Math.round((auditData.AuditorAuditedValue || 0) / auditorCount)
+          valueCovered: Math.round((auditData.AuditorAuditedValue || 0) / auditorCount),
+          // Add re-audit summary data for each auditor
+          appearedSKUs: Math.round((auditData.AppearedSKUs || 0) / auditorCount),
+          matchedSKUs: Math.round((auditData.MatchedSKUs || 0) / auditorCount),
+          revisedSKUs: Math.round((auditData.RevisedSKUs || 0) / auditorCount),
+          appearedValue: Math.round((auditData.AppearedValue || 0) / auditorCount),
+          matchedValue: Math.round((auditData.MatchedValue || 0) / auditorCount),
+          revisedValue: Math.round((auditData.RevisedValue || 0) / auditorCount)
         }));
 
         // Transform deviation details to deviations and contra
@@ -273,19 +280,19 @@ const LiveAuditSchedule = ({ filters = {} }) => {
       created: transformedAuditData.filter(a => ['pending', 'in-progress', 'completed'].includes(a.status)).length,
       inProgress: transformedAuditData.filter(a => a.status === 'in-progress').length,
       pending: transformedAuditData.filter(a => a.status === 'pending').length,
-      completed: transformedAuditData.filter(a => a.status === 'completed' && a.endDate === today).length
+      // Show all completed audits (not just today) for better visibility
+      completed: transformedAuditData.filter(a => a.status === 'completed').length
     };
     return stats;
   }, [transformedAuditData]);
 
   const allAuditData = useMemo(() => {
-    const today = new Date().toISOString().split('T')[0];
-    
     return {
       created: transformedAuditData.filter(audit => ['pending', 'in-progress', 'completed'].includes(audit.status)),
       'in-progress': transformedAuditData.filter(audit => audit.status === 'in-progress'),
       pending: transformedAuditData.filter(audit => audit.status === 'pending'),
-      completed: transformedAuditData.filter(audit => audit.status === 'completed' && audit.endDate === today)
+      // Show all completed audits for visibility
+      completed: transformedAuditData.filter(audit => audit.status === 'completed')
     };
   }, [transformedAuditData]);
 
@@ -524,7 +531,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
         </Col>
         <Col md={4}>
           <KPICard
-            title="Completed (Today)"
+            title="Completed"
             value={workflowStats.completed}
             subtitle="Finalized"
             icon="fas fa-check-circle"
@@ -548,7 +555,7 @@ const LiveAuditSchedule = ({ filters = {} }) => {
                 <div>
                   <h5 className="mb-0 fw-bold">
                     <i className="fas fa-table me-2 text-primary"></i>
-                    {selectedStatus === 'in-progress' ? 'Audit in Progress' : selectedStatus === 'pending' ? 'Scheduled Audits' : 'Audits Completed Today'}
+                    {selectedStatus === 'in-progress' ? 'Audit in Progress' : selectedStatus === 'pending' ? 'Scheduled Audits' : 'Completed Audits'}
                   </h5>
                   <small className="text-muted">
                     {selectedStatus === 'in-progress' ? 'Click on any store to view real-time progress' : 

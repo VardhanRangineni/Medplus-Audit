@@ -876,9 +876,9 @@ const DetailsPage = ({ filters = {} }) => {
     if (key === 'auditJobType') return 'AUDIT JOB TYPE';
     if (key === 'leadSupervisor') return 'LEAD SUPERVISOR';
     if (key === 'auditorsCount') return 'AUDITORS (count)';
-    if (key === 'skus') return 'TOTAL SKUS';
-    if (key === 'quantity') return 'TOTAL QUANTITY (UNITS)';
-    if (key === 'inventoryValueMRP') return 'INVENTORY VALUE (MRP)';
+    if (key === 'skus') return 'AUDITED SKUS';
+    if (key === 'quantity') return 'AUDITED QUANTITY (UNITS)';
+    if (key === 'inventoryValueMRP') return 'AUDITED VALUE (MRP)';
     if (key === 'mismatch') return 'TOTAL MISMATCH ITEMS';
     if (key === 'deviation') return 'TOTAL DEVIATION ITEMS';
     if (key === 'deviationValueMRP') return 'DEVIATION VALUE MRP (₹)';

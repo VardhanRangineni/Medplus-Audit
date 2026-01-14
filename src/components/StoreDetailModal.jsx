@@ -1529,7 +1529,7 @@ const StoreDetailModal = ({ show, onHide, storeData, auditStatus }) => {
                                     <td className="py-2 text-end fw-bold">{formatIndianCurrency(auditor.appearedValue || 0)}</td>
                                   </tr>
                                   <tr>
-                                    <td className="py-2 fw-semibold">Matched</td>
+                                    <td className="py-2 fw-semibold">Revised</td>
                                     <td className="py-2 text-end">{formatIndianNumber(auditor.matchedSKUs || 0, true)}</td>
                                     <td className="py-2 text-end fw-bold text-success">{formatIndianCurrency(auditor.matchedValue || 0)}</td>
                                   </tr>

@@ -73,14 +73,26 @@ const DetailsPage = ({ filters = {} }) => {
 
   // Mock data based on type
   const getData = () => {
-    // Helper to get deterministic box type
-    const getBoxType = (id) => {
-      let h = 0;
-      for (let i = 0; i < (id || '').length; i++) {
-        h = ((h << 5) - h) + id.charCodeAt(i);
-        h |= 0;
+    // Map BoxMapping field to requirement box types
+    // Dynamic: Dynamic box mapped store
+    // Non-Dynamic: Non-dynamic box mapped store
+    // Regular: Non box mapped store
+    const mapBoxType = (boxMapping) => {
+      if (!boxMapping) return 'Regular';
+      if (boxMapping === 'Box Mapping') {
+        // For Box Mapping stores, we need to determine if Dynamic or Non-Dynamic
+        // Since data doesn't specify, default to 'Dynamic' for box mapped stores
+        return 'Dynamic';
       }
-      return ['Dynamic', 'Non Dynamic', 'Regular'][Math.abs(h) % 3];
+      return 'Regular'; // Non Box Mapping = Regular
+    };
+
+    // Map StoreType to Hub Type as per requirements
+    // Stock hub, No stock hub, or Regular
+    const mapHubType = (storeType) => {
+      if (!storeType) return 'Regular';
+      if (storeType === 'HUB') return 'Stock Hub';
+      return 'Regular';
     };
 
     const getAuditCount = (id) => {
@@ -190,8 +202,9 @@ const DetailsPage = ({ filters = {} }) => {
         city: store.State || '',
         storeName: store.StoreName,
         state: store.StateName,
-        storeType: store.StoreType,
-        boxType: getBoxType(store.StoreID),
+        storeType: mapHubType(store.StoreType),
+        hubType: mapHubType(store.StoreType),
+        boxType: mapBoxType(store.BoxMapping),
         storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
         lastAuditedDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never',
         status: store.IsActive !== false ? 'Active' : 'Inactive',
@@ -261,12 +274,13 @@ const DetailsPage = ({ filters = {} }) => {
             storeName: store.StoreName,
             city: store.State || '',
             state: store.StateName,
-            storeType: store.StoreType,
-            boxType: getBoxType(store.StoreID),
+            storeType: mapHubType(store.StoreType),
+            hubType: mapHubType(store.StoreType),
+            boxType: mapBoxType(store.BoxMapping),
             storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
             auditStartDate: auditInfo?.startDate || (store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'Never'),
-            auditJobType: auditInfo?.jobType || getAuditJobType(store.StoreID),
-            processType: store.AuditProcessType || getProcessType(store.StoreID),
+            auditJobType: auditInfo?.jobType || store.LastAuditJobType || getAuditJobType(store.StoreID),
+            processType: auditInfo?.processType || store.LastAuditProcessType || getProcessType(store.StoreID),
             leadSupervisor: supervisorInfo || latestInfo.supervisor,
             auditorsCount: latestInfo.auditors ? latestInfo.auditors.split(',').length : 0,
             cycle: store.AuditCycle || getAuditCount(store.StoreID),
@@ -324,8 +338,9 @@ const DetailsPage = ({ filters = {} }) => {
           city: store.State || '',
           storeName: store.StoreName,
           state: store.StateName,
-          storeType: store.StoreType,
-          boxType: getBoxType(store.StoreID),
+          storeType: mapHubType(store.StoreType),
+          hubType: mapHubType(store.StoreType),
+          boxType: mapBoxType(store.BoxMapping),
           storeCreatedDate: store.StoreCreatedDate ? new Date(store.StoreCreatedDate).toISOString().split('T')[0] : randomDateForId(store.StoreID),
           lastAuditedDate: store.LastAuditDate ? new Date(store.LastAuditDate).toISOString().split('T')[0] : 'N/A',
           daysSinceCreation: store.StoreCreatedDate ? formatDaysOrMonths(calculateDaysSince(store.LastAuditDate, store.StoreCreatedDate)) : 'N/A',
@@ -618,7 +633,7 @@ const DetailsPage = ({ filters = {} }) => {
     const matchesSearch = Object.values(item).some(val =>
       String(val).toLowerCase().includes(searchTerm.toLowerCase())
     );
-    const matchesStore = !filterStore || item.storeName?.includes(filterStore);
+    const matchesStore = !filterStore || item.storeType === filterStore; // Hub Type filter
     const matchesState = !filterState || item.state === filterState;
     const matchesAuditJobType = !filterAuditJobType || item.auditJobType === filterAuditJobType;
     const matchesProcessType = !filterProcessType || item.processType === filterProcessType;

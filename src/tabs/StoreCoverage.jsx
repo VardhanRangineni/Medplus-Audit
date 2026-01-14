@@ -7,6 +7,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import KPICard from '../components/KPICard';
 import storeCoverageData from '../data/store_coverage_data.json';
+import liveAuditData from '../data/live_audit_schedule_data.json';
 import './StoreCoverage.css';
 
 const StoreCoverage = ({ filters = {} }) => {
@@ -114,13 +115,65 @@ const StoreCoverage = ({ filters = {} }) => {
     };
   }, [filteredStoreData]);
 
+  // Calculate live audit stats from actual data
+  const liveAuditStats = useMemo(() => {
+    // Filter audits based on same filters as store data
+    let filteredAudits = [...liveAuditData];
+
+    // Apply state filter
+    if (filters.state && filters.state.length > 0) {
+      const stateArray = Array.isArray(filters.state) ? filters.state : [filters.state];
+      filteredAudits = filteredAudits.filter(audit => stateArray.includes(audit.State));
+    }
+
+    // Apply store type filter
+    if (filters.store && filters.store.length > 0) {
+      const storeArray = Array.isArray(filters.store) ? filters.store : [filters.store];
+      filteredAudits = filteredAudits.filter(audit => {
+        const storeInfo = storeCoverageData.find(s => s.StoreID === audit.StoreID);
+        return storeInfo && storeArray.includes(storeInfo.StoreType);
+      });
+    }
+
+    // Apply audit job type filter
+    if (filters.auditJobType && filters.auditJobType.length > 0) {
+      const jobTypeArray = Array.isArray(filters.auditJobType) ? filters.auditJobType : [filters.auditJobType];
+      filteredAudits = filteredAudits.filter(audit => jobTypeArray.includes(audit.AuditJobType));
+    }
+
+    // Apply audit process type filter
+    if (filters.auditProcessType && filters.auditProcessType.length > 0) {
+      const processTypeArray = Array.isArray(filters.auditProcessType) ? filters.auditProcessType : [filters.auditProcessType];
+      filteredAudits = filteredAudits.filter(audit => processTypeArray.includes(audit.AuditProcessType));
+    }
+
+    // Count by status
+    const inProgressCount = filteredAudits.filter(a => a.Status === 'In Progress').length;
+    const createdCount = filteredAudits.filter(a => a.Status === 'Created').length;
+    
+    // For "Completed Today", filter by today's date
+    const today = new Date().toISOString().split('T')[0];
+    const completedTodayCount = filteredAudits.filter(a => {
+      if (a.Status !== 'Completed') return false;
+      const endDate = a.AuditEndDate ? new Date(a.AuditEndDate).toISOString().split('T')[0] : null;
+      return endDate === today;
+    }).length;
+
+    return {
+      total: inProgressCount + createdCount,
+      inProgress: inProgressCount,
+      scheduled: createdCount,
+      completedToday: completedTodayCount
+    };
+  }, [filters, liveAuditData]);
+
   // Calculate store breakdown by type and box mapping
   const storeBreakdown = useMemo(() => {
     const breakdown = [
-      { storeType: 'STOCK HUB', boxType: 'Box Mapping', total: 0, covered: 0, uncovered: 0 },
-      { storeType: 'NO STOCK HUB', boxType: 'Non Box Mapping', total: 0, covered: 0, uncovered: 0 },
-      { storeType: 'REGULAR', boxType: 'Box Mapping', total: 0, covered: 0, uncovered: 0 },
-      { storeType: 'REGULAR', boxType: 'Non Box Mapping', total: 0, covered: 0, uncovered: 0 }
+      { storeType: 'HUB', boxType: 'Box Mapping', total: 0, covered: 0, uncovered: 0, displayName: 'Stock Hub - Box Mapping' },
+      { storeType: 'HUB', boxType: 'Non Box Mapping', total: 0, covered: 0, uncovered: 0, displayName: 'Stock Hub - Non Box Mapping' },
+      { storeType: 'REGULAR', boxType: 'Box Mapping', total: 0, covered: 0, uncovered: 0, displayName: 'Regular - Box Mapping' },
+      { storeType: 'REGULAR', boxType: 'Non Box Mapping', total: 0, covered: 0, uncovered: 0, displayName: 'Regular - Non Box Mapping' }
     ];
 
     filteredStoreData.forEach(store => {
@@ -687,14 +740,14 @@ const StoreCoverage = ({ filters = {} }) => {
         <Col md={4}>
           <KPICard
             title="Audit in progress"
-            value={47}
+            value={liveAuditStats.total}
             subtitle={
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', width: '100%' }}>
                 <div style={{ textAlign: 'left' }}>
-                  <div>Live: <strong style={{ color: 'black' }}>12</strong></div>
+                  <div>Live: <strong style={{ color: 'black' }}>{liveAuditStats.inProgress}</strong></div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div>Scheduled: <strong style={{ color: 'black' }}>35</strong></div>
+                  <div>Scheduled: <strong style={{ color: 'black' }}>{liveAuditStats.scheduled}</strong></div>
                 </div>
               </div>
             }

@@ -267,21 +267,27 @@ const LiveAuditSchedule = ({ filters = {} }) => {
 
   // Calculate workflow stats from filtered data
   const workflowStats = useMemo(() => {
+    const today = new Date().toISOString().split('T')[0];
+    
     const stats = {
       created: transformedAuditData.filter(a => ['pending', 'in-progress', 'completed'].includes(a.status)).length,
       inProgress: transformedAuditData.filter(a => a.status === 'in-progress').length,
       pending: transformedAuditData.filter(a => a.status === 'pending').length,
-      completed: transformedAuditData.filter(a => a.status === 'completed').length
+      completed: transformedAuditData.filter(a => a.status === 'completed' && a.endDate === today).length
     };
     return stats;
   }, [transformedAuditData]);
 
-  const allAuditData = useMemo(() => ({
-    created: transformedAuditData.filter(audit => ['pending', 'in-progress', 'completed'].includes(audit.status)),
-    'in-progress': transformedAuditData.filter(audit => audit.status === 'in-progress'),
-    pending: transformedAuditData.filter(audit => audit.status === 'pending'),
-    completed: transformedAuditData.filter(audit => audit.status === 'completed')
-  }), [transformedAuditData]);
+  const allAuditData = useMemo(() => {
+    const today = new Date().toISOString().split('T')[0];
+    
+    return {
+      created: transformedAuditData.filter(audit => ['pending', 'in-progress', 'completed'].includes(audit.status)),
+      'in-progress': transformedAuditData.filter(audit => audit.status === 'in-progress'),
+      pending: transformedAuditData.filter(audit => audit.status === 'pending'),
+      completed: transformedAuditData.filter(audit => audit.status === 'completed' && audit.endDate === today)
+    };
+  }, [transformedAuditData]);
 
   const auditTableData = allAuditData[selectedStatus] || [];
 
